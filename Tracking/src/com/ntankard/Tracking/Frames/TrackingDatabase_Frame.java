@@ -3,6 +3,7 @@ package com.ntankard.Tracking.Frames;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.ntankard.ClassExtension.MemberClass;
+import com.ntankard.DynamicGUI.Composite.DynamicGUI_EditableList;
 import com.ntankard.DynamicGUI.Composite.DynamicGUI_IntractableList;
 import com.ntankard.DynamicGUI.Util.Updatable;
 import com.ntankard.Tracking.DataBase.*;
@@ -71,14 +72,16 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
         bank_panel          = DynamicGUI_IntractableList.newIntractableTable(bank_list,         new MemberClass(Bank.class),        true, ALWAYS_DISPLAY,this);
         period_panel        = DynamicGUI_IntractableList.newIntractableTable(period_list,       new MemberClass(Period.class),      true, ALWAYS_DISPLAY,this);
         statement_panel     = DynamicGUI_IntractableList.newIntractableTable(statement_list,    new MemberClass(Statement.class),   true, ALWAYS_DISPLAY,this);
-        transaction_panel   = DynamicGUI_IntractableList.newIntractableTable(transaction_list,  new MemberClass(Transaction.class), true, ALWAYS_DISPLAY,this);
+        transaction_panel   = DynamicGUI_EditableList.newIntractableTable(transaction_list,  new MemberClass(Transaction.class), true, ALWAYS_DISPLAY,this);
 
         JTabbedPane structures_tPanel = new JTabbedPane();
+
+        structures_tPanel.addTab("Transaction", transaction_panel);
         structures_tPanel.addTab("Currency",    currency_panel);
         structures_tPanel.addTab("Bank",        bank_panel);
         structures_tPanel.addTab("Period",      period_panel);
         structures_tPanel.addTab("Statement",   statement_panel);
-        structures_tPanel.addTab("Transaction", transaction_panel);
+
 
         GridConstraints structures_tPanel_C = new GridConstraints(
                 1, 0, 1, 2,
