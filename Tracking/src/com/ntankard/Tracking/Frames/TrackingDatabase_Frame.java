@@ -3,11 +3,10 @@ package com.ntankard.Tracking.Frames;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.ntankard.ClassExtension.MemberClass;
-import com.ntankard.DynamicGUI.Composite.DynamicGUI_EditableList;
-import com.ntankard.DynamicGUI.Composite.DynamicGUI_IntractableList;
+import com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList;
 import com.ntankard.DynamicGUI.Util.Updatable;
-import com.ntankard.Tracking.DataBase.*;
 import com.ntankard.Tracking.DataBase.Core.*;
+import com.ntankard.Tracking.DataBase.TrackingDatabase;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,11 +28,11 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
     private List<Transaction> transaction_list = new ArrayList<>();
 
     // The GUI components
-    private DynamicGUI_IntractableList currency_panel;
-    private DynamicGUI_IntractableList bank_panel;
-    private DynamicGUI_IntractableList period_panel;
-    private DynamicGUI_IntractableList statement_panel;
-    private DynamicGUI_IntractableList transaction_panel;
+    private DynamicGUI_DisplayList currency_panel;
+    private DynamicGUI_DisplayList bank_panel;
+    private DynamicGUI_DisplayList period_panel;
+    private DynamicGUI_DisplayList statement_panel;
+    private DynamicGUI_DisplayList transaction_panel;
 
     /**
      * Create and open the tracking frame
@@ -68,11 +67,11 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
      * Create the GUI components
      */
     private void createUIComponents() {
-        currency_panel      = DynamicGUI_IntractableList.newIntractableTable(currency_list,     new MemberClass(Currency.class),    true, ALWAYS_DISPLAY,this);
-        bank_panel          = DynamicGUI_IntractableList.newIntractableTable(bank_list,         new MemberClass(Bank.class),        true, ALWAYS_DISPLAY,this);
-        period_panel        = DynamicGUI_IntractableList.newIntractableTable(period_list,       new MemberClass(Period.class),      true, ALWAYS_DISPLAY,this);
-        statement_panel     = DynamicGUI_IntractableList.newIntractableTable(statement_list,    new MemberClass(Statement.class),   true, ALWAYS_DISPLAY,this);
-        transaction_panel   = DynamicGUI_EditableList.newIntractableTable(transaction_list,  new MemberClass(Transaction.class), true, ALWAYS_DISPLAY,this);
+        currency_panel      = DynamicGUI_DisplayList.newIntractableTable(currency_list,     new MemberClass(Currency.class),    true, ALWAYS_DISPLAY,this);
+        bank_panel          = DynamicGUI_DisplayList.newIntractableTable(bank_list,         new MemberClass(Bank.class),        true, ALWAYS_DISPLAY,this);
+        period_panel        = DynamicGUI_DisplayList.newIntractableTable(period_list,       new MemberClass(Period.class),      true, ALWAYS_DISPLAY,this);
+        statement_panel     = DynamicGUI_DisplayList.newIntractableTable(statement_list,    new MemberClass(Statement.class),   true, ALWAYS_DISPLAY,this);
+        transaction_panel   = DynamicGUI_DisplayList.newIntractableTable(transaction_list,  new MemberClass(Transaction.class), true, true, ALWAYS_DISPLAY,this, trackingDatabase);
 
         JTabbedPane structures_tPanel = new JTabbedPane();
 
@@ -101,7 +100,7 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
      */
     @Override
     public void notifyUpdate() {
-        update();
+        SwingUtilities.invokeLater(() -> update());
     }
 
     /**

@@ -26,7 +26,7 @@ public class TrackingDatabase_Reader {
      * @param data The database to place the data
      */
     private static void readCurrency(TrackingDatabase data){
-        String csvFile = "C:\\Users\\Nicholas\\Documents\\BudgetTrackingData\\Currency.csv";
+        String csvFile = "C:\\Users\\Nicholas\\Documents\\Projects\\BudgetTrackingData\\Currency.csv";
         ArrayList<String[]> allLines = readLines(csvFile);
         for (String[] lines : allLines)
         {
@@ -41,7 +41,7 @@ public class TrackingDatabase_Reader {
      * @param data The database to place the data
      */
     private static void readPeriod(TrackingDatabase data){
-        String csvFile = "C:\\Users\\Nicholas\\Documents\\BudgetTrackingData\\Period.csv";
+        String csvFile = "C:\\Users\\Nicholas\\Documents\\Projects\\BudgetTrackingData\\Period.csv";
         ArrayList<String[]> allLines = readLines(csvFile);
         for (String[] lines : allLines)
         {
@@ -56,7 +56,7 @@ public class TrackingDatabase_Reader {
      * @param data The database to place the data
      */
     private static void readBank(TrackingDatabase data){
-        String csvFile = "C:\\Users\\Nicholas\\Documents\\BudgetTrackingData\\Bank.csv";
+        String csvFile = "C:\\Users\\Nicholas\\Documents\\Projects\\BudgetTrackingData\\Bank.csv";
         ArrayList<String[]> allLines = readLines(csvFile);
         for (String[] lines : allLines)
         {
@@ -73,7 +73,7 @@ public class TrackingDatabase_Reader {
      * @param data The database to place the data
      */
     private static void readStatement(TrackingDatabase data){
-        String csvFile = "C:\\Users\\Nicholas\\Documents\\BudgetTrackingData\\Statement.csv";
+        String csvFile = "C:\\Users\\Nicholas\\Documents\\Projects\\BudgetTrackingData\\Statement.csv";
         ArrayList<String[]> allLines = readLines(csvFile);
         for (String[] lines : allLines)
         {
@@ -89,7 +89,7 @@ public class TrackingDatabase_Reader {
      * @param data The database to place the data
      */
     private static void readTransaction(TrackingDatabase data){
-        String csvFile = "C:\\Users\\Nicholas\\Documents\\BudgetTrackingData\\Transaction.csv";
+        String csvFile = "C:\\Users\\Nicholas\\Documents\\Projects\\BudgetTrackingData\\Transaction.csv";
         ArrayList<String[]> allLines = readLines(csvFile);
         for (String[] lines : allLines)
         {

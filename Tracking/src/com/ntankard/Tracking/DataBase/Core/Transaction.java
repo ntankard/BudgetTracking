@@ -1,5 +1,7 @@
 package com.ntankard.Tracking.DataBase.Core;
 
+import com.ntankard.DynamicGUI.Components.Object.SetterProperties;
+
 public class Transaction {
 
     // My parents
@@ -50,5 +52,22 @@ public class Transaction {
     }
     public double getValue() {
         return value;
+    }
+
+    @SetterProperties(sourceMethod = "getStatements")
+    public void setIdStatement(Statement idStatement) {
+        this.idStatement = idStatement;
+    }
+
+    public void setIdCode(String idCode) {
+        this.idCode = idCode;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setValue(double value) {
+        this.value = value;
     }
 }
