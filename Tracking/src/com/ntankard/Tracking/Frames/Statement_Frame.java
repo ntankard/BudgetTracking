@@ -108,7 +108,7 @@ public class Statement_Frame extends UpdatableJPanel implements DynamicGUI_Displ
     public Transaction newElement() {
         //Statement idStatement, String idCode, String description, double value
         String idCode = trackingDatabase.getNextTransactionId(core);
-        return new Transaction(core, idCode, "", 0.0);
+        return new Transaction(core, idCode, "", 0.0, trackingDatabase.getCategory("Unaccounted"));
     }
 
     /**

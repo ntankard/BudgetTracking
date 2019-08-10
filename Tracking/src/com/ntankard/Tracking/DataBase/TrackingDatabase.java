@@ -142,6 +142,7 @@ public class TrackingDatabase {
     public void addTransaction(Transaction transaction) {
         transactions.add(transaction);
         transaction.getIdStatement().notifyTransactionLink(transaction);
+        transaction.getCategory().notifyTransactionLink(transaction);
     }
 
     //------------------------------------------------------------------------------------------------------------------

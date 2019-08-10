@@ -6,6 +6,7 @@ public class Transaction {
 
     // My parents
     private Statement idStatement;
+    private Category category;
 
     // My values
     private String idCode;
@@ -17,11 +18,12 @@ public class Transaction {
     /**
      * Constructor
      */
-    public Transaction(Statement idStatement, String idCode, String description, Double value) {
+    public Transaction(Statement idStatement, String idCode, String description, Double value, Category category) {
         this.idStatement = idStatement;
         this.idCode = idCode;
         this.description = description;
         this.value = value;
+        this.category = category;
     }
 
     /**
@@ -56,6 +58,10 @@ public class Transaction {
         return value;
     }
 
+    public Category getCategory() {
+        return category;
+    }
+
     @SetterProperties(sourceMethod = "getStatements")
     public void setIdStatement(Statement idStatement) {
         this.idStatement.notifyTransactionLinkRemove(this);
@@ -73,5 +79,12 @@ public class Transaction {
 
     public void setValue(Double value) {
         this.value = value;
+    }
+
+    @SetterProperties(sourceMethod = "getCategories")
+    public void setCategory(Category category) {
+        this.category.notifyTransactionLinkRemove(this);
+        this.category = category;
+        this.category.notifyTransactionLink(this);
     }
 }

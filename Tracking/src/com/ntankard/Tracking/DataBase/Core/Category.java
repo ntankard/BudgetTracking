@@ -12,6 +12,7 @@ public class Category {
 
     // My Children
     private List<Category> categories = new ArrayList<>();
+    private List<Transaction> transactions = new ArrayList<>();
 
     /**
      * Constructor
@@ -31,12 +32,30 @@ public class Category {
     }
 
     /**
+     * Notify that another object has linked to this one
+     *
+     * @param transaction The object that linked
+     */
+    public void notifyTransactionLink(Transaction transaction) {
+        transactions.add(transaction);
+    }
+
+    /**
      * Notify that another object has removed there link to this one
      *
      * @param category The object was linked
      */
-    private void notifyCategoryLinkRemove(Category category) {
+    public void notifyCategoryLinkRemove(Category category) {
         categories.remove(category);
+    }
+
+    /**
+     * Notify that another object has removed there link to this one
+     *
+     * @param transaction The object was linked
+     */
+    public void notifyTransactionLinkRemove(Transaction transaction) {
+        transactions.remove(transaction);
     }
 
     /**
@@ -69,6 +88,10 @@ public class Category {
 
     public List<Category> getCategories() {
         return categories;
+    }
+
+    public List<Transaction> getTransactions() {
+        return transactions;
     }
 
     public void setIdCategory(Category idCategory) {

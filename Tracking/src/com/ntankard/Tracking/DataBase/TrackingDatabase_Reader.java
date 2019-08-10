@@ -275,8 +275,9 @@ public class TrackingDatabase_Reader {
             String id = lines[2];
             String description = lines[3];
             double value = Double.parseDouble(lines[4]);
+            String categoryId = lines[5];
 
-            data.addTransaction(new Transaction(data.getStatement(data.getBank(bankID), data.getPeriod(PeriodID)), id, description, value));
+            data.addTransaction(new Transaction(data.getStatement(data.getBank(bankID), data.getPeriod(PeriodID)), id, description, value, data.getCategory(categoryId)));
         }
     }
 
@@ -295,6 +296,7 @@ public class TrackingDatabase_Reader {
             line.add(t.getIdCode());
             line.add(t.getDescription());
             line.add(t.getValue().toString());
+            line.add(t.getCategory().toString());
             lines.add(line);
         }
 
