@@ -1,7 +1,11 @@
 package com.ntankard.Tracking.DataBase.Core;
 
+import com.ntankard.ClassExtension.MemberProperties;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.ntankard.ClassExtension.MemberProperties.TRACE_DISPLAY;
 
 public class Bank {
 
@@ -9,7 +13,8 @@ public class Bank {
     private Currency currency;
 
     // My values
-    private String id;
+    private String idBank;
+    private String idAccount;
 
     // My Children
     private List<Statement> statements = new ArrayList<>();
@@ -17,18 +22,18 @@ public class Bank {
     /**
      * Constructor
      */
-    public Bank(String id, Currency currency) {
-        this.id = id;
+    public Bank(String idBank, String idAccount, Currency currency) {
+        this.idBank = idBank;
+        this.idAccount = idAccount;
         this.currency = currency;
-
-        this.currency.notifyBankLink(this);
     }
 
     /**
      * Notify that another object has linked to this one
+     *
      * @param statement The object that linked
      */
-    public void notifyStatementLink(Statement statement){
+    public void notifyStatementLink(Statement statement) {
         statements.add(statement);
     }
 
@@ -44,9 +49,19 @@ public class Bank {
     //########################################### Standard accessors ###################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    public String getId(){
-        return id;
+    @MemberProperties(verbosityLevel = TRACE_DISPLAY)
+    public String getId() {
+        return idBank + "-" + idAccount;
     }
+
+    public String getIdBank() {
+        return idBank;
+    }
+
+    public String getIdAccount() {
+        return idAccount;
+    }
+
     public Currency getCurrency() {
         return currency;
     }

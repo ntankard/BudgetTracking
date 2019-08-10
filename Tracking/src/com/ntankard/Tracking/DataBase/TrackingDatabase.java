@@ -1,50 +1,146 @@
 package com.ntankard.Tracking.DataBase;
 
 import com.ntankard.Tracking.DataBase.Core.*;
+import com.ntankard.Tracking.DataBase.Core.Currency;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TrackingDatabase {
 
     // Core Containers
-    private List<Currency> currencies       = new ArrayList<>();
-    private List<Bank> banks                = new ArrayList<>();
-    private List<Period> periods            = new ArrayList<>();
-    private List<Statement> statements      = new ArrayList<>();
-    private List<Transaction> transactions  = new ArrayList<>();
+    private List<Currency> currencies = new ArrayList<>();
+    private List<Bank> banks = new ArrayList<>();
+    private List<Period> periods = new ArrayList<>();
+    private List<Statement> statements = new ArrayList<>();
+    private List<Transaction> transactions = new ArrayList<>();
 
     // Other Containers
-    private Map<String,Currency> currencyMap                = new HashMap<>();
-    private Map<String,Bank> bankMap                        = new HashMap<>();
-    private Map<String,Period> periodMap                    = new HashMap<>();
-    private Map<Period, Map<Bank,Statement>> statementMap   = new HashMap<>();
+    private Map<String, Currency> currencyMap = new HashMap<>();
+    private Map<String, Bank> bankMap = new HashMap<>();
+    private Map<String, Period> periodMap = new HashMap<>();
+    private Map<Period, Map<Bank, Statement>> statementMap = new HashMap<>();
+
+    /**
+     * Repair any missing data
+     */
+    public void finalizeData() {
+        for (Period p : periods) { // TODO this needs to be sorted based on data to work properly
+            Period last = getPreviousPeriod(p);
+            for (Bank b : banks) {
+
+                // Dose this period have a statement for this bank?
+                Statement match = getStatement(b, p);
+                if (match == null) {
+
+                    // Find the statement from the previous month if it exists
+                    double end = 0.0;
+                    if (last != null) {
+                        Statement lastStatement = getStatement(last, b);
+                        end = lastStatement.getEnd();
+                    }
+
+                    addStatement(new Statement(b, p, end, 0.0, 0.0, 0.0));
+                }
+            }
+        }
+    }
+
+    /**
+     * Get the statement in a period for a specific bank account
+     *
+     * @param period The period to search
+     * @param bank   The bank account to finds
+     * @return The matching statement
+     */
+    private Statement getStatement(Period period, Bank bank) {
+        for (Statement s : period.getStatements()) {
+            if (s.getIdBank() == bank) {
+                return s;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Find the Period before this one
+     *
+     * @param current The current period
+     * @return THe last period or null
+     */
+    private Period getPreviousPeriod(Period current) {
+        for (Period p : periods) {
+            Calendar lastEnd = p.getEnd();
+            Calendar nextStart = current.getStart();
+
+            lastEnd.add(Calendar.SECOND, +1);
+            if (lastEnd.get(Calendar.YEAR) == nextStart.get(Calendar.YEAR)) {
+                if (lastEnd.get(Calendar.MONTH) == nextStart.get(Calendar.MONTH)) {
+                    return p;
+                }
+            }
+            lastEnd.add(Calendar.SECOND, -1);
+        }
+
+        return null;
+    }
+
+    /**
+     * Find the next available transaction code
+     *
+     * @param s The statement to containing the transactions
+     * @return The next available code
+     */
+    public String getNextTransactionId(Statement s) {
+        int max = 0;
+        for (Transaction t : s.getTransactions()) {
+            int value = Integer.parseInt(t.getIdCode());
+            if (value > max) {
+                max = value;
+            }
+        }
+        return (max + 1) + "";
+    }
 
     //------------------------------------------------------------------------------------------------------------------
     //############################################# Populate Data ######################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    public void addCurrency(Currency currency){
+    public void addCurrency(Currency currency) {
         this.currencies.add(currency);
-        this.currencyMap.put(currency.getId(),currency);
+        this.currencyMap.put(currency.getId(), currency);
     }
-    public void addBank(Bank bank){
+
+    public void addBank(Bank bank) {
         this.banks.add(bank);
-        this.bankMap.put(bank.getId(),bank);
+        this.bankMap.put(bank.getId(), bank);
+        bank.getCurrency().notifyBankLink(bank);
     }
-    public void addPeriod(Period period){
+
+    public void addPeriod(Period period) {
         periods.add(period);
-        statementMap.put(period,new HashMap<>());
-        periodMap.put(period.getId(),period);
+        statementMap.put(period, new HashMap<>());
+        periodMap.put(period.getId(), period);
     }
-    public void addStatement(Statement statement){
+
+    public void addStatement(Statement statement) {
         statements.add(statement);
-        statementMap.get(statement.getIdPeriod()).put(statement.getIdBank(),statement);
+        statementMap.get(statement.getIdPeriod()).put(statement.getIdBank(), statement);
+        statement.getIdBank().notifyStatementLink(statement);
+        statement.getIdPeriod().notifyStatementLink(statement);
     }
-    public void addTransaction(Transaction transaction){
+
+    public void addTransaction(Transaction transaction) {
         transactions.add(transaction);
+        transaction.getIdStatement().notifyTransactionLink(transaction);
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    //############################################## Remove Data #######################################################
+    //------------------------------------------------------------------------------------------------------------------
+
+    public void removeTransaction(Transaction transaction) {
+        transaction.getIdStatement().notifyTransactionLinkRemove(transaction);
+        transactions.remove(transaction);
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -54,13 +150,16 @@ public class TrackingDatabase {
     public Currency getCurrency(String currencyID) {
         return currencyMap.get(currencyID);
     }
-    public Bank getBank(String bankId){
+
+    public Bank getBank(String bankId) {
         return bankMap.get(bankId);
     }
+
     public Period getPeriod(String periodId) {
         return periodMap.get(periodId);
     }
-    public Statement getStatement(Bank bankID, Period periodID){
+
+    public Statement getStatement(Bank bankID, Period periodID) {
         return statementMap.get(periodID).get(bankID);
     }
 
@@ -68,19 +167,24 @@ public class TrackingDatabase {
     //########################################### Standard accessors ###################################################
     //------------------------------------------------------------------------------------------------------------------
 
+
     public List<Currency> getCurrencies() {
-        return currencies;
+        return Collections.unmodifiableList(currencies);
     }
+
     public List<Bank> getBanks() {
-        return banks;
+        return Collections.unmodifiableList(banks);
     }
+
     public List<Period> getPeriods() {
-        return periods;
+        return Collections.unmodifiableList(periods);
     }
+
     public List<Statement> getStatements() {
-        return statements;
+        return Collections.unmodifiableList(statements);
     }
+
     public List<Transaction> getTransactions() {
-        return transactions;
+        return Collections.unmodifiableList(transactions);
     }
 }

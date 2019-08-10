@@ -10,20 +10,18 @@ public class Transaction {
     // My values
     private String idCode;
     private String description;
-    private double value;
+    private Double value;
 
     // My Children
 
     /**
      * Constructor
      */
-    public Transaction(Statement idStatement, String idCode, String description, double value) {
+    public Transaction(Statement idStatement, String idCode, String description, Double value) {
         this.idStatement = idStatement;
         this.idCode = idCode;
         this.description = description;
         this.value = value;
-
-        this.idStatement.notifyTransactionLink(this);
     }
 
     /**
@@ -41,22 +39,28 @@ public class Transaction {
     public String getId() {
         return idStatement.getId() + " " + idCode;
     }
+
     public Statement getIdStatement() {
         return idStatement;
     }
+
     public String getIdCode() {
         return idCode;
     }
+
     public String getDescription() {
         return description;
     }
-    public double getValue() {
+
+    public Double getValue() {
         return value;
     }
 
     @SetterProperties(sourceMethod = "getStatements")
     public void setIdStatement(Statement idStatement) {
+        this.idStatement.notifyTransactionLinkRemove(this);
         this.idStatement = idStatement;
+        this.idStatement.notifyTransactionLink(this);
     }
 
     public void setIdCode(String idCode) {
@@ -67,7 +71,7 @@ public class Transaction {
         this.description = description;
     }
 
-    public void setValue(double value) {
+    public void setValue(Double value) {
         this.value = value;
     }
 }
