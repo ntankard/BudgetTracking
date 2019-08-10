@@ -1,5 +1,7 @@
 package com.ntankard.Tracking.DataBase.Core;
 
+import com.ntankard.ClassExtension.MemberProperties;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,6 +81,7 @@ public class Statement {
      *
      * @return The real spend based on the difference between the starting and ending balance
      */
+    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
     public Double getExpectedSpend() {
         return end - start - getNetTransfer();
     }
@@ -109,6 +112,7 @@ public class Statement {
     //########################################### Standard accessors ###################################################
     //------------------------------------------------------------------------------------------------------------------
 
+    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
     public String getId() {
         return idBank.getId() + " " + idPeriod.getId();
     }
@@ -117,26 +121,32 @@ public class Statement {
         return idBank;
     }
 
+    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
     public Period getIdPeriod() {
         return idPeriod;
     }
 
+    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
     public Double getStart() {
         return start;
     }
 
+    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
     public Double getEnd() {
         return end;
     }
 
+    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
     public Double getTransferIn() {
         return transferIn;
     }
 
+    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
     public Double getTransferOut() {
         return transferOut;
     }
 
+    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
     public List<Transaction> getTransactions() {
         return transactions;
     }

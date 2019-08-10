@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.ntankard.ClassExtension.MemberProperties.ALWAYS_DISPLAY;
+import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
 public class Statement_Frame extends UpdatableJPanel implements DynamicGUI_DisplayList.ElementController<Transaction> {
 
@@ -75,7 +76,7 @@ public class Statement_Frame extends UpdatableJPanel implements DynamicGUI_Displ
         transaction_panel = DynamicGUI_DisplayList.newIntractableTable(transaction_list, new MemberClass(Transaction.class), true, true, ALWAYS_DISPLAY, this, this, trackingDatabase);
         this.add(transaction_panel, BorderLayout.CENTER);
 
-        statement_panel = DynamicGUI_IntractableObject.newIntractableObjectPanel(core, ALWAYS_DISPLAY, false, this, trackingDatabase);
+        statement_panel = DynamicGUI_IntractableObject.newIntractableObjectPanel(core, INFO_DISPLAY, false, this, trackingDatabase);
         this.add(statement_panel, BorderLayout.EAST);
     }
 
