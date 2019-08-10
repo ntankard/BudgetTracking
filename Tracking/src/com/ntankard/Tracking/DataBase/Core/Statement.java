@@ -146,7 +146,7 @@ public class Statement {
         return transferOut;
     }
 
-    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
+    @MemberProperties(verbosityLevel = MemberProperties.TRACE_DISPLAY)
     public List<Transaction> getTransactions() {
         return transactions;
     }

@@ -2,6 +2,7 @@ package com.ntankard.Tracking.Frames;
 
 import com.ntankard.ClassExtension.MemberClass;
 import com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList;
+import com.ntankard.DynamicGUI.Components.Object.DynamicGUI_IntractableObject;
 import com.ntankard.DynamicGUI.Util.Swing.Base.UpdatableJPanel;
 import com.ntankard.DynamicGUI.Util.Updatable;
 import com.ntankard.Tracking.DataBase.Core.Period;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.ntankard.ClassExtension.MemberProperties.ALWAYS_DISPLAY;
+import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 import static com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList.ListControl_Button.EnableCondition.SINGLE;
 
 public class Period_Frame extends UpdatableJPanel {
@@ -29,6 +31,7 @@ public class Period_Frame extends UpdatableJPanel {
     // The GUI components
     private DynamicGUI_DisplayList<Statement> statement_panel;
     private DynamicGUI_DisplayList.ListControl_Button setRecord;
+    private DynamicGUI_IntractableObject period_panel;
 
     /**
      * Create and open the period frame
@@ -83,6 +86,9 @@ public class Period_Frame extends UpdatableJPanel {
         statement_panel.addButton(setRecord);
 
         this.add(statement_panel, BorderLayout.CENTER);
+
+        period_panel = DynamicGUI_IntractableObject.newIntractableObjectPanel(core, INFO_DISPLAY, false, this, trackingDatabase);
+        this.add(period_panel, BorderLayout.EAST);
     }
 
     /**
