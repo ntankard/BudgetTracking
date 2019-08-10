@@ -80,7 +80,16 @@ public class Statement {
      * @return The real spend based on the difference between the starting and ending balance
      */
     public Double getExpectedSpend() {
-        return end - start;
+        return end - start - getNetTransfer();
+    }
+
+    /**
+     * Get the net transfer in and out of the account
+     *
+     * @return The net transfer in and out of the account
+     */
+    public Double getNetTransfer() {
+        return transferIn - transferOut;
     }
 
     /**
@@ -89,7 +98,11 @@ public class Statement {
      * @return The amount that differs between the Total Spend and the Expected spend
      */
     public Double getMissingSpend() {
-        return getExpectedSpend() - getTotalSpend();
+        Double val = getExpectedSpend() + getTotalSpend();
+        if (Math.abs(val) < 0.001) {
+            val = 0.0;
+        }
+        return val;
     }
 
     //------------------------------------------------------------------------------------------------------------------
