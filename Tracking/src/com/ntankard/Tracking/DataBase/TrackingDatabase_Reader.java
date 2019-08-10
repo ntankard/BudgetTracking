@@ -32,6 +32,7 @@ public class TrackingDatabase_Reader {
 
         // Save the data
         saveCurrency(data, csvFile);
+        saveCategory(data,csvFile);
         saveBank(data, csvFile);
         savePeriod(data, csvFile);
         saveStatement(data, csvFile);
@@ -60,6 +61,7 @@ public class TrackingDatabase_Reader {
 
         // Read the data
         readCurrency(data, csvFile);
+        readCategory(data, csvFile);
         readBank(data, csvFile);
         readPeriod(data, csvFile);
         readStatement(data, csvFile);
@@ -100,6 +102,48 @@ public class TrackingDatabase_Reader {
         }
 
         writeLines(csvFile + "Currency.csv", lines);
+    }
+
+    /**
+     * Read a set of categories
+     *
+     * @param data The database to place the data
+     */
+    private static void readCategory(TrackingDatabase data, String csvFileRoot) {
+        String csvFile = csvFileRoot + "Category.csv";
+        ArrayList<String[]> allLines = readLines(csvFile);
+        for (String[] lines : allLines) {
+            String id = lines[0];
+
+            if(lines.length == 2) {
+                String parentId = lines[1];
+                data.addCategory(new Category(id, data.getCategory(parentId)));
+            }else{
+                data.addCategory(new Category(id, null));
+            }
+        }
+    }
+
+    /**
+     * Save a set of categories
+     *
+     * @param data    The database to get the data
+     * @param csvFile The path to write the files to
+     */
+    private static void saveCategory(TrackingDatabase data, String csvFile) {
+        ArrayList<List<String>> lines = new ArrayList<>();
+        for (Category t : data.getCategories()) {
+            List<String> line = new ArrayList<>();
+            line.add(t.getIdName());
+            if(t.getIdCategory() != null) {
+                line.add(t.getIdCategory().getId());
+            }else{
+                line.add("");
+            }
+            lines.add(line);
+        }
+
+        writeLines(csvFile + "Category.csv", lines);
     }
 
     /**

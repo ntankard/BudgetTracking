@@ -22,6 +22,7 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
 
     // The data displayed (clone of the data in the database)
     private List<Currency> currency_list = new ArrayList<>();
+    private List<Category> category_list = new ArrayList<>();
     private List<Bank> bank_list = new ArrayList<>();
     private List<Period> period_list = new ArrayList<>();
     private List<Statement> statement_list = new ArrayList<>();
@@ -29,6 +30,7 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
 
     // The GUI components
     private DynamicGUI_DisplayList<Currency> currency_panel;
+    private DynamicGUI_DisplayList<Category> category_panel;
     private DynamicGUI_DisplayList<Bank> bank_panel;
     private DynamicGUI_DisplayList<Period> period_panel;
     private DynamicGUI_DisplayList<Statement> statement_panel;
@@ -82,6 +84,7 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
 
         period_panel = DynamicGUI_DisplayList.newIntractableTable(period_list, new MemberClass(Period.class), true, ALWAYS_DISPLAY, this);
         currency_panel = DynamicGUI_DisplayList.newIntractableTable(currency_list, new MemberClass(Currency.class), true, ALWAYS_DISPLAY, this);
+        category_panel = DynamicGUI_DisplayList.newIntractableTable(category_list, new MemberClass(Category.class), true, ALWAYS_DISPLAY, this);
         bank_panel = DynamicGUI_DisplayList.newIntractableTable(bank_list, new MemberClass(Bank.class), true, ALWAYS_DISPLAY, this);
         statement_panel = DynamicGUI_DisplayList.newIntractableTable(statement_list, new MemberClass(Statement.class), true, ALWAYS_DISPLAY, this);
         transaction_panel = DynamicGUI_DisplayList.newIntractableTable(transaction_list, new MemberClass(Transaction.class), true, ALWAYS_DISPLAY, this);
@@ -97,6 +100,7 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
         structures_tPanel.addTab("Period", period_panel);
         structures_tPanel.addTab("Transaction", transaction_panel);
         structures_tPanel.addTab("Currency", currency_panel);
+        structures_tPanel.addTab("Category", category_panel);
         structures_tPanel.addTab("Bank", bank_panel);
         structures_tPanel.addTab("Statement", statement_panel);
         this.add(structures_tPanel, BorderLayout.CENTER);
@@ -116,18 +120,21 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
     @Override
     public void update() {
         currency_list.clear();
+        category_list.clear();
         bank_list.clear();
         period_list.clear();
         statement_list.clear();
         transaction_list.clear();
 
         currency_list.addAll(trackingDatabase.getCurrencies());
+        category_list.addAll(trackingDatabase.getCategories());
         bank_list.addAll(trackingDatabase.getBanks());
         period_list.addAll(trackingDatabase.getPeriods());
         statement_list.addAll(trackingDatabase.getStatements());
         transaction_list.addAll(trackingDatabase.getTransactions());
 
         currency_panel.update();
+        category_panel.update();
         bank_panel.update();
         period_panel.update();
         statement_panel.update();

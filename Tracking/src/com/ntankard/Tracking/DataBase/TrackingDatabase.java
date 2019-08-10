@@ -9,6 +9,7 @@ public class TrackingDatabase {
 
     // Core Containers
     private List<Currency> currencies = new ArrayList<>();
+    private List<Category> categories = new ArrayList<>();
     private List<Bank> banks = new ArrayList<>();
     private List<Period> periods = new ArrayList<>();
     private List<Statement> statements = new ArrayList<>();
@@ -16,6 +17,7 @@ public class TrackingDatabase {
 
     // Other Containers
     private Map<String, Currency> currencyMap = new HashMap<>();
+    private Map<String, Category> categoryMap = new HashMap<>();
     private Map<String, Bank> bankMap = new HashMap<>();
     private Map<String, Period> periodMap = new HashMap<>();
     private Map<Period, Map<Bank, Statement>> statementMap = new HashMap<>();
@@ -110,6 +112,14 @@ public class TrackingDatabase {
         this.currencyMap.put(currency.getId(), currency);
     }
 
+    public void addCategory(Category category) {
+        if (category.getIdCategory() != null) {
+            category.getIdCategory().notifyCategoryLink(category);
+        }
+        this.categories.add(category);
+        this.categoryMap.put(category.getId(),category);
+    }
+
     public void addBank(Bank bank) {
         this.banks.add(bank);
         this.bankMap.put(bank.getId(), bank);
@@ -151,6 +161,10 @@ public class TrackingDatabase {
         return currencyMap.get(currencyID);
     }
 
+    public Category getCategory(String categoryID) {
+        return categoryMap.get(categoryID);
+    }
+
     public Bank getBank(String bankId) {
         return bankMap.get(bankId);
     }
@@ -170,6 +184,10 @@ public class TrackingDatabase {
 
     public List<Currency> getCurrencies() {
         return Collections.unmodifiableList(currencies);
+    }
+
+    public List<Category> getCategories() {
+        return Collections.unmodifiableList(categories);
     }
 
     public List<Bank> getBanks() {
