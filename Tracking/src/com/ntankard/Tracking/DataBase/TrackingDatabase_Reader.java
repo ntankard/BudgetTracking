@@ -32,11 +32,12 @@ public class TrackingDatabase_Reader {
 
         // Save the data
         saveCurrency(data, csvFile);
-        saveCategory(data,csvFile);
+        saveCategory(data, csvFile);
         saveBank(data, csvFile);
         savePeriod(data, csvFile);
         saveStatement(data, csvFile);
         saveTransaction(data, csvFile);
+        saveCategoryTransfer(data, csvFile);
     }
 
     /**
@@ -66,6 +67,7 @@ public class TrackingDatabase_Reader {
         readPeriod(data, csvFile);
         readStatement(data, csvFile);
         readTransaction(data, csvFile);
+        readCategoryTransfer(data, csvFile);
 
         data.finalizeData();
         return data;
@@ -115,10 +117,10 @@ public class TrackingDatabase_Reader {
         for (String[] lines : allLines) {
             String id = lines[0];
 
-            if(lines.length == 2) {
+            if (lines.length == 2) {
                 String parentId = lines[1];
                 data.addCategory(new Category(id, data.getCategory(parentId)));
-            }else{
+            } else {
                 data.addCategory(new Category(id, null));
             }
         }
@@ -135,9 +137,9 @@ public class TrackingDatabase_Reader {
         for (Category t : data.getCategories()) {
             List<String> line = new ArrayList<>();
             line.add(t.getIdName());
-            if(t.getIdCategory() != null) {
+            if (t.getIdCategory() != null) {
                 line.add(t.getIdCategory().getId());
-            }else{
+            } else {
                 line.add("");
             }
             lines.add(line);
@@ -301,6 +303,50 @@ public class TrackingDatabase_Reader {
         }
 
         writeLines(csvFile + "Transaction.csv", lines);
+    }
+
+    /**
+     * Read a set of categoryTransfers
+     *
+     * @param data The database to place the data
+     */
+    private static void readCategoryTransfer(TrackingDatabase data, String csvFileRoot) {
+        String csvFile = csvFileRoot + "CategoryTransfer.csv";
+        ArrayList<String[]> allLines = readLines(csvFile);
+        for (String[] lines : allLines) {
+            String bankID = lines[0];
+            String PeriodID = lines[1];
+            String id = lines[2];
+            String sourceCategoryId = lines[3];
+            String destinationCategoryId = lines[4];
+            String description = lines[5];
+            double value = Double.parseDouble(lines[5]);
+
+            data.addCategoryTransfer(new CategoryTransfer(data.getStatement(data.getBank(bankID), data.getPeriod(PeriodID)), id, data.getCategory(sourceCategoryId), data.getCategory(destinationCategoryId), description, value));
+        }
+    }
+
+    /**
+     * Save a set of transactions
+     *
+     * @param data    The database to get the data
+     * @param csvFile The path to write the files to
+     */
+    private static void saveCategoryTransfer(TrackingDatabase data, String csvFile) {
+        ArrayList<List<String>> lines = new ArrayList<>();
+        for (CategoryTransfer t : data.getCategoryTransfer()) {
+            List<String> line = new ArrayList<>();
+            line.add(t.getIdStatement().getIdBank().getId());
+            line.add(t.getIdStatement().getIdPeriod().getId());
+            line.add(t.getIdCode());
+            line.add(t.getSource().toString());
+            line.add(t.getDestination().toString());
+            line.add(t.getDescription());
+            line.add(t.getValue().toString());
+            lines.add(line);
+        }
+
+        writeLines(csvFile + "CategoryTransfer.csv", lines);
     }
 
     /**

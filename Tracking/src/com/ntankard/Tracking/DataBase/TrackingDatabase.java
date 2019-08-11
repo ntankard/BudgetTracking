@@ -14,6 +14,7 @@ public class TrackingDatabase {
     private List<Period> periods = new ArrayList<>();
     private List<Statement> statements = new ArrayList<>();
     private List<Transaction> transactions = new ArrayList<>();
+    private List<CategoryTransfer> categoryTransfer = new ArrayList<>();
 
     // Other Containers
     private Map<String, Currency> currencyMap = new HashMap<>();
@@ -21,6 +22,7 @@ public class TrackingDatabase {
     private Map<String, Bank> bankMap = new HashMap<>();
     private Map<String, Period> periodMap = new HashMap<>();
     private Map<Period, Map<Bank, Statement>> statementMap = new HashMap<>();
+    private Map<String, CategoryTransfer> categoryTransferMap = new HashMap<>();
 
     /**
      * Repair any missing data
@@ -117,7 +119,7 @@ public class TrackingDatabase {
             category.getIdCategory().notifyCategoryLink(category);
         }
         this.categories.add(category);
-        this.categoryMap.put(category.getId(),category);
+        this.categoryMap.put(category.getId(), category);
     }
 
     public void addBank(Bank bank) {
@@ -143,6 +145,14 @@ public class TrackingDatabase {
         transactions.add(transaction);
         transaction.getIdStatement().notifyTransactionLink(transaction);
         transaction.getCategory().notifyTransactionLink(transaction);
+    }
+
+    public void addCategoryTransfer(CategoryTransfer transfer) {
+        this.categoryTransfer.add(transfer);
+        this.categoryTransferMap.put(transfer.getId(), transfer);
+        transfer.getIdStatement().notifyCategoryTransferLink(transfer);
+        transfer.getDestination().notifyCategoriesTransferDestinationLink(transfer);
+        transfer.getSource().notifyCategoriesTransferSourceLink(transfer);
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -178,6 +188,10 @@ public class TrackingDatabase {
         return statementMap.get(periodID).get(bankID);
     }
 
+    public CategoryTransfer getCategoryTransfer(String categoryTransferId) {
+        return categoryTransferMap.get(categoryTransferId);
+    }
+
     //------------------------------------------------------------------------------------------------------------------
     //########################################### Standard accessors ###################################################
     //------------------------------------------------------------------------------------------------------------------
@@ -205,5 +219,9 @@ public class TrackingDatabase {
 
     public List<Transaction> getTransactions() {
         return Collections.unmodifiableList(transactions);
+    }
+
+    public List<CategoryTransfer> getCategoryTransfer() {
+        return Collections.unmodifiableList(categoryTransfer);
     }
 }

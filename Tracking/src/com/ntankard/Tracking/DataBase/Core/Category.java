@@ -13,6 +13,8 @@ public class Category {
     // My Children
     private List<Category> categories = new ArrayList<>();
     private List<Transaction> transactions = new ArrayList<>();
+    private List<CategoryTransfer> categoriesTransferSources = new ArrayList<>();
+    private List<CategoryTransfer> categoriesTransferDestinations = new ArrayList<>();
 
     /**
      * Constructor
@@ -56,6 +58,42 @@ public class Category {
      */
     public void notifyTransactionLinkRemove(Transaction transaction) {
         transactions.remove(transaction);
+    }
+
+    /**
+     * Notify that another object has removed there link to this one
+     *
+     * @param transfer The object was linked
+     */
+    public void notifyCategoriesTransferSourceLink(CategoryTransfer transfer) {
+        categoriesTransferSources.add(transfer);
+    }
+
+    /**
+     * Notify that another object has removed there link to this one
+     *
+     * @param transfer The object was linked
+     */
+    public void notifyCategoriesTransferSourceLinkRemove(CategoryTransfer transfer) {
+        categoriesTransferSources.remove(transfer);
+    }
+
+    /**
+     * Notify that another object has removed there link to this one
+     *
+     * @param transfer The object was linked
+     */
+    public void notifyCategoriesTransferDestinationLink(CategoryTransfer transfer) {
+        categoriesTransferDestinations.add(transfer);
+    }
+
+    /**
+     * Notify that another object has removed there link to this one
+     *
+     * @param transfer The object was linked
+     */
+    public void notifyCategoriesTransferDestinationRemove(CategoryTransfer transfer) {
+        categoriesTransferDestinations.remove(transfer);
     }
 
     /**
