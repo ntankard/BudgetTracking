@@ -320,7 +320,7 @@ public class TrackingDatabase_Reader {
             String sourceCategoryId = lines[3];
             String destinationCategoryId = lines[4];
             String description = lines[5];
-            double value = Double.parseDouble(lines[5]);
+            double value = Double.parseDouble(lines[6]);
 
             data.addCategoryTransfer(new CategoryTransfer(data.getStatement(data.getBank(bankID), data.getPeriod(PeriodID)), id, data.getCategory(sourceCategoryId), data.getCategory(destinationCategoryId), description, value));
         }

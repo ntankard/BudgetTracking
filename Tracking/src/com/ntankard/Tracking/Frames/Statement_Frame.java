@@ -5,6 +5,7 @@ import com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList;
 import com.ntankard.DynamicGUI.Components.Object.DynamicGUI_IntractableObject;
 import com.ntankard.DynamicGUI.Util.Swing.Base.UpdatableJPanel;
 import com.ntankard.DynamicGUI.Util.Updatable;
+import com.ntankard.Tracking.DataBase.Core.CategoryTransfer;
 import com.ntankard.Tracking.DataBase.Core.Statement;
 import com.ntankard.Tracking.DataBase.Core.Transaction;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
@@ -18,7 +19,7 @@ import java.util.List;
 import static com.ntankard.ClassExtension.MemberProperties.ALWAYS_DISPLAY;
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
-public class Statement_Frame extends UpdatableJPanel implements DynamicGUI_DisplayList.ElementController<Transaction> {
+public class Statement_Frame extends UpdatableJPanel {
 
     // Core Data
     private TrackingDatabase trackingDatabase;
@@ -26,9 +27,11 @@ public class Statement_Frame extends UpdatableJPanel implements DynamicGUI_Displ
 
     // The data displayed (clone of the data in the database)
     private List<Transaction> transaction_list = new ArrayList<>();
+    private List<CategoryTransfer> categoryTransfer_list = new ArrayList<>();
 
     // The GUI components
     private DynamicGUI_DisplayList transaction_panel;
+    private DynamicGUI_DisplayList categoryTransfer_panel;
     private DynamicGUI_IntractableObject statement_panel;
 
     /**
@@ -73,8 +76,51 @@ public class Statement_Frame extends UpdatableJPanel implements DynamicGUI_Displ
         this.setBorder(new EmptyBorder(12, 12, 12, 12));
         this.setLayout(new BorderLayout());
 
-        transaction_panel = DynamicGUI_DisplayList.newIntractableTable(transaction_list, new MemberClass(Transaction.class), true, true, ALWAYS_DISPLAY, this, this, trackingDatabase);
-        this.add(transaction_panel, BorderLayout.CENTER);
+        transaction_panel = DynamicGUI_DisplayList.newIntractableTable(transaction_list, new MemberClass(Transaction.class), true, true, ALWAYS_DISPLAY, new DynamicGUI_DisplayList.ElementController<Transaction>() {
+
+            @Override
+            public Transaction newElement() {
+                //Statement idStatement, String idCode, String description, double value
+                String idCode = trackingDatabase.getNextTransactionId(core);
+                return new Transaction(core, idCode, "", 0.0, trackingDatabase.getCategory("Unaccounted"));
+            }
+
+            @Override
+            public void deleteElement(Transaction toDel) {
+                trackingDatabase.removeTransaction(toDel);
+                notifyUpdate();
+            }
+
+            @Override
+            public void addElement(Transaction newObj) {
+                trackingDatabase.addTransaction(newObj);
+                notifyUpdate();
+            }
+        }, this, trackingDatabase);
+        categoryTransfer_panel = DynamicGUI_DisplayList.newIntractableTable(categoryTransfer_list, new MemberClass(CategoryTransfer.class), true, true, ALWAYS_DISPLAY, new DynamicGUI_DisplayList.ElementController<CategoryTransfer>() {
+            @Override
+            public void deleteElement(CategoryTransfer toDel) {
+                trackingDatabase.removeCategoryTransfer(toDel);
+                notifyUpdate();
+            }
+
+            @Override
+            public CategoryTransfer newElement() {
+                String idCode = trackingDatabase.getNextCategoryTransferId(core);
+                return new CategoryTransfer(core, idCode, trackingDatabase.getCategory("Unaccounted"),trackingDatabase.getCategory("Unaccounted"),"", 0.0 );
+            }
+
+            @Override
+            public void addElement(CategoryTransfer newObj) {
+                trackingDatabase.addCategoryTransfer(newObj);
+                notifyUpdate();
+            }
+        }, this, trackingDatabase);
+
+        JTabbedPane data_tPanel = new JTabbedPane();
+        data_tPanel.addTab("Transactions", transaction_panel);
+        data_tPanel.addTab("Category Transfer", categoryTransfer_panel);
+        this.add(data_tPanel, BorderLayout.CENTER);
 
         statement_panel = DynamicGUI_IntractableObject.newIntractableObjectPanel(core, INFO_DISPLAY, false, this, trackingDatabase);
         this.add(statement_panel, BorderLayout.EAST);
@@ -95,38 +141,13 @@ public class Statement_Frame extends UpdatableJPanel implements DynamicGUI_Displ
     @Override
     public void update() {
         transaction_list.clear();
+        categoryTransfer_list.clear();
+
         transaction_list.addAll(core.getTransactions());
+        categoryTransfer_list.addAll(core.getCategoryTransfers());
 
         transaction_panel.update();
+        categoryTransfer_panel.update();
         statement_panel.update();
-    }
-
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public Transaction newElement() {
-        //Statement idStatement, String idCode, String description, double value
-        String idCode = trackingDatabase.getNextTransactionId(core);
-        return new Transaction(core, idCode, "", 0.0, trackingDatabase.getCategory("Unaccounted"));
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public void deleteElement(Transaction toDel) {
-        trackingDatabase.removeTransaction(toDel);
-        notifyUpdate();
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public void addElement(Transaction newObj) {
-        trackingDatabase.addTransaction(newObj);
-        notifyUpdate();
     }
 }

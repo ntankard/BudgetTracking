@@ -1,6 +1,7 @@
 package com.ntankard.Tracking.DataBase.Core;
 
 import com.ntankard.ClassExtension.MemberProperties;
+import com.ntankard.DynamicGUI.Components.Object.SetterProperties;
 
 public class CategoryTransfer {
 
@@ -63,5 +64,22 @@ public class CategoryTransfer {
 
     public Double getValue() {
         return value;
+    }
+
+    @SetterProperties(sourceMethod = "getCategories")
+    public void setDestination(Category destination) {
+        if (this.destination != null) {
+            this.destination.notifyCategoriesTransferDestinationRemove(this);
+        }
+        this.destination = destination;
+        this.destination.notifyCategoriesTransferDestinationLink(this);
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setValue(Double value) {
+        this.value = value;
     }
 }

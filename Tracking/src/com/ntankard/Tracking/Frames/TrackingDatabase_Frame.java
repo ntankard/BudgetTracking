@@ -28,6 +28,7 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
     private List<Period> period_list = new ArrayList<>();
     private List<Statement> statement_list = new ArrayList<>();
     private List<Transaction> transaction_list = new ArrayList<>();
+    private List<CategoryTransfer> categoryTransfer_list = new ArrayList<>();
 
     // The GUI components
     private DynamicGUI_DisplayList<Currency> currency_panel;
@@ -35,6 +36,7 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
     private DynamicGUI_DisplayList<Bank> bank_panel;
     private DynamicGUI_DisplayList<Period> period_panel;
     private DynamicGUI_DisplayList<Statement> statement_panel;
+    private DynamicGUI_DisplayList<CategoryTransfer> categoryTransfer_panel;
     private DynamicGUI_DisplayList transaction_panel;
     private DynamicGUI_DisplayList.ListControl_Button setRecord;
     private JButton upload_btn;
@@ -89,6 +91,7 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
         bank_panel = DynamicGUI_DisplayList.newIntractableTable(bank_list, new MemberClass(Bank.class), true, INFO_DISPLAY, this);
         statement_panel = DynamicGUI_DisplayList.newIntractableTable(statement_list, new MemberClass(Statement.class), true, INFO_DISPLAY, this);
         transaction_panel = DynamicGUI_DisplayList.newIntractableTable(transaction_list, new MemberClass(Transaction.class), true, INFO_DISPLAY, this);
+        categoryTransfer_panel = DynamicGUI_DisplayList.newIntractableTable(categoryTransfer_list, new MemberClass(CategoryTransfer.class), true, INFO_DISPLAY, this);
 
         setRecord = new DynamicGUI_DisplayList.ListControl_Button<>("Manage Period", period_panel, SINGLE, false);//new SetRecord()
         setRecord.addActionListener(e -> {
@@ -104,6 +107,7 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
         structures_tPanel.addTab("Category", category_panel);
         structures_tPanel.addTab("Bank", bank_panel);
         structures_tPanel.addTab("Statement", statement_panel);
+        structures_tPanel.addTab("Category Transfer", categoryTransfer_panel);
         this.add(structures_tPanel, BorderLayout.CENTER);
     }
 
@@ -126,6 +130,7 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
         period_list.clear();
         statement_list.clear();
         transaction_list.clear();
+        categoryTransfer_list.clear();
 
         currency_list.addAll(trackingDatabase.getCurrencies());
         category_list.addAll(trackingDatabase.getCategories());
@@ -133,6 +138,7 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
         period_list.addAll(trackingDatabase.getPeriods());
         statement_list.addAll(trackingDatabase.getStatements());
         transaction_list.addAll(trackingDatabase.getTransactions());
+        categoryTransfer_list.addAll(trackingDatabase.getCategoryTransfer());
 
         currency_panel.update();
         category_panel.update();
@@ -140,6 +146,7 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
         period_panel.update();
         statement_panel.update();
         transaction_panel.update();
+        categoryTransfer_panel.update();
 
         period_panel.getMainPanel().getListSelectionModel().setSelectionInterval(0, 0);
     }

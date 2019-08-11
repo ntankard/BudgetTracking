@@ -3,6 +3,7 @@ package com.ntankard.Tracking.DataBase.Core;
 import com.ntankard.ClassExtension.MemberProperties;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class Statement {
@@ -167,6 +168,10 @@ public class Statement {
     @MemberProperties(verbosityLevel = MemberProperties.TRACE_DISPLAY)
     public List<Transaction> getTransactions() {
         return transactions;
+    }
+
+    public List<CategoryTransfer> getCategoryTransfers() {
+        return categoryTransfers;
     }
 
     public void setStart(Double start) {

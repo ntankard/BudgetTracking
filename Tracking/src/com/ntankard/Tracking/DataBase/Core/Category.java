@@ -34,21 +34,21 @@ public class Category {
     }
 
     /**
-     * Notify that another object has linked to this one
-     *
-     * @param transaction The object that linked
-     */
-    public void notifyTransactionLink(Transaction transaction) {
-        transactions.add(transaction);
-    }
-
-    /**
      * Notify that another object has removed there link to this one
      *
      * @param category The object was linked
      */
     public void notifyCategoryLinkRemove(Category category) {
         categories.remove(category);
+    }
+
+    /**
+     * Notify that another object has linked to this one
+     *
+     * @param transaction The object that linked
+     */
+    public void notifyTransactionLink(Transaction transaction) {
+        transactions.add(transaction);
     }
 
     /**

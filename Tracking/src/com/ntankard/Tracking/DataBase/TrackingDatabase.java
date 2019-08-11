@@ -105,6 +105,23 @@ public class TrackingDatabase {
         return (max + 1) + "";
     }
 
+    /**
+     * Find the next available categoryTransfer code
+     *
+     * @param core The statement to containing the transactions
+     * @return The next available code
+     */
+    public String getNextCategoryTransferId(Statement core) {
+        int max = 0;
+        for (CategoryTransfer t : core.getCategoryTransfers()) {
+            int value = Integer.parseInt(t.getIdCode());
+            if (value > max) {
+                max = value;
+            }
+        }
+        return (max + 1) + "";
+    }
+
     //------------------------------------------------------------------------------------------------------------------
     //############################################# Populate Data ######################################################
     //------------------------------------------------------------------------------------------------------------------
@@ -161,7 +178,16 @@ public class TrackingDatabase {
 
     public void removeTransaction(Transaction transaction) {
         transaction.getIdStatement().notifyTransactionLinkRemove(transaction);
+        transaction.getCategory().notifyTransactionLinkRemove(transaction);
         transactions.remove(transaction);
+    }
+
+    public void removeCategoryTransfer(CategoryTransfer categoryTransfer) {
+        categoryTransfer.getDestination().notifyCategoriesTransferDestinationRemove(categoryTransfer);
+        categoryTransfer.getSource().notifyCategoriesTransferSourceLinkRemove(categoryTransfer);
+        categoryTransfer.getIdStatement().notifyCategoryTransferLinkRemove(categoryTransfer);
+        this.categoryTransfer.remove(categoryTransfer);
+        categoryTransferMap.remove(categoryTransfer.getId());
     }
 
     //------------------------------------------------------------------------------------------------------------------
