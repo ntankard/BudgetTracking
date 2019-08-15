@@ -5,6 +5,7 @@ import com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList;
 import com.ntankard.DynamicGUI.Components.Object.DynamicGUI_IntractableObject;
 import com.ntankard.DynamicGUI.Util.Swing.Base.UpdatableJPanel;
 import com.ntankard.DynamicGUI.Util.Updatable;
+import com.ntankard.Tracking.DataBase.Core.CategoryTransfer;
 import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Statement;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
@@ -27,11 +28,13 @@ public class Period_Frame extends UpdatableJPanel {
 
     // The data displayed (clone of the data in the database)
     private List<Statement> statement_list = new ArrayList<>();
+    private List<CategoryTransfer> categoryTransfer_list = new ArrayList<>();
 
     // The GUI components
     private DynamicGUI_DisplayList<Statement> statement_panel;
     private DynamicGUI_DisplayList.ListControl_Button setRecord;
     private DynamicGUI_IntractableObject period_panel;
+    private DynamicGUI_DisplayList categoryTransfer_panel;
 
     /**
      * Create and open the period frame
@@ -84,8 +87,33 @@ public class Period_Frame extends UpdatableJPanel {
             Statement_Frame.open(trackingDatabase, (Statement) selected.get(0), this);
         });
         statement_panel.addButton(setRecord);
+        categoryTransfer_panel = DynamicGUI_DisplayList.newIntractableTable(categoryTransfer_list, new MemberClass(CategoryTransfer.class), true, true, ALWAYS_DISPLAY, new DynamicGUI_DisplayList.ElementController<CategoryTransfer>() {
+            @Override
+            public void deleteElement(CategoryTransfer toDel) {
+                trackingDatabase.removeCategoryTransfer(toDel);
+                notifyUpdate();
+            }
+
+            @Override
+            public CategoryTransfer newElement() {
+                String idCode = trackingDatabase.getNextCategoryTransferId(core);
+                return new CategoryTransfer(core, idCode, trackingDatabase.getCategory("Unaccounted"),trackingDatabase.getCategory("Unaccounted"),"", 0.0 );
+            }
+
+            @Override
+            public void addElement(CategoryTransfer newObj) {
+                trackingDatabase.addCategoryTransfer(newObj);
+                notifyUpdate();
+            }
+        }, this, trackingDatabase);
 
         this.add(statement_panel, BorderLayout.CENTER);
+
+        JTabbedPane data_tPanel = new JTabbedPane();
+        data_tPanel.addTab("Statement", statement_panel);
+        data_tPanel.addTab("Category Transfer", categoryTransfer_panel);
+        this.add(data_tPanel, BorderLayout.CENTER);
+
 
         period_panel = DynamicGUI_IntractableObject.newIntractableObjectPanel(core, INFO_DISPLAY, false, this, trackingDatabase);
         this.add(period_panel, BorderLayout.EAST);
@@ -107,9 +135,12 @@ public class Period_Frame extends UpdatableJPanel {
     public void update() {
         statement_list.clear();
         statement_list.addAll(core.getStatements());
+        categoryTransfer_list.clear();
 
         statement_panel.update();
+        categoryTransfer_list.addAll(core.getCategoryTransfers());
 
         statement_panel.getMainPanel().getListSelectionModel().setSelectionInterval(0, 0);
+        categoryTransfer_panel.update();
     }
 }

@@ -6,7 +6,7 @@ import com.ntankard.DynamicGUI.Components.Object.SetterProperties;
 public class CategoryTransfer {
 
     // My parents
-    private Statement idStatement;
+    private Period idPeriod;
     private Category source;
     private Category destination;
 
@@ -15,8 +15,8 @@ public class CategoryTransfer {
     private String description;
     private Double value;
 
-    public CategoryTransfer(Statement idStatement, String idCode, Category source, Category destination, String description, Double value) {
-        this.idStatement = idStatement;
+    public CategoryTransfer(Period idPeriod, String idCode, Category source, Category destination, String description, Double value) {
+        this.idPeriod = idPeriod;
         this.source = source;
         this.destination = destination;
         this.idCode = idCode;
@@ -39,11 +39,12 @@ public class CategoryTransfer {
 
     @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
     public String getId() {
-        return idStatement.getId() + " " + idCode;
+        return idPeriod.getId() + " " + idCode;
     }
 
-    public Statement getIdStatement() {
-        return idStatement;
+    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
+    public Period getIdPeriod() {
+        return idPeriod;
     }
 
     public Category getSource() {
@@ -54,6 +55,7 @@ public class CategoryTransfer {
         return destination;
     }
 
+    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
     public String getIdCode() {
         return idCode;
     }
@@ -73,6 +75,15 @@ public class CategoryTransfer {
         }
         this.destination = destination;
         this.destination.notifyCategoriesTransferDestinationLink(this);
+    }
+
+    @SetterProperties(sourceMethod = "getCategories")
+    public void setSource(Category destination) {
+        if (this.source != null) {
+            this.source.notifyCategoriesTransferSourceLinkRemove(this);
+        }
+        this.source = destination;
+        this.source.notifyCategoriesTransferSourceLink(this);
     }
 
     public void setDescription(String description) {

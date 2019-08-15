@@ -111,7 +111,7 @@ public class TrackingDatabase {
      * @param core The statement to containing the transactions
      * @return The next available code
      */
-    public String getNextCategoryTransferId(Statement core) {
+    public String getNextCategoryTransferId(Period core) {
         int max = 0;
         for (CategoryTransfer t : core.getCategoryTransfers()) {
             int value = Integer.parseInt(t.getIdCode());
@@ -167,7 +167,7 @@ public class TrackingDatabase {
     public void addCategoryTransfer(CategoryTransfer transfer) {
         this.categoryTransfer.add(transfer);
         this.categoryTransferMap.put(transfer.getId(), transfer);
-        transfer.getIdStatement().notifyCategoryTransferLink(transfer);
+        transfer.getIdPeriod().notifyCategoryTransferLink(transfer);
         transfer.getDestination().notifyCategoriesTransferDestinationLink(transfer);
         transfer.getSource().notifyCategoriesTransferSourceLink(transfer);
     }
@@ -185,7 +185,7 @@ public class TrackingDatabase {
     public void removeCategoryTransfer(CategoryTransfer categoryTransfer) {
         categoryTransfer.getDestination().notifyCategoriesTransferDestinationRemove(categoryTransfer);
         categoryTransfer.getSource().notifyCategoriesTransferSourceLinkRemove(categoryTransfer);
-        categoryTransfer.getIdStatement().notifyCategoryTransferLinkRemove(categoryTransfer);
+        categoryTransfer.getIdPeriod().notifyCategoryTransferLinkRemove(categoryTransfer);
         this.categoryTransfer.remove(categoryTransfer);
         categoryTransferMap.remove(categoryTransfer.getId());
     }

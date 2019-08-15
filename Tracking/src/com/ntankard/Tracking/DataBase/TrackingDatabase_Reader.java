@@ -314,15 +314,14 @@ public class TrackingDatabase_Reader {
         String csvFile = csvFileRoot + "CategoryTransfer.csv";
         ArrayList<String[]> allLines = readLines(csvFile);
         for (String[] lines : allLines) {
-            String bankID = lines[0];
-            String PeriodID = lines[1];
-            String id = lines[2];
-            String sourceCategoryId = lines[3];
-            String destinationCategoryId = lines[4];
-            String description = lines[5];
-            double value = Double.parseDouble(lines[6]);
+            String PeriodID = lines[0];
+            String id = lines[1];
+            String sourceCategoryId = lines[2];
+            String destinationCategoryId = lines[3];
+            String description = lines[4];
+            double value = Double.parseDouble(lines[5]);
 
-            data.addCategoryTransfer(new CategoryTransfer(data.getStatement(data.getBank(bankID), data.getPeriod(PeriodID)), id, data.getCategory(sourceCategoryId), data.getCategory(destinationCategoryId), description, value));
+            data.addCategoryTransfer(new CategoryTransfer(data.getPeriod(PeriodID), id, data.getCategory(sourceCategoryId), data.getCategory(destinationCategoryId), description, value));
         }
     }
 
@@ -336,8 +335,7 @@ public class TrackingDatabase_Reader {
         ArrayList<List<String>> lines = new ArrayList<>();
         for (CategoryTransfer t : data.getCategoryTransfer()) {
             List<String> line = new ArrayList<>();
-            line.add(t.getIdStatement().getIdBank().getId());
-            line.add(t.getIdStatement().getIdPeriod().getId());
+            line.add(t.getIdPeriod().getId());
             line.add(t.getIdCode());
             line.add(t.getSource().toString());
             line.add(t.getDestination().toString());

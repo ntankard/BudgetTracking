@@ -18,6 +18,7 @@ public class Period {
 
     // My Children
     private List<Statement> statements = new ArrayList<>();
+    private List<CategoryTransfer> categoryTransfers = new ArrayList<>();
 
     /**
      * Build a period over an entire month
@@ -68,6 +69,24 @@ public class Period {
      */
     public void notifyStatementLink(Statement statement) {
         statements.add(statement);
+    }
+
+    /**
+     * Notify that another object has linked to this one
+     *
+     * @param transfer The object that linked
+     */
+    public void notifyCategoryTransferLink(CategoryTransfer transfer) {
+        categoryTransfers.add(transfer);
+    }
+
+    /**
+     * Notify that another object has removed there link to this one
+     *
+     * @param transfer The object was linked
+     */
+    public void notifyCategoryTransferLinkRemove(CategoryTransfer transfer) {
+        categoryTransfers.remove(transfer);
     }
 
     /**
@@ -155,5 +174,10 @@ public class Period {
     @MemberProperties(verbosityLevel = MemberProperties.TRACE_DISPLAY)
     public List<Statement> getStatements() {
         return statements;
+    }
+
+    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
+    public List<CategoryTransfer> getCategoryTransfers() {
+        return categoryTransfers;
     }
 }

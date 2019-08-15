@@ -27,11 +27,9 @@ public class Statement_Frame extends UpdatableJPanel {
 
     // The data displayed (clone of the data in the database)
     private List<Transaction> transaction_list = new ArrayList<>();
-    private List<CategoryTransfer> categoryTransfer_list = new ArrayList<>();
 
     // The GUI components
     private DynamicGUI_DisplayList transaction_panel;
-    private DynamicGUI_DisplayList categoryTransfer_panel;
     private DynamicGUI_IntractableObject statement_panel;
 
     /**
@@ -97,29 +95,9 @@ public class Statement_Frame extends UpdatableJPanel {
                 notifyUpdate();
             }
         }, this, trackingDatabase);
-        categoryTransfer_panel = DynamicGUI_DisplayList.newIntractableTable(categoryTransfer_list, new MemberClass(CategoryTransfer.class), true, true, ALWAYS_DISPLAY, new DynamicGUI_DisplayList.ElementController<CategoryTransfer>() {
-            @Override
-            public void deleteElement(CategoryTransfer toDel) {
-                trackingDatabase.removeCategoryTransfer(toDel);
-                notifyUpdate();
-            }
-
-            @Override
-            public CategoryTransfer newElement() {
-                String idCode = trackingDatabase.getNextCategoryTransferId(core);
-                return new CategoryTransfer(core, idCode, trackingDatabase.getCategory("Unaccounted"),trackingDatabase.getCategory("Unaccounted"),"", 0.0 );
-            }
-
-            @Override
-            public void addElement(CategoryTransfer newObj) {
-                trackingDatabase.addCategoryTransfer(newObj);
-                notifyUpdate();
-            }
-        }, this, trackingDatabase);
 
         JTabbedPane data_tPanel = new JTabbedPane();
         data_tPanel.addTab("Transactions", transaction_panel);
-        data_tPanel.addTab("Category Transfer", categoryTransfer_panel);
         this.add(data_tPanel, BorderLayout.CENTER);
 
         statement_panel = DynamicGUI_IntractableObject.newIntractableObjectPanel(core, INFO_DISPLAY, false, this, trackingDatabase);
@@ -141,13 +119,10 @@ public class Statement_Frame extends UpdatableJPanel {
     @Override
     public void update() {
         transaction_list.clear();
-        categoryTransfer_list.clear();
 
         transaction_list.addAll(core.getTransactions());
-        categoryTransfer_list.addAll(core.getCategoryTransfers());
 
         transaction_panel.update();
-        categoryTransfer_panel.update();
         statement_panel.update();
     }
 }

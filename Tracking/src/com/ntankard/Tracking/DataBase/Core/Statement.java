@@ -20,7 +20,6 @@ public class Statement {
 
     // My Children
     private List<Transaction> transactions = new ArrayList<>();
-    private List<CategoryTransfer> categoryTransfers = new ArrayList<>();
 
     /**
      * Constructor
@@ -50,24 +49,6 @@ public class Statement {
      */
     public void notifyTransactionLinkRemove(Transaction transaction) {
         transactions.remove(transaction);
-    }
-
-    /**
-     * Notify that another object has linked to this one
-     *
-     * @param transfer The object that linked
-     */
-    public void notifyCategoryTransferLink(CategoryTransfer transfer) {
-        categoryTransfers.add(transfer);
-    }
-
-    /**
-     * Notify that another object has removed there link to this one
-     *
-     * @param transfer The object was linked
-     */
-    public void notifyCategoryTransferLinkRemove(CategoryTransfer transfer) {
-        categoryTransfers.remove(transfer);
     }
 
     /**
@@ -168,10 +149,6 @@ public class Statement {
     @MemberProperties(verbosityLevel = MemberProperties.TRACE_DISPLAY)
     public List<Transaction> getTransactions() {
         return transactions;
-    }
-
-    public List<CategoryTransfer> getCategoryTransfers() {
-        return categoryTransfers;
     }
 
     public void setStart(Double start) {
