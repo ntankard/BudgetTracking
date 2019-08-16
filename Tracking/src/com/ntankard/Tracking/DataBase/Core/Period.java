@@ -153,6 +153,15 @@ public class Period {
         return getAudBalance() - getAudStart();
     }
 
+    public double getCategoryTotalYen(Category member, boolean sumChildren) {
+        double total = 0;
+        for (Statement s : statements) {
+            total += s.getCategoryTotal(member, sumChildren) * s.getIdBank().getCurrency().getToYEN();
+        }
+
+        return total;
+    }
+
     //------------------------------------------------------------------------------------------------------------------
     //########################################### Standard accessors ###################################################
     //------------------------------------------------------------------------------------------------------------------

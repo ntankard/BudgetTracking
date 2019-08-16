@@ -83,8 +83,9 @@ public class TrackingDatabase_Reader {
         ArrayList<String[]> allLines = readLines(csvFile);
         for (String[] lines : allLines) {
             String id = lines[0];
-            double amount = Double.parseDouble(lines[1]);
-            data.addCurrency(new Currency(id, amount));
+            double toAUD = Double.parseDouble(lines[1]);
+            double toYEN = Double.parseDouble(lines[2]);
+            data.addCurrency(new Currency(id, toAUD, toYEN));
         }
     }
 
@@ -100,6 +101,7 @@ public class TrackingDatabase_Reader {
             List<String> line = new ArrayList<>();
             line.add(t.getId());
             line.add(t.getToAUD() + "");
+            line.add(t.getToYEN() + "");
             lines.add(line);
         }
 

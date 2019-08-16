@@ -3,6 +3,7 @@ package com.ntankard.Tracking.Frames;
 import com.ntankard.ClassExtension.MemberClass;
 import com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList;
 import com.ntankard.DynamicGUI.Util.Updatable;
+import com.ntankard.Tracking.Components.PeriodCategory_Table;
 import com.ntankard.Tracking.DataBase.Core.*;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.TrackingDatabase_Reader;
@@ -39,6 +40,7 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
     private DynamicGUI_DisplayList<CategoryTransfer> categoryTransfer_panel;
     private DynamicGUI_DisplayList transaction_panel;
     private DynamicGUI_DisplayList.ListControl_Button setRecord;
+    private PeriodCategory_Table periodCategory_table;
     private JButton upload_btn;
     private JTabbedPane structures_tPanel;
 
@@ -92,6 +94,7 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
         statement_panel = DynamicGUI_DisplayList.newIntractableTable(statement_list, new MemberClass(Statement.class), true, INFO_DISPLAY, this);
         transaction_panel = DynamicGUI_DisplayList.newIntractableTable(transaction_list, new MemberClass(Transaction.class), true, INFO_DISPLAY, this);
         categoryTransfer_panel = DynamicGUI_DisplayList.newIntractableTable(categoryTransfer_list, new MemberClass(CategoryTransfer.class), true, INFO_DISPLAY, this);
+        periodCategory_table = new PeriodCategory_Table(period_list,trackingDatabase,this);
 
         setRecord = new DynamicGUI_DisplayList.ListControl_Button<>("Manage Period", period_panel, SINGLE, false);//new SetRecord()
         setRecord.addActionListener(e -> {
@@ -102,6 +105,7 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
 
         structures_tPanel = new JTabbedPane();
         structures_tPanel.addTab("Period", period_panel);
+        structures_tPanel.addTab("Category Total", periodCategory_table);
         structures_tPanel.addTab("Transaction", transaction_panel);
         structures_tPanel.addTab("Currency", currency_panel);
         structures_tPanel.addTab("Category", category_panel);
@@ -147,6 +151,7 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
         statement_panel.update();
         transaction_panel.update();
         categoryTransfer_panel.update();
+        periodCategory_table.update();
 
         period_panel.getMainPanel().getListSelectionModel().setSelectionInterval(0, 0);
     }

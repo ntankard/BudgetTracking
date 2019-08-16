@@ -108,6 +108,28 @@ public class Statement {
         return val;
     }
 
+    /**
+     * Get all values for a given category
+     *
+     * @param category    The category to check
+     * @param sumChildren Should you sum the children as well?
+     * @return The total values
+     */
+    public double getCategoryTotal(Category category, boolean sumChildren) {
+        double total = 0;
+        if (sumChildren) {
+            for (Category child : category.getCategories()) {
+                total += getCategoryTotal(child, true);
+            }
+        }
+        for (Transaction t : transactions) {
+            if (t.getCategory().equals(category)) {
+                total += t.getValue();
+            }
+        }
+        return total;
+    }
+
     //------------------------------------------------------------------------------------------------------------------
     //########################################### Standard accessors ###################################################
     //------------------------------------------------------------------------------------------------------------------

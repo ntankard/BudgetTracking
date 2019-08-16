@@ -10,6 +10,7 @@ public class Currency {
     // My values
     private String id;
     private double toAUD;
+    private double toYEN;
 
     // My children
     private List<Bank> banks = new ArrayList<>();
@@ -17,9 +18,10 @@ public class Currency {
     /**
      * Constructor
      */
-    public Currency(String id, double toAUD) {
+    public Currency(String id, double toAUD, double toYEN) {
         this.id = id;
         this.toAUD = toAUD;
+        this.toYEN = toYEN;
     }
 
     /**
@@ -47,6 +49,10 @@ public class Currency {
     }
     public double getToAUD() {
         return toAUD;
+    }
+
+    public double getToYEN() {
+        return toYEN;
     }
 
     public List<Bank> getBanks() {

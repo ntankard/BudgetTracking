@@ -97,7 +97,7 @@ public class Period_Frame extends UpdatableJPanel {
             @Override
             public CategoryTransfer newElement() {
                 String idCode = trackingDatabase.getNextCategoryTransferId(core);
-                return new CategoryTransfer(core, idCode, trackingDatabase.getCategory("Unaccounted"),trackingDatabase.getCategory("Unaccounted"),"", 0.0 );
+                return new CategoryTransfer(core, idCode, trackingDatabase.getCategory("Unaccounted"), trackingDatabase.getCategory("Unaccounted"), "", 0.0);
             }
 
             @Override
@@ -113,7 +113,6 @@ public class Period_Frame extends UpdatableJPanel {
         data_tPanel.addTab("Statement", statement_panel);
         data_tPanel.addTab("Category Transfer", categoryTransfer_panel);
         this.add(data_tPanel, BorderLayout.CENTER);
-
 
         period_panel = DynamicGUI_IntractableObject.newIntractableObjectPanel(core, INFO_DISPLAY, false, this, trackingDatabase);
         this.add(period_panel, BorderLayout.EAST);
