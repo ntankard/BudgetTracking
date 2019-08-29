@@ -9,8 +9,9 @@ public class Currency {
 
     // My values
     private String id;
-    private double toAUD;
-    private double toYEN;
+    private double toSecondary;
+    private double toPrimary;
+    private boolean isPrimary;
 
     // My children
     private List<Bank> banks = new ArrayList<>();
@@ -18,17 +19,19 @@ public class Currency {
     /**
      * Constructor
      */
-    public Currency(String id, double toAUD, double toYEN) {
+    public Currency(String id, double toSecondary, double toPrimary, boolean isPrimary) {
         this.id = id;
-        this.toAUD = toAUD;
-        this.toYEN = toYEN;
+        this.toSecondary = toSecondary;
+        this.toPrimary = toPrimary;
+        this.isPrimary = isPrimary;
     }
 
     /**
      * Notify that another object has linked to this one
+     *
      * @param added The object that linked
      */
-    public void notifyBankLink(Bank added){
+    public void notifyBankLink(Bank added) {
         banks.add(added);
     }
 
@@ -44,15 +47,20 @@ public class Currency {
     //########################################### Standard accessors ###################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    public String getId(){
+    public String getId() {
         return id;
     }
-    public double getToAUD() {
-        return toAUD;
+
+    public double getToSecondary() {
+        return toSecondary;
     }
 
-    public double getToYEN() {
-        return toYEN;
+    public double getToPrimary() {
+        return toPrimary;
+    }
+
+    public boolean isPrimary() {
+        return isPrimary;
     }
 
     public List<Bank> getBanks() {

@@ -1,5 +1,6 @@
 package com.ntankard.Tracking.Components;
 
+import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.DynamicGUI.Util.Swing.Base.UpdatableJScrollPane;
 import com.ntankard.DynamicGUI.Util.Updatable;
 import com.ntankard.Tracking.DataBase.Core.Category;
@@ -12,8 +13,10 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class PeriodCategory_Table extends UpdatableJScrollPane {
 
@@ -75,16 +78,13 @@ public class PeriodCategory_Table extends UpdatableJScrollPane {
 
     private void addRow(Period rowObject) {
         ArrayList<String> rowString = new ArrayList<>();
-        DecimalFormat df2 = new DecimalFormat("#");
-
         rowString.add(rowObject.toString());
 
         // Add each column
         for (Category member : database.getCategories()) {
-            String toAdd;
-            double data = rowObject.getCategoryTotalYen(member, true);
-            toAdd = df2.format(data);
-            rowString.add(toAdd);
+            double data = rowObject.getCategoryTotal(member, true);
+            NumberFormat format = NumberFormat.getCurrencyInstance(Locale.JAPAN);
+            rowString.add(format.format(data));
         }
 
         model.addRow(rowString.toArray());

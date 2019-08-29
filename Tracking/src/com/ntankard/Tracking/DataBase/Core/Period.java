@@ -133,30 +133,55 @@ public class Period {
     }
 
     @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
-    public Double getAudStart() {
+    public Double getStartBalance() {
         Double value = 0.0;
         for (Statement t : statements) {
-            value += (t.getStart() * t.getIdBank().getCurrency().getToAUD());
+            value += (t.getStart() * t.getIdBank().getCurrency().getToPrimary());
         }
         return value;
     }
 
-    public Double getAudBalance() {
+    @MemberProperties(format = MemberProperties.Format.YEN)
+    public Double getEndBalance() {
         Double value = 0.0;
         for (Statement t : statements) {
-            value += (t.getEnd() * t.getIdBank().getCurrency().getToAUD());
+            value += (t.getEnd() * t.getIdBank().getCurrency().getToPrimary());
         }
         return value;
     }
 
+    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
+    public Double getStartBalanceSecondary() {
+        Double value = 0.0;
+        for (Statement t : statements) {
+            value += (t.getStart() * t.getIdBank().getCurrency().getToSecondary());
+        }
+        return value;
+    }
+
+    @MemberProperties(format = MemberProperties.Format.AUD)
+    public Double getEndBalanceSecondary() {
+        Double value = 0.0;
+        for (Statement t : statements) {
+            value += (t.getEnd() * t.getIdBank().getCurrency().getToSecondary());
+        }
+        return value;
+    }
+
+    @MemberProperties(format = MemberProperties.Format.YEN)
     public Double getProfit() {
-        return getAudBalance() - getAudStart();
+        return getEndBalance() - getStartBalance();
     }
 
-    public double getCategoryTotalYen(Category member, boolean sumChildren) {
+    @MemberProperties(format = MemberProperties.Format.AUD)
+    public Double getProfitSecondary() {
+        return getEndBalanceSecondary() - getStartBalanceSecondary();
+    }
+
+    public double getCategoryTotal(Category member, boolean sumChildren) {
         double total = 0;
         for (Statement s : statements) {
-            total += s.getCategoryTotal(member, sumChildren) * s.getIdBank().getCurrency().getToYEN();
+            total += s.getCategoryTotal(member, sumChildren) * s.getIdBank().getCurrency().getToPrimary();
         }
 
         return total;
