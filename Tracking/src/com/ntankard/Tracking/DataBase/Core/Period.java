@@ -1,5 +1,6 @@
 package com.ntankard.Tracking.DataBase.Core;
 
+import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 
 import java.text.SimpleDateFormat;
@@ -141,7 +142,7 @@ public class Period {
         return value;
     }
 
-    @MemberProperties(format = MemberProperties.Format.YEN)
+    @DisplayProperties(name = "Balance", order = 2, format = DisplayProperties.Format.YEN)
     public Double getEndBalance() {
         Double value = 0.0;
         for (Statement t : statements) {
@@ -159,7 +160,7 @@ public class Period {
         return value;
     }
 
-    @MemberProperties(format = MemberProperties.Format.AUD)
+    @DisplayProperties(name = "Balance", order = 4, format = DisplayProperties.Format.AUD)
     public Double getEndBalanceSecondary() {
         Double value = 0.0;
         for (Statement t : statements) {
@@ -168,12 +169,12 @@ public class Period {
         return value;
     }
 
-    @MemberProperties(format = MemberProperties.Format.YEN)
+    @DisplayProperties(order = 3, format = DisplayProperties.Format.YEN)
     public Double getProfit() {
         return getEndBalance() - getStartBalance();
     }
 
-    @MemberProperties(format = MemberProperties.Format.AUD)
+    @DisplayProperties(name = "Profit", order = 5, format = DisplayProperties.Format.AUD)
     public Double getProfitSecondary() {
         return getEndBalanceSecondary() - getStartBalanceSecondary();
     }
@@ -191,6 +192,7 @@ public class Period {
     //########################################### Standard accessors ###################################################
     //------------------------------------------------------------------------------------------------------------------
 
+    @DisplayProperties(order = 1, name = "Period")
     public String getId() {
         return id;
     }
