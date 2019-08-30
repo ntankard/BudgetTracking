@@ -1,12 +1,18 @@
 package com.ntankard.Tracking.DataBase.Core;
 
 import com.ntankard.ClassExtension.DisplayProperties;
+import com.ntankard.ClassExtension.DisplayProperties.DataContext;
 import com.ntankard.ClassExtension.MemberProperties;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import static com.ntankard.ClassExtension.DisplayProperties.*;
+import static com.ntankard.ClassExtension.DisplayProperties.DataContext.*;
+import static com.ntankard.ClassExtension.DisplayProperties.DataType.*;
+import static com.ntankard.ClassExtension.MemberProperties.*;
 
 public class Period {
 
@@ -102,7 +108,7 @@ public class Period {
     //########################################## Calculated accessors ##################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public Double getAUDMissingTransfer() {
         Double value = 0.0;
         for (Statement t : statements) {
@@ -113,7 +119,7 @@ public class Period {
         return value;
     }
 
-    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public Double getYENMissingTransfer() {
         Double value = 0.0;
         for (Statement t : statements) {
@@ -133,7 +139,7 @@ public class Period {
         return 0.0;
     }
 
-    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public Double getStartBalance() {
         Double value = 0.0;
         for (Statement t : statements) {
@@ -142,7 +148,7 @@ public class Period {
         return value;
     }
 
-    @DisplayProperties(name = "Balance", order = 2, format = DisplayProperties.Format.YEN)
+    @DisplayProperties(name = "Balance", order = 2, dataType = CURRENCY_YEN)
     public Double getEndBalance() {
         Double value = 0.0;
         for (Statement t : statements) {
@@ -151,7 +157,7 @@ public class Period {
         return value;
     }
 
-    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public Double getStartBalanceSecondary() {
         Double value = 0.0;
         for (Statement t : statements) {
@@ -160,7 +166,7 @@ public class Period {
         return value;
     }
 
-    @DisplayProperties(name = "Balance", order = 4, format = DisplayProperties.Format.AUD)
+    @DisplayProperties(name = "Balance", order = 4, dataType = CURRENCY_AUD)
     public Double getEndBalanceSecondary() {
         Double value = 0.0;
         for (Statement t : statements) {
@@ -169,12 +175,12 @@ public class Period {
         return value;
     }
 
-    @DisplayProperties(order = 3, format = DisplayProperties.Format.YEN)
+    @DisplayProperties(order = 3, dataType = CURRENCY_YEN, dataContext = ZERO_BELOW_BAD)
     public Double getProfit() {
         return getEndBalance() - getStartBalance();
     }
 
-    @DisplayProperties(name = "Profit", order = 5, format = DisplayProperties.Format.AUD)
+    @DisplayProperties(name = "Profit", order = 5, dataType = CURRENCY_AUD, dataContext = ZERO_BELOW_BAD)
     public Double getProfitSecondary() {
         return getEndBalanceSecondary() - getStartBalanceSecondary();
     }
@@ -197,22 +203,22 @@ public class Period {
         return id;
     }
 
-    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public Calendar getStart() {
         return start;
     }
 
-    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public Calendar getEnd() {
         return end;
     }
 
-    @MemberProperties(verbosityLevel = MemberProperties.TRACE_DISPLAY)
+    @MemberProperties(verbosityLevel = TRACE_DISPLAY)
     public List<Statement> getStatements() {
         return statements;
     }
 
-    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public List<CategoryTransfer> getCategoryTransfers() {
         return categoryTransfers;
     }
