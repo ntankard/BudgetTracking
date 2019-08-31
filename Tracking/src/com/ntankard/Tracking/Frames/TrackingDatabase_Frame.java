@@ -3,8 +3,8 @@ package com.ntankard.Tracking.Frames;
 import com.ntankard.ClassExtension.MemberClass;
 import com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList;
 import com.ntankard.DynamicGUI.Util.Updatable;
-import com.ntankard.Tracking.Components.PeriodCategory_Table;
 import com.ntankard.Tracking.DataBase.Core.*;
+import com.ntankard.Tracking.DataBase.Interface.PeriodCategory;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.TrackingDatabase_Reader;
 
@@ -30,6 +30,7 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
     private List<Statement> statement_list = new ArrayList<>();
     private List<Transaction> transaction_list = new ArrayList<>();
     private List<CategoryTransfer> categoryTransfer_list = new ArrayList<>();
+    private List<PeriodCategory> periodCategory_list = new ArrayList<>();
 
     // The GUI components
     private DynamicGUI_DisplayList<Currency> currency_panel;
@@ -40,7 +41,7 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
     private DynamicGUI_DisplayList<CategoryTransfer> categoryTransfer_panel;
     private DynamicGUI_DisplayList transaction_panel;
     private DynamicGUI_DisplayList.ListControl_Button setRecord;
-    private PeriodCategory_Table periodCategory_table;
+    private DynamicGUI_DisplayList<PeriodCategory> periodCategory_table;
     private JButton upload_btn;
     private JTabbedPane structures_tPanel;
 
@@ -94,7 +95,7 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
         statement_panel = DynamicGUI_DisplayList.newIntractableTable(statement_list, new MemberClass(Statement.class), true, INFO_DISPLAY, this);
         transaction_panel = DynamicGUI_DisplayList.newIntractableTable(transaction_list, new MemberClass(Transaction.class), true, INFO_DISPLAY, this);
         categoryTransfer_panel = DynamicGUI_DisplayList.newIntractableTable(categoryTransfer_list, new MemberClass(CategoryTransfer.class), true, INFO_DISPLAY, this);
-        periodCategory_table = new PeriodCategory_Table(period_list,trackingDatabase,this);
+        periodCategory_table = DynamicGUI_DisplayList.newIntractableTable(periodCategory_list, new MemberClass(PeriodCategory.class), false, ALWAYS_DISPLAY, this);
 
         setRecord = new DynamicGUI_DisplayList.ListControl_Button<>("Manage Period", period_panel, SINGLE, false);//new SetRecord()
         setRecord.addActionListener(e -> {
@@ -135,6 +136,7 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
         statement_list.clear();
         transaction_list.clear();
         categoryTransfer_list.clear();
+        periodCategory_list.clear();
 
         currency_list.addAll(trackingDatabase.getCurrencies());
         category_list.addAll(trackingDatabase.getCategories());
@@ -143,6 +145,7 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
         statement_list.addAll(trackingDatabase.getStatements());
         transaction_list.addAll(trackingDatabase.getTransactions());
         categoryTransfer_list.addAll(trackingDatabase.getCategoryTransfer());
+        periodCategory_list.addAll(trackingDatabase.getPeriodCategory());
 
         currency_panel.update();
         category_panel.update();
@@ -152,7 +155,5 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
         transaction_panel.update();
         categoryTransfer_panel.update();
         periodCategory_table.update();
-
-        period_panel.getMainPanel().getListSelectionModel().setSelectionInterval(0, 0);
     }
 }

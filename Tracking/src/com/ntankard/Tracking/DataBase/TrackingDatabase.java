@@ -2,6 +2,7 @@ package com.ntankard.Tracking.DataBase;
 
 import com.ntankard.Tracking.DataBase.Core.*;
 import com.ntankard.Tracking.DataBase.Core.Currency;
+import com.ntankard.Tracking.DataBase.Interface.PeriodCategory;
 
 import java.util.*;
 
@@ -16,7 +17,10 @@ public class TrackingDatabase {
     private List<Transaction> transactions = new ArrayList<>();
     private List<CategoryTransfer> categoryTransfer = new ArrayList<>();
 
-    // Other Containers
+    // Special Containers
+    private List<PeriodCategory> periodCategory = new ArrayList<>();
+
+    // Container accessors
     private Map<String, Currency> currencyMap = new HashMap<>();
     private Map<String, Category> categoryMap = new HashMap<>();
     private Map<String, Bank> bankMap = new HashMap<>();
@@ -149,6 +153,7 @@ public class TrackingDatabase {
         periods.add(period);
         statementMap.put(period, new HashMap<>());
         periodMap.put(period.getId(), period);
+        periodCategory.add(new PeriodCategory(period, this));
     }
 
     public void addStatement(Statement statement) {
@@ -249,5 +254,9 @@ public class TrackingDatabase {
 
     public List<CategoryTransfer> getCategoryTransfer() {
         return Collections.unmodifiableList(categoryTransfer);
+    }
+
+    public List<PeriodCategory> getPeriodCategory() {
+        return Collections.unmodifiableList(periodCategory);
     }
 }
