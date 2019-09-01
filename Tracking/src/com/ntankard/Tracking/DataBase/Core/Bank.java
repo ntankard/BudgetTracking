@@ -5,6 +5,7 @@ import com.ntankard.ClassExtension.MemberProperties;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 import static com.ntankard.ClassExtension.MemberProperties.TRACE_DISPLAY;
 
 public class Bank {
@@ -66,6 +67,7 @@ public class Bank {
         return currency;
     }
 
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public List<Statement> getStatements() {
         return statements;
     }

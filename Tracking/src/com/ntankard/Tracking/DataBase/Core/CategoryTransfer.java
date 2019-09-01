@@ -1,7 +1,11 @@
 package com.ntankard.Tracking.DataBase.Core;
 
+import com.ntankard.ClassExtension.DisplayProperties;
+import com.ntankard.ClassExtension.DisplayProperties.DataType;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.DynamicGUI.Components.Object.SetterProperties;
+
+import static com.ntankard.ClassExtension.DisplayProperties.DataType.*;
 
 public class CategoryTransfer {
 
@@ -64,6 +68,7 @@ public class CategoryTransfer {
         return description;
     }
 
+    @DisplayProperties(dataType = CURRENCY_YEN)
     public Double getValue() {
         return value;
     }

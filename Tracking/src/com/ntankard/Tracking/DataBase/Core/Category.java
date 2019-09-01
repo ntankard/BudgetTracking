@@ -1,7 +1,11 @@
 package com.ntankard.Tracking.DataBase.Core;
 
+import com.ntankard.ClassExtension.MemberProperties;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
 public class Category {
     // My parents
@@ -124,10 +128,12 @@ public class Category {
         return idName;
     }
 
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public List<Category> getCategories() {
         return categories;
     }
 
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public List<Transaction> getTransactions() {
         return transactions;
     }

@@ -1,7 +1,11 @@
 package com.ntankard.Tracking.DataBase.Core;
 
+import com.ntankard.ClassExtension.MemberProperties;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
 public class Currency {
 
@@ -63,6 +67,7 @@ public class Currency {
         return isPrimary;
     }
 
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public List<Bank> getBanks() {
         return banks;
     }

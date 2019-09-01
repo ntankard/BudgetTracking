@@ -1,10 +1,14 @@
 package com.ntankard.Tracking.DataBase.Core;
 
+import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import static com.ntankard.ClassExtension.DisplayProperties.*;
+import static com.ntankard.ClassExtension.DisplayProperties.DataType.*;
 
 public class Statement {
 
@@ -68,6 +72,7 @@ public class Statement {
      *
      * @return The sum of all transactions for this statement
      */
+    @DisplayProperties(dataType = CURRENCY)
     public Double getTotalSpend() {
         Double sum = 0.0;
         for (Transaction t : transactions) {
@@ -81,6 +86,7 @@ public class Statement {
      *
      * @return The real spend based on the difference between the starting and ending balance
      */
+    @DisplayProperties(dataType = CURRENCY)
     @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
     public Double getExpectedSpend() {
         return end - start - getNetTransfer();
@@ -91,6 +97,7 @@ public class Statement {
      *
      * @return The net transfer in and out of the account
      */
+    @DisplayProperties(dataType = CURRENCY)
     public Double getNetTransfer() {
         return transferIn - transferOut;
     }
@@ -100,6 +107,7 @@ public class Statement {
      *
      * @return The amount that differs between the Total Spend and the Expected spend
      */
+    @DisplayProperties(dataType = CURRENCY)
     public Double getMissingSpend() {
         Double val = getExpectedSpend() + getTotalSpend();
         if (Math.abs(val) < 0.001) {
@@ -148,21 +156,25 @@ public class Statement {
         return idPeriod;
     }
 
+    @DisplayProperties(dataType = CURRENCY)
     @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
     public Double getStart() {
         return start;
     }
 
+    @DisplayProperties(dataType = CURRENCY)
     @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
     public Double getEnd() {
         return end;
     }
 
+    @DisplayProperties(dataType = CURRENCY)
     @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
     public Double getTransferIn() {
         return transferIn;
     }
 
+    @DisplayProperties(dataType = CURRENCY)
     @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
     public Double getTransferOut() {
         return transferOut;

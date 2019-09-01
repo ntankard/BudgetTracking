@@ -15,6 +15,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import static com.ntankard.ClassExtension.MemberProperties.ALWAYS_DISPLAY;
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
@@ -80,6 +81,13 @@ public class Period_Frame extends UpdatableJPanel {
         this.setLayout(new BorderLayout());
 
         statement_panel = DynamicGUI_DisplayList.newIntractableTable(statement_list, new MemberClass(Statement.class), true, ALWAYS_DISPLAY, this);
+        statement_panel.getMainPanel().setLocaleInspector(rowObject -> {
+            Statement statement = (Statement) rowObject;
+            if (statement.getIdBank().getCurrency().getId().equals("YEN")) {
+                return Locale.JAPAN;
+            }
+            return Locale.US;
+        });
 
         setRecord = new DynamicGUI_DisplayList.ListControl_Button<>("Manage Period", statement_panel, SINGLE, false);
         setRecord.addActionListener(e -> {

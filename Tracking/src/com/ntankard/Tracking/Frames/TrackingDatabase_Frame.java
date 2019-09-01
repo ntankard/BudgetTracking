@@ -90,17 +90,24 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
         this.add(upload_btn, BorderLayout.NORTH);
 
         period_panel = DynamicGUI_DisplayList.newIntractableTable(period_list, new MemberClass(Period.class), true, ALWAYS_DISPLAY, this);
-        currency_panel = DynamicGUI_DisplayList.newIntractableTable(currency_list, new MemberClass(Currency.class), true, INFO_DISPLAY, this);
-        category_panel = DynamicGUI_DisplayList.newIntractableTable(category_list, new MemberClass(Category.class), true, INFO_DISPLAY, this);
-        bank_panel = DynamicGUI_DisplayList.newIntractableTable(bank_list, new MemberClass(Bank.class), true, INFO_DISPLAY, this);
-        statement_panel = DynamicGUI_DisplayList.newIntractableTable(statement_list, new MemberClass(Statement.class), true, INFO_DISPLAY, this);
-        transaction_panel = DynamicGUI_DisplayList.newIntractableTable(transaction_list, new MemberClass(Transaction.class), true, INFO_DISPLAY, this);
-        categoryTransfer_panel = DynamicGUI_DisplayList.newIntractableTable(categoryTransfer_list, new MemberClass(CategoryTransfer.class), true, INFO_DISPLAY, this);
+        currency_panel = DynamicGUI_DisplayList.newIntractableTable(currency_list, new MemberClass(Currency.class), true, ALWAYS_DISPLAY, this);
+        category_panel = DynamicGUI_DisplayList.newIntractableTable(category_list, new MemberClass(Category.class), true, ALWAYS_DISPLAY, this);
+        bank_panel = DynamicGUI_DisplayList.newIntractableTable(bank_list, new MemberClass(Bank.class), true, ALWAYS_DISPLAY, this);
+        statement_panel = DynamicGUI_DisplayList.newIntractableTable(statement_list, new MemberClass(Statement.class), true, ALWAYS_DISPLAY, this);
+        transaction_panel = DynamicGUI_DisplayList.newIntractableTable(transaction_list, new MemberClass(Transaction.class), true, ALWAYS_DISPLAY, this);
+        categoryTransfer_panel = DynamicGUI_DisplayList.newIntractableTable(categoryTransfer_list, new MemberClass(CategoryTransfer.class), true, ALWAYS_DISPLAY, this);
         periodCategory_table = DynamicGUI_DisplayList.newIntractableTable(periodCategory_list, new MemberClass(PeriodCategory.class), false, ALWAYS_DISPLAY, this);
 
         transaction_panel.getMainPanel().setLocaleInspector(rowObject -> {
             Transaction transaction = (Transaction)rowObject;
             if(transaction.getIdStatement().getIdBank().getCurrency().getId().equals("YEN")){
+                return Locale.JAPAN;
+            }
+            return Locale.US;
+        });
+        statement_panel.getMainPanel().setLocaleInspector(rowObject -> {
+            Statement statement = (Statement)rowObject;
+            if(statement.getIdBank().getCurrency().getId().equals("YEN")){
                 return Locale.JAPAN;
             }
             return Locale.US;
