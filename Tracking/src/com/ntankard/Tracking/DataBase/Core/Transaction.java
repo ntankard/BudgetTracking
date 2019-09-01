@@ -1,9 +1,11 @@
 package com.ntankard.Tracking.DataBase.Core;
 
+import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.DynamicGUI.Components.Object.SetterProperties;
 
-import static com.ntankard.ClassExtension.MemberProperties.TRACE_DISPLAY;
+import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
+import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
 public class Transaction {
 
@@ -41,17 +43,17 @@ public class Transaction {
     //########################################### Standard accessors ###################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public String getId() {
         return idStatement.getId() + " " + idCode;
     }
 
-    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public Statement getIdStatement() {
         return idStatement;
     }
 
-    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public String getIdCode() {
         return idCode;
     }
@@ -60,6 +62,7 @@ public class Transaction {
         return description;
     }
 
+    @DisplayProperties(dataType = CURRENCY)
     public Double getValue() {
         return value;
     }

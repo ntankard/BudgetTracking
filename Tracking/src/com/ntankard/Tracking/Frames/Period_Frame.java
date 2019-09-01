@@ -133,13 +133,14 @@ public class Period_Frame extends UpdatableJPanel {
     @Override
     public void update() {
         statement_list.clear();
-        statement_list.addAll(core.getStatements());
         categoryTransfer_list.clear();
 
-        statement_panel.update();
+        statement_list.addAll(core.getStatements());
         categoryTransfer_list.addAll(core.getCategoryTransfers());
 
-        statement_panel.getMainPanel().getListSelectionModel().setSelectionInterval(0, 0);
+        statement_panel.update();
         categoryTransfer_panel.update();
+
+        //statement_panel.getMainPanel().getListSelectionModel().setSelectionInterval(4, 4);
     }
 }

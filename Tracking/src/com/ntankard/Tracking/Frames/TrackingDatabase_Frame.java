@@ -12,6 +12,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import static com.ntankard.ClassExtension.MemberProperties.ALWAYS_DISPLAY;
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
@@ -39,7 +40,7 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
     private DynamicGUI_DisplayList<Period> period_panel;
     private DynamicGUI_DisplayList<Statement> statement_panel;
     private DynamicGUI_DisplayList<CategoryTransfer> categoryTransfer_panel;
-    private DynamicGUI_DisplayList transaction_panel;
+    private DynamicGUI_DisplayList<Transaction> transaction_panel;
     private DynamicGUI_DisplayList.ListControl_Button setRecord;
     private DynamicGUI_DisplayList<PeriodCategory> periodCategory_table;
     private JButton upload_btn;
@@ -96,6 +97,14 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
         transaction_panel = DynamicGUI_DisplayList.newIntractableTable(transaction_list, new MemberClass(Transaction.class), true, INFO_DISPLAY, this);
         categoryTransfer_panel = DynamicGUI_DisplayList.newIntractableTable(categoryTransfer_list, new MemberClass(CategoryTransfer.class), true, INFO_DISPLAY, this);
         periodCategory_table = DynamicGUI_DisplayList.newIntractableTable(periodCategory_list, new MemberClass(PeriodCategory.class), false, ALWAYS_DISPLAY, this);
+
+        transaction_panel.getMainPanel().setLocaleInspector(rowObject -> {
+            Transaction transaction = (Transaction)rowObject;
+            if(transaction.getIdStatement().getIdBank().getCurrency().getId().equals("YEN")){
+                return Locale.JAPAN;
+            }
+            return Locale.US;
+        });
 
         setRecord = new DynamicGUI_DisplayList.ListControl_Button<>("Manage Period", period_panel, SINGLE, false);//new SetRecord()
         setRecord.addActionListener(e -> {
@@ -155,5 +164,7 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
         transaction_panel.update();
         categoryTransfer_panel.update();
         periodCategory_table.update();
+
+        //period_panel.getMainPanel().getListSelectionModel().setSelectionInterval(0, 0);
     }
 }

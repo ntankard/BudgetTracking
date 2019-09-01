@@ -2,10 +2,10 @@ package com.ntankard.Tracking.Frames;
 
 import com.ntankard.ClassExtension.MemberClass;
 import com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList;
+import com.ntankard.DynamicGUI.Components.List.Types.Table.Decoder.CurrencyDecoder_LocaleSource;
 import com.ntankard.DynamicGUI.Components.Object.DynamicGUI_IntractableObject;
 import com.ntankard.DynamicGUI.Util.Swing.Base.UpdatableJPanel;
 import com.ntankard.DynamicGUI.Util.Updatable;
-import com.ntankard.Tracking.DataBase.Core.CategoryTransfer;
 import com.ntankard.Tracking.DataBase.Core.Statement;
 import com.ntankard.Tracking.DataBase.Core.Transaction;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
@@ -15,6 +15,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import static com.ntankard.ClassExtension.MemberProperties.ALWAYS_DISPLAY;
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
@@ -29,7 +30,7 @@ public class Statement_Frame extends UpdatableJPanel {
     private List<Transaction> transaction_list = new ArrayList<>();
 
     // The GUI components
-    private DynamicGUI_DisplayList transaction_panel;
+    private DynamicGUI_DisplayList<Transaction> transaction_panel;
     private DynamicGUI_IntractableObject statement_panel;
 
     /**
@@ -78,7 +79,6 @@ public class Statement_Frame extends UpdatableJPanel {
 
             @Override
             public Transaction newElement() {
-                //Statement idStatement, String idCode, String description, double value
                 String idCode = trackingDatabase.getNextTransactionId(core);
                 return new Transaction(core, idCode, "", 0.0, trackingDatabase.getCategory("Unaccounted"));
             }
@@ -95,6 +95,12 @@ public class Statement_Frame extends UpdatableJPanel {
                 notifyUpdate();
             }
         }, this, trackingDatabase);
+        transaction_panel.getMainPanel().setLocaleInspector(rowObject -> {
+            if(core.getIdBank().getCurrency().getId().equals("YEN")){
+                return Locale.JAPAN;
+            }
+            return Locale.US;
+        });
 
         JTabbedPane data_tPanel = new JTabbedPane();
         data_tPanel.addTab("Transactions", transaction_panel);
