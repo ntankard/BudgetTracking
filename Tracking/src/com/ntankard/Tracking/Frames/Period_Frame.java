@@ -108,7 +108,7 @@ public class Period_Frame extends UpdatableJPanel {
             @Override
             public CategoryTransfer newElement() {
                 String idCode = trackingDatabase.getNextCategoryTransferId(core);
-                return new CategoryTransfer(core, idCode, trackingDatabase.getCategory("Unaccounted"), trackingDatabase.getCategory("Unaccounted"), "", 0.0);
+                return new CategoryTransfer(core, idCode, trackingDatabase.getCategory("Unaccounted"), trackingDatabase.getCategory("Unaccounted"), trackingDatabase.getCurrency("YEN"), "", 0.0);
             }
 
             @Override

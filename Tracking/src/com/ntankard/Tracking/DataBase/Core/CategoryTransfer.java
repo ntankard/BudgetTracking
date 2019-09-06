@@ -13,17 +13,19 @@ public class CategoryTransfer {
     private Period idPeriod;
     private Category source;
     private Category destination;
+    private Currency currency;
 
     // My values
     private String idCode;
     private String description;
     private Double value;
 
-    public CategoryTransfer(Period idPeriod, String idCode, Category source, Category destination, String description, Double value) {
+    public CategoryTransfer(Period idPeriod, String idCode, Category source, Category destination, Currency currency, String description, Double value) {
         this.idPeriod = idPeriod;
+        this.idCode = idCode;
         this.source = source;
         this.destination = destination;
-        this.idCode = idCode;
+        this.currency = currency;
         this.description = description;
         this.value = value;
     }
@@ -71,6 +73,15 @@ public class CategoryTransfer {
     @DisplayProperties(dataType = CURRENCY_YEN)
     public Double getValue() {
         return value;
+    }
+
+    public Currency getCurrency() {
+        return currency;
+    }
+
+    @SetterProperties(sourceMethod = "getCurrencies")
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
     }
 
     @SetterProperties(sourceMethod = "getCategories")
