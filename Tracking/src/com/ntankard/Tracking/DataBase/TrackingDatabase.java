@@ -2,6 +2,7 @@ package com.ntankard.Tracking.DataBase;
 
 import com.ntankard.Tracking.DataBase.Core.*;
 import com.ntankard.Tracking.DataBase.Core.Currency;
+import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryTransfer;
 import com.ntankard.Tracking.DataBase.Interface.PeriodCategory;
 
 import java.util.*;

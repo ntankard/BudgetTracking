@@ -5,7 +5,7 @@ import com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList;
 import com.ntankard.DynamicGUI.Components.Object.DynamicGUI_IntractableObject;
 import com.ntankard.DynamicGUI.Util.Swing.Base.UpdatableJPanel;
 import com.ntankard.DynamicGUI.Util.Updatable;
-import com.ntankard.Tracking.DataBase.Core.CategoryTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryTransfer;
 import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Statement;
 import com.ntankard.Tracking.DataBase.Core.Transaction;

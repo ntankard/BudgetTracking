@@ -4,12 +4,10 @@ import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-import static com.ntankard.ClassExtension.DisplayProperties.*;
-import static com.ntankard.ClassExtension.DisplayProperties.DataContext.*;
-import static com.ntankard.ClassExtension.DisplayProperties.DataType.*;
+import static com.ntankard.ClassExtension.DisplayProperties.DataContext.ZERO_TARGET;
+import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
 
 public class Statement {
 
@@ -39,24 +37,6 @@ public class Statement {
     }
 
     /**
-     * Notify that another object has linked to this one
-     *
-     * @param transaction The object that linked
-     */
-    public void notifyTransactionLink(Transaction transaction) {
-        transactions.add(transaction);
-    }
-
-    /**
-     * Notify that another object has removed there link to this one
-     *
-     * @param transaction The object was linked
-     */
-    public void notifyTransactionLinkRemove(Transaction transaction) {
-        transactions.remove(transaction);
-    }
-
-    /**
      * {@inheritDoc
      */
     @Override
@@ -65,7 +45,7 @@ public class Statement {
     }
 
     //------------------------------------------------------------------------------------------------------------------
-    //########################################## Calculated accessors ##################################################
+    //############################################# Calculated accessors ###############################################
     //------------------------------------------------------------------------------------------------------------------
 
     /**
@@ -75,7 +55,7 @@ public class Statement {
      */
     @DisplayProperties(dataType = CURRENCY, order = 6)
     public Double getTotalSpend() {
-        Double sum = 0.0;
+        double sum = 0.0;
         for (Transaction t : transactions) {
             sum += t.getValue();
         }
@@ -111,7 +91,7 @@ public class Statement {
      */
     @DisplayProperties(dataType = CURRENCY, dataContext = ZERO_TARGET)
     public Double getMissingSpend() {
-        Double val = getExpectedSpend() + getTotalSpend();
+        double val = getExpectedSpend() + getTotalSpend();
         if (Math.abs(val) < 0.001) {
             val = 0.0;
         }
@@ -141,12 +121,46 @@ public class Statement {
     }
 
     //------------------------------------------------------------------------------------------------------------------
-    //########################################### Standard accessors ###################################################
+    //################################################# Link Management ################################################
+    //------------------------------------------------------------------------------------------------------------------
+
+    // Transaction Link ------------------------------------------------------------------------------------------------
+
+    /**
+     * Notify that a Transaction has linked to this Statement
+     *
+     * @param added The Transaction that linked
+     */
+    public void notifyTransactionLink(Transaction added) {
+        transactions.add(added);
+    }
+
+    /**
+     * Notify that a Transaction has removed there link to this Statement
+     *
+     * @param removed The Transaction that was linked
+     */
+    public void notifyTransactionLinkRemove(Transaction removed) {
+        transactions.remove(removed);
+    }
+
+    /**
+     * Get all the Transactions that have linked to this Statement
+     *
+     * @return All the Transactions that have linked to this Statement
+     */
+    @MemberProperties(verbosityLevel = MemberProperties.TRACE_DISPLAY)
+    public List<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
     @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
     public String getId() {
-        return idBank.getId() + " " + idPeriod.getId();
+        return getIdBank().getId() + " " + getIdPeriod().getId();
     }
 
     @DisplayProperties(order = 0)
@@ -179,10 +193,9 @@ public class Statement {
         return transferOut;
     }
 
-    @MemberProperties(verbosityLevel = MemberProperties.TRACE_DISPLAY)
-    public List<Transaction> getTransactions() {
-        return transactions;
-    }
+    //------------------------------------------------------------------------------------------------------------------
+    //#################################################### Setters #####################################################
+    //------------------------------------------------------------------------------------------------------------------
 
     public void setStart(Double start) {
         this.start = start;

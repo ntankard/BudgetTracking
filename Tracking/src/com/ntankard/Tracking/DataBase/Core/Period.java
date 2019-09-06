@@ -1,32 +1,21 @@
 package com.ntankard.Tracking.DataBase.Core;
 
 import com.ntankard.ClassExtension.DisplayProperties;
-import com.ntankard.ClassExtension.DisplayProperties.DataContext;
 import com.ntankard.ClassExtension.MemberProperties;
+import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryTransfer;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.List;
 
-import static com.ntankard.ClassExtension.DisplayProperties.*;
-import static com.ntankard.ClassExtension.DisplayProperties.DataContext.*;
-import static com.ntankard.ClassExtension.DisplayProperties.DataType.*;
-import static com.ntankard.ClassExtension.MemberProperties.*;
+import static com.ntankard.ClassExtension.DisplayProperties.DataContext.ZERO_BELOW_BAD;
+import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY_AUD;
+import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY_YEN;
+import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
+import static com.ntankard.ClassExtension.MemberProperties.TRACE_DISPLAY;
 
 public class Period {
-
-    // My parents
-
-    // My values
-    public String id;
-    public Calendar start;
-    public Calendar end;
-
-    // My Children
-    private List<Statement> statements = new ArrayList<>();
-    private List<CategoryTransfer> categoryTransfers = new ArrayList<>();
 
     /**
      * Build a period over an entire month
@@ -61,6 +50,21 @@ public class Period {
         return new Period(monthFormat.format(start.getTime()), start, end);
     }
 
+    //------------------------------------------------------------------------------------------------------------------
+    //################################################## Core Object ###################################################
+    //------------------------------------------------------------------------------------------------------------------
+
+    // My parents
+
+    // My values
+    private String id;
+    private Calendar start;
+    private Calendar end;
+
+    // My Children
+    private List<Statement> statements = new ArrayList<>();
+    private List<CategoryTransfer> categoryTransfers = new ArrayList<>();
+
     /**
      * Private constructor
      */
@@ -68,33 +72,6 @@ public class Period {
         this.id = id;
         this.start = start;
         this.end = end;
-    }
-
-    /**
-     * Notify that another object has linked to this one
-     *
-     * @param statement The object that linked
-     */
-    public void notifyStatementLink(Statement statement) {
-        statements.add(statement);
-    }
-
-    /**
-     * Notify that another object has linked to this one
-     *
-     * @param transfer The object that linked
-     */
-    public void notifyCategoryTransferLink(CategoryTransfer transfer) {
-        categoryTransfers.add(transfer);
-    }
-
-    /**
-     * Notify that another object has removed there link to this one
-     *
-     * @param transfer The object was linked
-     */
-    public void notifyCategoryTransferLinkRemove(CategoryTransfer transfer) {
-        categoryTransfers.remove(transfer);
     }
 
     /**
@@ -106,8 +83,10 @@ public class Period {
     }
 
     //------------------------------------------------------------------------------------------------------------------
-    //########################################## Calculated accessors ##################################################
+    //############################################# Calculated accessors ###############################################
     //------------------------------------------------------------------------------------------------------------------
+
+    // Inter currency transfers ----------------------------------------------------------------------------------------
 
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public Double getAUDMissingTransfer() {
@@ -140,6 +119,8 @@ public class Period {
         return 0.0;
     }
 
+    // Period totals ---------------------------------------------------------------------------------------------------
+
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public Double getStartBalance() {
         Double value = 0.0;
@@ -160,7 +141,7 @@ public class Period {
 
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public Double getStartBalanceSecondary() {
-        Double value = 0.0;
+        double value = 0.0;
         for (Statement t : statements) {
             value += (t.getStart() * t.getIdBank().getCurrency().getToSecondary());
         }
@@ -169,7 +150,7 @@ public class Period {
 
     @DisplayProperties(name = "Balance", order = 4, dataType = CURRENCY_AUD)
     public Double getEndBalanceSecondary() {
-        Double value = 0.0;
+        double value = 0.0;
         for (Statement t : statements) {
             value += (t.getEnd() * t.getIdBank().getCurrency().getToSecondary());
         }
@@ -185,6 +166,8 @@ public class Period {
     public Double getProfitSecondary() {
         return getEndBalanceSecondary() - getStartBalanceSecondary();
     }
+
+    // Filtered lists --------------------------------------------------------------------------------------------------
 
     public double getCategoryTotal(Category member, boolean sumChildren) {
         double total = 0;
@@ -205,7 +188,71 @@ public class Period {
     }
 
     //------------------------------------------------------------------------------------------------------------------
-    //########################################### Standard accessors ###################################################
+    //################################################# Link Management ################################################
+    //------------------------------------------------------------------------------------------------------------------
+
+    // Statement Link --------------------------------------------------------------------------------------------------
+
+    /**
+     * Notify that a Statement has linked to this Period
+     *
+     * @param added The Statement that linked
+     */
+    public void notifyStatementLink(Statement added) {
+        statements.add(added);
+    }
+
+    /**
+     * Notify that a Statement has removed there link to this Period
+     *
+     * @param removed The Statement that was linked
+     */
+    public void notifyStatementLinkRemove(Statement removed) {
+        statements.remove(removed);
+    }
+
+    /**
+     * Get all the Statements that have linked to this Period
+     *
+     * @return All the Statements that have linked to this Period
+     */
+    @MemberProperties(verbosityLevel = TRACE_DISPLAY)
+    public List<Statement> getStatements() {
+        return statements;
+    }
+
+    // CategoryTransfer Link -------------------------------------------------------------------------------------------
+
+    /**
+     * Notify that a CategoryTransfer has linked to this Period
+     *
+     * @param added The CategoryTransfer that linked
+     */
+    public void notifyCategoryTransferLink(CategoryTransfer added) {
+        categoryTransfers.add(added);
+    }
+
+    /**
+     * Notify that a CategoryTransfer has removed there link to this Period
+     *
+     * @param removed The CategoryTransfer that was linked
+     */
+    public void notifyCategoryTransferLinkRemove(CategoryTransfer removed) {
+        categoryTransfers.remove(removed);
+    }
+
+    /**
+     * Get all the CategoryTransfers that have linked to this Period
+     *
+     * @return All the CategoryTransfers that have linked to this Period
+     */
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    public List<CategoryTransfer> getCategoryTransfers() {
+        return categoryTransfers;
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
     @DisplayProperties(order = 1, name = "Period")
@@ -221,15 +268,5 @@ public class Period {
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public Calendar getEnd() {
         return end;
-    }
-
-    @MemberProperties(verbosityLevel = TRACE_DISPLAY)
-    public List<Statement> getStatements() {
-        return statements;
-    }
-
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    public List<CategoryTransfer> getCategoryTransfers() {
-        return categoryTransfers;
     }
 }

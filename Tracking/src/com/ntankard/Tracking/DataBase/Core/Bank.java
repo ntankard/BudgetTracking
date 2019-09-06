@@ -30,15 +30,6 @@ public class Bank {
     }
 
     /**
-     * Notify that another object has linked to this one
-     *
-     * @param statement The object that linked
-     */
-    public void notifyStatementLink(Statement statement) {
-        statements.add(statement);
-    }
-
-    /**
      * {@inheritDoc
      */
     @Override
@@ -47,12 +38,46 @@ public class Bank {
     }
 
     //------------------------------------------------------------------------------------------------------------------
-    //########################################### Standard accessors ###################################################
+    //################################################# Link Management ################################################
+    //------------------------------------------------------------------------------------------------------------------
+
+    // Statement Link --------------------------------------------------------------------------------------------------
+
+    /**
+     * Notify that a Statement has linked to this Bank
+     *
+     * @param added The Statement that linked
+     */
+    public void notifyStatementLink(Statement added) {
+        statements.add(added);
+    }
+
+    /**
+     * Notify that a Statement has removed there link to this Bank
+     *
+     * @param removed The Statement that was linked
+     */
+    public void notifyBankLinkRemove(Statement removed) {
+        statements.remove(removed);
+    }
+
+    /**
+     * Get all the Statement that have linked to this Bank
+     *
+     * @return All the Statements that have linked to this Bank
+     */
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    public List<Statement> getStatements() {
+        return statements;
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
     @MemberProperties(verbosityLevel = TRACE_DISPLAY)
     public String getId() {
-        return idBank + "-" + idAccount;
+        return getIdBank() + "-" + getIdAccount();
     }
 
     public String getIdBank() {
@@ -65,10 +90,5 @@ public class Bank {
 
     public Currency getCurrency() {
         return currency;
-    }
-
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    public List<Statement> getStatements() {
-        return statements;
     }
 }

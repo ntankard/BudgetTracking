@@ -40,12 +40,12 @@ public class Transaction {
     }
 
     //------------------------------------------------------------------------------------------------------------------
-    //########################################### Standard accessors ###################################################
+    //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public String getId() {
-        return idStatement.getId() + " " + idCode;
+        return getIdStatement().getId() + " " + getIdCode();
     }
 
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
@@ -71,12 +71,9 @@ public class Transaction {
         return category;
     }
 
-    @SetterProperties(sourceMethod = "getStatements")
-    public void setIdStatement(Statement idStatement) {
-        this.idStatement.notifyTransactionLinkRemove(this);
-        this.idStatement = idStatement;
-        this.idStatement.notifyTransactionLink(this);
-    }
+    //------------------------------------------------------------------------------------------------------------------
+    //#################################################### Setters #####################################################
+    //------------------------------------------------------------------------------------------------------------------
 
     public void setIdCode(String idCode) {
         this.idCode = idCode;
@@ -88,6 +85,13 @@ public class Transaction {
 
     public void setValue(Double value) {
         this.value = value;
+    }
+
+    @SetterProperties(sourceMethod = "getStatements")
+    public void setIdStatement(Statement idStatement) {
+        this.idStatement.notifyTransactionLinkRemove(this);
+        this.idStatement = idStatement;
+        this.idStatement.notifyTransactionLink(this);
     }
 
     @SetterProperties(sourceMethod = "getCategories")

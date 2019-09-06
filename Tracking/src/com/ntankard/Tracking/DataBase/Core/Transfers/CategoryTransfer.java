@@ -1,11 +1,12 @@
-package com.ntankard.Tracking.DataBase.Core;
+package com.ntankard.Tracking.DataBase.Core.Transfers;
 
 import com.ntankard.ClassExtension.DisplayProperties;
-import com.ntankard.ClassExtension.DisplayProperties.DataType;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.DynamicGUI.Components.Object.SetterProperties;
+import com.ntankard.Tracking.DataBase.Core.Category;
+import com.ntankard.Tracking.DataBase.Core.Period;
 
-import static com.ntankard.ClassExtension.DisplayProperties.DataType.*;
+import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY_YEN;
 
 public class CategoryTransfer {
 
@@ -18,6 +19,8 @@ public class CategoryTransfer {
     private String idCode;
     private String description;
     private Double value;
+
+    // My Children
 
     public CategoryTransfer(Period idPeriod, String idCode, Category source, Category destination, String description, Double value) {
         this.idPeriod = idPeriod;
@@ -36,19 +39,23 @@ public class CategoryTransfer {
         return getId();
     }
 
-
     //------------------------------------------------------------------------------------------------------------------
-    //########################################### Standard accessors ###################################################
+    //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
     @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
     public String getId() {
-        return idPeriod.getId() + " " + idCode;
+        return getIdPeriod().getId() + " " + getIdCode();
     }
 
     @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
     public Period getIdPeriod() {
         return idPeriod;
+    }
+
+    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
+    public String getIdCode() {
+        return idCode;
     }
 
     public Category getSource() {
@@ -57,11 +64,6 @@ public class CategoryTransfer {
 
     public Category getDestination() {
         return destination;
-    }
-
-    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
-    public String getIdCode() {
-        return idCode;
     }
 
     public String getDescription() {
@@ -73,22 +75,22 @@ public class CategoryTransfer {
         return value;
     }
 
-    @SetterProperties(sourceMethod = "getCategories")
-    public void setDestination(Category destination) {
-        if (this.destination != null) {
-            this.destination.notifyCategoriesTransferDestinationRemove(this);
-        }
-        this.destination = destination;
-        this.destination.notifyCategoriesTransferDestinationLink(this);
-    }
+    //------------------------------------------------------------------------------------------------------------------
+    //#################################################### Setters #####################################################
+    //------------------------------------------------------------------------------------------------------------------
 
     @SetterProperties(sourceMethod = "getCategories")
     public void setSource(Category destination) {
-        if (this.source != null) {
-            this.source.notifyCategoriesTransferSourceLinkRemove(this);
-        }
+        this.source.notifyCategoriesTransferSourceLinkRemove(this);
         this.source = destination;
         this.source.notifyCategoriesTransferSourceLink(this);
+    }
+
+    @SetterProperties(sourceMethod = "getCategories")
+    public void setDestination(Category destination) {
+        this.destination.notifyCategoriesTransferDestinationRemove(this);
+        this.destination = destination;
+        this.destination.notifyCategoriesTransferDestinationLink(this);
     }
 
     public void setDescription(String description) {

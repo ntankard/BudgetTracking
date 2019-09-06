@@ -1,6 +1,7 @@
 package com.ntankard.Tracking.DataBase;
 
 import com.ntankard.Tracking.DataBase.Core.*;
+import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryTransfer;
 
 import java.io.*;
 import java.util.ArrayList;

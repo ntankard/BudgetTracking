@@ -31,15 +31,6 @@ public class Currency {
     }
 
     /**
-     * Notify that another object has linked to this one
-     *
-     * @param added The object that linked
-     */
-    public void notifyBankLink(Bank added) {
-        banks.add(added);
-    }
-
-    /**
      * {@inheritDoc
      */
     @Override
@@ -48,7 +39,41 @@ public class Currency {
     }
 
     //------------------------------------------------------------------------------------------------------------------
-    //########################################### Standard accessors ###################################################
+    //################################################# Link Management ################################################
+    //------------------------------------------------------------------------------------------------------------------
+
+    // Bank Link -------------------------------------------------------------------------------------------------------
+
+    /**
+     * Notify that a Bank has linked to this Currency
+     *
+     * @param added The Bank that linked
+     */
+    public void notifyBankLink(Bank added) {
+        banks.add(added);
+    }
+
+    /**
+     * Notify that a Bank has removed there link to this Currency
+     *
+     * @param removed The Bank that was linked
+     */
+    public void notifyBankLinkRemove(Bank removed) {
+        banks.remove(removed);
+    }
+
+    /**
+     * Get all the Banks that have linked to this Currency
+     *
+     * @return All the Banks that have linked to this Currency
+     */
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    public List<Bank> getBanks() {
+        return banks;
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
     public String getId() {
@@ -65,10 +90,5 @@ public class Currency {
 
     public boolean isPrimary() {
         return isPrimary;
-    }
-
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    public List<Bank> getBanks() {
-        return banks;
     }
 }
