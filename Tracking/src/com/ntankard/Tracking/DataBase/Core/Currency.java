@@ -1,6 +1,7 @@
 package com.ntankard.Tracking.DataBase.Core;
 
 import com.ntankard.ClassExtension.MemberProperties;
+import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryTransfer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ public class Currency {
 
     // My children
     private List<Bank> banks = new ArrayList<>();
+    private List<CategoryTransfer> categoryTransfers = new ArrayList<>();
 
     /**
      * Constructor
@@ -70,6 +72,36 @@ public class Currency {
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public List<Bank> getBanks() {
         return banks;
+    }
+
+    // CategoryTransfer Link -------------------------------------------------------------------------------------------------------
+
+    /**
+     * Notify that a CategoryTransfer has linked to this Currency
+     *
+     * @param added The CategoryTransfer that linked
+     */
+    public void notifyCategoryTransferLink(CategoryTransfer added) {
+        categoryTransfers.add(added);
+    }
+
+    /**
+     * Notify that a CategoryTransfer has removed there link to this Currency
+     *
+     * @param removed The CategoryTransfer that was linked
+     */
+    public void notifyCategoryTransferLinkRemove(CategoryTransfer removed) {
+        categoryTransfers.remove(removed);
+    }
+
+    /**
+     * Get all the CategoryTransfers that have linked to this Currency
+     *
+     * @return All the CategoryTransfers that have linked to this Currency
+     */
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    public List<CategoryTransfer> getCategoryTransfers() {
+        return categoryTransfers;
     }
 
     //------------------------------------------------------------------------------------------------------------------

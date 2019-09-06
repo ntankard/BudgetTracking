@@ -4,6 +4,7 @@ import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.DynamicGUI.Components.Object.SetterProperties;
 import com.ntankard.Tracking.DataBase.Core.Category;
+import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY_YEN;
@@ -14,6 +15,7 @@ public class CategoryTransfer {
     private Period idPeriod;
     private Category source;
     private Category destination;
+    private Currency currency;
 
     // My values
     private String idCode;
@@ -22,11 +24,12 @@ public class CategoryTransfer {
 
     // My Children
 
-    public CategoryTransfer(Period idPeriod, String idCode, Category source, Category destination, String description, Double value) {
+    public CategoryTransfer(Period idPeriod, String idCode, Category source, Category destination, Currency currency, String description, Double value) {
         this.idPeriod = idPeriod;
         this.source = source;
         this.destination = destination;
         this.idCode = idCode;
+        this.currency = currency;
         this.description = description;
         this.value = value;
     }
@@ -66,6 +69,10 @@ public class CategoryTransfer {
         return destination;
     }
 
+    public Currency getCurrency() {
+        return currency;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -91,6 +98,12 @@ public class CategoryTransfer {
         this.destination.notifyCategoriesTransferDestinationRemove(this);
         this.destination = destination;
         this.destination.notifyCategoriesTransferDestinationLink(this);
+    }
+
+    public void setCurrency(Currency currency) {
+        this.currency.notifyCategoryTransferLinkRemove(this);
+        this.currency = currency;
+        this.currency.notifyCategoryTransferLink(this);
     }
 
     public void setDescription(String description) {

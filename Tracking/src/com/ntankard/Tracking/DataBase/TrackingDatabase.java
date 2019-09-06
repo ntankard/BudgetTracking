@@ -176,6 +176,7 @@ public class TrackingDatabase {
         transfer.getIdPeriod().notifyCategoryTransferLink(transfer);
         transfer.getDestination().notifyCategoriesTransferDestinationLink(transfer);
         transfer.getSource().notifyCategoriesTransferSourceLink(transfer);
+        transfer.getCurrency().notifyCategoryTransferLink(transfer);
     }
 
     //------------------------------------------------------------------------------------------------------------------

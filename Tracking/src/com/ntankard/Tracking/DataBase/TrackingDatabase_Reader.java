@@ -323,10 +323,11 @@ public class TrackingDatabase_Reader {
             String id = lines[1];
             String sourceCategoryId = lines[2];
             String destinationCategoryId = lines[3];
-            String description = lines[4];
-            double value = Double.parseDouble(lines[5]);
+            String currencyID = lines[4];
+            String description = lines[5];
+            double value = Double.parseDouble(lines[6]);
 
-            data.addCategoryTransfer(new CategoryTransfer(data.getPeriod(PeriodID), id, data.getCategory(sourceCategoryId), data.getCategory(destinationCategoryId), description, value));
+            data.addCategoryTransfer(new CategoryTransfer(data.getPeriod(PeriodID), id, data.getCategory(sourceCategoryId), data.getCategory(destinationCategoryId), data.getCurrency(currencyID), description, value));
         }
     }
 
@@ -344,6 +345,7 @@ public class TrackingDatabase_Reader {
             line.add(t.getIdCode());
             line.add(t.getSource().toString());
             line.add(t.getDestination().toString());
+            line.add(t.getCurrency().getId().toString());
             line.add(t.getDescription());
             line.add(t.getValue().toString());
             lines.add(line);
