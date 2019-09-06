@@ -99,6 +99,7 @@ public class Statement {
      * @return The net transfer in and out of the account
      */
     @DisplayProperties(dataType = CURRENCY, order = 5)
+    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
     public Double getNetTransfer() {
         return transferIn - transferOut;
     }
@@ -168,12 +169,12 @@ public class Statement {
         return end;
     }
 
-    @DisplayProperties(dataType = CURRENCY, order = 3)
+    @DisplayProperties(dataType = CURRENCY, order = 4)
     public Double getTransferIn() {
         return transferIn;
     }
 
-    @DisplayProperties(dataType = CURRENCY, order = 4)
+    @DisplayProperties(dataType = CURRENCY, order = 3)
     public Double getTransferOut() {
         return transferOut;
     }

@@ -41,7 +41,7 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
     private DynamicGUI_DisplayList<Statement> statement_panel;
     private DynamicGUI_DisplayList<CategoryTransfer> categoryTransfer_panel;
     private DynamicGUI_DisplayList<Transaction> transaction_panel;
-    private DynamicGUI_DisplayList.ListControl_Button setRecord;
+    private static DynamicGUI_DisplayList.ListControl_Button setRecord;
     private DynamicGUI_DisplayList<PeriodCategory> periodCategory_table;
     private JButton upload_btn;
     private JTabbedPane structures_tPanel;

@@ -8,6 +8,7 @@ import com.ntankard.DynamicGUI.Util.Updatable;
 import com.ntankard.Tracking.DataBase.Core.CategoryTransfer;
 import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Statement;
+import com.ntankard.Tracking.DataBase.Core.Transaction;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
 
 import javax.swing.*;
@@ -30,12 +31,14 @@ public class Period_Frame extends UpdatableJPanel {
     // The data displayed (clone of the data in the database)
     private List<Statement> statement_list = new ArrayList<>();
     private List<CategoryTransfer> categoryTransfer_list = new ArrayList<>();
+    private List<Transaction> transaction_list = new ArrayList<>();
 
     // The GUI components
-    private DynamicGUI_DisplayList<Statement> statement_panel;
-    private DynamicGUI_DisplayList.ListControl_Button setRecord;
+    private static DynamicGUI_DisplayList.ListControl_Button setRecord;
     private DynamicGUI_IntractableObject period_panel;
-    private DynamicGUI_DisplayList categoryTransfer_panel;
+    private DynamicGUI_DisplayList<Statement> statement_panel;
+    private DynamicGUI_DisplayList<CategoryTransfer> categoryTransfer_panel;
+    private DynamicGUI_DisplayList<Transaction> transaction_panel;
 
     /**
      * Create and open the period frame
@@ -88,13 +91,13 @@ public class Period_Frame extends UpdatableJPanel {
             }
             return Locale.US;
         });
-
         setRecord = new DynamicGUI_DisplayList.ListControl_Button<>("Manage Period", statement_panel, SINGLE, false);
         setRecord.addActionListener(e -> {
             List selected = statement_panel.getMainPanel().getSelectedItems();
             Statement_Frame.open(trackingDatabase, (Statement) selected.get(0), this);
         });
         statement_panel.addButton(setRecord);
+
         categoryTransfer_panel = DynamicGUI_DisplayList.newIntractableTable(categoryTransfer_list, new MemberClass(CategoryTransfer.class), true, true, ALWAYS_DISPLAY, new DynamicGUI_DisplayList.ElementController<CategoryTransfer>() {
             @Override
             public void deleteElement(CategoryTransfer toDel) {
@@ -115,11 +118,21 @@ public class Period_Frame extends UpdatableJPanel {
             }
         }, this, trackingDatabase);
 
+        transaction_panel = DynamicGUI_DisplayList.newIntractableTable(transaction_list, new MemberClass(Transaction.class), true, ALWAYS_DISPLAY, this);
+        transaction_panel.getMainPanel().setLocaleInspector(rowObject -> {
+            Transaction transaction = (Transaction) rowObject;
+            if (transaction.getIdStatement().getIdBank().getCurrency().getId().equals("YEN")) {
+                return Locale.JAPAN;
+            }
+            return Locale.US;
+        });
+
         this.add(statement_panel, BorderLayout.CENTER);
 
         JTabbedPane data_tPanel = new JTabbedPane();
         data_tPanel.addTab("Statement", statement_panel);
         data_tPanel.addTab("Category Transfer", categoryTransfer_panel);
+        data_tPanel.addTab("Transactions", transaction_panel);
         this.add(data_tPanel, BorderLayout.CENTER);
 
         period_panel = DynamicGUI_IntractableObject.newIntractableObjectPanel(core, INFO_DISPLAY, false, this, trackingDatabase);
@@ -142,12 +155,15 @@ public class Period_Frame extends UpdatableJPanel {
     public void update() {
         statement_list.clear();
         categoryTransfer_list.clear();
+        transaction_list.clear();
 
         statement_list.addAll(core.getStatements());
         categoryTransfer_list.addAll(core.getCategoryTransfers());
+        transaction_list.addAll(core.getTransactions());
 
         statement_panel.update();
         categoryTransfer_panel.update();
+        transaction_panel.update();
 
         //statement_panel.getMainPanel().getListSelectionModel().setSelectionInterval(4, 4);
     }

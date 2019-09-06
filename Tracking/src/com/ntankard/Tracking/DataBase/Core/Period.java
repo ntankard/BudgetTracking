@@ -7,6 +7,7 @@ import com.ntankard.ClassExtension.MemberProperties;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.List;
 
 import static com.ntankard.ClassExtension.DisplayProperties.*;
@@ -192,6 +193,15 @@ public class Period {
         }
 
         return total;
+    }
+
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    public List<Transaction> getTransactions() {
+        List<Transaction> toReturn = new ArrayList<>();
+        for (Statement statement : statements) {
+            toReturn.addAll(statement.getTransactions());
+        }
+        return toReturn;
     }
 
     //------------------------------------------------------------------------------------------------------------------
