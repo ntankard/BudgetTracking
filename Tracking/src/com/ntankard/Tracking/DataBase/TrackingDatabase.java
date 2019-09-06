@@ -151,32 +151,32 @@ public class TrackingDatabase {
     }
 
     public void addPeriod(Period period) {
-        periods.add(period);
-        statementMap.put(period, new HashMap<>());
-        periodMap.put(period.getId(), period);
-        periodCategory.add(new PeriodCategory(period, this));
+        this.periods.add(period);
+        this.statementMap.put(period, new HashMap<>());
+        this.periodMap.put(period.getId(), period);
+        this.periodCategory.add(new PeriodCategory(period, this));
     }
 
     public void addStatement(Statement statement) {
-        statements.add(statement);
-        statementMap.get(statement.getIdPeriod()).put(statement.getIdBank(), statement);
+        this.statements.add(statement);
+        this.statementMap.get(statement.getIdPeriod()).put(statement.getIdBank(), statement);
         statement.getIdBank().notifyStatementLink(statement);
         statement.getIdPeriod().notifyStatementLink(statement);
     }
 
     public void addTransaction(Transaction transaction) {
-        transactions.add(transaction);
+        this.transactions.add(transaction);
         transaction.getIdStatement().notifyTransactionLink(transaction);
         transaction.getCategory().notifyTransactionLink(transaction);
     }
 
-    public void addCategoryTransfer(CategoryTransfer transfer) {
-        this.categoryTransfer.add(transfer);
-        this.categoryTransferMap.put(transfer.getId(), transfer);
-        transfer.getIdPeriod().notifyCategoryTransferLink(transfer);
-        transfer.getDestination().notifyCategoriesTransferDestinationLink(transfer);
-        transfer.getSource().notifyCategoriesTransferSourceLink(transfer);
-        transfer.getCurrency().notifyCategoryTransferLink(transfer);
+    public void addCategoryTransfer(CategoryTransfer categoryTransfer) {
+        this.categoryTransfer.add(categoryTransfer);
+        this.categoryTransferMap.put(categoryTransfer.getId(), categoryTransfer);
+        categoryTransfer.getIdPeriod().notifyCategoryTransferLink(categoryTransfer);
+        categoryTransfer.getDestination().notifyCategoriesTransferDestinationLink(categoryTransfer);
+        categoryTransfer.getSource().notifyCategoriesTransferSourceLink(categoryTransfer);
+        categoryTransfer.getCurrency().notifyCategoryTransferLink(categoryTransfer);
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -186,15 +186,16 @@ public class TrackingDatabase {
     public void removeTransaction(Transaction transaction) {
         transaction.getIdStatement().notifyTransactionLinkRemove(transaction);
         transaction.getCategory().notifyTransactionLinkRemove(transaction);
-        transactions.remove(transaction);
+        this.transactions.remove(transaction);
     }
 
     public void removeCategoryTransfer(CategoryTransfer categoryTransfer) {
         categoryTransfer.getDestination().notifyCategoriesTransferDestinationRemove(categoryTransfer);
         categoryTransfer.getSource().notifyCategoriesTransferSourceLinkRemove(categoryTransfer);
         categoryTransfer.getIdPeriod().notifyCategoryTransferLinkRemove(categoryTransfer);
+        categoryTransfer.getCurrency().notifyCategoryTransferLinkRemove(categoryTransfer);
         this.categoryTransfer.remove(categoryTransfer);
-        categoryTransferMap.remove(categoryTransfer.getId());
+        this.categoryTransferMap.remove(categoryTransfer.getId());
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -228,7 +229,6 @@ public class TrackingDatabase {
     //------------------------------------------------------------------------------------------------------------------
     //########################################### Standard accessors ###################################################
     //------------------------------------------------------------------------------------------------------------------
-
 
     public List<Currency> getCurrencies() {
         return Collections.unmodifiableList(currencies);
