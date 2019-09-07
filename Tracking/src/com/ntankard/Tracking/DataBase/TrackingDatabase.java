@@ -137,9 +137,6 @@ public class TrackingDatabase {
     }
 
     public void addCategory(Category category) {
-        if (category.getIdCategory() != null) {
-            category.getIdCategory().notifyCategoryLink(category);
-        }
         this.categories.add(category);
         this.categoryMap.put(category.getId(), category);
     }

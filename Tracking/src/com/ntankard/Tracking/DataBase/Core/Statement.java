@@ -101,17 +101,11 @@ public class Statement {
     /**
      * Get all values for a given category
      *
-     * @param category    The category to check
-     * @param sumChildren Should you sum the children as well?
+     * @param category The category to check
      * @return The total values
      */
-    public double getCategoryTotal(Category category, boolean sumChildren) {
+    public double getCategoryTotal(Category category) {
         double total = 0;
-        if (sumChildren) {
-            for (Category child : category.getCategories()) {
-                total += getCategoryTotal(child, true);
-            }
-        }
         for (Transaction t : transactions) {
             if (t.getCategory().equals(category)) {
                 total += t.getValue();

@@ -11,13 +11,12 @@ import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 public class Category {
 
     // My parents
-    private Category idCategory;
 
     // My values
-    private String idName;
+    private String id;
+    private int order;
 
     // My Children
-    private List<Category> categories = new ArrayList<>();
     private List<Transaction> transactions = new ArrayList<>();
     private List<CategoryTransfer> categoriesTransferSources = new ArrayList<>();
     private List<CategoryTransfer> categoriesTransferDestinations = new ArrayList<>();
@@ -25,9 +24,9 @@ public class Category {
     /**
      * Constructor
      */
-    public Category(String idName, Category idCategory) {
-        this.idName = idName;
-        this.idCategory = idCategory;
+    public Category(String id, int order) {
+        this.id = id;
+        this.order = order;
     }
 
     /**
@@ -41,36 +40,6 @@ public class Category {
     //------------------------------------------------------------------------------------------------------------------
     //################################################# Link Management ################################################
     //------------------------------------------------------------------------------------------------------------------
-
-    // Category Link ---------------------------------------------------------------------------------------------------
-
-    /**
-     * Notify that a Category has linked to this Category
-     *
-     * @param added The Category that linked
-     */
-    public void notifyCategoryLink(Category added) {
-        categories.add(added);
-    }
-
-    /**
-     * Notify that a Category has removed there link to this Category
-     *
-     * @param removed The Category that was linked
-     */
-    public void notifyCategoryLinkRemove(Category removed) {
-        categories.remove(removed);
-    }
-
-    /**
-     * Get all the Categorys that have linked to this Category
-     *
-     * @return All the Categorys that have linked to this Category
-     */
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    public List<Category> getCategories() {
-        return categories;
-    }
 
     // Transaction Link ------------------------------------------------------------------------------------------------
 
@@ -165,17 +134,11 @@ public class Category {
     //------------------------------------------------------------------------------------------------------------------
 
     public String getId() {
-        if (getIdCategory() != null) {
-            return getIdCategory().toString() + "-" + getIdName();
-        }
-        return getIdName();
+        return id;
     }
 
-    public Category getIdCategory() {
-        return idCategory;
-    }
-
-    public String getIdName() {
-        return idName;
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    public int getOrder() {
+        return order;
     }
 }

@@ -169,10 +169,10 @@ public class Period {
 
     // Filtered lists --------------------------------------------------------------------------------------------------
 
-    public double getCategoryTotal(Category member, boolean sumChildren) {
+    public double getCategoryTotal(Category member) {
         double total = 0;
         for (Statement s : statements) {
-            total += s.getCategoryTotal(member, sumChildren) * s.getIdBank().getCurrency().getToPrimary();
+            total += s.getCategoryTotal(member) * s.getIdBank().getCurrency().getToPrimary();
         }
 
         return total;

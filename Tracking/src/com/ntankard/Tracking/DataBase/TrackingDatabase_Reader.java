@@ -121,13 +121,8 @@ public class TrackingDatabase_Reader {
         ArrayList<String[]> allLines = readLines(csvFile);
         for (String[] lines : allLines) {
             String id = lines[0];
-
-            if (lines.length == 2) {
-                String parentId = lines[1];
-                data.addCategory(new Category(id, data.getCategory(parentId)));
-            } else {
-                data.addCategory(new Category(id, null));
-            }
+            int order = Integer.parseInt(lines[1]);
+            data.addCategory(new Category(id, order));
         }
     }
 
@@ -141,12 +136,8 @@ public class TrackingDatabase_Reader {
         ArrayList<List<String>> lines = new ArrayList<>();
         for (Category t : data.getCategories()) {
             List<String> line = new ArrayList<>();
-            line.add(t.getIdName());
-            if (t.getIdCategory() != null) {
-                line.add(t.getIdCategory().getId());
-            } else {
-                line.add("");
-            }
+            line.add(t.getId());
+            line.add(t.getOrder() + "");
             lines.add(line);
         }
 
