@@ -10,6 +10,7 @@ import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Statement;
 import com.ntankard.Tracking.DataBase.Core.Transaction;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
+import com.ntankard.Tracking.Frames.Swing.PeriodSummary;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -39,6 +40,7 @@ public class Period_Frame extends UpdatableJPanel {
     private DynamicGUI_DisplayList<Statement> statement_panel;
     private DynamicGUI_DisplayList<CategoryTransfer> categoryTransfer_panel;
     private DynamicGUI_DisplayList<Transaction> transaction_panel;
+    private PeriodSummary periodSummary_panel;
 
     /**
      * Create and open the period frame
@@ -127,9 +129,12 @@ public class Period_Frame extends UpdatableJPanel {
             return Locale.US;
         });
 
+        periodSummary_panel = new PeriodSummary(trackingDatabase, core, this);
+
         this.add(statement_panel, BorderLayout.CENTER);
 
         JTabbedPane data_tPanel = new JTabbedPane();
+        data_tPanel.addTab("Summary", periodSummary_panel);
         data_tPanel.addTab("Statement", statement_panel);
         data_tPanel.addTab("Category Transfer", categoryTransfer_panel);
         data_tPanel.addTab("Transactions", transaction_panel);

@@ -3,11 +3,12 @@ package com.ntankard.Tracking.DataBase.Core;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryTransfer;
+import com.ntankard.Tracking.DataBase.Interface.Period_SummaryCategoryTransfer;
+import com.ntankard.Tracking.DataBase.Interface.Period_SummaryTransaction;
+import com.ntankard.Tracking.DataBase.TrackingDatabase;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
+import java.util.*;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataContext.ZERO_BELOW_BAD;
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY_AUD;
@@ -20,11 +21,12 @@ public class Period {
     /**
      * Build a period over an entire month
      *
-     * @param month The month (1-12)
-     * @param year  The year
+     * @param month    The month (1-12)
+     * @param year     The year
+     * @param database The main database, used to get categories
      * @return The Period for the month
      */
-    public static Period Month(int month, int year) {
+    public static Period Month(int month, int year, TrackingDatabase database) {
         Calendar start = Calendar.getInstance();
         start.clear();
         start.set(Calendar.YEAR, year);
@@ -47,7 +49,7 @@ public class Period {
         }
 
         SimpleDateFormat monthFormat = new SimpleDateFormat("yyyy-MM");
-        return new Period(monthFormat.format(start.getTime()), start, end);
+        return new Period(monthFormat.format(start.getTime()), start, end, database);
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -65,13 +67,22 @@ public class Period {
     private List<Statement> statements = new ArrayList<>();
     private List<CategoryTransfer> categoryTransfers = new ArrayList<>();
 
+    // Special Access
+    private Map<Category, Period_SummaryTransaction> transactionSummaries = new HashMap<>();
+    private Map<Category, Period_SummaryCategoryTransfer> categoryTransferSummaries = new HashMap<>();
+
     /**
      * Private constructor
      */
-    private Period(String id, Calendar start, Calendar end) {
+    private Period(String id, Calendar start, Calendar end, TrackingDatabase database) {
         this.id = id;
         this.start = start;
         this.end = end;
+
+        for (Category category : database.getCategories()) {
+            transactionSummaries.put(category, new Period_SummaryTransaction(this, category, statements));
+            categoryTransferSummaries.put(category, new Period_SummaryCategoryTransfer(this, category, categoryTransfers));
+        }
     }
 
     /**
@@ -268,5 +279,13 @@ public class Period {
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public Calendar getEnd() {
         return end;
+    }
+
+    public Map<Category, Period_SummaryTransaction> getTransactionSummaries() {
+        return transactionSummaries;
+    }
+
+    public Map<Category, Period_SummaryCategoryTransfer> getCategoryTransferSummaries() {
+        return categoryTransferSummaries;
     }
 }

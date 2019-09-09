@@ -155,7 +155,7 @@ public class TrackingDatabase_Reader {
         for (String[] lines : allLines) {
             int month = Integer.parseInt(lines[0]);
             int year = Integer.parseInt(lines[1]);
-            data.addPeriod(Period.Month(month, year));
+            data.addPeriod(Period.Month(month, year, data));
         }
     }
 
