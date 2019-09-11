@@ -8,22 +8,18 @@ import java.awt.*;
 public class PeriodSummary_Renderer extends DefaultTableCellRenderer {
 
     public static class RendererObject {
-        private Object coreObject;
+        Object coreObject;
 
-        public int top;
-        public int left;
-        public int bottom;
-        public int right;
+        int top;
+        int left;
+        int bottom;
+        int right;
 
-        public RendererObject(Object obj) {
-            this(obj, 1, 1);
+        RendererObject() {
+            this("", 0, 0, 0, 0);
         }
 
-        public RendererObject(Object obj, int bottom, int right) {
-            this(obj, 0, 0, bottom, right);
-        }
-
-        public RendererObject(Object coreObject, int top, int left, int bottom, int right) {
+        RendererObject(Object coreObject, int top, int left, int bottom, int right) {
             this.coreObject = coreObject;
             this.top = top;
             this.left = left;
@@ -49,4 +45,6 @@ public class PeriodSummary_Renderer extends DefaultTableCellRenderer {
 
         return component;
     }
+
+
 }

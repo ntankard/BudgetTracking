@@ -58,7 +58,7 @@ public class Period_SummaryTransaction extends Period_Summary<Transaction> {
     /**
      * Get all transactions from a specific statement
      *
-     * @param statement The statment to read from
+     * @param statement The statement to read from
      * @return All transactions from a specific statement
      */
     public List<Transaction> getTransactions(Statement statement) {
@@ -69,5 +69,38 @@ public class Period_SummaryTransaction extends Period_Summary<Transaction> {
             }
         }
         return transactions;
+    }
+
+    /**
+     * Sum all the transaction for this category, in this period that are in the specified currency
+     *
+     * @param toSum The currency to sum
+     * @return All the transaction for this category, in this period that are in the specified currency
+     */
+    public double getTotal(Currency toSum) {
+        double sum = 0;
+        for (Statement statement : statements) {
+            if (statement.getIdBank().getCurrency().equals(toSum)) {
+                for (Transaction transaction : statement.getTransactions()) {
+                    if (transaction.getCategory().equals(category)) {
+                        sum += transaction.getValue();
+                    }
+                }
+            }
+        }
+        return sum;
+    }
+
+    /**
+     * Sum all the transaction for this category, in this period. Return in the primary currency
+     *
+     * @return All the transaction for this category, in this period. Return in the primary currency
+     */
+    public double getTotal() {
+        double sum = 0;
+        for (Currency currency : getCurrencies()) {
+            sum += getTotal(currency) * currency.getToPrimary();
+        }
+        return sum;
     }
 }

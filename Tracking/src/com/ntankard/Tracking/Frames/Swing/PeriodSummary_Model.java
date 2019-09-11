@@ -55,22 +55,54 @@ public class PeriodSummary_Model extends AbstractTableModel implements Updatable
      *
      * @param rowIndex    The row shifted so 0 is the start ofd the transaction section
      * @param columnIndex The column
-     * @return The value for the row in the transaction section
+     * @param value       The value for the row in the transaction section
      */
-    private Object getTransactionAt(int rowIndex, int columnIndex) {
-        if (rowIndex < 2) { // Summary section
-            int right = BLANK_LINE;
-            if (columnIndex < columnsCategories.size() - 1) { // All except bottom
-                if (!columnsCategories.get(columnIndex).equals(columnsCategories.get(columnIndex + 1))) {
-                    right = THICK_LINE;
-                }
-            } else { // Main data section
-                right = THICK_LINE;
-            }
+    private void getTransactionAt(int rowIndex, int columnIndex, RendererObject value) {
+        if (rowIndex == 0) { // Total summary
+            getTransactionTotalAt(columnIndex, value);
+        } else if (rowIndex == 1) { // Currency summary
+            getTransactionCurrencyTotalAt(columnIndex, value);
+        } else { // Main data
+            getTransactionDataAt(rowIndex - 2, columnIndex, value);
+        }
+    }
 
-            return new RendererObject("", THICK_LINE, right);
-        } else {
-            return getTransactionDataAt(rowIndex - 2, columnIndex);
+    /**
+     * Get the value for the row in the total section
+     * @param columnIndex The column
+     * @param value       The value for the row with forming information
+     */
+    private void getTransactionTotalAt(int columnIndex, RendererObject value) {
+        // Get the core data
+        if (columnIndex != 0) {
+            if (columnsDataCurrency.get(columnIndex - 1) == null) {
+                value.coreObject = CURRENCY_FORMAT.get(trackingDatabase.getCurrency("YEN")).format(core.getTransactionSummaries().get(columnsCategories.get(columnIndex)).getTotal());
+            }
+        }
+
+        // Format the display
+        value.bottom = THICK_LINE;
+    }
+
+    /**
+     * Get the value for the row in the currency summary section
+     * @param columnIndex The column
+     * @param value       The value for the row with forming information
+     */
+    private void getTransactionCurrencyTotalAt(int columnIndex, RendererObject value) {
+        // Get the core data
+        Currency toSum = columnsDataCurrency.get(columnIndex);
+        if (toSum != null) {
+            double total = core.getTransactionSummaries().get(columnsCategories.get(columnIndex)).getTotal(toSum);
+            value.coreObject = CURRENCY_FORMAT.get(toSum).format(total);
+        }
+
+        // Format the display
+        value.bottom = THICK_LINE;
+        if (columnIndex < columnsCategories.size() - 1) {
+            if (columnsCategories.get(columnIndex).equals(columnsCategories.get(columnIndex + 1))) {
+                value.right = STANDARD_LINE;
+            }
         }
     }
 
@@ -79,38 +111,32 @@ public class PeriodSummary_Model extends AbstractTableModel implements Updatable
      *
      * @param rowIndex    The row shifted so 0 is the start ofd the transaction data section
      * @param columnIndex The column
-     * @return The value for the row in the main data section of the transaction section
+     * @param value       The value for the row with forming information
      */
-    private Object getTransactionDataAt(int rowIndex, int columnIndex) {
-        Object toReturn = "";
-
+    private void getTransactionDataAt(int rowIndex, int columnIndex, RendererObject value) {
         // Get the core data
         List<Transaction> transactions = this.transactions.get(columnsCategories.get(columnIndex));
         if (rowIndex < transactions.size()) {
             if (columnsDataCurrency.get(columnIndex) == null) {
-                toReturn = transactions.get(rowIndex).getDescription();
+                value.coreObject = transactions.get(rowIndex).getDescription();
             } else {
                 Currency currency = columnsDataCurrency.get(columnIndex);
                 if (transactions.get(rowIndex).getIdStatement().getIdBank().getCurrency().equals(currency)) {
-                    toReturn = CURRENCY_FORMAT.get(currency).format(transactions.get(rowIndex).getValue());
+                    value.coreObject = CURRENCY_FORMAT.get(currency).format(transactions.get(rowIndex).getValue());
                 }
             }
         }
 
-        // Draw the borders
-        int right = BLANK_LINE;
-        if (columnIndex < columnsCategories.size() - 1) {
-            if (!columnsCategories.get(columnIndex).equals(columnsCategories.get(columnIndex + 1))) {
-                right = THICK_LINE;
-            }
-            if (columnsDataCurrency.get(columnIndex) == null) {
-                right = STANDARD_LINE;
-            }
-        } else {
-            right = THICK_LINE;
+        // Format the display
+        value.bottom = STANDARD_LINE;
+        if (rowIndex == transactionMax - 1) {
+            value.bottom = THICK_LINE;
         }
-
-        return new RendererObject(toReturn, STANDARD_LINE, right);
+        if (columnIndex < columnsCategories.size() - 1) {
+            if (columnsDataCurrency.get(columnIndex) == null) {
+                value.right = STANDARD_LINE;
+            }
+        }
     }
 
     /**
@@ -146,13 +172,23 @@ public class PeriodSummary_Model extends AbstractTableModel implements Updatable
      */
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        if (rowIndex == 0) {
-            // Summary row
-            return "";
-        } else {
-            // Transaction rows
-            return getTransactionAt(rowIndex - 1, columnIndex);
+        RendererObject value = new RendererObject();
+
+        // Thick lines for the column separator
+        value.right = THICK_LINE;
+        if (columnIndex < columnsCategories.size() - 1) {
+            if (columnsCategories.get(columnIndex).equals(columnsCategories.get(columnIndex + 1))) {
+                value.right = BLANK_LINE;
+            }
         }
+
+        if (rowIndex == 0) {  // Summary row
+            // TBD
+        } else { // Transaction rows
+            getTransactionAt(rowIndex - 1, columnIndex, value);
+        }
+
+        return value;
     }
 
     /**
