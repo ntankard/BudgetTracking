@@ -87,19 +87,13 @@ public class CategoryTransfer {
     //------------------------------------------------------------------------------------------------------------------
 
     @SetterProperties(sourceMethod = "getCategories")
-    public void setSource(Category destination) {
-        this.source.notifyCategoriesTransferSourceLinkRemove(this);
-        this.source = destination;
-        this.source.notifyCategoriesTransferSourceLink(this);
-    }
-
-    @SetterProperties(sourceMethod = "getCategories")
     public void setDestination(Category destination) {
         this.destination.notifyCategoriesTransferDestinationRemove(this);
         this.destination = destination;
         this.destination.notifyCategoriesTransferDestinationLink(this);
     }
 
+    @SetterProperties(sourceMethod = "getCurrencies")
     public void setCurrency(Currency currency) {
         this.currency.notifyCategoryTransferLinkRemove(this);
         this.currency = currency;

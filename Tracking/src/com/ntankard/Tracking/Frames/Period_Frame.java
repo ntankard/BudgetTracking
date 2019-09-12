@@ -170,6 +170,8 @@ public class Period_Frame extends UpdatableJPanel {
         categoryTransfer_panel.update();
         transaction_panel.update();
 
+        periodSummary_panel.update();
+
         //statement_panel.getMainPanel().getListSelectionModel().setSelectionInterval(4, 4);
     }
 }

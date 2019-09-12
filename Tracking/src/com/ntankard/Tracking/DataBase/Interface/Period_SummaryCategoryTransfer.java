@@ -1,8 +1,6 @@
 package com.ntankard.Tracking.DataBase.Interface;
 
-import com.ntankard.Tracking.DataBase.Core.Category;
-import com.ntankard.Tracking.DataBase.Core.Currency;
-import com.ntankard.Tracking.DataBase.Core.Period;
+import com.ntankard.Tracking.DataBase.Core.*;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryTransfer;
 
 import java.util.ArrayList;
@@ -32,7 +30,14 @@ public class Period_SummaryCategoryTransfer extends Period_Summary<CategoryTrans
      */
     @Override
     public List<Currency> getCurrencies() {
-        return new ArrayList<>();
+        List<Currency> toReturn = new ArrayList<>();
+        for (CategoryTransfer categoryTransfer : getEvents()) {
+            Currency currency = categoryTransfer.getCurrency();
+            if (!toReturn.contains(currency)) {
+                toReturn.add(currency);
+            }
+        }
+        return toReturn;
     }
 
     /**
@@ -40,6 +45,45 @@ public class Period_SummaryCategoryTransfer extends Period_Summary<CategoryTrans
      */
     @Override
     public List<CategoryTransfer> getEvents() {
-        return new ArrayList<>();
+        List<CategoryTransfer> toReturn = new ArrayList<>();
+        for (CategoryTransfer categoryTransfer : categoryTransfers) {
+            if (categoryTransfer.getSource().equals(category) || categoryTransfer.getDestination().equals(category)) {
+                toReturn.add(categoryTransfer);
+            }
+        }
+        return toReturn;
+    }
+
+    /**
+     * Sum all the CategoryTransfers for this category, in this period that are in the specified currency
+     *
+     * @param toSum The currency to sum
+     * @return All the CategoryTransfers for this category, in this period that are in the specified currency
+     */
+    public double getTotal(Currency toSum) {
+        double sum = 0;
+        for (CategoryTransfer categoryTransfer : categoryTransfers) {
+            if (categoryTransfer.getCurrency().equals(toSum)) {
+                if (categoryTransfer.getSource().equals(category)) {
+                    sum -= categoryTransfer.getValue();
+                } else if (categoryTransfer.getDestination().equals(category)) {
+                    sum += categoryTransfer.getValue();
+                }
+            }
+        }
+        return sum;
+    }
+
+    /**
+     * Sum all the CategoryTransfers for this category, in this period. Return in the primary currency
+     *
+     * @return All the CategoryTransfers for this category, in this period. Return in the primary currency
+     */
+    public double getTotal() {
+        double sum = 0;
+        for (Currency currency : getCurrencies()) {
+            sum += getTotal(currency) * currency.getToPrimary();
+        }
+        return sum;
     }
 }
