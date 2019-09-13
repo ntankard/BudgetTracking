@@ -30,6 +30,8 @@ public class PeriodSummary_Model extends AbstractTableModel implements Updatable
     // Column data
     private List<Category> columnsCategories = new ArrayList<>();
     private List<Currency> columnsDataCurrency = new ArrayList<>();
+    private List<Integer> columnsCategoriesCount = new ArrayList<>();
+    private List<Integer> columnsCategoriesIndex = new ArrayList<>();
 
     // Row data
     private Map<Category, List<Transaction>> transactions = new HashMap<>();
@@ -276,12 +278,11 @@ public class PeriodSummary_Model extends AbstractTableModel implements Updatable
         RendererObject value = new RendererObject();
 
         // Thick lines for the column separator
-        value.right = THICK_LINE;
-        if (columnIndex < columnsCategories.size() - 1) {
-            if (columnsCategories.get(columnIndex).equals(columnsCategories.get(columnIndex + 1))) {
-                value.right = BLANK_LINE;
-            }
+        value.right = BLANK_LINE;
+        if (columnsCategoriesIndex.get(columnIndex) == columnsCategoriesCount.get(columnIndex) - 1) {
+            value.right = THICK_LINE;
         }
+
 
         if (rowIndex == 0) {  // Summary row
             // TBD
@@ -301,6 +302,8 @@ public class PeriodSummary_Model extends AbstractTableModel implements Updatable
     public void update() {
         columnsCategories.clear();
         columnsDataCurrency.clear();
+        columnsCategoriesCount.clear();
+        columnsCategoriesIndex.clear();
 
         transactions.clear();
         transactionMax = 0;
@@ -313,10 +316,6 @@ public class PeriodSummary_Model extends AbstractTableModel implements Updatable
 
         for (Category category : categories) {
 
-            // Add the name field TODO if all is blank you may want to remove this column
-            columnsCategories.add(category);
-            columnsDataCurrency.add(null);
-
             // Find all the currencies used in this category
             List<Currency> transactionCurrencies = core.getTransactionSummaries().get(category).getCurrencies();
             List<Currency> transferCurrencies = core.getCategoryTransferSummaries().get(category).getCurrencies();
@@ -327,25 +326,36 @@ public class PeriodSummary_Model extends AbstractTableModel implements Updatable
             }
             transferCurrencies.sort(Comparator.comparing(Currency::getId).reversed());
 
-            // Add a column for each currency
-            for (Currency currency : transferCurrencies) {
+            if (transactionCurrencies.size() != 0) {
+                // Add the name field TODO if all is blank you may want to remove this column
                 columnsCategories.add(category);
-                columnsDataCurrency.add(currency);
-            }
+                columnsDataCurrency.add(null);
+                columnsCategoriesCount.add(1 + transferCurrencies.size());
+                columnsCategoriesIndex.add(0);
 
-            // Populate transaction data
-            List<Transaction> catTransactions = new ArrayList<>(core.getTransactionSummaries().get(category).getEvents());
-            if (catTransactions.size() > transactionMax) {
-                transactionMax = catTransactions.size();
-            }
-            transactions.put(category, catTransactions);
 
-            // Populate categoryTransfers data
-            List<CategoryTransfer> catCategoryTransfers = new ArrayList<>(core.getCategoryTransferSummaries().get(category).getEvents());
-            if (catCategoryTransfers.size() > categoryTransferMax) {
-                categoryTransferMax = catCategoryTransfers.size();
+                // Add a column for each currency
+                for (Currency currency : transferCurrencies) {
+                    columnsCategories.add(category);
+                    columnsDataCurrency.add(currency);
+                    columnsCategoriesCount.add(1 + transferCurrencies.size());
+                    columnsCategoriesIndex.add(columnsCategoriesIndex.get(columnsCategoriesIndex.size() - 1) + 1);
+                }
+
+                // Populate transaction data
+                List<Transaction> catTransactions = new ArrayList<>(core.getTransactionSummaries().get(category).getEvents());
+                if (catTransactions.size() > transactionMax) {
+                    transactionMax = catTransactions.size();
+                }
+                transactions.put(category, catTransactions);
+
+                // Populate categoryTransfers data
+                List<CategoryTransfer> catCategoryTransfers = new ArrayList<>(core.getCategoryTransferSummaries().get(category).getEvents());
+                if (catCategoryTransfers.size() > categoryTransferMax) {
+                    categoryTransferMax = catCategoryTransfers.size();
+                }
+                categoryTransfers.put(category, catCategoryTransfers);
             }
-            categoryTransfers.put(category, catCategoryTransfers);
         }
 
         // Apply the update
