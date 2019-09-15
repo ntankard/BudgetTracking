@@ -1,4 +1,4 @@
-package com.ntankard.Tracking.Frames.Swing;
+package com.ntankard.Tracking.Frames.Swing.PeriodSummary;
 
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
@@ -29,7 +29,10 @@ public class PeriodSummary_Renderer extends DefaultTableCellRenderer {
 
         @Override
         public String toString() {
-            return coreObject.toString();
+            if(coreObject != null) {
+                return coreObject.toString();
+            }
+            return "";
         }
     }
 

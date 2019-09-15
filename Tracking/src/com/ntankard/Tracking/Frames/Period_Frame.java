@@ -10,7 +10,7 @@ import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Statement;
 import com.ntankard.Tracking.DataBase.Core.Transaction;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
-import com.ntankard.Tracking.Frames.Swing.PeriodSummary;
+import com.ntankard.Tracking.Frames.Swing.PeriodSummary.PeriodSummary;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

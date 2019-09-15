@@ -5,6 +5,7 @@ import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryTransfer;
 import com.ntankard.Tracking.DataBase.Interface.PeriodCategory;
 
+import java.text.NumberFormat;
 import java.util.*;
 
 public class TrackingDatabase {
@@ -20,6 +21,7 @@ public class TrackingDatabase {
 
     // Special Containers
     private List<PeriodCategory> periodCategory = new ArrayList<>();
+    private Map<Currency, NumberFormat> currencyFormat = new HashMap<>();
 
     // Container accessors
     private Map<String, Currency> currencyMap = new HashMap<>();
@@ -52,6 +54,9 @@ public class TrackingDatabase {
                 }
             }
         }
+
+        currencyFormat.put(getCurrency("AUD"), NumberFormat.getCurrencyInstance(Locale.US));
+        currencyFormat.put(getCurrency("YEN"), NumberFormat.getCurrencyInstance(Locale.JAPAN));
     }
 
     /**
@@ -96,7 +101,7 @@ public class TrackingDatabase {
     /**
      * Find the next available transaction code
      *
-     * @param s The statement to containing the transactions
+     * @param s The statement to containing the rows
      * @return The next available code
      */
     public String getNextTransactionId(Statement s) {
@@ -113,7 +118,7 @@ public class TrackingDatabase {
     /**
      * Find the next available categoryTransfer code
      *
-     * @param core The statement to containing the transactions
+     * @param core The statement to containing the rows
      * @return The next available code
      */
     public String getNextCategoryTransferId(Period core) {
@@ -128,7 +133,7 @@ public class TrackingDatabase {
     }
 
     //------------------------------------------------------------------------------------------------------------------
-    //############################################# Populate Data ######################################################
+    //############################################# Populate Rows ######################################################
     //------------------------------------------------------------------------------------------------------------------
 
     public void addCurrency(Currency currency) {
@@ -177,7 +182,7 @@ public class TrackingDatabase {
     }
 
     //------------------------------------------------------------------------------------------------------------------
-    //############################################## Remove Data #######################################################
+    //############################################## Remove Rows #######################################################
     //------------------------------------------------------------------------------------------------------------------
 
     public void removeTransaction(Transaction transaction) {
@@ -221,6 +226,14 @@ public class TrackingDatabase {
 
     public CategoryTransfer getCategoryTransfer(String categoryTransferId) {
         return categoryTransferMap.get(categoryTransferId);
+    }
+
+    public NumberFormat getCurrencyFormat(Currency currency){
+        return currencyFormat.get(currency);
+    }
+
+    public NumberFormat getCurrencyFormat(String currency){
+        return currencyFormat.get(getCurrency(currency));
     }
 
     //------------------------------------------------------------------------------------------------------------------
