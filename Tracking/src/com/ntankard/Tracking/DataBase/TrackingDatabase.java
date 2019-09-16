@@ -31,32 +31,45 @@ public class TrackingDatabase {
     private Map<Period, Map<Bank, Statement>> statementMap = new HashMap<>();
     private Map<String, CategoryTransfer> categoryTransferMap = new HashMap<>();
 
+    private boolean isFinalized = false;
+
     /**
      * Repair any missing data
      */
     public void finalizeData() {
         for (Period p : periods) { // TODO this needs to be sorted based on data to work properly
-            Period last = getPreviousPeriod(p);
-            for (Bank b : banks) {
-
-                // Dose this period have a statement for this bank?
-                Statement match = getStatement(b, p);
-                if (match == null) {
-
-                    // Find the statement from the previous month if it exists
-                    double end = 0.0;
-                    if (last != null) {
-                        Statement lastStatement = getStatement(last, b);
-                        end = lastStatement.getEnd();
-                    }
-
-                    addStatement(new Statement(b, p, end, 0.0, 0.0, 0.0));
-                }
-            }
+            fixPeriod(p);
         }
 
         currencyFormat.put(getCurrency("AUD"), NumberFormat.getCurrencyInstance(Locale.US));
         currencyFormat.put(getCurrency("YEN"), NumberFormat.getCurrencyInstance(Locale.JAPAN));
+
+        isFinalized = true;
+    }
+
+    /**
+     * Ensure that a period has all the data it should
+     *
+     * @param period The period to fix
+     */
+    public void fixPeriod(Period period) {
+        Period last = getPreviousPeriod(period);
+        for (Bank b : banks) {
+
+            // Dose this period have a statement for this bank?
+            Statement match = getStatement(b, period);
+            if (match == null) {
+
+                // Find the statement from the previous month if it exists
+                double end = 0.0;
+                if (last != null) {
+                    Statement lastStatement = getStatement(last, b);
+                    end = lastStatement.getEnd();
+                }
+
+                addStatement(new Statement(b, period, end, 0.0, 0.0, 0.0));
+            }
+        }
     }
 
     /**
@@ -156,6 +169,9 @@ public class TrackingDatabase {
         this.periods.add(period);
         this.statementMap.put(period, new HashMap<>());
         this.periodMap.put(period.getId(), period);
+        if (isFinalized) {
+            fixPeriod(period);
+        }
         this.periodCategory.add(new PeriodCategory(period, this));
     }
 
@@ -221,18 +237,21 @@ public class TrackingDatabase {
     }
 
     public Statement getStatement(Bank bankID, Period periodID) {
-        return statementMap.get(periodID).get(bankID);
+        if (statementMap.get(periodID) != null) {
+            return statementMap.get(periodID).get(bankID);
+        }
+        return null;
     }
 
     public CategoryTransfer getCategoryTransfer(String categoryTransferId) {
         return categoryTransferMap.get(categoryTransferId);
     }
 
-    public NumberFormat getCurrencyFormat(Currency currency){
+    public NumberFormat getCurrencyFormat(Currency currency) {
         return currencyFormat.get(currency);
     }
 
-    public NumberFormat getCurrencyFormat(String currency){
+    public NumberFormat getCurrencyFormat(String currency) {
         return currencyFormat.get(getCurrency(currency));
     }
 

@@ -12,6 +12,7 @@ import com.ntankard.Tracking.DataBase.TrackingDatabase_Reader;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -42,6 +43,7 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
     private DynamicGUI_DisplayList<CategoryTransfer> categoryTransfer_panel;
     private DynamicGUI_DisplayList<Transaction> transaction_panel;
     private static DynamicGUI_DisplayList.ListControl_Button managePeriod;
+    private DynamicGUI_DisplayList.ListControl_Button newPeriod;
     private DynamicGUI_DisplayList<PeriodCategory> periodCategory_table;
     private JButton upload_btn;
     private JTabbedPane structures_tPanel;
@@ -99,26 +101,35 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
         periodCategory_table = DynamicGUI_DisplayList.newIntractableTable(periodCategory_list, new MemberClass(PeriodCategory.class), false, ALWAYS_DISPLAY, this);
 
         transaction_panel.getMainPanel().setLocaleInspector(rowObject -> {
-            Transaction transaction = (Transaction)rowObject;
-            if(transaction.getIdStatement().getIdBank().getCurrency().getId().equals("YEN")){
+            Transaction transaction = (Transaction) rowObject;
+            if (transaction.getIdStatement().getIdBank().getCurrency().getId().equals("YEN")) {
                 return Locale.JAPAN;
             }
             return Locale.US;
         });
         statement_panel.getMainPanel().setLocaleInspector(rowObject -> {
-            Statement statement = (Statement)rowObject;
-            if(statement.getIdBank().getCurrency().getId().equals("YEN")){
+            Statement statement = (Statement) rowObject;
+            if (statement.getIdBank().getCurrency().getId().equals("YEN")) {
                 return Locale.JAPAN;
             }
             return Locale.US;
         });
 
-        managePeriod = new DynamicGUI_DisplayList.ListControl_Button<>("Manage Period", period_panel, SINGLE, false);//new SetRecord()
+        managePeriod = new DynamicGUI_DisplayList.ListControl_Button<>("Manage Period", period_panel, SINGLE, false);
         managePeriod.addActionListener(e -> {
             List selected = period_panel.getMainPanel().getSelectedItems();
             Period_Frame.open(trackingDatabase, (Period) selected.get(0), this);
         });
         period_panel.addButton(managePeriod);
+
+        newPeriod = new DynamicGUI_DisplayList.ListControl_Button<>("New Period", period_panel);
+        newPeriod.addActionListener(e -> {
+            Period last = trackingDatabase.getPeriods().get(trackingDatabase.getPeriods().size() - 1);
+            Period period = Period.Month(last.getNextPeriodTime().get(Calendar.MONTH) + 1, last.getNextPeriodTime().get(Calendar.YEAR), trackingDatabase);
+            trackingDatabase.addPeriod(period);
+            notifyUpdate();
+        });
+        period_panel.addButton(newPeriod);
 
         structures_tPanel = new JTabbedPane();
         structures_tPanel.addTab("Period", period_panel);

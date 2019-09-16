@@ -93,6 +93,17 @@ public class Period {
         return getId();
     }
 
+    /**
+     * Get the start time of the next period
+     *
+     * @return The next period
+     */
+    public Calendar getNextPeriodTime() {
+        Calendar toReturn = (Calendar) end.clone();
+        toReturn.add(Calendar.SECOND, 1);
+        return toReturn;
+    }
+
     //------------------------------------------------------------------------------------------------------------------
     //############################################# Calculated accessors ###############################################
     //------------------------------------------------------------------------------------------------------------------
