@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Locale;
 
 import static com.ntankard.ClassExtension.MemberProperties.ALWAYS_DISPLAY;
-import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 import static com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList.ListControl_Button.EnableCondition.SINGLE;
 
 public class TrackingDatabase_Frame extends JPanel implements Updatable {
@@ -42,7 +41,7 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
     private DynamicGUI_DisplayList<Statement> statement_panel;
     private DynamicGUI_DisplayList<CategoryTransfer> categoryTransfer_panel;
     private DynamicGUI_DisplayList<Transaction> transaction_panel;
-    private static DynamicGUI_DisplayList.ListControl_Button setRecord;
+    private static DynamicGUI_DisplayList.ListControl_Button managePeriod;
     private DynamicGUI_DisplayList<PeriodCategory> periodCategory_table;
     private JButton upload_btn;
     private JTabbedPane structures_tPanel;
@@ -62,7 +61,7 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
 
             _frame.repaint();
 
-            //setRecord.doClick();
+            //managePeriod.doClick();
         });
     }
 
@@ -114,12 +113,12 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
             return Locale.US;
         });
 
-        setRecord = new DynamicGUI_DisplayList.ListControl_Button<>("Manage Period", period_panel, SINGLE, false);//new SetRecord()
-        setRecord.addActionListener(e -> {
+        managePeriod = new DynamicGUI_DisplayList.ListControl_Button<>("Manage Period", period_panel, SINGLE, false);//new SetRecord()
+        managePeriod.addActionListener(e -> {
             List selected = period_panel.getMainPanel().getSelectedItems();
             Period_Frame.open(trackingDatabase, (Period) selected.get(0), this);
         });
-        period_panel.addButton(setRecord);
+        period_panel.addButton(managePeriod);
 
         structures_tPanel = new JTabbedPane();
         structures_tPanel.addTab("Period", period_panel);
