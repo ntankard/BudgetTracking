@@ -91,7 +91,7 @@ public abstract class DataRows<T> {
      * @return The number of rows need for this section
      */
     public int getRowCount() {
-        return maxRows + 2;
+        return maxRows + 5;
     }
 
     /**

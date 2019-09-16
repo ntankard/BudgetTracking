@@ -8,28 +8,21 @@ import java.awt.*;
 public class PeriodSummary_Renderer extends DefaultTableCellRenderer {
 
     public static class RendererObject {
-        Object coreObject;
+        Object coreObject = "";
 
-        int top;
-        int left;
-        int bottom;
-        int right;
+        int top = 0;
+        int left = 0;
+        int bottom = 0;
+        int right = 0;
 
-        RendererObject() {
-            this("", 0, 0, 0, 0);
-        }
+        Color foreground = null;
+        Color background = null;
 
-        RendererObject(Object coreObject, int top, int left, int bottom, int right) {
-            this.coreObject = coreObject;
-            this.top = top;
-            this.left = left;
-            this.bottom = bottom;
-            this.right = right;
-        }
+        boolean isBold = false;
 
         @Override
         public String toString() {
-            if(coreObject != null) {
+            if (coreObject != null) {
                 return coreObject.toString();
             }
             return "";
@@ -44,6 +37,24 @@ public class PeriodSummary_Renderer extends DefaultTableCellRenderer {
             RendererObject rendererObject = (RendererObject) value;
             JComponent jComponent = (JComponent) component;
             jComponent.setBorder(new MatteBorder(rendererObject.top, rendererObject.left, rendererObject.bottom, rendererObject.right, table.getGridColor()));
+
+            if (rendererObject.foreground != null) {
+                jComponent.setForeground(rendererObject.foreground);
+            } else {
+                jComponent.setForeground(table.getForeground());
+            }
+
+            if (rendererObject.background != null) {
+                jComponent.setBackground(rendererObject.background);
+            } else {
+                jComponent.setBackground(table.getBackground());
+            }
+
+            if (rendererObject.isBold) {
+                jComponent.setFont(new Font(table.getFont().getName(), Font.BOLD, table.getFont().getSize()));
+            } else {
+                jComponent.setFont(table.getFont());
+            }
         }
 
         return component;

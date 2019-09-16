@@ -73,6 +73,11 @@ public class ModelData_Columns {
                 transferCurrencies.add(currency);
             }
         }
+
+        // Force all currencies to show
+        if (transferCurrencies.size() != 0) {
+            transferCurrencies = new ArrayList<>(trackingDatabase.getCurrencies());
+        }
         transferCurrencies.sort(Comparator.comparing(Currency::getId).reversed());
 
         return transferCurrencies;

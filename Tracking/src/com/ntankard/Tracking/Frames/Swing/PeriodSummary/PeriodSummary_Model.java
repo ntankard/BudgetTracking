@@ -8,10 +8,12 @@ import com.ntankard.Tracking.DataBase.TrackingDatabase;
 import com.ntankard.Tracking.Frames.Swing.PeriodSummary.ModelData.ModelData_Columns;
 import com.ntankard.Tracking.Frames.Swing.PeriodSummary.ModelData.ModelData_Rows;
 import com.ntankard.Tracking.Frames.Swing.PeriodSummary.ModelData.Rows.DataRows;
+import com.ntankard.Tracking.Frames.Swing.PeriodSummary.PeriodSummary_Renderer.RendererObject;
 
 import javax.swing.table.AbstractTableModel;
 
-import static com.ntankard.Tracking.Frames.Swing.PeriodSummary.PeriodSummary_Renderer.RendererObject;
+import java.awt.*;
+
 
 public class PeriodSummary_Model extends AbstractTableModel implements Updatable {
 
@@ -19,6 +21,10 @@ public class PeriodSummary_Model extends AbstractTableModel implements Updatable
     private static final int BLANK_LINE = 0;
     private static final int STANDARD_LINE = 1;
     private static final int THICK_LINE = 3;
+
+    // Colors
+    private final static Color HIGHLIGHTED_BACKGROUND = new Color(220, 220, 220);
+    private final static Color HIGHLIGHTED_TEXT = Color.RED;
 
     // Core data
     private Period core;
@@ -82,25 +88,52 @@ public class PeriodSummary_Model extends AbstractTableModel implements Updatable
         Currency currency = columns.getCurrency(columnIndex);
         Category category = columns.getCategory(columnIndex);
 
-        if (sectionIndex < 2) { // Summary section
-            if (sectionIndex == 0) { // Total
-                if (columns.isCenter(columnIndex)) {
-                    value.coreObject = dataRow.getTotal(category);
-                }
-            } else if (sectionIndex == 1) { // Currency total
-                value.coreObject = dataRow.getCurrencyTotal(category, currency);
+        if (sectionIndex == 0) { // Category name
 
-                // Add formatting
-                value.right = STANDARD_LINE;
+            if (columns.isCenter(columnIndex)) {
+                value.coreObject = columns.getCategory(columnIndex).getId();
             }
+            value.bottom = STANDARD_LINE;
 
-            // Add formatting
-            value.bottom = THICK_LINE;
-        } else { // Core data section
-            // Get the data
-            value.coreObject = dataRow.getValue(category, currency, sectionIndex - 2);
+        } else if (sectionIndex == 1) { // Total
 
-            // Add formatting
+            if (columns.isCenter(columnIndex)) {
+                value.coreObject = dataRow.getTotal(category);
+                value.foreground = HIGHLIGHTED_TEXT;
+                value.isBold = true;
+                //value.foreground = new Color(222, 149, 47);
+
+            }
+            value.background = HIGHLIGHTED_BACKGROUND;
+            value.bottom = STANDARD_LINE;
+
+        } else if (sectionIndex == 2) { // Currency name
+
+            if (columns.getCurrency(columnIndex) != null) {
+                value.coreObject = columns.getCurrency(columnIndex).getId();
+                value.bottom = STANDARD_LINE;
+            }
+            value.right = STANDARD_LINE;
+
+        } else if (sectionIndex == 3) { // Currency total
+
+            if (columns.getCurrency(columnIndex) != null) {
+                value.coreObject = dataRow.getCurrencyTotal(category, currency);
+                value.foreground = HIGHLIGHTED_TEXT;
+                value.background = HIGHLIGHTED_BACKGROUND;
+                value.bottom = STANDARD_LINE;
+                value.isBold = true;
+            }
+            value.right = STANDARD_LINE;
+
+        } else if (sectionIndex == 4) {// Divider
+
+            value.bottom = STANDARD_LINE;
+
+        } else { // Data list
+
+            value.coreObject = dataRow.getValue(category, currency, sectionIndex - 5);
+
             value.bottom = STANDARD_LINE;
             if (columns.isDescription(columnIndex)) {
                 value.right = STANDARD_LINE;
