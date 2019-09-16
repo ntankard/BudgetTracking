@@ -2,6 +2,7 @@ package com.ntankard.Tracking.DataBase.Core;
 
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfers.PeriodTransfer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ public class Currency {
     // My children
     private List<Bank> banks = new ArrayList<>();
     private List<CategoryTransfer> categoryTransfers = new ArrayList<>();
+    private List<PeriodTransfer> periodTransfers = new ArrayList<>();
 
     /**
      * Constructor
@@ -74,7 +76,7 @@ public class Currency {
         return banks;
     }
 
-    // CategoryTransfer Link -------------------------------------------------------------------------------------------------------
+    // CategoryTransfer Link -------------------------------------------------------------------------------------------
 
     /**
      * Notify that a CategoryTransfer has linked to this Currency
@@ -102,6 +104,36 @@ public class Currency {
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public List<CategoryTransfer> getCategoryTransfers() {
         return categoryTransfers;
+    }
+
+    // PeriodTransfer Link ---------------------------------------------------------------------------------------------
+
+    /**
+     * Notify that a PeriodTransfer has linked to this Period
+     *
+     * @param added The PeriodTransfer that linked
+     */
+    public void notifyPeriodTransferLink(PeriodTransfer added) {
+        periodTransfers.add(added);
+    }
+
+    /**
+     * Notify that a PeriodTransfer has removed there link to this Period
+     *
+     * @param removed The PeriodTransfer that was linked
+     */
+    public void notifyPeriodTransferLinkRemove(PeriodTransfer removed) {
+        periodTransfers.remove(removed);
+    }
+
+    /**
+     * Get all the PeriodTransfer that have linked to this Period
+     *
+     * @return All the PeriodTransfer that have linked to this Period
+     */
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    public List<PeriodTransfer> getPeriodTransfers() {
+        return periodTransfers;
     }
 
     //------------------------------------------------------------------------------------------------------------------

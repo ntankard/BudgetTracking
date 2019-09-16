@@ -57,7 +57,7 @@ public class Bank {
      *
      * @param removed The Statement that was linked
      */
-    public void notifyBankLinkRemove(Statement removed) {
+    public void notifyStatementLinkRemove(Statement removed) {
         statements.remove(removed);
     }
 

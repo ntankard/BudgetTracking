@@ -1,35 +1,32 @@
 package com.ntankard.Tracking.DataBase.Core.Transfers;
 
-import com.ntankard.ClassExtension.DisplayProperties;
-import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.DynamicGUI.Components.Object.SetterProperties;
 import com.ntankard.Tracking.DataBase.Core.Category;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period;
 
-import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY_YEN;
-
-public class CategoryTransfer {
+public class PeriodTransfer {
 
     // My parents
-    private Period idPeriod;
-    private Category source;
-    private Category destination;
+    private Period source;
+    private Period destination;
     private Currency currency;
+    private Category category;
 
     // My values
-    private String idCode;
+    private String id;
     private String description;
     private Double value;
 
-    // My Children
-
-    public CategoryTransfer(Period idPeriod, String idCode, Category source, Category destination, Currency currency, String description, Double value) {
-        this.idPeriod = idPeriod;
+    /**
+     * Constructor
+     */
+    public PeriodTransfer(String id, Period source, Period destination, Currency currency, Category category, String description, Double value) {
+        this.id = id;
         this.source = source;
         this.destination = destination;
-        this.idCode = idCode;
         this.currency = currency;
+        this.category = category;
         this.description = description;
         this.value = value;
     }
@@ -46,26 +43,15 @@ public class CategoryTransfer {
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
     public String getId() {
-        return getIdPeriod().getId() + " " + getIdCode();
+        return id;
     }
 
-    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
-    public Period getIdPeriod() {
-        return idPeriod;
-    }
-
-    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
-    public String getIdCode() {
-        return idCode;
-    }
-
-    public Category getSource() {
+    public Period getSource() {
         return source;
     }
 
-    public Category getDestination() {
+    public Period getDestination() {
         return destination;
     }
 
@@ -73,11 +59,14 @@ public class CategoryTransfer {
         return currency;
     }
 
+    public Category getCategory() {
+        return category;
+    }
+
     public String getDescription() {
         return description;
     }
 
-    @DisplayProperties(dataType = CURRENCY_YEN)
     public Double getValue() {
         return value;
     }
@@ -86,18 +75,24 @@ public class CategoryTransfer {
     //#################################################### Setters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @SetterProperties(sourceMethod = "getCategories")
-    public void setDestination(Category destination) {
-        this.destination.notifyCategoriesTransferDestinationLinkRemove(this);
+    @SetterProperties(sourceMethod = "getPeriods")
+    public void setSource(Period source) {
+        this.source = source;
+    }
+
+    @SetterProperties(sourceMethod = "getPeriods")
+    public void setDestination(Period destination) {
         this.destination = destination;
-        this.destination.notifyCategoriesTransferDestinationLink(this);
     }
 
     @SetterProperties(sourceMethod = "getCurrencies")
     public void setCurrency(Currency currency) {
-        this.currency.notifyCategoryTransferLinkRemove(this);
         this.currency = currency;
-        this.currency.notifyCategoryTransferLink(this);
+    }
+
+    @SetterProperties(sourceMethod = "getCategories")
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     public void setDescription(String description) {

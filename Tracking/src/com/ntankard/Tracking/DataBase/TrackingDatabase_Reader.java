@@ -2,6 +2,7 @@ package com.ntankard.Tracking.DataBase;
 
 import com.ntankard.Tracking.DataBase.Core.*;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfers.PeriodTransfer;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ public class TrackingDatabase_Reader {
         saveStatement(data, csvFile);
         saveTransaction(data, csvFile);
         saveCategoryTransfer(data, csvFile);
+        savePeriodTransfer(data, csvFile);
     }
 
     /**
@@ -69,6 +71,7 @@ public class TrackingDatabase_Reader {
         readStatement(data, csvFile);
         readTransaction(data, csvFile);
         readCategoryTransfer(data, csvFile);
+        readPeriodTransfer(data, csvFile);
 
         data.finalizeData();
         return data;
@@ -330,7 +333,7 @@ public class TrackingDatabase_Reader {
      */
     private static void saveCategoryTransfer(TrackingDatabase data, String csvFile) {
         ArrayList<List<String>> lines = new ArrayList<>();
-        for (CategoryTransfer t : data.getCategoryTransfer()) {
+        for (CategoryTransfer t : data.getCategoryTransfers()) {
             List<String> line = new ArrayList<>();
             line.add(t.getIdPeriod().getId());
             line.add(t.getIdCode());
@@ -343,6 +346,48 @@ public class TrackingDatabase_Reader {
         }
 
         writeLines(csvFile + "CategoryTransfer.csv", lines);
+    }
+
+    private static void readPeriodTransfer(TrackingDatabase data, String csvFileRoot) {
+        String csvFile = csvFileRoot + "PeriodTransfer.csv";
+        ArrayList<String[]> allLines = readLines(csvFile);
+        for (String[] lines : allLines) {
+
+            String id = lines[0];
+            String sourcePeriodId = lines[1];
+            String destinationPeriodId = lines[2];
+            String currencyID = lines[3];
+            String categoryID = lines[4];
+            String description = lines[5];
+            double value = Double.parseDouble(lines[6]);
+
+            data.addPeriodTransfer(new PeriodTransfer(
+                    id,
+                    data.getPeriod(sourcePeriodId),
+                    data.getPeriod(destinationPeriodId),
+                    data.getCurrency(currencyID),
+                    data.getCategory(categoryID),
+                    description,
+                    value
+            ));
+        }
+    }
+
+    private static void savePeriodTransfer(TrackingDatabase data, String csvFile) {
+        ArrayList<List<String>> lines = new ArrayList<>();
+        for (PeriodTransfer t : data.getPeriodTransfers()) {
+            List<String> line = new ArrayList<>();
+            line.add(t.getId());
+            line.add(t.getSource().getId());
+            line.add(t.getDestination().getId());
+            line.add(t.getCurrency().getId());
+            line.add(t.getCategory().getId());
+            line.add(t.getDescription());
+            line.add(t.getValue().toString());
+            lines.add(line);
+        }
+
+        writeLines(csvFile + "PeriodTransfer.csv", lines);
     }
 
     /**

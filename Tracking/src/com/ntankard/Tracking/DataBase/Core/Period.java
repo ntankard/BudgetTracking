@@ -3,6 +3,7 @@ package com.ntankard.Tracking.DataBase.Core;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfers.PeriodTransfer;
 import com.ntankard.Tracking.DataBase.Interface.Period_SummaryCategoryTransfer;
 import com.ntankard.Tracking.DataBase.Interface.Period_SummaryTransaction;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
@@ -66,6 +67,8 @@ public class Period {
     // My Children
     private List<Statement> statements = new ArrayList<>();
     private List<CategoryTransfer> categoryTransfers = new ArrayList<>();
+    private List<PeriodTransfer> periodTransferSources = new ArrayList<>();
+    private List<PeriodTransfer> periodTransferDestinations = new ArrayList<>();
 
     // Special Access
     private Map<Category, Period_SummaryTransaction> transactionSummaries = new HashMap<>();
@@ -271,6 +274,66 @@ public class Period {
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public List<CategoryTransfer> getCategoryTransfers() {
         return categoryTransfers;
+    }
+
+    // PeriodTransfer Source Link --------------------------------------------------------------------------------------
+
+    /**
+     * Notify that a PeriodTransferSource has linked to this Period
+     *
+     * @param added The PeriodTransferSource that linked
+     */
+    public void notifyPeriodTransferSourceLink(PeriodTransfer added) {
+        periodTransferSources.add(added);
+    }
+
+    /**
+     * Notify that a PeriodTransferSource has removed there link to this Period
+     *
+     * @param removed The PeriodTransferSource that was linked
+     */
+    public void notifyPeriodTransferSourceLinkRemove(PeriodTransfer removed) {
+        periodTransferSources.remove(removed);
+    }
+
+    /**
+     * Get all the PeriodTransferSource that have linked to this Period
+     *
+     * @return All the PeriodTransferSource that have linked to this Period
+     */
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    public List<PeriodTransfer> getPeriodTransferSources() {
+        return periodTransferSources;
+    }
+
+    // PeriodTransfer Destination Link ---------------------------------------------------------------------------------
+
+    /**
+     * Notify that a PeriodTransferDestinations has linked to this Period
+     *
+     * @param added The PeriodTransferDestinations that linked
+     */
+    public void notifyPeriodTransferDestinationLink(PeriodTransfer added) {
+        periodTransferDestinations.add(added);
+    }
+
+    /**
+     * Notify that a PeriodTransferDestinations has removed there link to this Period
+     *
+     * @param removed The PeriodTransferDestinations that was linked
+     */
+    public void notifyPeriodTransferDestinationLinkRemove(PeriodTransfer removed) {
+        periodTransferDestinations.remove(removed);
+    }
+
+    /**
+     * Get all the PeriodTransferDestinations that have linked to this Period
+     *
+     * @return All the PeriodTransferDestinations that have linked to this Period
+     */
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    public List<PeriodTransfer> getPeriodTransferDestinations() {
+        return periodTransferDestinations;
     }
 
     //------------------------------------------------------------------------------------------------------------------

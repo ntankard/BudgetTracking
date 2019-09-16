@@ -3,6 +3,7 @@ package com.ntankard.Tracking.DataBase;
 import com.ntankard.Tracking.DataBase.Core.*;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfers.PeriodTransfer;
 import com.ntankard.Tracking.DataBase.Interface.PeriodCategory;
 
 import java.text.NumberFormat;
@@ -17,7 +18,8 @@ public class TrackingDatabase {
     private List<Period> periods = new ArrayList<>();
     private List<Statement> statements = new ArrayList<>();
     private List<Transaction> transactions = new ArrayList<>();
-    private List<CategoryTransfer> categoryTransfer = new ArrayList<>();
+    private List<CategoryTransfer> categoryTransfers = new ArrayList<>();
+    private List<PeriodTransfer> periodTransfers = new ArrayList<>();
 
     // Special Containers
     private List<PeriodCategory> periodCategory = new ArrayList<>();
@@ -129,7 +131,7 @@ public class TrackingDatabase {
     }
 
     /**
-     * Find the next available categoryTransfer code
+     * Find the next available categoryTransfers code
      *
      * @param core The statement to containing the rows
      * @return The next available code
@@ -138,6 +140,22 @@ public class TrackingDatabase {
         int max = 0;
         for (CategoryTransfer t : core.getCategoryTransfers()) {
             int value = Integer.parseInt(t.getIdCode());
+            if (value > max) {
+                max = value;
+            }
+        }
+        return (max + 1) + "";
+    }
+
+    /**
+     * Find the next available PeriodTransfer code
+     *
+     * @return The next available PeriodTransfer code
+     */
+    public String getNextPeriodTransferId() {
+        int max = 0;
+        for (PeriodTransfer t : getPeriodTransfers()) {
+            int value = Integer.parseInt(t.getId());
             if (value > max) {
                 max = value;
             }
@@ -178,23 +196,51 @@ public class TrackingDatabase {
     public void addStatement(Statement statement) {
         this.statements.add(statement);
         this.statementMap.get(statement.getIdPeriod()).put(statement.getIdBank(), statement);
+
+        statement.getIdBank().notifyStatementLinkRemove(statement);
+        statement.getIdPeriod().notifyStatementLinkRemove(statement);
+
         statement.getIdBank().notifyStatementLink(statement);
         statement.getIdPeriod().notifyStatementLink(statement);
     }
 
     public void addTransaction(Transaction transaction) {
         this.transactions.add(transaction);
+
+        transaction.getIdStatement().notifyTransactionLinkRemove(transaction);
+        transaction.getCategory().notifyTransactionLinkRemove(transaction);
+
         transaction.getIdStatement().notifyTransactionLink(transaction);
         transaction.getCategory().notifyTransactionLink(transaction);
     }
 
     public void addCategoryTransfer(CategoryTransfer categoryTransfer) {
-        this.categoryTransfer.add(categoryTransfer);
+        this.categoryTransfers.add(categoryTransfer);
         this.categoryTransferMap.put(categoryTransfer.getId(), categoryTransfer);
+
+        categoryTransfer.getIdPeriod().notifyCategoryTransferLinkRemove(categoryTransfer);
+        categoryTransfer.getDestination().notifyCategoriesTransferDestinationLinkRemove(categoryTransfer);
+        categoryTransfer.getSource().notifyCategoriesTransferSourceLinkRemove(categoryTransfer);
+        categoryTransfer.getCurrency().notifyCategoryTransferLinkRemove(categoryTransfer);
+
         categoryTransfer.getIdPeriod().notifyCategoryTransferLink(categoryTransfer);
         categoryTransfer.getDestination().notifyCategoriesTransferDestinationLink(categoryTransfer);
         categoryTransfer.getSource().notifyCategoriesTransferSourceLink(categoryTransfer);
         categoryTransfer.getCurrency().notifyCategoryTransferLink(categoryTransfer);
+    }
+
+    public void addPeriodTransfer(PeriodTransfer periodTransfer) {
+        this.periodTransfers.add(periodTransfer);
+
+        periodTransfer.getCategory().notifyPeriodTransferLinkRemove(periodTransfer);
+        periodTransfer.getCurrency().notifyPeriodTransferLinkRemove(periodTransfer);
+        periodTransfer.getDestination().notifyPeriodTransferDestinationLinkRemove(periodTransfer);
+        periodTransfer.getSource().notifyPeriodTransferSourceLinkRemove(periodTransfer);
+
+        periodTransfer.getCategory().notifyPeriodTransferLink(periodTransfer);
+        periodTransfer.getCurrency().notifyPeriodTransferLink(periodTransfer);
+        periodTransfer.getDestination().notifyPeriodTransferDestinationLink(periodTransfer);
+        periodTransfer.getSource().notifyPeriodTransferSourceLink(periodTransfer);
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -208,12 +254,20 @@ public class TrackingDatabase {
     }
 
     public void removeCategoryTransfer(CategoryTransfer categoryTransfer) {
-        categoryTransfer.getDestination().notifyCategoriesTransferDestinationRemove(categoryTransfer);
+        categoryTransfer.getDestination().notifyCategoriesTransferDestinationLinkRemove(categoryTransfer);
         categoryTransfer.getSource().notifyCategoriesTransferSourceLinkRemove(categoryTransfer);
         categoryTransfer.getIdPeriod().notifyCategoryTransferLinkRemove(categoryTransfer);
         categoryTransfer.getCurrency().notifyCategoryTransferLinkRemove(categoryTransfer);
-        this.categoryTransfer.remove(categoryTransfer);
+        this.categoryTransfers.remove(categoryTransfer);
         this.categoryTransferMap.remove(categoryTransfer.getId());
+    }
+
+    public void removePeriodTransfer(PeriodTransfer periodTransfer) {
+        periodTransfer.getCategory().notifyPeriodTransferLinkRemove(periodTransfer);
+        periodTransfer.getCurrency().notifyPeriodTransferLinkRemove(periodTransfer);
+        periodTransfer.getDestination().notifyPeriodTransferDestinationLinkRemove(periodTransfer);
+        periodTransfer.getSource().notifyPeriodTransferSourceLinkRemove(periodTransfer);
+        this.periodTransfers.remove(periodTransfer);
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -283,11 +337,15 @@ public class TrackingDatabase {
         return Collections.unmodifiableList(transactions);
     }
 
-    public List<CategoryTransfer> getCategoryTransfer() {
-        return Collections.unmodifiableList(categoryTransfer);
+    public List<CategoryTransfer> getCategoryTransfers() {
+        return Collections.unmodifiableList(categoryTransfers);
     }
 
     public List<PeriodCategory> getPeriodCategory() {
         return Collections.unmodifiableList(periodCategory);
+    }
+
+    public List<PeriodTransfer> getPeriodTransfers() {
+        return Collections.unmodifiableList(periodTransfers);
     }
 }

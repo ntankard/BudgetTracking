@@ -2,6 +2,7 @@ package com.ntankard.Tracking.DataBase.Core;
 
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfers.PeriodTransfer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,7 @@ public class Category {
     private List<Transaction> transactions = new ArrayList<>();
     private List<CategoryTransfer> categoriesTransferSources = new ArrayList<>();
     private List<CategoryTransfer> categoriesTransferDestinations = new ArrayList<>();
+    private List<PeriodTransfer> periodTransfers = new ArrayList<>();
 
     /**
      * Constructor
@@ -116,7 +118,7 @@ public class Category {
      *
      * @param removed The CategoryTransfer that was linked
      */
-    public void notifyCategoriesTransferDestinationRemove(CategoryTransfer removed) {
+    public void notifyCategoriesTransferDestinationLinkRemove(CategoryTransfer removed) {
         categoriesTransferDestinations.remove(removed);
     }
 
@@ -127,6 +129,36 @@ public class Category {
      */
     public List<CategoryTransfer> getCategoriesTransferDestinations() {
         return categoriesTransferDestinations;
+    }
+
+    // PeriodTransfer Link ---------------------------------------------------------------------------------------------
+
+    /**
+     * Notify that a PeriodTransfer has linked to this Period
+     *
+     * @param added The PeriodTransfer that linked
+     */
+    public void notifyPeriodTransferLink(PeriodTransfer added) {
+        periodTransfers.add(added);
+    }
+
+    /**
+     * Notify that a PeriodTransfer has removed there link to this Period
+     *
+     * @param removed The PeriodTransfer that was linked
+     */
+    public void notifyPeriodTransferLinkRemove(PeriodTransfer removed) {
+        periodTransfers.remove(removed);
+    }
+
+    /**
+     * Get all the PeriodTransfer that have linked to this Period
+     *
+     * @return All the PeriodTransfer that have linked to this Period
+     */
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    public List<PeriodTransfer> getPeriodTransfers() {
+        return periodTransfers;
     }
 
     //------------------------------------------------------------------------------------------------------------------
