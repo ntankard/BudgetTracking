@@ -55,7 +55,7 @@ public class TransactionRows extends DataRows<Transaction> {
      * {@inheritDoc
      */
     @Override
-    public double getValue(Transaction rowData) {
+    public double getValue(Transaction rowData, Category category) {
         return rowData.getValue();
     }
 

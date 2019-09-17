@@ -3,14 +3,14 @@ package com.ntankard.Tracking.Frames.Swing.PeriodSummary.ModelData.Rows;
 import com.ntankard.Tracking.DataBase.Core.Category;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period;
-import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfers.PeriodTransfer;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
 import com.ntankard.Tracking.Frames.Swing.PeriodSummary.ModelData.ModelData_Columns;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CategoryTransferRows extends DataRows<CategoryTransfer> {
+public class PeriodTransferRows extends DataRows<PeriodTransfer> {
 
     /**
      * Constructor
@@ -19,7 +19,7 @@ public class CategoryTransferRows extends DataRows<CategoryTransfer> {
      * @param core             The Period this table is built around
      * @param columns          The columns of the table
      */
-    public CategoryTransferRows(TrackingDatabase trackingDatabase, Period core, ModelData_Columns columns) {
+    public PeriodTransferRows(TrackingDatabase trackingDatabase, Period core, ModelData_Columns columns) {
         super(trackingDatabase, core, columns);
     }
 
@@ -27,23 +27,23 @@ public class CategoryTransferRows extends DataRows<CategoryTransfer> {
      * {@inheritDoc
      */
     @Override
-    public double getTotal_impl(Category category) {
-        return core.getCategoryTransferSummaries().get(category).getTotal();
+    protected double getTotal_impl(Category category) {
+        return core.getPeriodTransferSummaries().get(category).getTotal();
     }
 
     /**
      * {@inheritDoc
      */
     @Override
-    public double getCurrencyTotal_impl(Category category, Currency currency) {
-        return core.getCategoryTransferSummaries().get(category).getTotal(currency);
+    protected double getCurrencyTotal_impl(Category category, Currency currency) {
+        return core.getPeriodTransferSummaries().get(category).getTotal(currency);
     }
 
     /**
      * {@inheritDoc
      */
     @Override
-    public String getDescription(CategoryTransfer rowData) {
+    protected String getDescription(PeriodTransfer rowData) {
         return rowData.getDescription();
     }
 
@@ -51,7 +51,7 @@ public class CategoryTransferRows extends DataRows<CategoryTransfer> {
      * {@inheritDoc
      */
     @Override
-    public Currency getValueCurrency(CategoryTransfer rowData) {
+    protected Currency getValueCurrency(PeriodTransfer rowData) {
         return rowData.getCurrency();
     }
 
@@ -59,8 +59,8 @@ public class CategoryTransferRows extends DataRows<CategoryTransfer> {
      * {@inheritDoc
      */
     @Override
-    public double getValue(CategoryTransfer rowData, Category category) {
-        if (rowData.getSource().equals(category)) {
+    protected double getValue(PeriodTransfer rowData, Category category) {
+        if (rowData.getSource().equals(core)) {
             return -rowData.getValue();
         }
         return rowData.getValue();
@@ -70,7 +70,7 @@ public class CategoryTransferRows extends DataRows<CategoryTransfer> {
      * {@inheritDoc
      */
     @Override
-    public List<CategoryTransfer> getRows(Category category) {
-        return new ArrayList<>(core.getCategoryTransferSummaries().get(category).getEvents());
+    protected List<PeriodTransfer> getRows(Category category) {
+        return new ArrayList<>(core.getPeriodTransferSummaries().get(category).getEvents());
     }
 }

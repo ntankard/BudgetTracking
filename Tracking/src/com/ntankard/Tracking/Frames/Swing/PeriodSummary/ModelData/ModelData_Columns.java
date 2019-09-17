@@ -66,21 +66,25 @@ public class ModelData_Columns {
      * @return All currencies that transaction are in for a specific category
      */
     private List<Currency> getCurrencies(Category category) {
-        List<Currency> transactionCurrencies = core.getTransactionSummaries().get(category).getCurrencies();
-        List<Currency> transferCurrencies = core.getCategoryTransferSummaries().get(category).getCurrencies();
-        for (Currency currency : transactionCurrencies) {
-            if (!transferCurrencies.contains(currency)) {
-                transferCurrencies.add(currency);
+        List<Currency> currencies = core.getCategoryTransferSummaries().get(category).getCurrencies();
+        for (Currency currency : core.getTransactionSummaries().get(category).getCurrencies()) {
+            if (!currencies.contains(currency)) {
+                currencies.add(currency);
+            }
+        }
+        for (Currency currency : core.getPeriodTransferSummaries().get(category).getCurrencies()) {
+            if (!currencies.contains(currency)) {
+                currencies.add(currency);
             }
         }
 
         // Force all currencies to show
-        if (transferCurrencies.size() != 0) {
-            transferCurrencies = new ArrayList<>(trackingDatabase.getCurrencies());
+        if (currencies.size() != 0) {
+            currencies = new ArrayList<>(trackingDatabase.getCurrencies());
         }
-        transferCurrencies.sort(Comparator.comparing(Currency::getId).reversed());
+        currencies.sort(Comparator.comparing(Currency::getId).reversed());
 
-        return transferCurrencies;
+        return currencies;
     }
 
     /**

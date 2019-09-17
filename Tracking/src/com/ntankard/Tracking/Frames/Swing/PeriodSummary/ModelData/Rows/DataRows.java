@@ -77,7 +77,7 @@ public abstract class DataRows<T> {
                 return getDescription(rowData);
             } else {
                 if (getValueCurrency(rowData).equals(currency)) {
-                    return trackingDatabase.getCurrencyFormat(currency).format(getValue(rowData));
+                    return trackingDatabase.getCurrencyFormat(currency).format(getValue(rowData, category));
                 }
             }
         }
@@ -147,10 +147,11 @@ public abstract class DataRows<T> {
     /**
      * Extract the value for this specific row type
      *
-     * @param rowData The data for this row
+     * @param rowData  The data for this row
+     * @param category The category of the column
      * @return The Value
      */
-    protected abstract double getValue(T rowData);
+    protected abstract double getValue(T rowData, Category category);
 
     /**
      * Extract all the rows for a specified category

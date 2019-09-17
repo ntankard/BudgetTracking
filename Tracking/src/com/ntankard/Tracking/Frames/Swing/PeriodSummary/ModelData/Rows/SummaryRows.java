@@ -68,7 +68,7 @@ public class SummaryRows extends DataRows<Object> {
     }
 
     @Override
-    public double getValue(Object rowData) {
+    public double getValue(Object rowData, Category category) {
         return 0.0;
     }
 }
