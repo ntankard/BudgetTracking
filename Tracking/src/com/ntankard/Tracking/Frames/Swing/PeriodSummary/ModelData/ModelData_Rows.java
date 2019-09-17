@@ -28,8 +28,11 @@ public class ModelData_Rows {
         this.core = core;
 
         addSection(new SummaryRows(trackingDatabase, core, columns));
+        addSection(new DividerRow("Transaction", trackingDatabase, core, columns));
         addSection(new TransactionRows(trackingDatabase, core, columns));
+        addSection(new DividerRow("Category", trackingDatabase, core, columns));
         addSection(new CategoryTransferRows(trackingDatabase, core, columns));
+        addSection(new DividerRow("Period", trackingDatabase, core, columns));
         addSection(new PeriodTransferRows(trackingDatabase, core, columns));
     }
 

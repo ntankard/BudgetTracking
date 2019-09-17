@@ -8,6 +8,7 @@ import com.ntankard.Tracking.DataBase.TrackingDatabase;
 import com.ntankard.Tracking.Frames.Swing.PeriodSummary.ModelData.ModelData_Columns;
 import com.ntankard.Tracking.Frames.Swing.PeriodSummary.ModelData.ModelData_Rows;
 import com.ntankard.Tracking.Frames.Swing.PeriodSummary.ModelData.Rows.DataRows;
+import com.ntankard.Tracking.Frames.Swing.PeriodSummary.ModelData.Rows.DividerRow;
 import com.ntankard.Tracking.Frames.Swing.PeriodSummary.PeriodSummary_Renderer.RendererObject;
 
 import javax.swing.table.AbstractTableModel;
@@ -88,7 +89,12 @@ public class PeriodSummary_Model extends AbstractTableModel implements Updatable
         Currency currency = columns.getCurrency(columnIndex);
         Category category = columns.getCategory(columnIndex);
 
-        if (sectionIndex == 0) { // Category name
+        if (dataRow instanceof DividerRow) {
+            if (columns.isCenterTable(columnIndex)) {
+                value.coreObject = dataRow.getValue(null, null, rowIndex);
+            }
+            value.background = HIGHLIGHTED_BACKGROUND;
+        } else if (sectionIndex == 0) { // Category name
 
             if (columns.isCenter(columnIndex)) {
                 value.coreObject = columns.getCategory(columnIndex).getId();
@@ -141,7 +147,7 @@ public class PeriodSummary_Model extends AbstractTableModel implements Updatable
         }
 
         // Thick lines for the column separator
-        if (columns.isEndOfSection(columnIndex)) {
+        if (columns.isEndOfSection(columnIndex) && !(dataRow instanceof DividerRow)) {
             value.right = THICK_LINE;
         }
         if (rows.isEndOfSection(rowIndex)) {

@@ -131,6 +131,16 @@ public class ModelData_Columns {
     }
 
     /**
+     * Is this the center of the table?
+     *
+     * @param columnIndex The column to check
+     * @return True if this the center of the table
+     */
+    public boolean isCenterTable(int columnIndex) {
+        return columnIndex == columns.size() / 2;
+    }
+
+    /**
      * Is this the description column for a category
      *
      * @param columnIndex The column to check

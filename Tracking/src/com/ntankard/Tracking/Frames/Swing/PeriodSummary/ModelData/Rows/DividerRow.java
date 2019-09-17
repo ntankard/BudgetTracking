@@ -8,13 +8,19 @@ import com.ntankard.Tracking.Frames.Swing.PeriodSummary.ModelData.ModelData_Colu
 
 import java.util.List;
 
-public class SummaryRows extends DataRows<Object> {
+public class DividerRow extends DataRows<Object> {
+
+    /**
+     * The name to put on the divider
+     */
+    private String name;
 
     /**
      * {@inheritDoc
      */
-    public SummaryRows(TrackingDatabase trackingDatabase, Period core, ModelData_Columns columns) {
+    public DividerRow(String name, TrackingDatabase trackingDatabase, Period core, ModelData_Columns columns) {
         super(trackingDatabase, core, columns);
+        this.name = name;
     }
 
     /**
@@ -22,7 +28,7 @@ public class SummaryRows extends DataRows<Object> {
      */
     @Override
     public int getRowCount() {
-        return 2;
+        return 1;
     }
 
     /**
@@ -45,10 +51,16 @@ public class SummaryRows extends DataRows<Object> {
      * {@inheritDoc
      */
     @Override
+    public Object getTotal(Category category) {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc
+     */
+    @Override
     public double getTotal_impl(Category category) {
-        return core.getPeriodTransferSummaries().get(category).getTotal() +
-                core.getTransactionSummaries().get(category).getTotal() +
-                core.getCategoryTransferSummaries().get(category).getTotal();
+        return 0.0;
     }
 
     /**
@@ -72,7 +84,7 @@ public class SummaryRows extends DataRows<Object> {
      */
     @Override
     public Object getValue(Category category, Currency currency, int rowIndex) {
-        return null;
+        return name;
     }
 
     /**
