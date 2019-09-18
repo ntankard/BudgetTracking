@@ -48,7 +48,8 @@ public class SummaryRows extends DataRows<Object> {
     public double getTotal_impl(Category category) {
         return core.getPeriodTransferSummaries().get(category).getTotal() +
                 core.getTransactionSummaries().get(category).getTotal() +
-                core.getCategoryTransferSummaries().get(category).getTotal();
+                core.getCategoryTransferSummaries().get(category).getTotal() +
+                core.getNonPeriodFundTransferSummaries().get(category).getTotal();
     }
 
     /**

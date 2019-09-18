@@ -5,6 +5,7 @@ import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfers.NonPeriodFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfers.PeriodTransfer;
+import com.ntankard.Tracking.DataBase.Interface.Period_SummaryNonPeriodFundTransfer;
 import com.ntankard.Tracking.DataBase.Interface.Period_SummaryCategoryTransfer;
 import com.ntankard.Tracking.DataBase.Interface.Period_SummaryPeriodTransfer;
 import com.ntankard.Tracking.DataBase.Interface.Period_SummaryTransaction;
@@ -77,6 +78,7 @@ public class Period {
     private Map<Category, Period_SummaryTransaction> transactionSummaries = new HashMap<>();
     private Map<Category, Period_SummaryCategoryTransfer> categoryTransferSummaries = new HashMap<>();
     private Map<Category, Period_SummaryPeriodTransfer> periodTransferSummaries = new HashMap<>();
+    private Map<Category, Period_SummaryNonPeriodFundTransfer> nonPeriodFundTransferSummaries = new HashMap<>();
 
     /**
      * Private constructor
@@ -90,6 +92,7 @@ public class Period {
             transactionSummaries.put(category, new Period_SummaryTransaction(this, category, statements));
             categoryTransferSummaries.put(category, new Period_SummaryCategoryTransfer(this, category, categoryTransfers));
             periodTransferSummaries.put(category, new Period_SummaryPeriodTransfer(this, category, database.getPeriodTransfers()));
+            nonPeriodFundTransferSummaries.put(category, new Period_SummaryNonPeriodFundTransfer(this, category, nonPeriodFundTransfers));
         }
     }
 
@@ -400,5 +403,9 @@ public class Period {
 
     public Map<Category, Period_SummaryPeriodTransfer> getPeriodTransferSummaries() {
         return periodTransferSummaries;
+    }
+
+    public Map<Category, Period_SummaryNonPeriodFundTransfer> getNonPeriodFundTransferSummaries() {
+        return nonPeriodFundTransferSummaries;
     }
 }

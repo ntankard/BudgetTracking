@@ -79,22 +79,30 @@ public class PeriodTransfer {
 
     @SetterProperties(sourceMethod = "getPeriods")
     public void setSource(Period source) {
+        this.source.notifyPeriodTransferSourceLinkRemove(this);
         this.source = source;
+        this.source.notifyPeriodTransferSourceLink(this);
     }
 
     @SetterProperties(sourceMethod = "getPeriods")
     public void setDestination(Period destination) {
+        this.destination.notifyPeriodTransferDestinationLinkRemove(this);
         this.destination = destination;
+        this.destination.notifyPeriodTransferDestinationLink(this);
     }
 
     @SetterProperties(sourceMethod = "getCurrencies")
     public void setCurrency(Currency currency) {
+        this.currency.notifyPeriodTransferLinkRemove(this);
         this.currency = currency;
+        this.currency.notifyPeriodTransferLink(this);
     }
 
     @SetterProperties(sourceMethod = "getCategories")
     public void setCategory(Category category) {
+        this.category.notifyPeriodTransferLinkRemove(this);
         this.category = category;
+        this.category.notifyPeriodTransferLink(this);
     }
 
     public void setDescription(String description) {

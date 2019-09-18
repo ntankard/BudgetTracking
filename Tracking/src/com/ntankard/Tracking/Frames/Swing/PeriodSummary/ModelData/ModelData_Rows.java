@@ -34,6 +34,8 @@ public class ModelData_Rows {
         addSection(new CategoryTransferRows(trackingDatabase, core, columns));
         addSection(new DividerRow("Period", trackingDatabase, core, columns));
         addSection(new PeriodTransferRows(trackingDatabase, core, columns));
+        addSection(new DividerRow("External", trackingDatabase, core, columns));
+        addSection(new NonPeriodFundTransferRows(trackingDatabase, core, columns));
     }
 
     /**

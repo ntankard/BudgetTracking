@@ -80,22 +80,30 @@ public class NonPeriodFundTransfer {
 
     @SetterProperties(sourceMethod = "getPeriods")
     public void setSource(Period source) {
+        this.source.notifyNonPeriodFundTransferLinkRemove(this);
         this.source = source;
+        this.source.notifyNonPeriodFundTransferLink(this);
     }
 
     @SetterProperties(sourceMethod = "getNonPeriodFunds")
     public void setDestination(NonPeriodFund destination) {
+        this.destination.notifyNonPeriodFundTransferLinkRemove(this);
         this.destination = destination;
+        this.destination.notifyNonPeriodFundTransferLink(this);
     }
 
     @SetterProperties(sourceMethod = "getCategories")
     public void setSourceCategory(Category sourceCategory) {
+        this.sourceCategory.notifyNonPeriodFundTransferLinkRemove(this);
         this.sourceCategory = sourceCategory;
+        this.sourceCategory.notifyNonPeriodFundTransferLink(this);
     }
 
     @SetterProperties(sourceMethod = "getCurrencies")
     public void setCurrency(Currency currency) {
+        this.currency.notifyNonPeriodFundTransferLinkRemove(this);
         this.currency = currency;
+        this.currency.notifyNonPeriodFundTransferLink(this);
     }
 
     public void setDescription(String description) {
