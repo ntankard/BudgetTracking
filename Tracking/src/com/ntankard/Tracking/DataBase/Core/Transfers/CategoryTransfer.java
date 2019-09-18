@@ -7,6 +7,7 @@ import com.ntankard.Tracking.DataBase.Core.Category;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period;
 
+import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY_YEN;
 
 public class CategoryTransfer {
@@ -77,7 +78,7 @@ public class CategoryTransfer {
         return description;
     }
 
-    @DisplayProperties(dataType = CURRENCY_YEN)
+    @DisplayProperties(dataType = CURRENCY)
     public Double getValue() {
         return value;
     }

@@ -100,6 +100,7 @@ public class Category {
      *
      * @return All the CategoryTransfers that have linked to this Category
      */
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public List<CategoryTransfer> getCategoriesTransferSources() {
         return categoriesTransferSources;
     }
@@ -129,6 +130,7 @@ public class Category {
      *
      * @return All the CategoryTransfers that have linked to this Category
      */
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public List<CategoryTransfer> getCategoriesTransferDestinations() {
         return categoriesTransferDestinations;
     }

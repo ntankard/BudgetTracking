@@ -304,6 +304,14 @@ public class TrackingDatabase {
         this.periodTransfers.remove(periodTransfer);
     }
 
+    public void removeNonPeriodFundTransfer(NonPeriodFundTransfer nonPeriodFundTransfer) {
+        nonPeriodFundTransfer.getCurrency().notifyNonPeriodFundTransferLinkRemove(nonPeriodFundTransfer);
+        nonPeriodFundTransfer.getDestination().notifyNonPeriodFundTransferLinkRemove(nonPeriodFundTransfer);
+        nonPeriodFundTransfer.getSource().notifyNonPeriodFundTransferLinkRemove(nonPeriodFundTransfer);
+        nonPeriodFundTransfer.getSourceCategory().notifyNonPeriodFundTransferLinkRemove(nonPeriodFundTransfer);
+        this.nonPeriodFundTransfers.remove(nonPeriodFundTransfer);
+    }
+
     //------------------------------------------------------------------------------------------------------------------
     //############################################# Map accessors ######################################################
     //------------------------------------------------------------------------------------------------------------------

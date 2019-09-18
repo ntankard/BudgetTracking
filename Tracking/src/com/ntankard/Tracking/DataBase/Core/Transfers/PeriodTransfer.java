@@ -1,9 +1,13 @@
 package com.ntankard.Tracking.DataBase.Core.Transfers;
 
+import com.ntankard.ClassExtension.DisplayProperties;
+import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.DynamicGUI.Components.Object.SetterProperties;
 import com.ntankard.Tracking.DataBase.Core.Category;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period;
+
+import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
 
 public class PeriodTransfer {
 
@@ -45,6 +49,7 @@ public class PeriodTransfer {
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
+    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
     public String getId() {
         return id;
     }
@@ -69,6 +74,7 @@ public class PeriodTransfer {
         return description;
     }
 
+    @DisplayProperties(dataType = CURRENCY)
     public Double getValue() {
         return value;
     }
