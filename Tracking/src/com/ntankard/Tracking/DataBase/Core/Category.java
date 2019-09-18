@@ -2,6 +2,7 @@ package com.ntankard.Tracking.DataBase.Core;
 
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfers.NonPeriodFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfers.PeriodTransfer;
 
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ public class Category {
     private List<CategoryTransfer> categoriesTransferSources = new ArrayList<>();
     private List<CategoryTransfer> categoriesTransferDestinations = new ArrayList<>();
     private List<PeriodTransfer> periodTransfers = new ArrayList<>();
+    private List<NonPeriodFundTransfer> nonPeriodFundTransfers = new ArrayList<>();
 
     /**
      * Constructor
@@ -159,6 +161,36 @@ public class Category {
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public List<PeriodTransfer> getPeriodTransfers() {
         return periodTransfers;
+    }
+
+    // NonPeriodFundTransfer Link --------------------------------------------------------------------------------------
+
+    /**
+     * Notify that a NonPeriodFundTransfer has linked to this Period
+     *
+     * @param added The NonPeriodFundTransfer that linked
+     */
+    public void notifyNonPeriodFundTransferLink(NonPeriodFundTransfer added) {
+        nonPeriodFundTransfers.add(added);
+    }
+
+    /**
+     * Notify that a NonPeriodFundTransfer has removed there link to this Period
+     *
+     * @param removed The NonPeriodFundTransfer that was linked
+     */
+    public void notifyNonPeriodFundTransferLinkRemove(NonPeriodFundTransfer removed) {
+        nonPeriodFundTransfers.remove(removed);
+    }
+
+    /**
+     * Get all the NonPeriodFundTransfer that have linked to this Period
+     *
+     * @return All the NonPeriodFundTransfer that have linked to this Period
+     */
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    public List<NonPeriodFundTransfer> getNonPeriodFundTransfers() {
+        return nonPeriodFundTransfers;
     }
 
     //------------------------------------------------------------------------------------------------------------------

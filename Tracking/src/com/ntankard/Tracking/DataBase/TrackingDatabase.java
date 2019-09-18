@@ -3,6 +3,7 @@ package com.ntankard.Tracking.DataBase;
 import com.ntankard.Tracking.DataBase.Core.*;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfers.NonPeriodFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfers.PeriodTransfer;
 import com.ntankard.Tracking.DataBase.Interface.PeriodCategory;
 
@@ -21,6 +22,7 @@ public class TrackingDatabase {
     private List<CategoryTransfer> categoryTransfers = new ArrayList<>();
     private List<PeriodTransfer> periodTransfers = new ArrayList<>();
     private List<NonPeriodFund> nonPeriodFunds = new ArrayList<>();
+    private List<NonPeriodFundTransfer> nonPeriodFundTransfers = new ArrayList<>();
 
     // Special Containers
     private List<PeriodCategory> periodCategory = new ArrayList<>();
@@ -33,6 +35,7 @@ public class TrackingDatabase {
     private Map<String, Period> periodMap = new HashMap<>();
     private Map<Period, Map<Bank, Statement>> statementMap = new HashMap<>();
     private Map<String, CategoryTransfer> categoryTransferMap = new HashMap<>();
+    private Map<String, NonPeriodFund> nonPeriodFundMap = new HashMap<>();
 
     private boolean isFinalized = false;
 
@@ -164,6 +167,17 @@ public class TrackingDatabase {
         return (max + 1) + "";
     }
 
+    public String getNextNonPeriodFundTransferId() {
+        int max = 0;
+        for (NonPeriodFundTransfer t : getNonPeriodFundTransfers()) {
+            int value = Integer.parseInt(t.getId());
+            if (value > max) {
+                max = value;
+            }
+        }
+        return (max + 1) + "";
+    }
+
     //------------------------------------------------------------------------------------------------------------------
     //############################################# Populate Rows ######################################################
     //------------------------------------------------------------------------------------------------------------------
@@ -246,6 +260,21 @@ public class TrackingDatabase {
 
     public void addNonPeriodFund(NonPeriodFund nonPeriodFund) {
         this.nonPeriodFunds.add(nonPeriodFund);
+        this.nonPeriodFundMap.put(nonPeriodFund.getId(), nonPeriodFund);
+    }
+
+    public void addNonPeriodFundTransfer(NonPeriodFundTransfer nonPeriodFundTransfer) {
+        this.nonPeriodFundTransfers.add(nonPeriodFundTransfer);
+
+        nonPeriodFundTransfer.getCurrency().notifyNonPeriodFundTransferLinkRemove(nonPeriodFundTransfer);
+        nonPeriodFundTransfer.getDestination().notifyNonPeriodFundTransferLinkRemove(nonPeriodFundTransfer);
+        nonPeriodFundTransfer.getSource().notifyNonPeriodFundTransferLinkRemove(nonPeriodFundTransfer);
+        nonPeriodFundTransfer.getSourceCategory().notifyNonPeriodFundTransferLinkRemove(nonPeriodFundTransfer);
+
+        nonPeriodFundTransfer.getCurrency().notifyNonPeriodFundTransferLink(nonPeriodFundTransfer);
+        nonPeriodFundTransfer.getDestination().notifyNonPeriodFundTransferLink(nonPeriodFundTransfer);
+        nonPeriodFundTransfer.getSource().notifyNonPeriodFundTransferLink(nonPeriodFundTransfer);
+        nonPeriodFundTransfer.getSourceCategory().notifyNonPeriodFundTransferLink(nonPeriodFundTransfer);
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -273,10 +302,6 @@ public class TrackingDatabase {
         periodTransfer.getDestination().notifyPeriodTransferDestinationLinkRemove(periodTransfer);
         periodTransfer.getSource().notifyPeriodTransferSourceLinkRemove(periodTransfer);
         this.periodTransfers.remove(periodTransfer);
-    }
-
-    public void removeNonPeriodFund(NonPeriodFund toDel) {
-        this.nonPeriodFunds.remove(toDel);
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -308,6 +333,10 @@ public class TrackingDatabase {
 
     public CategoryTransfer getCategoryTransfer(String categoryTransferId) {
         return categoryTransferMap.get(categoryTransferId);
+    }
+
+    public NonPeriodFund getNonPeriodFund(String nonPeriodFundsId) {
+        return nonPeriodFundMap.get(nonPeriodFundsId);
     }
 
     public NumberFormat getCurrencyFormat(Currency currency) {
@@ -360,5 +389,9 @@ public class TrackingDatabase {
 
     public List<NonPeriodFund> getNonPeriodFunds() {
         return Collections.unmodifiableList(nonPeriodFunds);
+    }
+
+    public List<NonPeriodFundTransfer> getNonPeriodFundTransfers() {
+        return Collections.unmodifiableList(nonPeriodFundTransfers);
     }
 }

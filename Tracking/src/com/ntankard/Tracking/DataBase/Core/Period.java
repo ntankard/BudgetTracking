@@ -3,6 +3,7 @@ package com.ntankard.Tracking.DataBase.Core;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfers.NonPeriodFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfers.PeriodTransfer;
 import com.ntankard.Tracking.DataBase.Interface.Period_SummaryCategoryTransfer;
 import com.ntankard.Tracking.DataBase.Interface.Period_SummaryPeriodTransfer;
@@ -70,6 +71,7 @@ public class Period {
     private List<CategoryTransfer> categoryTransfers = new ArrayList<>();
     private List<PeriodTransfer> periodTransferSources = new ArrayList<>();
     private List<PeriodTransfer> periodTransferDestinations = new ArrayList<>();
+    private List<NonPeriodFundTransfer> nonPeriodFundTransfers = new ArrayList<>();
 
     // Special Access
     private Map<Category, Period_SummaryTransaction> transactionSummaries = new HashMap<>();
@@ -337,6 +339,36 @@ public class Period {
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public List<PeriodTransfer> getPeriodTransferDestinations() {
         return periodTransferDestinations;
+    }
+
+    // NonPeriodFundTransfer Link --------------------------------------------------------------------------------------
+
+    /**
+     * Notify that a NonPeriodFundTransfer has linked to this Period
+     *
+     * @param added The NonPeriodFundTransfer that linked
+     */
+    public void notifyNonPeriodFundTransferLink(NonPeriodFundTransfer added) {
+        nonPeriodFundTransfers.add(added);
+    }
+
+    /**
+     * Notify that a NonPeriodFundTransfer has removed there link to this Period
+     *
+     * @param removed The NonPeriodFundTransfer that was linked
+     */
+    public void notifyNonPeriodFundTransferLinkRemove(NonPeriodFundTransfer removed) {
+        nonPeriodFundTransfers.remove(removed);
+    }
+
+    /**
+     * Get all the NonPeriodFundTransfer that have linked to this Period
+     *
+     * @return All the NonPeriodFundTransfer that have linked to this Period
+     */
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    public List<NonPeriodFundTransfer> getNonPeriodFundTransfers() {
+        return nonPeriodFundTransfers;
     }
 
     //------------------------------------------------------------------------------------------------------------------

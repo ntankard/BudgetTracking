@@ -3,15 +3,16 @@ package com.ntankard.Tracking.DataBase.Core.Transfers;
 import com.ntankard.DynamicGUI.Components.Object.SetterProperties;
 import com.ntankard.Tracking.DataBase.Core.Category;
 import com.ntankard.Tracking.DataBase.Core.Currency;
+import com.ntankard.Tracking.DataBase.Core.NonPeriodFund;
 import com.ntankard.Tracking.DataBase.Core.Period;
 
-public class PeriodTransfer {
+public class NonPeriodFundTransfer {
 
     // My parents
     private Period source;
-    private Period destination;
+    private NonPeriodFund destination;
+    private Category sourceCategory;
     private Currency currency;
-    private Category category;
 
     // My values
     private String id;
@@ -23,12 +24,12 @@ public class PeriodTransfer {
     /**
      * Constructor
      */
-    public PeriodTransfer(String id, Period source, Period destination, Currency currency, Category category, String description, Double value) {
+    public NonPeriodFundTransfer(String id, Period source, NonPeriodFund destination, Category sourceCategory, Currency currency, String description, Double value) {
         this.id = id;
         this.source = source;
         this.destination = destination;
+        this.sourceCategory = sourceCategory;
         this.currency = currency;
-        this.category = category;
         this.description = description;
         this.value = value;
     }
@@ -53,16 +54,16 @@ public class PeriodTransfer {
         return source;
     }
 
-    public Period getDestination() {
+    public NonPeriodFund getDestination() {
         return destination;
+    }
+
+    public Category getSourceCategory() {
+        return sourceCategory;
     }
 
     public Currency getCurrency() {
         return currency;
-    }
-
-    public Category getCategory() {
-        return category;
     }
 
     public String getDescription() {
@@ -82,19 +83,19 @@ public class PeriodTransfer {
         this.source = source;
     }
 
-    @SetterProperties(sourceMethod = "getPeriods")
-    public void setDestination(Period destination) {
+    @SetterProperties(sourceMethod = "getNonPeriodFunds")
+    public void setDestination(NonPeriodFund destination) {
         this.destination = destination;
+    }
+
+    @SetterProperties(sourceMethod = "getCategories")
+    public void setSourceCategory(Category sourceCategory) {
+        this.sourceCategory = sourceCategory;
     }
 
     @SetterProperties(sourceMethod = "getCurrencies")
     public void setCurrency(Currency currency) {
         this.currency = currency;
-    }
-
-    @SetterProperties(sourceMethod = "getCategories")
-    public void setCategory(Category category) {
-        this.category = category;
     }
 
     public void setDescription(String description) {

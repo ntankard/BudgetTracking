@@ -2,6 +2,7 @@ package com.ntankard.Tracking.DataBase;
 
 import com.ntankard.Tracking.DataBase.Core.*;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfers.NonPeriodFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfers.PeriodTransfer;
 
 import java.io.*;
@@ -42,6 +43,7 @@ public class TrackingDatabase_Reader {
         saveCategoryTransfer(data, csvFile);
         savePeriodTransfer(data, csvFile);
         saveNonPeriodFund(data, csvFile);
+        saveNonPeriodFundTransfer(data, csvFile);
     }
 
     /**
@@ -74,6 +76,7 @@ public class TrackingDatabase_Reader {
         readCategoryTransfer(data, csvFile);
         readPeriodTransfer(data, csvFile);
         readNonPeriodFund(data, csvFile);
+        readNonPeriodFundTransfer(data, csvFile);
 
         data.finalizeData();
         return data;
@@ -436,6 +439,59 @@ public class TrackingDatabase_Reader {
         }
 
         writeLines(csvFile + "NonPeriodFund.csv", lines);
+    }
+
+    /**
+     * Read a set of nonPeriodFundTransfer
+     *
+     * @param data The database to place the data
+     */
+    private static void readNonPeriodFundTransfer(TrackingDatabase data, String csvFileRoot) {
+        String csvFile = csvFileRoot + "NonPeriodFundTransfer.csv";
+        ArrayList<String[]> allLines = readLines(csvFile);
+        for (String[] lines : allLines) {
+
+            String id = lines[0];
+            String sourcePeriodId = lines[1];
+            String destinationNonPeriodFundId = lines[2];
+            String categoryID = lines[3];
+            String currencyID = lines[4];
+            String description = lines[5];
+            double value = Double.parseDouble(lines[6]);
+
+            data.addNonPeriodFundTransfer(new NonPeriodFundTransfer(
+                    id,
+                    data.getPeriod(sourcePeriodId),
+                    data.getNonPeriodFund(destinationNonPeriodFundId),
+                    data.getCategory(categoryID),
+                    data.getCurrency(currencyID),
+                    description,
+                    value
+            ));
+        }
+    }
+
+    /**
+     * Save a set of nonPeriodFundTransfer
+     *
+     * @param data    The database to get the data
+     * @param csvFile The path to write the files to
+     */
+    private static void saveNonPeriodFundTransfer(TrackingDatabase data, String csvFile) {
+        ArrayList<List<String>> lines = new ArrayList<>();
+        for (NonPeriodFundTransfer t : data.getNonPeriodFundTransfers()) {
+            List<String> line = new ArrayList<>();
+            line.add(t.getId());
+            line.add(t.getSource().getId());
+            line.add(t.getDestination().getId());
+            line.add(t.getSourceCategory().getId());
+            line.add(t.getCurrency().getId());
+            line.add(t.getDescription());
+            line.add(t.getValue().toString());
+            lines.add(line);
+        }
+
+        writeLines(csvFile + "NonPeriodFundTransfer.csv", lines);
     }
 
     /**
