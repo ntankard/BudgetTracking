@@ -20,6 +20,7 @@ public class TrackingDatabase {
     private List<Transaction> transactions = new ArrayList<>();
     private List<CategoryTransfer> categoryTransfers = new ArrayList<>();
     private List<PeriodTransfer> periodTransfers = new ArrayList<>();
+    private List<NonPeriodFund> nonPeriodFunds = new ArrayList<>();
 
     // Special Containers
     private List<PeriodCategory> periodCategory = new ArrayList<>();
@@ -243,6 +244,10 @@ public class TrackingDatabase {
         periodTransfer.getSource().notifyPeriodTransferSourceLink(periodTransfer);
     }
 
+    public void addNonPeriodFund(NonPeriodFund nonPeriodFund) {
+        this.nonPeriodFunds.add(nonPeriodFund);
+    }
+
     //------------------------------------------------------------------------------------------------------------------
     //############################################## Remove Rows #######################################################
     //------------------------------------------------------------------------------------------------------------------
@@ -268,6 +273,10 @@ public class TrackingDatabase {
         periodTransfer.getDestination().notifyPeriodTransferDestinationLinkRemove(periodTransfer);
         periodTransfer.getSource().notifyPeriodTransferSourceLinkRemove(periodTransfer);
         this.periodTransfers.remove(periodTransfer);
+    }
+
+    public void removeNonPeriodFund(NonPeriodFund toDel) {
+        this.nonPeriodFunds.remove(toDel);
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -347,5 +356,9 @@ public class TrackingDatabase {
 
     public List<PeriodTransfer> getPeriodTransfers() {
         return Collections.unmodifiableList(periodTransfers);
+    }
+
+    public List<NonPeriodFund> getNonPeriodFunds() {
+        return Collections.unmodifiableList(nonPeriodFunds);
     }
 }

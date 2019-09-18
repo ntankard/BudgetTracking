@@ -35,6 +35,7 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
     private List<CategoryTransfer> categoryTransfer_list = new ArrayList<>();
     private List<PeriodCategory> periodCategory_list = new ArrayList<>();
     private List<PeriodTransfer> periodTransfer_list = new ArrayList<>();
+    private List<NonPeriodFund> nonPeriodFund_list = new ArrayList<>();
 
     // The GUI components
     private DynamicGUI_DisplayList<Currency> currency_panel;
@@ -48,6 +49,7 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
     private DynamicGUI_DisplayList.ListControl_Button newPeriod;
     private DynamicGUI_DisplayList<PeriodCategory> periodCategory_table;
     private DynamicGUI_DisplayList<PeriodTransfer> periodTransfer_panel;
+    private DynamicGUI_DisplayList<NonPeriodFund> nonPeriodFund_panel;
     private JButton upload_btn;
     private JTabbedPane structures_tPanel;
 
@@ -121,6 +123,23 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
                 notifyUpdate();
             }
         }, this, trackingDatabase);
+        nonPeriodFund_panel = DynamicGUI_DisplayList.newIntractableTable(nonPeriodFund_list, new MemberClass(NonPeriodFund.class), true, true, ALWAYS_DISPLAY, new DynamicGUI_DisplayList.ElementController<NonPeriodFund>() {
+            @Override
+            public NonPeriodFund newElement() {
+                return new NonPeriodFund("New");
+            }
+
+            @Override
+            public void deleteElement(NonPeriodFund toDel) {
+                trackingDatabase.removeNonPeriodFund(toDel);
+            }
+
+            @Override
+            public void addElement(NonPeriodFund newObj) {
+                trackingDatabase.addNonPeriodFund(newObj);
+                notifyUpdate();
+            }
+        }, this, trackingDatabase);
 
         transaction_panel.getMainPanel().setLocaleInspector(rowObject -> {
             Transaction transaction = (Transaction) rowObject;
@@ -163,6 +182,7 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
         structures_tPanel.addTab("Bank", bank_panel);
         structures_tPanel.addTab("Statement", statement_panel);
         structures_tPanel.addTab("Category Transfer", categoryTransfer_panel);
+        structures_tPanel.addTab("Non Period Fund", nonPeriodFund_panel);
         this.add(structures_tPanel, BorderLayout.CENTER);
     }
 
@@ -188,6 +208,7 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
         categoryTransfer_list.clear();
         periodCategory_list.clear();
         periodTransfer_list.clear();
+        nonPeriodFund_list.clear();
 
         currency_list.addAll(trackingDatabase.getCurrencies());
         category_list.addAll(trackingDatabase.getCategories());
@@ -198,6 +219,7 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
         categoryTransfer_list.addAll(trackingDatabase.getCategoryTransfers());
         periodCategory_list.addAll(trackingDatabase.getPeriodCategory());
         periodTransfer_list.addAll(trackingDatabase.getPeriodTransfers());
+        nonPeriodFund_list.addAll(trackingDatabase.getNonPeriodFunds());
 
         currency_panel.update();
         category_panel.update();
@@ -208,6 +230,7 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
         categoryTransfer_panel.update();
         periodCategory_table.update();
         periodTransfer_panel.update();
+        nonPeriodFund_panel.update();
 
         //period_panel.getMainPanel().getListSelectionModel().setSelectionInterval(0, 0);
     }

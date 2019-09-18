@@ -41,6 +41,7 @@ public class TrackingDatabase_Reader {
         saveTransaction(data, csvFile);
         saveCategoryTransfer(data, csvFile);
         savePeriodTransfer(data, csvFile);
+        saveNonPeriodFund(data, csvFile);
     }
 
     /**
@@ -72,6 +73,7 @@ public class TrackingDatabase_Reader {
         readTransaction(data, csvFile);
         readCategoryTransfer(data, csvFile);
         readPeriodTransfer(data, csvFile);
+        readNonPeriodFund(data, csvFile);
 
         data.finalizeData();
         return data;
@@ -326,7 +328,7 @@ public class TrackingDatabase_Reader {
     }
 
     /**
-     * Save a set of transactions
+     * Save a set of categoryTransfers
      *
      * @param data    The database to get the data
      * @param csvFile The path to write the files to
@@ -348,6 +350,11 @@ public class TrackingDatabase_Reader {
         writeLines(csvFile + "CategoryTransfer.csv", lines);
     }
 
+    /**
+     * Read a set of periodTransfers
+     *
+     * @param data The database to place the data
+     */
     private static void readPeriodTransfer(TrackingDatabase data, String csvFileRoot) {
         String csvFile = csvFileRoot + "PeriodTransfer.csv";
         ArrayList<String[]> allLines = readLines(csvFile);
@@ -373,6 +380,12 @@ public class TrackingDatabase_Reader {
         }
     }
 
+    /**
+     * Save a set of periodTransfers
+     *
+     * @param data    The database to get the data
+     * @param csvFile The path to write the files to
+     */
     private static void savePeriodTransfer(TrackingDatabase data, String csvFile) {
         ArrayList<List<String>> lines = new ArrayList<>();
         for (PeriodTransfer t : data.getPeriodTransfers()) {
@@ -388,6 +401,41 @@ public class TrackingDatabase_Reader {
         }
 
         writeLines(csvFile + "PeriodTransfer.csv", lines);
+    }
+
+    /**
+     * Read a set of nonPeriodFunds
+     *
+     * @param data The database to place the data
+     */
+    private static void readNonPeriodFund(TrackingDatabase data, String csvFileRoot) {
+        String csvFile = csvFileRoot + "NonPeriodFund.csv";
+        ArrayList<String[]> allLines = readLines(csvFile);
+        for (String[] lines : allLines) {
+
+            String id = lines[0];
+
+            data.addNonPeriodFund(new NonPeriodFund(
+                    id
+            ));
+        }
+    }
+
+    /**
+     * Save a set of nonPeriodFunds
+     *
+     * @param data    The database to get the data
+     * @param csvFile The path to write the files to
+     */
+    private static void saveNonPeriodFund(TrackingDatabase data, String csvFile) {
+        ArrayList<List<String>> lines = new ArrayList<>();
+        for (NonPeriodFund t : data.getNonPeriodFunds()) {
+            List<String> line = new ArrayList<>();
+            line.add(t.getId());
+            lines.add(line);
+        }
+
+        writeLines(csvFile + "NonPeriodFund.csv", lines);
     }
 
     /**
