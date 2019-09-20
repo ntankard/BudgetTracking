@@ -134,6 +134,28 @@ public class PeriodPanel extends UpdatableJPanel {
             }
         }, this, trackingDatabase);
 
+        categoryTransfer_panel.getMainPanel().setLocaleInspector(rowObject -> {
+            CategoryTransfer transfer = (CategoryTransfer) rowObject;
+            if (transfer.getCurrency().getId().equals("YEN")) {
+                return Locale.JAPAN;
+            }
+            return Locale.US;
+        });
+        periodTransfer_panel.getMainPanel().setLocaleInspector(rowObject -> {
+            PeriodTransfer transfer = (PeriodTransfer) rowObject;
+            if (transfer.getCurrency().getId().equals("YEN")) {
+                return Locale.JAPAN;
+            }
+            return Locale.US;
+        });
+        nonPeriodFundTransfer_panel.getMainPanel().setLocaleInspector(rowObject -> {
+            NonPeriodFundTransfer transfer = (NonPeriodFundTransfer) rowObject;
+            if (transfer.getCurrency().getId().equals("YEN")) {
+                return Locale.JAPAN;
+            }
+            return Locale.US;
+        });
+
         categoryTransfer_panel.setNorth(new JLabel("Category Transfer"));
         periodTransfer_panel.setNorth(new JLabel("Period Transfer"));
         nonPeriodFundTransfer_panel.setNorth(new JLabel("Other Transfer"));

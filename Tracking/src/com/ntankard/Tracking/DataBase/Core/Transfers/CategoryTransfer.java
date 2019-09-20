@@ -62,10 +62,12 @@ public class CategoryTransfer {
         return idCode;
     }
 
+    @DisplayProperties(order = 2)
     public Category getSource() {
         return source;
     }
 
+    @DisplayProperties(order = 3)
     public Category getDestination() {
         return destination;
     }
@@ -74,11 +76,12 @@ public class CategoryTransfer {
         return currency;
     }
 
+    @DisplayProperties(order = 0)
     public String getDescription() {
         return description;
     }
 
-    @DisplayProperties(dataType = CURRENCY)
+    @DisplayProperties(order = 1, dataType = CURRENCY)
     public Double getValue() {
         return value;
     }

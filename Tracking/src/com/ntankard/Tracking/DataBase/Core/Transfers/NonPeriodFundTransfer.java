@@ -55,14 +55,17 @@ public class NonPeriodFundTransfer {
         return id;
     }
 
+    @DisplayProperties(order = 2)
     public Period getSource() {
         return source;
     }
 
+    @DisplayProperties(order = 4)
     public NonPeriodFund getDestination() {
         return destination;
     }
 
+    @DisplayProperties(order = 3)
     public Category getSourceCategory() {
         return sourceCategory;
     }
@@ -71,11 +74,12 @@ public class NonPeriodFundTransfer {
         return currency;
     }
 
+    @DisplayProperties(order = 0)
     public String getDescription() {
         return description;
     }
 
-    @DisplayProperties(dataType = CURRENCY)
+    @DisplayProperties(order = 1, dataType = CURRENCY)
     public Double getValue() {
         return value;
     }
