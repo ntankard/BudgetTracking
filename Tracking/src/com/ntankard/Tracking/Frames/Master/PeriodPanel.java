@@ -40,6 +40,7 @@ public class PeriodPanel extends UpdatableJPanel {
     private DynamicGUI_DisplayList<CategoryTransfer> categoryTransfer_panel;
     private DynamicGUI_DisplayList<NonPeriodFundTransfer> nonPeriodFundTransfer_panel;
     private DynamicGUI_DisplayList<PeriodTransfer> periodTransfer_panel;
+    public JTabbedPane master_tPanel;
 
     /**
      * Constructor
@@ -180,7 +181,7 @@ public class PeriodPanel extends UpdatableJPanel {
         summaryContainer_C.gridx = 2;
         summaryContainer.add(nonPeriodFundTransfer_panel, summaryContainer_C);
 
-        JTabbedPane master_tPanel = new JTabbedPane();
+        master_tPanel = new JTabbedPane();
         master_tPanel.addTab("Summary", summaryContainer);
         master_tPanel.addTab("Statements", statement_panel);
 
@@ -192,6 +193,8 @@ public class PeriodPanel extends UpdatableJPanel {
      */
     @Override
     public void update() {
+        int selected = master_tPanel.getSelectedIndex();
+
         statement_list.clear();
         categoryTransfer_list.clear();
         periodTransfer_list.clear();
@@ -220,5 +223,7 @@ public class PeriodPanel extends UpdatableJPanel {
         nonPeriodFundTransfer_panel.update();
 
         periodSummary_panel.update();
+
+        master_tPanel.setSelectedIndex(selected);
     }
 }

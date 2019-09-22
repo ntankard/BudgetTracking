@@ -58,6 +58,13 @@ public class PeriodsPanel extends UpdatableJPanel {
      * Regenerate all the period tabs
      */
     private void rebuildPeriods() {
+        int selected = master_tPanel.getSelectedIndex();
+        int[] inSelected = new int[periodsPanels.size()];
+        int pastSize = periodsPanels.size();
+        for (int i = 0; i < periodsPanels.size(); i++) {
+            inSelected[i] = periodsPanels.get(i).master_tPanel.getSelectedIndex();
+        }
+
         periods.clear();
         periodsPanels.clear();
 
@@ -68,6 +75,14 @@ public class PeriodsPanel extends UpdatableJPanel {
             PeriodPanel panel = new PeriodPanel(trackingDatabase, period, this);
             periodsPanels.add(panel);
             master_tPanel.addTab(period.getId(), panel);
+        }
+
+        if (selected >= 0) {
+            master_tPanel.setSelectedIndex(selected);
+        }
+
+        for (int i = 0; i < pastSize; i++) {
+            periodsPanels.get(i).master_tPanel.setSelectedIndex(inSelected[i]);
         }
     }
 }

@@ -66,6 +66,5 @@ public class PeriodSummary extends UpdatableJScrollPane {
     @Override
     public void update() {
         model.update();
-        tableColumnAdjuster.adjustColumns();
     }
 }
