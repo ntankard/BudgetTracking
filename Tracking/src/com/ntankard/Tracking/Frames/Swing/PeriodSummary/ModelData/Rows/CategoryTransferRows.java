@@ -10,7 +10,7 @@ import com.ntankard.Tracking.Frames.Swing.PeriodSummary.ModelData.ModelData_Colu
 import java.util.ArrayList;
 import java.util.List;
 
-public class CategoryTransferRows extends DataRows<CategoryTransfer> {
+public class CategoryTransferRows extends TransferRow<CategoryTransfer> {
 
     /**
      * Constructor
@@ -37,22 +37,6 @@ public class CategoryTransferRows extends DataRows<CategoryTransfer> {
     @Override
     public double getCurrencyTotal_impl(Category category, Currency currency) {
         return core.getCategoryTransferSummaries().get(category).getTotal(currency);
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public String getDescription(CategoryTransfer rowData) {
-        return rowData.getDescription();
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public Currency getValueCurrency(CategoryTransfer rowData) {
-        return rowData.getCurrency();
     }
 
     /**

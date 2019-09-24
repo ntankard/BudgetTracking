@@ -6,8 +6,6 @@ import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
 import com.ntankard.Tracking.Frames.Swing.PeriodSummary.ModelData.ModelData_Columns;
 
-import java.util.List;
-
 public class DividerRow extends DataRows<Object> {
 
     /**
@@ -36,15 +34,6 @@ public class DividerRow extends DataRows<Object> {
      */
     @Override
     public void update() {
-
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public List<Object> getRows(Category category) {
-        return null;
     }
 
     /**
@@ -75,39 +64,7 @@ public class DividerRow extends DataRows<Object> {
      * {@inheritDoc
      */
     @Override
-    public double getCurrencyTotal_impl(Category category, Currency currency) {
-        return 0;
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
     public Object getValue(Category category, Currency currency, int rowIndex) {
         return name;
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public String getDescription(Object rowData) {
-        return null;
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public Currency getValueCurrency(Object rowData) {
-        return null;
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public double getValue(Object rowData, Category category) {
-        return 0.0;
     }
 }

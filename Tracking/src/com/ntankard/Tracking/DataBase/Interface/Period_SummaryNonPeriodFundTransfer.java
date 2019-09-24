@@ -61,6 +61,7 @@ public class Period_SummaryNonPeriodFundTransfer extends Period_Summary<NonPerio
      * @param toSum The currency to sum
      * @return All the NonPeriodFundTransfer for this category, in this period that are in the specified currency
      */
+    @Override
     public double getTotal(Currency toSum) {
         double sum = 0;
         for (NonPeriodFundTransfer nonPeriodFundTransfer : getEvents()) {
@@ -71,19 +72,6 @@ public class Period_SummaryNonPeriodFundTransfer extends Period_Summary<NonPerio
                     sum += nonPeriodFundTransfer.getValue();
                 }
             }
-        }
-        return sum;
-    }
-
-    /**
-     * Sum all the NonPeriodFundTransfer for this category, in this period. Return in the primary currency
-     *
-     * @return All the NonPeriodFundTransfer for this category, in this period. Return in the primary currency
-     */
-    public double getTotal() {
-        double sum = 0;
-        for (Currency currency : getCurrencies()) {
-            sum += getTotal(currency) * currency.getToPrimary();
         }
         return sum;
     }

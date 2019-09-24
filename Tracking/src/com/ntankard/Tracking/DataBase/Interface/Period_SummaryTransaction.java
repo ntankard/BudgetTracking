@@ -77,6 +77,7 @@ public class Period_SummaryTransaction extends Period_Summary<Transaction> {
      * @param toSum The currency to sum
      * @return All the transaction for this category, in this period that are in the specified currency
      */
+    @Override
     public double getTotal(Currency toSum) {
         double sum = 0;
         for (Statement statement : statements) {
@@ -87,19 +88,6 @@ public class Period_SummaryTransaction extends Period_Summary<Transaction> {
                     }
                 }
             }
-        }
-        return sum;
-    }
-
-    /**
-     * Sum all the transaction for this category, in this period. Return in the primary currency
-     *
-     * @return All the transaction for this category, in this period. Return in the primary currency
-     */
-    public double getTotal() {
-        double sum = 0;
-        for (Currency currency : getCurrencies()) {
-            sum += getTotal(currency) * currency.getToPrimary();
         }
         return sum;
     }

@@ -10,7 +10,7 @@ import com.ntankard.Tracking.Frames.Swing.PeriodSummary.ModelData.ModelData_Colu
 import java.util.ArrayList;
 import java.util.List;
 
-public class NonPeriodFundTransferRows extends DataRows<NonPeriodFundTransfer> {
+public class NonPeriodFundTransferRows extends TransferRow<NonPeriodFundTransfer> {
 
     /**
      * Constructor
@@ -34,22 +34,6 @@ public class NonPeriodFundTransferRows extends DataRows<NonPeriodFundTransfer> {
     @Override
     protected double getCurrencyTotal_impl(Category category, Currency currency) {
         return core.getNonPeriodFundTransferSummaries().get(category).getTotal(currency);
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    protected String getDescription(NonPeriodFundTransfer rowData) {
-        return rowData.getDescription();
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    protected Currency getValueCurrency(NonPeriodFundTransfer rowData) {
-        return rowData.getCurrency();
     }
 
     /**
