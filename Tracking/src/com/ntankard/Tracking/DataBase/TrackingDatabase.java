@@ -1,6 +1,7 @@
 package com.ntankard.Tracking.DataBase;
 
 import com.ntankard.Tracking.DataBase.Core.*;
+import com.ntankard.Tracking.DataBase.Core.Base.DataObject;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfers.NonPeriodFundTransfer;
@@ -142,8 +143,8 @@ public class TrackingDatabase {
      */
     public String getNextCategoryTransferId(Period core) {
         int max = 0;
-        for (CategoryTransfer t : core.getCategoryTransfers()) {
-            int value = Integer.parseInt(t.getIdCode());
+        for (DataObject t : core.getChildren(CategoryTransfer.class)) {//.getCategoryTransfers()) {
+            int value = Integer.parseInt(((CategoryTransfer) t).getIdCode());
             if (value > max) {
                 max = value;
             }
@@ -185,17 +186,19 @@ public class TrackingDatabase {
     public void addCurrency(Currency currency) {
         this.currencies.add(currency);
         this.currencyMap.put(currency.getId(), currency);
+        currency.notifyParentLink();
     }
 
     public void addCategory(Category category) {
         this.categories.add(category);
         this.categoryMap.put(category.getId(), category);
+        category.notifyParentLink();
     }
 
     public void addBank(Bank bank) {
         this.banks.add(bank);
         this.bankMap.put(bank.getId(), bank);
-        bank.getCurrency().notifyBankLink(bank);
+        bank.notifyParentLink();
     }
 
     public void addPeriod(Period period) {
@@ -206,75 +209,40 @@ public class TrackingDatabase {
             fixPeriod(period);
         }
         this.periodCategory.add(new PeriodCategory(period, this));
+        period.notifyParentLink();
     }
 
     public void addStatement(Statement statement) {
         this.statements.add(statement);
         this.statementMap.get(statement.getIdPeriod()).put(statement.getIdBank(), statement);
-
-        statement.getIdBank().notifyStatementLinkRemove(statement);
-        statement.getIdPeriod().notifyStatementLinkRemove(statement);
-
-        statement.getIdBank().notifyStatementLink(statement);
-        statement.getIdPeriod().notifyStatementLink(statement);
+        statement.notifyParentLink();
     }
 
     public void addTransaction(Transaction transaction) {
         this.transactions.add(transaction);
-
-        transaction.getIdStatement().notifyTransactionLinkRemove(transaction);
-        transaction.getCategory().notifyTransactionLinkRemove(transaction);
-
-        transaction.getIdStatement().notifyTransactionLink(transaction);
-        transaction.getCategory().notifyTransactionLink(transaction);
+        transaction.notifyParentLink();
     }
 
     public void addCategoryTransfer(CategoryTransfer categoryTransfer) {
         this.categoryTransfers.add(categoryTransfer);
         this.categoryTransferMap.put(categoryTransfer.getId(), categoryTransfer);
-
-        categoryTransfer.getIdPeriod().notifyCategoryTransferLinkRemove(categoryTransfer);
-        categoryTransfer.getDestination().notifyCategoriesTransferDestinationLinkRemove(categoryTransfer);
-        categoryTransfer.getSource().notifyCategoriesTransferSourceLinkRemove(categoryTransfer);
-        categoryTransfer.getCurrency().notifyCategoryTransferLinkRemove(categoryTransfer);
-
-        categoryTransfer.getIdPeriod().notifyCategoryTransferLink(categoryTransfer);
-        categoryTransfer.getDestination().notifyCategoriesTransferDestinationLink(categoryTransfer);
-        categoryTransfer.getSource().notifyCategoriesTransferSourceLink(categoryTransfer);
-        categoryTransfer.getCurrency().notifyCategoryTransferLink(categoryTransfer);
+        categoryTransfer.notifyParentLink();
     }
 
     public void addPeriodTransfer(PeriodTransfer periodTransfer) {
         this.periodTransfers.add(periodTransfer);
-
-        periodTransfer.getCategory().notifyPeriodTransferLinkRemove(periodTransfer);
-        periodTransfer.getCurrency().notifyPeriodTransferLinkRemove(periodTransfer);
-        periodTransfer.getDestination().notifyPeriodTransferDestinationLinkRemove(periodTransfer);
-        periodTransfer.getSource().notifyPeriodTransferSourceLinkRemove(periodTransfer);
-
-        periodTransfer.getCategory().notifyPeriodTransferLink(periodTransfer);
-        periodTransfer.getCurrency().notifyPeriodTransferLink(periodTransfer);
-        periodTransfer.getDestination().notifyPeriodTransferDestinationLink(periodTransfer);
-        periodTransfer.getSource().notifyPeriodTransferSourceLink(periodTransfer);
+        periodTransfer.notifyParentLink();
     }
 
     public void addNonPeriodFund(NonPeriodFund nonPeriodFund) {
         this.nonPeriodFunds.add(nonPeriodFund);
         this.nonPeriodFundMap.put(nonPeriodFund.getId(), nonPeriodFund);
+        nonPeriodFund.notifyParentLink();
     }
 
     public void addNonPeriodFundTransfer(NonPeriodFundTransfer nonPeriodFundTransfer) {
         this.nonPeriodFundTransfers.add(nonPeriodFundTransfer);
-
-        nonPeriodFundTransfer.getCurrency().notifyNonPeriodFundTransferLinkRemove(nonPeriodFundTransfer);
-        nonPeriodFundTransfer.getDestination().notifyNonPeriodFundTransferLinkRemove(nonPeriodFundTransfer);
-        nonPeriodFundTransfer.getSource().notifyNonPeriodFundTransferLinkRemove(nonPeriodFundTransfer);
-        nonPeriodFundTransfer.getSourceCategory().notifyNonPeriodFundTransferLinkRemove(nonPeriodFundTransfer);
-
-        nonPeriodFundTransfer.getCurrency().notifyNonPeriodFundTransferLink(nonPeriodFundTransfer);
-        nonPeriodFundTransfer.getDestination().notifyNonPeriodFundTransferLink(nonPeriodFundTransfer);
-        nonPeriodFundTransfer.getSource().notifyNonPeriodFundTransferLink(nonPeriodFundTransfer);
-        nonPeriodFundTransfer.getSourceCategory().notifyNonPeriodFundTransferLink(nonPeriodFundTransfer);
+        nonPeriodFundTransfer.notifyParentLink();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -282,33 +250,23 @@ public class TrackingDatabase {
     //------------------------------------------------------------------------------------------------------------------
 
     public void removeTransaction(Transaction transaction) {
-        transaction.getIdStatement().notifyTransactionLinkRemove(transaction);
-        transaction.getCategory().notifyTransactionLinkRemove(transaction);
+        transaction.notifyParentUnLink();
         this.transactions.remove(transaction);
     }
 
     public void removeCategoryTransfer(CategoryTransfer categoryTransfer) {
-        categoryTransfer.getDestination().notifyCategoriesTransferDestinationLinkRemove(categoryTransfer);
-        categoryTransfer.getSource().notifyCategoriesTransferSourceLinkRemove(categoryTransfer);
-        categoryTransfer.getIdPeriod().notifyCategoryTransferLinkRemove(categoryTransfer);
-        categoryTransfer.getCurrency().notifyCategoryTransferLinkRemove(categoryTransfer);
+        categoryTransfer.notifyParentUnLink();
         this.categoryTransfers.remove(categoryTransfer);
         this.categoryTransferMap.remove(categoryTransfer.getId());
     }
 
     public void removePeriodTransfer(PeriodTransfer periodTransfer) {
-        periodTransfer.getCategory().notifyPeriodTransferLinkRemove(periodTransfer);
-        periodTransfer.getCurrency().notifyPeriodTransferLinkRemove(periodTransfer);
-        periodTransfer.getDestination().notifyPeriodTransferDestinationLinkRemove(periodTransfer);
-        periodTransfer.getSource().notifyPeriodTransferSourceLinkRemove(periodTransfer);
+        periodTransfer.notifyParentUnLink();
         this.periodTransfers.remove(periodTransfer);
     }
 
     public void removeNonPeriodFundTransfer(NonPeriodFundTransfer nonPeriodFundTransfer) {
-        nonPeriodFundTransfer.getCurrency().notifyNonPeriodFundTransferLinkRemove(nonPeriodFundTransfer);
-        nonPeriodFundTransfer.getDestination().notifyNonPeriodFundTransferLinkRemove(nonPeriodFundTransfer);
-        nonPeriodFundTransfer.getSource().notifyNonPeriodFundTransferLinkRemove(nonPeriodFundTransfer);
-        nonPeriodFundTransfer.getSourceCategory().notifyNonPeriodFundTransferLinkRemove(nonPeriodFundTransfer);
+        nonPeriodFundTransfer.notifyParentUnLink();
         this.nonPeriodFundTransfers.remove(nonPeriodFundTransfer);
     }
 

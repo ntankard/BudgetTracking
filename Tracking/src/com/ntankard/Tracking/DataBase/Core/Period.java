@@ -1,10 +1,11 @@
 package com.ntankard.Tracking.DataBase.Core;
 
+import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
+import com.ntankard.Tracking.DataBase.Core.Base.DataObject;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfers.NonPeriodFundTransfer;
-import com.ntankard.Tracking.DataBase.Core.Transfers.PeriodTransfer;
 import com.ntankard.Tracking.DataBase.Interface.Period_SummaryNonPeriodFundTransfer;
 import com.ntankard.Tracking.DataBase.Interface.Period_SummaryCategoryTransfer;
 import com.ntankard.Tracking.DataBase.Interface.Period_SummaryPeriodTransfer;
@@ -18,9 +19,9 @@ import static com.ntankard.ClassExtension.DisplayProperties.DataContext.ZERO_BEL
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY_AUD;
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY_YEN;
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
-import static com.ntankard.ClassExtension.MemberProperties.TRACE_DISPLAY;
 
-public class Period {
+@ClassExtensionProperties(includeParent = true)
+public class Period extends DataObject {
 
     /**
      * Build a period over an entire month
@@ -67,13 +68,6 @@ public class Period {
     private Calendar start;
     private Calendar end;
 
-    // My Children
-    private List<Statement> statements = new ArrayList<>();
-    private List<CategoryTransfer> categoryTransfers = new ArrayList<>();
-    private List<PeriodTransfer> periodTransferSources = new ArrayList<>();
-    private List<PeriodTransfer> periodTransferDestinations = new ArrayList<>();
-    private List<NonPeriodFundTransfer> nonPeriodFundTransfers = new ArrayList<>();
-
     // Special Access
     private Map<Category, Period_SummaryTransaction> transactionSummaries = new HashMap<>();
     private Map<Category, Period_SummaryCategoryTransfer> categoryTransferSummaries = new HashMap<>();
@@ -89,19 +83,11 @@ public class Period {
         this.end = end;
 
         for (Category category : database.getCategories()) {
-            transactionSummaries.put(category, new Period_SummaryTransaction(this, category, statements));
-            categoryTransferSummaries.put(category, new Period_SummaryCategoryTransfer(this, category, categoryTransfers));
+            transactionSummaries.put(category, new Period_SummaryTransaction(this, category, getChildren(Statement.class)));
+            categoryTransferSummaries.put(category, new Period_SummaryCategoryTransfer(this, category, getChildren(CategoryTransfer.class)));
             periodTransferSummaries.put(category, new Period_SummaryPeriodTransfer(this, category, database.getPeriodTransfers()));
-            nonPeriodFundTransferSummaries.put(category, new Period_SummaryNonPeriodFundTransfer(this, category, nonPeriodFundTransfers));
+            nonPeriodFundTransferSummaries.put(category, new Period_SummaryNonPeriodFundTransfer(this, category, getChildren(NonPeriodFundTransfer.class)));
         }
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public String toString() {
-        return getId();
     }
 
     /**
@@ -115,6 +101,24 @@ public class Period {
         return toReturn;
     }
 
+    /**
+     * {@inheritDoc
+     */
+    @Override
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    public List<DataObject> getParents() {
+        return new ArrayList<>();
+    }
+
+    /**
+     * {@inheritDoc
+     */
+    @Override
+    @DisplayProperties(order = 1, name = "Period")
+    public String getId() {
+        return id;
+    }
+
     //------------------------------------------------------------------------------------------------------------------
     //############################################# Calculated accessors ###############################################
     //------------------------------------------------------------------------------------------------------------------
@@ -124,7 +128,7 @@ public class Period {
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public Double getAUDMissingTransfer() {
         Double value = 0.0;
-        for (Statement t : statements) {
+        for (Statement t : getStatements()) {
             if (t.getIdBank().getCurrency().getId().equals("AUD")) {
                 value += t.getNetTransfer();
             }
@@ -135,7 +139,7 @@ public class Period {
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public Double getYENMissingTransfer() {
         Double value = 0.0;
-        for (Statement t : statements) {
+        for (Statement t : getStatements()) {
             if (t.getIdBank().getCurrency().getId().equals("YEN")) {
                 value += t.getNetTransfer();
             }
@@ -157,7 +161,7 @@ public class Period {
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public Double getStartBalance() {
         Double value = 0.0;
-        for (Statement t : statements) {
+        for (Statement t : getStatements()) {
             value += (t.getStart() * t.getIdBank().getCurrency().getToPrimary());
         }
         return value;
@@ -166,7 +170,7 @@ public class Period {
     @DisplayProperties(name = "Balance", order = 2, dataType = CURRENCY_YEN)
     public Double getEndBalance() {
         Double value = 0.0;
-        for (Statement t : statements) {
+        for (Statement t : getStatements()) {
             value += (t.getEnd() * t.getIdBank().getCurrency().getToPrimary());
         }
         return value;
@@ -175,7 +179,7 @@ public class Period {
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public Double getStartBalanceSecondary() {
         double value = 0.0;
-        for (Statement t : statements) {
+        for (Statement t : getStatements()) {
             value += (t.getStart() * t.getIdBank().getCurrency().getToSecondary());
         }
         return value;
@@ -184,7 +188,7 @@ public class Period {
     @DisplayProperties(name = "Balance", order = 4, dataType = CURRENCY_AUD)
     public Double getEndBalanceSecondary() {
         double value = 0.0;
-        for (Statement t : statements) {
+        for (Statement t : getStatements()) {
             value += (t.getEnd() * t.getIdBank().getCurrency().getToSecondary());
         }
         return value;
@@ -204,7 +208,7 @@ public class Period {
 
     public double getCategoryTotal(Category member) {
         double total = 0;
-        for (Statement s : statements) {
+        for (Statement s : getStatements()) {
             total += s.getCategoryTotal(member) * s.getIdBank().getCurrency().getToPrimary();
         }
 
@@ -214,9 +218,17 @@ public class Period {
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public List<Transaction> getTransactions() {
         List<Transaction> toReturn = new ArrayList<>();
-        for (Statement statement : statements) {
-            toReturn.addAll(statement.getTransactions());
+        for (DataObject statement : getChildren(Statement.class)) {
+            toReturn.addAll(((Statement) statement).getTransactions());
         }
+        return toReturn;
+    }
+
+    public List<Statement> getStatements() {
+        List<Statement> toReturn = new ArrayList<>();
+
+        toReturn.addAll(getChildren(Statement.class));
+
         return toReturn;
     }
 
@@ -224,164 +236,9 @@ public class Period {
     //################################################# Link Management ################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    // Statement Link --------------------------------------------------------------------------------------------------
-
-    /**
-     * Notify that a Statement has linked to this Period
-     *
-     * @param added The Statement that linked
-     */
-    public void notifyStatementLink(Statement added) {
-        statements.add(added);
-    }
-
-    /**
-     * Notify that a Statement has removed there link to this Period
-     *
-     * @param removed The Statement that was linked
-     */
-    public void notifyStatementLinkRemove(Statement removed) {
-        statements.remove(removed);
-    }
-
-    /**
-     * Get all the Statements that have linked to this Period
-     *
-     * @return All the Statements that have linked to this Period
-     */
-    @MemberProperties(verbosityLevel = TRACE_DISPLAY)
-    public List<Statement> getStatements() {
-        return statements;
-    }
-
-    // CategoryTransfer Link -------------------------------------------------------------------------------------------
-
-    /**
-     * Notify that a CategoryTransfer has linked to this Period
-     *
-     * @param added The CategoryTransfer that linked
-     */
-    public void notifyCategoryTransferLink(CategoryTransfer added) {
-        categoryTransfers.add(added);
-    }
-
-    /**
-     * Notify that a CategoryTransfer has removed there link to this Period
-     *
-     * @param removed The CategoryTransfer that was linked
-     */
-    public void notifyCategoryTransferLinkRemove(CategoryTransfer removed) {
-        categoryTransfers.remove(removed);
-    }
-
-    /**
-     * Get all the CategoryTransfers that have linked to this Period
-     *
-     * @return All the CategoryTransfers that have linked to this Period
-     */
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    public List<CategoryTransfer> getCategoryTransfers() {
-        return categoryTransfers;
-    }
-
-    // PeriodTransfer Source Link --------------------------------------------------------------------------------------
-
-    /**
-     * Notify that a PeriodTransferSource has linked to this Period
-     *
-     * @param added The PeriodTransferSource that linked
-     */
-    public void notifyPeriodTransferSourceLink(PeriodTransfer added) {
-        periodTransferSources.add(added);
-    }
-
-    /**
-     * Notify that a PeriodTransferSource has removed there link to this Period
-     *
-     * @param removed The PeriodTransferSource that was linked
-     */
-    public void notifyPeriodTransferSourceLinkRemove(PeriodTransfer removed) {
-        periodTransferSources.remove(removed);
-    }
-
-    /**
-     * Get all the PeriodTransferSource that have linked to this Period
-     *
-     * @return All the PeriodTransferSource that have linked to this Period
-     */
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    public List<PeriodTransfer> getPeriodTransferSources() {
-        return periodTransferSources;
-    }
-
-    // PeriodTransfer Destination Link ---------------------------------------------------------------------------------
-
-    /**
-     * Notify that a PeriodTransferDestinations has linked to this Period
-     *
-     * @param added The PeriodTransferDestinations that linked
-     */
-    public void notifyPeriodTransferDestinationLink(PeriodTransfer added) {
-        periodTransferDestinations.add(added);
-    }
-
-    /**
-     * Notify that a PeriodTransferDestinations has removed there link to this Period
-     *
-     * @param removed The PeriodTransferDestinations that was linked
-     */
-    public void notifyPeriodTransferDestinationLinkRemove(PeriodTransfer removed) {
-        periodTransferDestinations.remove(removed);
-    }
-
-    /**
-     * Get all the PeriodTransferDestinations that have linked to this Period
-     *
-     * @return All the PeriodTransferDestinations that have linked to this Period
-     */
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    public List<PeriodTransfer> getPeriodTransferDestinations() {
-        return periodTransferDestinations;
-    }
-
-    // NonPeriodFundTransfer Link --------------------------------------------------------------------------------------
-
-    /**
-     * Notify that a NonPeriodFundTransfer has linked to this Period
-     *
-     * @param added The NonPeriodFundTransfer that linked
-     */
-    public void notifyNonPeriodFundTransferLink(NonPeriodFundTransfer added) {
-        nonPeriodFundTransfers.add(added);
-    }
-
-    /**
-     * Notify that a NonPeriodFundTransfer has removed there link to this Period
-     *
-     * @param removed The NonPeriodFundTransfer that was linked
-     */
-    public void notifyNonPeriodFundTransferLinkRemove(NonPeriodFundTransfer removed) {
-        nonPeriodFundTransfers.remove(removed);
-    }
-
-    /**
-     * Get all the NonPeriodFundTransfer that have linked to this Period
-     *
-     * @return All the NonPeriodFundTransfer that have linked to this Period
-     */
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    public List<NonPeriodFundTransfer> getNonPeriodFundTransfers() {
-        return nonPeriodFundTransfers;
-    }
-
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
-
-    @DisplayProperties(order = 1, name = "Period")
-    public String getId() {
-        return id;
-    }
 
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public Calendar getStart() {

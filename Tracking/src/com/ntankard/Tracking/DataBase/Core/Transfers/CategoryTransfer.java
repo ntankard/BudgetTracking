@@ -1,16 +1,22 @@
 package com.ntankard.Tracking.DataBase.Core.Transfers;
 
+import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.DynamicGUI.Components.Object.SetterProperties;
+import com.ntankard.Tracking.DataBase.Core.Base.DataObject;
+import com.ntankard.Tracking.DataBase.Core.Base.MoneyEvent;
 import com.ntankard.Tracking.DataBase.Core.Category;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period;
 
-import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
-import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY_YEN;
+import java.util.ArrayList;
+import java.util.List;
 
-public class CategoryTransfer {
+import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
+
+@ClassExtensionProperties(includeParent = true)
+public class CategoryTransfer extends MoneyEvent {
 
     // My parents
     private Period idPeriod;
@@ -20,37 +26,53 @@ public class CategoryTransfer {
 
     // My values
     private String idCode;
-    private String description;
-    private Double value;
 
-    // My Children
-
+    /**
+     * Constructor
+     */
     public CategoryTransfer(Period idPeriod, String idCode, Category source, Category destination, Currency currency, String description, Double value) {
+        super(description, value);
         this.idPeriod = idPeriod;
         this.source = source;
         this.destination = destination;
         this.idCode = idCode;
         this.currency = currency;
-        this.description = description;
-        this.value = value;
     }
 
     /**
      * {@inheritDoc
      */
     @Override
-    public String toString() {
-        return getId();
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    public List<DataObject> getParents() {
+        List<DataObject> toReturn = new ArrayList<>();
+        toReturn.add(idPeriod);
+        toReturn.add(source);
+        toReturn.add(destination);
+        toReturn.add(currency);
+        return toReturn;
+    }
+
+    /**
+     * {@inheritDoc
+     */
+    @Override
+    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
+    public String getId() {
+        return getIdPeriod().getId() + " " + getIdCode();
+    }
+
+    /**
+     * {@inheritDoc
+     */
+    @Override
+    public Currency getCurrency() {
+        return currency;
     }
 
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
-
-    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
-    public String getId() {
-        return getIdPeriod().getId() + " " + getIdCode();
-    }
 
     @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
     public Period getIdPeriod() {
@@ -72,50 +94,28 @@ public class CategoryTransfer {
         return destination;
     }
 
-    public Currency getCurrency() {
-        return currency;
-    }
-
-    @DisplayProperties(order = 0)
-    public String getDescription() {
-        return description;
-    }
-
-    @DisplayProperties(order = 1, dataType = CURRENCY)
-    public Double getValue() {
-        return value;
-    }
-
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Setters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
     @SetterProperties(sourceMethod = "getCategories")
     public void setDestination(Category destination) {
-        this.destination.notifyCategoriesTransferDestinationLinkRemove(this);
+        this.destination.notifyChildUnLink(this);
         this.destination = destination;
-        this.destination.notifyCategoriesTransferDestinationLink(this);
+        this.destination.notifyChildLink(this);
     }
 
     @SetterProperties(sourceMethod = "getCategories")
     public void setSource(Category source) {
-        this.source.notifyCategoriesTransferSourceLinkRemove(this);
+        this.source.notifyChildUnLink(this);
         this.source = source;
-        this.source.notifyCategoriesTransferSourceLink(this);
+        this.source.notifyChildLink(this);
     }
 
     @SetterProperties(sourceMethod = "getCurrencies")
     public void setCurrency(Currency currency) {
-        this.currency.notifyCategoryTransferLinkRemove(this);
+        this.currency.notifyChildUnLink(this);
         this.currency = currency;
-        this.currency.notifyCategoryTransferLink(this);
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setValue(Double value) {
-        this.value = value;
+        this.currency.notifyChildLink(this);
     }
 }

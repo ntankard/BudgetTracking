@@ -1,13 +1,18 @@
 package com.ntankard.Tracking.DataBase.Core;
 
-import com.ntankard.ClassExtension.DisplayProperties;
+import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.DynamicGUI.Components.Object.SetterProperties;
+import com.ntankard.Tracking.DataBase.Core.Base.DataObject;
+import com.ntankard.Tracking.DataBase.Core.Base.MoneyEvent;
 
-import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
-public class Transaction {
+@ClassExtensionProperties(includeParent = true)
+public class Transaction extends MoneyEvent {
 
     // My parents
     private Statement idStatement;
@@ -15,19 +20,14 @@ public class Transaction {
 
     // My values
     private String idCode;
-    private String description;
-    private Double value;
-
-    // My Children
 
     /**
      * Constructor
      */
     public Transaction(Statement idStatement, String idCode, String description, Double value, Category category) {
+        super(description, value);
         this.idStatement = idStatement;
         this.idCode = idCode;
-        this.description = description;
-        this.value = value;
         this.category = category;
     }
 
@@ -35,18 +35,34 @@ public class Transaction {
      * {@inheritDoc
      */
     @Override
-    public String toString() {
-        return getId();
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    public List<DataObject> getParents() {
+        List<DataObject> toReturn = new ArrayList<>();
+        toReturn.add(idStatement);
+        toReturn.add(category);
+        return toReturn;
+    }
+
+    /**
+     * {@inheritDoc
+     */
+    @Override
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    public String getId() {
+        return getIdStatement().getId() + " " + getIdCode();
+    }
+
+    /**
+     * {@inheritDoc
+     */
+    @Override
+    public Currency getCurrency() {
+        return idStatement.getIdBank().getCurrency();
     }
 
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
-
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    public String getId() {
-        return getIdStatement().getId() + " " + getIdCode();
-    }
 
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public Statement getIdStatement() {
@@ -58,15 +74,6 @@ public class Transaction {
         return idCode;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    @DisplayProperties(dataType = CURRENCY)
-    public Double getValue() {
-        return value;
-    }
-
     public Category getCategory() {
         return category;
     }
@@ -75,29 +82,17 @@ public class Transaction {
     //#################################################### Setters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    public void setIdCode(String idCode) {
-        this.idCode = idCode;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setValue(Double value) {
-        this.value = value;
-    }
-
     @SetterProperties(sourceMethod = "getStatements")
     public void setIdStatement(Statement idStatement) {
-        this.idStatement.notifyTransactionLinkRemove(this);
+        this.idStatement.notifyChildUnLink(this);
         this.idStatement = idStatement;
-        this.idStatement.notifyTransactionLink(this);
+        this.idStatement.notifyChildLink(this);
     }
 
     @SetterProperties(sourceMethod = "getCategories")
     public void setCategory(Category category) {
-        this.category.notifyTransactionLinkRemove(this);
+        this.category.notifyChildUnLink(this);
         this.category = category;
-        this.category.notifyTransactionLink(this);
+        this.category.notifyChildLink(this);
     }
 }

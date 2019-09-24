@@ -1,22 +1,21 @@
 package com.ntankard.Tracking.DataBase.Core;
 
+import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.MemberProperties;
-import com.ntankard.Tracking.DataBase.Core.Transfers.NonPeriodFundTransfer;
+import com.ntankard.Tracking.DataBase.Core.Base.DataObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
-public class NonPeriodFund {
+@ClassExtensionProperties(includeParent = true)
+public class NonPeriodFund extends DataObject {
 
     // My parents
 
     // My values
     private String id;
-
-    // My Children
-    private List<NonPeriodFundTransfer> nonPeriodFundTransfers = new ArrayList<>();
 
     /**
      * Constructor
@@ -25,52 +24,20 @@ public class NonPeriodFund {
         this.id = id;
     }
 
+
     /**
      * {@inheritDoc
      */
     @Override
-    public String toString() {
-        return getId();
-    }
-
-    //------------------------------------------------------------------------------------------------------------------
-    //################################################# Link Management ################################################
-    //------------------------------------------------------------------------------------------------------------------
-
-    // NonPeriodFundTransfer Link --------------------------------------------------------------------------------------
-
-    /**
-     * Notify that a NonPeriodFundTransfer has linked to this Period
-     *
-     * @param added The NonPeriodFundTransfer that linked
-     */
-    public void notifyNonPeriodFundTransferLink(NonPeriodFundTransfer added) {
-        nonPeriodFundTransfers.add(added);
-    }
-
-    /**
-     * Notify that a NonPeriodFundTransfer has removed there link to this Period
-     *
-     * @param removed The NonPeriodFundTransfer that was linked
-     */
-    public void notifyNonPeriodFundTransferLinkRemove(NonPeriodFundTransfer removed) {
-        nonPeriodFundTransfers.remove(removed);
-    }
-
-    /**
-     * Get all the NonPeriodFundTransfer that have linked to this Period
-     *
-     * @return All the NonPeriodFundTransfer that have linked to this Period
-     */
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    public List<NonPeriodFundTransfer> getNonPeriodFundTransfers() {
-        return nonPeriodFundTransfers;
+    public List<DataObject> getParents() {
+        return new ArrayList<>();
     }
 
-    //------------------------------------------------------------------------------------------------------------------
-    //#################################################### Getters #####################################################
-    //------------------------------------------------------------------------------------------------------------------
-
+    /**
+     * {@inheritDoc
+     */
+    @Override
     public String getId() {
         return id;
     }

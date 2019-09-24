@@ -1,15 +1,19 @@
 package com.ntankard.Tracking.DataBase.Core;
 
+import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
+import com.ntankard.Tracking.DataBase.Core.Base.DataObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataContext.ZERO_TARGET;
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
+import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
-public class Statement {
+@ClassExtensionProperties(includeParent = true)
+public class Statement extends DataObject {
 
     // My parents
     private Bank idBank;
@@ -20,9 +24,6 @@ public class Statement {
     private Double end;
     private Double transferIn;
     private Double transferOut;
-
-    // My Children
-    private List<Transaction> transactions = new ArrayList<>();
 
     /**
      * Constructor
@@ -40,8 +41,21 @@ public class Statement {
      * {@inheritDoc
      */
     @Override
-    public String toString() {
-        return getId();
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    public List<DataObject> getParents() {
+        List<DataObject> toReturn = new ArrayList<>();
+        toReturn.add(idBank);
+        toReturn.add(idPeriod);
+        return toReturn;
+    }
+
+    /**
+     * {@inheritDoc
+     */
+    @Override
+    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
+    public String getId() {
+        return getIdBank().getId() + " " + getIdPeriod().getId();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -56,7 +70,7 @@ public class Statement {
     @DisplayProperties(dataType = CURRENCY, order = 6)
     public Double getTotalSpend() {
         double sum = 0.0;
-        for (Transaction t : transactions) {
+        for (Transaction t : getTransactions()) {
             sum += t.getValue();
         }
         return sum;
@@ -106,7 +120,7 @@ public class Statement {
      */
     public double getCategoryTotal(Category category) {
         double total = 0;
-        for (Transaction t : transactions) {
+        for (Transaction t : getTransactions()) {
             if (t.getCategory().equals(category)) {
                 total += t.getValue();
             }
@@ -114,48 +128,13 @@ public class Statement {
         return total;
     }
 
-    //------------------------------------------------------------------------------------------------------------------
-    //################################################# Link Management ################################################
-    //------------------------------------------------------------------------------------------------------------------
-
-    // Transaction Link ------------------------------------------------------------------------------------------------
-
-    /**
-     * Notify that a Transaction has linked to this Statement
-     *
-     * @param added The Transaction that linked
-     */
-    public void notifyTransactionLink(Transaction added) {
-        transactions.add(added);
-    }
-
-    /**
-     * Notify that a Transaction has removed there link to this Statement
-     *
-     * @param removed The Transaction that was linked
-     */
-    public void notifyTransactionLinkRemove(Transaction removed) {
-        transactions.remove(removed);
-    }
-
-    /**
-     * Get all the Transactions that have linked to this Statement
-     *
-     * @return All the Transactions that have linked to this Statement
-     */
-    @MemberProperties(verbosityLevel = MemberProperties.TRACE_DISPLAY)
     public List<Transaction> getTransactions() {
-        return transactions;
+        return new ArrayList<Transaction>(getChildren(Transaction.class));
     }
 
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
-
-    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
-    public String getId() {
-        return getIdBank().getId() + " " + getIdPeriod().getId();
-    }
 
     @DisplayProperties(order = 0)
     public Bank getIdBank() {

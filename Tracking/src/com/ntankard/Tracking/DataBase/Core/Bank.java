@@ -1,6 +1,8 @@
 package com.ntankard.Tracking.DataBase.Core;
 
+import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.MemberProperties;
+import com.ntankard.Tracking.DataBase.Core.Base.DataObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +10,8 @@ import java.util.List;
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 import static com.ntankard.ClassExtension.MemberProperties.TRACE_DISPLAY;
 
-public class Bank {
+@ClassExtensionProperties(includeParent = true)
+public class Bank extends DataObject {
 
     // My parents
     private Currency currency;
@@ -16,9 +19,6 @@ public class Bank {
     // My values
     private String idBank;
     private String idAccount;
-
-    // My Children
-    private List<Statement> statements = new ArrayList<>();
 
     /**
      * Constructor
@@ -33,52 +33,25 @@ public class Bank {
      * {@inheritDoc
      */
     @Override
-    public String toString() {
-        return getId();
-    }
-
-    //------------------------------------------------------------------------------------------------------------------
-    //################################################# Link Management ################################################
-    //------------------------------------------------------------------------------------------------------------------
-
-    // Statement Link --------------------------------------------------------------------------------------------------
-
-    /**
-     * Notify that a Statement has linked to this Bank
-     *
-     * @param added The Statement that linked
-     */
-    public void notifyStatementLink(Statement added) {
-        statements.add(added);
-    }
-
-    /**
-     * Notify that a Statement has removed there link to this Bank
-     *
-     * @param removed The Statement that was linked
-     */
-    public void notifyStatementLinkRemove(Statement removed) {
-        statements.remove(removed);
-    }
-
-    /**
-     * Get all the Statement that have linked to this Bank
-     *
-     * @return All the Statements that have linked to this Bank
-     */
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    public List<Statement> getStatements() {
-        return statements;
+    public List<DataObject> getParents() {
+        List<DataObject> toReturn = new ArrayList<>();
+        toReturn.add(currency);
+        return toReturn;
+    }
+
+    /**
+     * {@inheritDoc
+     */
+    @Override
+    @MemberProperties(verbosityLevel = TRACE_DISPLAY)
+    public String getId() {
+        return getIdBank() + "-" + getIdAccount();
     }
 
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
-
-    @MemberProperties(verbosityLevel = TRACE_DISPLAY)
-    public String getId() {
-        return getIdBank() + "-" + getIdAccount();
-    }
 
     public String getIdBank() {
         return idBank;

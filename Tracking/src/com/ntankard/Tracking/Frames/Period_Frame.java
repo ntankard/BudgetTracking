@@ -163,7 +163,7 @@ public class Period_Frame extends UpdatableJPanel {
         transaction_list.clear();
 
         statement_list.addAll(core.getStatements());
-        categoryTransfer_list.addAll(core.getCategoryTransfers());
+        categoryTransfer_list.addAll(core.getChildren(CategoryTransfer.class));
         transaction_list.addAll(core.getTransactions());
 
         statement_panel.update();

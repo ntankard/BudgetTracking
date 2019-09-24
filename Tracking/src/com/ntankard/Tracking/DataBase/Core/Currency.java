@@ -1,16 +1,16 @@
 package com.ntankard.Tracking.DataBase.Core;
 
+import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.MemberProperties;
-import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryTransfer;
-import com.ntankard.Tracking.DataBase.Core.Transfers.NonPeriodFundTransfer;
-import com.ntankard.Tracking.DataBase.Core.Transfers.PeriodTransfer;
+import com.ntankard.Tracking.DataBase.Core.Base.DataObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
-public class Currency {
+@ClassExtensionProperties(includeParent = true)
+public class Currency extends DataObject {
 
     // My parents
 
@@ -19,12 +19,6 @@ public class Currency {
     private double toSecondary;
     private double toPrimary;
     private boolean isPrimary;
-
-    // My children
-    private List<Bank> banks = new ArrayList<>();
-    private List<CategoryTransfer> categoryTransfers = new ArrayList<>();
-    private List<PeriodTransfer> periodTransfers = new ArrayList<>();
-    private List<NonPeriodFundTransfer> nonPeriodFundTransfers = new ArrayList<>();
 
     /**
      * Constructor
@@ -40,141 +34,22 @@ public class Currency {
      * {@inheritDoc
      */
     @Override
-    public String toString() {
-        return getId();
-    }
-
-    //------------------------------------------------------------------------------------------------------------------
-    //################################################# Link Management ################################################
-    //------------------------------------------------------------------------------------------------------------------
-
-    // Bank Link -------------------------------------------------------------------------------------------------------
-
-    /**
-     * Notify that a Bank has linked to this Currency
-     *
-     * @param added The Bank that linked
-     */
-    public void notifyBankLink(Bank added) {
-        banks.add(added);
-    }
-
-    /**
-     * Notify that a Bank has removed there link to this Currency
-     *
-     * @param removed The Bank that was linked
-     */
-    public void notifyBankLinkRemove(Bank removed) {
-        banks.remove(removed);
-    }
-
-    /**
-     * Get all the Banks that have linked to this Currency
-     *
-     * @return All the Banks that have linked to this Currency
-     */
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    public List<Bank> getBanks() {
-        return banks;
-    }
-
-    // CategoryTransfer Link -------------------------------------------------------------------------------------------
-
-    /**
-     * Notify that a CategoryTransfer has linked to this Currency
-     *
-     * @param added The CategoryTransfer that linked
-     */
-    public void notifyCategoryTransferLink(CategoryTransfer added) {
-        categoryTransfers.add(added);
+    public List<DataObject> getParents() {
+        return new ArrayList<>();
     }
 
     /**
-     * Notify that a CategoryTransfer has removed there link to this Currency
-     *
-     * @param removed The CategoryTransfer that was linked
+     * {@inheritDoc
      */
-    public void notifyCategoryTransferLinkRemove(CategoryTransfer removed) {
-        categoryTransfers.remove(removed);
-    }
-
-    /**
-     * Get all the CategoryTransfers that have linked to this Currency
-     *
-     * @return All the CategoryTransfers that have linked to this Currency
-     */
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    public List<CategoryTransfer> getCategoryTransfers() {
-        return categoryTransfers;
-    }
-
-    // PeriodTransfer Link ---------------------------------------------------------------------------------------------
-
-    /**
-     * Notify that a PeriodTransfer has linked to this Period
-     *
-     * @param added The PeriodTransfer that linked
-     */
-    public void notifyPeriodTransferLink(PeriodTransfer added) {
-        periodTransfers.add(added);
-    }
-
-    /**
-     * Notify that a PeriodTransfer has removed there link to this Period
-     *
-     * @param removed The PeriodTransfer that was linked
-     */
-    public void notifyPeriodTransferLinkRemove(PeriodTransfer removed) {
-        periodTransfers.remove(removed);
-    }
-
-    /**
-     * Get all the PeriodTransfer that have linked to this Period
-     *
-     * @return All the PeriodTransfer that have linked to this Period
-     */
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    public List<PeriodTransfer> getPeriodTransfers() {
-        return periodTransfers;
-    }
-
-    // NonPeriodFundTransfer Link --------------------------------------------------------------------------------------
-
-    /**
-     * Notify that a NonPeriodFundTransfer has linked to this Period
-     *
-     * @param added The NonPeriodFundTransfer that linked
-     */
-    public void notifyNonPeriodFundTransferLink(NonPeriodFundTransfer added) {
-        nonPeriodFundTransfers.add(added);
-    }
-
-    /**
-     * Notify that a NonPeriodFundTransfer has removed there link to this Period
-     *
-     * @param removed The NonPeriodFundTransfer that was linked
-     */
-    public void notifyNonPeriodFundTransferLinkRemove(NonPeriodFundTransfer removed) {
-        nonPeriodFundTransfers.remove(removed);
-    }
-
-    /**
-     * Get all the NonPeriodFundTransfer that have linked to this Period
-     *
-     * @return All the NonPeriodFundTransfer that have linked to this Period
-     */
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    public List<NonPeriodFundTransfer> getNonPeriodFundTransfers() {
-        return nonPeriodFundTransfers;
+    @Override
+    public String getId() {
+        return id;
     }
 
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
-
-    public String getId() {
-        return id;
-    }
 
     public double getToSecondary() {
         return toSecondary;
