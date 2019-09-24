@@ -29,21 +29,6 @@ public class Period_SummaryCategoryTransfer extends Period_Summary<CategoryTrans
      * {@inheritDoc
      */
     @Override
-    public List<Currency> getCurrencies() {
-        List<Currency> toReturn = new ArrayList<>();
-        for (CategoryTransfer categoryTransfer : getEvents()) {
-            Currency currency = categoryTransfer.getCurrency();
-            if (!toReturn.contains(currency)) {
-                toReturn.add(currency);
-            }
-        }
-        return toReturn;
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
     public List<CategoryTransfer> getEvents() {
         List<CategoryTransfer> toReturn = new ArrayList<>();
         for (CategoryTransfer categoryTransfer : categoryTransfers) {

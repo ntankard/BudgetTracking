@@ -1,4 +1,4 @@
-package com.ntankard.Tracking.Frames.Swing.PeriodSummary.ModelData.Rows;
+package com.ntankard.Tracking.Frames.Swing.PeriodSummary.ModelData.Rows.Transfer;
 
 import com.ntankard.Tracking.DataBase.Core.Category;
 import com.ntankard.Tracking.DataBase.Core.Currency;

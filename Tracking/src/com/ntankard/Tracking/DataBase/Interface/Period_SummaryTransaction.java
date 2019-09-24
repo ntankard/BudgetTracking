@@ -28,25 +28,6 @@ public class Period_SummaryTransaction extends Period_Summary<Transaction> {
      * {@inheritDoc
      */
     @Override
-    public List<Currency> getCurrencies() {
-        List<Currency> toReturn = new ArrayList<>();
-
-        for (Statement statement : statements) {
-            if (getTransactions(statement).size() != 0) {
-                Currency currency = statement.getIdBank().getCurrency();
-                if (!toReturn.contains(currency)) {
-                    toReturn.add(currency);
-                }
-            }
-        }
-
-        return toReturn;
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
     public List<Transaction> getEvents() {
         List<Transaction> transactions = new ArrayList<>();
         for (Statement statement : statements) {

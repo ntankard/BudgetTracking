@@ -1,12 +1,15 @@
 package com.ntankard.Tracking.DataBase.Interface;
 
+import com.ntankard.Tracking.DataBase.Core.Base.MoneyEvent;
 import com.ntankard.Tracking.DataBase.Core.Category;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period;
+import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryTransfer;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Period_Summary<T> {
+public abstract class Period_Summary<T extends MoneyEvent> {
 
     /**
      * The period to summarise
@@ -34,7 +37,16 @@ public abstract class Period_Summary<T> {
      *
      * @return A list of all the currencies used in the events
      */
-    public abstract List<Currency> getCurrencies();
+    public List<Currency> getCurrencies() {
+        List<Currency> toReturn = new ArrayList<>();
+        for (T moneyEvent : getEvents()) {
+            Currency currency = moneyEvent.getCurrency();
+            if (!toReturn.contains(currency)) {
+                toReturn.add(currency);
+            }
+        }
+        return toReturn;
+    }
 
     /**
      * Get all the events tied to the this period category pair

@@ -30,21 +30,6 @@ public class Period_SummaryNonPeriodFundTransfer extends Period_Summary<NonPerio
      * {@inheritDoc
      */
     @Override
-    public List<Currency> getCurrencies() {
-        List<Currency> toReturn = new ArrayList<>();
-        for (NonPeriodFundTransfer nonPeriodFundTransfer : getEvents()) {
-            Currency currency = nonPeriodFundTransfer.getCurrency();
-            if (!toReturn.contains(currency)) {
-                toReturn.add(currency);
-            }
-        }
-        return toReturn;
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
     public List<NonPeriodFundTransfer> getEvents() {
         List<NonPeriodFundTransfer> toReturn = new ArrayList<>();
         for (NonPeriodFundTransfer nonPeriodFundTransfer : nonPeriodFundTransfers) {
