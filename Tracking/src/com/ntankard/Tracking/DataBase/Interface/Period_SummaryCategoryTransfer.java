@@ -32,7 +32,7 @@ public class Period_SummaryCategoryTransfer extends Period_Summary<CategoryTrans
     public List<CategoryTransfer> getEvents() {
         List<CategoryTransfer> toReturn = new ArrayList<>();
         for (CategoryTransfer categoryTransfer : categoryTransfers) {
-            if (categoryTransfer.getSource().equals(category) || categoryTransfer.getDestination().equals(category)) {
+            if (categoryTransfer.getSourceCategory().equals(category) || categoryTransfer.getDestinationCategory().equals(category)) {
                 toReturn.add(categoryTransfer);
             }
         }
@@ -50,9 +50,9 @@ public class Period_SummaryCategoryTransfer extends Period_Summary<CategoryTrans
         double sum = 0;
         for (CategoryTransfer categoryTransfer : categoryTransfers) {
             if (categoryTransfer.getCurrency().equals(toSum)) {
-                if (categoryTransfer.getSource().equals(category)) {
+                if (categoryTransfer.getSourceCategory().equals(category)) {
                     sum -= categoryTransfer.getValue();
-                } else if (categoryTransfer.getDestination().equals(category)) {
+                } else if (categoryTransfer.getDestinationCategory().equals(category)) {
                     sum += categoryTransfer.getValue();
                 }
             }

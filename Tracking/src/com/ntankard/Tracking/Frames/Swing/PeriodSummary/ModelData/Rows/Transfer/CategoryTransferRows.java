@@ -44,7 +44,7 @@ public class CategoryTransferRows extends TransferRow<CategoryTransfer> {
      */
     @Override
     public double getValue(CategoryTransfer rowData, Category category) {
-        if (rowData.getSource().equals(category)) {
+        if (rowData.getSourceCategory().equals(category)) {
             return -rowData.getValue();
         }
         return rowData.getValue();

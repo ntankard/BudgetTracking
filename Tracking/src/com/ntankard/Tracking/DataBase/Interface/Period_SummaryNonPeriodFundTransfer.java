@@ -51,7 +51,7 @@ public class Period_SummaryNonPeriodFundTransfer extends Period_Summary<NonPerio
         double sum = 0;
         for (NonPeriodFundTransfer nonPeriodFundTransfer : getEvents()) {
             if (nonPeriodFundTransfer.getCurrency().equals(toSum)) {
-                if (nonPeriodFundTransfer.getSource().equals(period)) {
+                if (nonPeriodFundTransfer.getSourceContainer().equals(period)) {
                     sum -= nonPeriodFundTransfer.getValue();
                 } else {
                     sum += nonPeriodFundTransfer.getValue();

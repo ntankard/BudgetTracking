@@ -44,7 +44,7 @@ public class PeriodTransferRows extends TransferRow<PeriodTransfer> {
      */
     @Override
     protected double getValue(PeriodTransfer rowData, Category category) {
-        if (rowData.getSource().equals(core)) {
+        if (rowData.getSourceContainer().equals(core)) {
             return -rowData.getValue();
         }
         return rowData.getValue();

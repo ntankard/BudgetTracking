@@ -202,17 +202,17 @@ public class PeriodPanel extends UpdatableJPanel {
 
         statement_list.addAll(core.getStatements());
         for (CategoryTransfer categoryTransfer : trackingDatabase.getCategoryTransfers()) {
-            if (categoryTransfer.getIdPeriod().equals(core)) {
+            if (categoryTransfer.getSourceContainer().equals(core)) {
                 categoryTransfer_list.add(categoryTransfer);
             }
         }
         for (PeriodTransfer periodTransfer : trackingDatabase.getPeriodTransfers()) {
-            if (periodTransfer.getSource().equals(core) || periodTransfer.getDestination().equals(core)) {
+            if (periodTransfer.getSourceContainer().equals(core) || periodTransfer.getDestinationContainer().equals(core)) {
                 periodTransfer_list.add(periodTransfer);
             }
         }
         for (NonPeriodFundTransfer nonPeriodFundTransfer : trackingDatabase.getNonPeriodFundTransfers()) {
-            if (nonPeriodFundTransfer.getSource().equals(core)) {
+            if (nonPeriodFundTransfer.getSourceContainer().equals(core)) {
                 nonPeriodFundTransfer_list.add(nonPeriodFundTransfer);
             }
         }

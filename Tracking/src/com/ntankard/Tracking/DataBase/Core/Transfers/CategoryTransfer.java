@@ -4,25 +4,15 @@ import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.DynamicGUI.Components.Object.SetterProperties;
-import com.ntankard.Tracking.DataBase.Core.Base.DataObject;
-import com.ntankard.Tracking.DataBase.Core.Base.MoneyEvent;
+import com.ntankard.Tracking.DataBase.Core.Base.Transfer;
 import com.ntankard.Tracking.DataBase.Core.Category;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
-
 @ClassExtensionProperties(includeParent = true)
-public class CategoryTransfer extends MoneyEvent {
+public class CategoryTransfer extends Transfer<Period, Period> {
 
     // My parents
-    private Period idPeriod;
-    private Category source;
-    private Category destination;
-    private Currency currency;
 
     // My values
     private String idCode;
@@ -31,26 +21,8 @@ public class CategoryTransfer extends MoneyEvent {
      * Constructor
      */
     public CategoryTransfer(Period idPeriod, String idCode, Category source, Category destination, Currency currency, String description, Double value) {
-        super(description, value);
-        this.idPeriod = idPeriod;
-        this.source = source;
-        this.destination = destination;
+        super(description, value, idPeriod, source, idPeriod, destination, currency);
         this.idCode = idCode;
-        this.currency = currency;
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    public List<DataObject> getParents() {
-        List<DataObject> toReturn = new ArrayList<>();
-        toReturn.add(idPeriod);
-        toReturn.add(source);
-        toReturn.add(destination);
-        toReturn.add(currency);
-        return toReturn;
     }
 
     /**
@@ -59,15 +31,7 @@ public class CategoryTransfer extends MoneyEvent {
     @Override
     @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
     public String getId() {
-        return getIdPeriod().getId() + " " + getIdCode();
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public Currency getCurrency() {
-        return currency;
+        return getSourceContainer().getId() + " " + getIdCode();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -75,23 +39,26 @@ public class CategoryTransfer extends MoneyEvent {
     //------------------------------------------------------------------------------------------------------------------
 
     @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
-    public Period getIdPeriod() {
-        return idPeriod;
-    }
-
-    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
     public String getIdCode() {
         return idCode;
     }
 
+    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
     @DisplayProperties(order = 2)
-    public Category getSource() {
-        return source;
+    @Override
+    public Period getSourceContainer() {
+        return super.getSourceContainer();
+    }
+
+    @Override
+    public Category getSourceCategory() {
+        return super.getSourceCategory();
     }
 
     @DisplayProperties(order = 3)
-    public Category getDestination() {
-        return destination;
+    @Override
+    public Category getDestinationCategory() {
+        return super.getDestinationCategory();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -99,23 +66,14 @@ public class CategoryTransfer extends MoneyEvent {
     //------------------------------------------------------------------------------------------------------------------
 
     @SetterProperties(sourceMethod = "getCategories")
-    public void setDestination(Category destination) {
-        this.destination.notifyChildUnLink(this);
-        this.destination = destination;
-        this.destination.notifyChildLink(this);
+    @Override
+    public void setDestinationCategory(Category destination) {
+        super.setDestinationCategory(destination);
     }
 
     @SetterProperties(sourceMethod = "getCategories")
-    public void setSource(Category source) {
-        this.source.notifyChildUnLink(this);
-        this.source = source;
-        this.source.notifyChildLink(this);
-    }
-
-    @SetterProperties(sourceMethod = "getCurrencies")
-    public void setCurrency(Currency currency) {
-        this.currency.notifyChildUnLink(this);
-        this.currency = currency;
-        this.currency.notifyChildLink(this);
+    @Override
+    public void setSourceCategory(Category source) {
+        super.setSourceCategory(source);
     }
 }

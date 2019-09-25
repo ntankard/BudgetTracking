@@ -340,10 +340,10 @@ public class TrackingDatabase_Reader {
         ArrayList<List<String>> lines = new ArrayList<>();
         for (CategoryTransfer t : data.getCategoryTransfers()) {
             List<String> line = new ArrayList<>();
-            line.add(t.getIdPeriod().getId());
+            line.add(t.getSourceContainer().getId());
             line.add(t.getIdCode());
-            line.add(t.getSource().toString());
-            line.add(t.getDestination().toString());
+            line.add(t.getSourceCategory().toString());
+            line.add(t.getDestinationCategory().toString());
             line.add(t.getCurrency().getId().toString());
             line.add(t.getDescription());
             line.add(t.getValue().toString());
@@ -394,10 +394,10 @@ public class TrackingDatabase_Reader {
         for (PeriodTransfer t : data.getPeriodTransfers()) {
             List<String> line = new ArrayList<>();
             line.add(t.getId());
-            line.add(t.getSource().getId());
-            line.add(t.getDestination().getId());
+            line.add(t.getSourceContainer().getId());
+            line.add(t.getDestinationContainer().getId());
             line.add(t.getCurrency().getId());
-            line.add(t.getCategory().getId());
+            line.add(t.getSourceCategory().getId());
             line.add(t.getDescription());
             line.add(t.getValue().toString());
             lines.add(line);
@@ -482,8 +482,8 @@ public class TrackingDatabase_Reader {
         for (NonPeriodFundTransfer t : data.getNonPeriodFundTransfers()) {
             List<String> line = new ArrayList<>();
             line.add(t.getId());
-            line.add(t.getSource().getId());
-            line.add(t.getDestination().getId());
+            line.add(t.getSourceContainer().getId());
+            line.add(t.getDestinationContainer().getId());
             line.add(t.getSourceCategory().getId());
             line.add(t.getCurrency().getId());
             line.add(t.getDescription());
