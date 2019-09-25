@@ -102,7 +102,7 @@ public abstract class TransferRow<T extends MoneyEvent> extends DataRows<T> {
      * @return The Value
      */
     protected abstract double getValue(T rowData, Category category);
-    
+
     /**
      * Extract all the rows for a specified category
      *

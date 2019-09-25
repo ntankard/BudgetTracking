@@ -7,7 +7,8 @@ import com.ntankard.Tracking.DataBase.Core.Base.DataObject;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfers.NonPeriodFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfers.PeriodTransfer;
-import com.ntankard.Tracking.DataBase.Interface.*;
+import com.ntankard.Tracking.DataBase.Interface.Period_SummaryTransaction;
+import com.ntankard.Tracking.DataBase.Interface.Period_SummaryTransfer;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
 
 import java.text.SimpleDateFormat;
@@ -262,5 +263,18 @@ public class Period extends DataObject {
 
     public Map<Category, Period_SummaryTransfer<NonPeriodFundTransfer>> getNonPeriodFundTransferSummaries() {
         return nonPeriodFundTransferSummaries;
+    }
+
+    public Period_SummaryTransfer getTransferSummary(Class transferType, Category category) {
+        if (transferType.equals(CategoryTransfer.class)) {
+            return categoryTransferSummaries.get(category);
+        }
+        if (transferType.equals(NonPeriodFundTransfer.class)) {
+            return nonPeriodFundTransferSummaries.get(category);
+        }
+        if (transferType.equals(PeriodTransfer.class)) {
+            return periodTransferSummaries.get(category);
+        }
+        return null;
     }
 }

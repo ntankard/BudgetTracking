@@ -32,7 +32,6 @@ public abstract class DataRows<T> {
         this.trackingDatabase = trackingDatabase;
         this.core = core;
         this.columns = columns;
-        update();
     }
 
     /**

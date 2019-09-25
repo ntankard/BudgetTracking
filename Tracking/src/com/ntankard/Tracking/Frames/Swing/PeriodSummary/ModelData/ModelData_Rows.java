@@ -1,12 +1,12 @@
 package com.ntankard.Tracking.Frames.Swing.PeriodSummary.ModelData;
 
 import com.ntankard.Tracking.DataBase.Core.Period;
+import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfers.NonPeriodFundTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfers.PeriodTransfer;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
 import com.ntankard.Tracking.Frames.Swing.PeriodSummary.ModelData.Rows.*;
-import com.ntankard.Tracking.Frames.Swing.PeriodSummary.ModelData.Rows.Transfer.CategoryTransferRows;
-import com.ntankard.Tracking.Frames.Swing.PeriodSummary.ModelData.Rows.Transfer.NonPeriodFundTransferRows;
-import com.ntankard.Tracking.Frames.Swing.PeriodSummary.ModelData.Rows.Transfer.PeriodTransferRows;
-import com.ntankard.Tracking.Frames.Swing.PeriodSummary.ModelData.Rows.Transfer.TransactionRows;
+import com.ntankard.Tracking.Frames.Swing.PeriodSummary.ModelData.Rows.Transfer.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,11 +35,11 @@ public class ModelData_Rows {
         addSection(new DividerRow("Transaction", trackingDatabase, core, columns));
         addSection(new TransactionRows(trackingDatabase, core, columns));
         addSection(new DividerRow("Category", trackingDatabase, core, columns));
-        addSection(new CategoryTransferRows(trackingDatabase, core, columns));
+        addSection(new InterTransferRow<>(trackingDatabase, core, columns, CategoryTransfer.class));
         addSection(new DividerRow("Period", trackingDatabase, core, columns));
-        addSection(new PeriodTransferRows(trackingDatabase, core, columns));
+        addSection(new InterTransferRow<>(trackingDatabase, core, columns, PeriodTransfer.class));
         addSection(new DividerRow("External", trackingDatabase, core, columns));
-        addSection(new NonPeriodFundTransferRows(trackingDatabase, core, columns));
+        addSection(new InterTransferRow<>(trackingDatabase, core, columns, NonPeriodFundTransfer.class));
     }
 
     /**
@@ -48,6 +48,7 @@ public class ModelData_Rows {
      * @param dataRows The rows to add
      */
     private void addSection(DataRows dataRows) {
+        dataRows.update();
         int startIndex = 0;
         if (sections.size() != 0) {
             startIndex = sections.get(sections.size() - 1).endIndex + 1;
