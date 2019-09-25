@@ -56,6 +56,28 @@ public abstract class Transfer<SourceType extends DataObject, DestinationType ex
         return currency;
     }
 
+    /**
+     * Is this combination of container and category the source of this transaction?
+     *
+     * @param sourceContainer The container to check
+     * @param category        The category to check
+     * @return True if the params represent this transfers source
+     */
+    public boolean isThisSource(DataObject sourceContainer, Category category) {
+        return this.sourceContainer.equals(sourceContainer) && this.sourceCategory.equals(category);
+    }
+
+    /**
+     * Is this combination of container and category the destination of this transaction?
+     *
+     * @param destinationContainer The container to check
+     * @param category             The category to check
+     * @return True if the params represent this transfers destination
+     */
+    public boolean isThisDestination(DataObject destinationContainer, Category category) {
+        return this.destinationContainer.equals(destinationContainer) && this.destinationCategory.equals(category);
+    }
+
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
