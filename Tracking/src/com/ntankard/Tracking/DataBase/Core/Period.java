@@ -4,6 +4,7 @@ import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.Base.DataObject;
+import com.ntankard.Tracking.DataBase.Core.Base.Transfer;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfers.NonPeriodFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfers.PeriodTransfer;
@@ -69,9 +70,7 @@ public class Period extends DataObject {
 
     // Special Access
     private Map<Category, Period_SummaryTransaction> transactionSummaries = new HashMap<>();
-    private Map<Category, Period_SummaryTransfer<CategoryTransfer>> categoryTransferSummaries = new HashMap<>();
-    private Map<Category, Period_SummaryTransfer<PeriodTransfer>> periodTransferSummaries = new HashMap<>();
-    private Map<Category, Period_SummaryTransfer<NonPeriodFundTransfer>> nonPeriodFundTransferSummaries = new HashMap<>();
+    private Map<Class, Map<Category, Period_SummaryTransfer>> transferSummaries = new HashMap<>();
 
     /**
      * Private constructor
@@ -81,11 +80,16 @@ public class Period extends DataObject {
         this.start = start;
         this.end = end;
 
+        transferSummaries.put(CategoryTransfer.class, new HashMap<>());
+        transferSummaries.put(PeriodTransfer.class, new HashMap<>());
+        transferSummaries.put(NonPeriodFundTransfer.class, new HashMap<>());
+
         for (Category category : database.getCategories()) {
+            transferSummaries.get(CategoryTransfer.class).put(category, new Period_SummaryTransfer<>(this, category, getChildren(CategoryTransfer.class)));
+            transferSummaries.get(PeriodTransfer.class).put(category, new Period_SummaryTransfer<>(this, category, database.getPeriodTransfers()));
+            transferSummaries.get(NonPeriodFundTransfer.class).put(category, new Period_SummaryTransfer<>(this, category, getChildren(NonPeriodFundTransfer.class)));
+
             transactionSummaries.put(category, new Period_SummaryTransaction(this, category, getChildren(Statement.class)));
-            categoryTransferSummaries.put(category, new Period_SummaryTransfer<>(this, category, getChildren(CategoryTransfer.class)));
-            periodTransferSummaries.put(category, new Period_SummaryTransfer<>(this, category, database.getPeriodTransfers()));
-            nonPeriodFundTransferSummaries.put(category, new Period_SummaryTransfer<>(this, category, getChildren(NonPeriodFundTransfer.class)));
         }
     }
 
@@ -253,28 +257,19 @@ public class Period extends DataObject {
         return transactionSummaries;
     }
 
-    public Map<Category, Period_SummaryTransfer<CategoryTransfer>> getCategoryTransferSummaries() {
-        return categoryTransferSummaries;
+    public Map<Category, Period_SummaryTransfer> getCategoryTransferSummaries() {
+        return transferSummaries.get(CategoryTransfer.class);
     }
 
-    public Map<Category, Period_SummaryTransfer<PeriodTransfer>> getPeriodTransferSummaries() {
-        return periodTransferSummaries;
+    public Map<Category, Period_SummaryTransfer> getPeriodTransferSummaries() {
+        return transferSummaries.get(PeriodTransfer.class);
     }
 
-    public Map<Category, Period_SummaryTransfer<NonPeriodFundTransfer>> getNonPeriodFundTransferSummaries() {
-        return nonPeriodFundTransferSummaries;
+    public Map<Category, Period_SummaryTransfer> getNonPeriodFundTransferSummaries() {
+        return transferSummaries.get(NonPeriodFundTransfer.class);
     }
 
     public Period_SummaryTransfer getTransferSummary(Class transferType, Category category) {
-        if (transferType.equals(CategoryTransfer.class)) {
-            return categoryTransferSummaries.get(category);
-        }
-        if (transferType.equals(NonPeriodFundTransfer.class)) {
-            return nonPeriodFundTransferSummaries.get(category);
-        }
-        if (transferType.equals(PeriodTransfer.class)) {
-            return periodTransferSummaries.get(category);
-        }
-        return null;
+        return transferSummaries.get(transferType).get(category);
     }
 }

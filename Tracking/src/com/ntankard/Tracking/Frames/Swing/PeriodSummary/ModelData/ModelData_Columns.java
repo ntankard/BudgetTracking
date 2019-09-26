@@ -72,7 +72,7 @@ public class ModelData_Columns {
                 currencies.add(currency);
             }
         }
-        for (Currency currency : core.getPeriodTransferSummaries().get(category).getCurrencies()) {
+        for (Currency currency : (List<Currency>) core.getPeriodTransferSummaries().get(category).getCurrencies()) {
             if (!currencies.contains(currency)) {
                 currencies.add(currency);
             }
