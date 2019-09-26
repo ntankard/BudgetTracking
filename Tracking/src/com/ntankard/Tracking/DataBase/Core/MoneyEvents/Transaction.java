@@ -1,46 +1,46 @@
-package com.ntankard.Tracking.DataBase.Core;
+package com.ntankard.Tracking.DataBase.Core.MoneyEvents;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.DynamicGUI.Components.Object.SetterProperties;
 import com.ntankard.Tracking.DataBase.Core.Base.DataObject;
 import com.ntankard.Tracking.DataBase.Core.Base.MoneyEvent;
+import com.ntankard.Tracking.DataBase.Core.Category;
+import com.ntankard.Tracking.DataBase.Core.Period;
+import com.ntankard.Tracking.DataBase.Core.Statement;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-public class Transaction extends MoneyEvent {
+public class Transaction extends MoneyEvent<Period, Period> {
 
     // My parents
-    private Statement idStatement;
-    private Category category;
 
     // My values
     private String idCode;
+    private Statement idStatement;
 
     /**
      * Constructor
      */
     public Transaction(Statement idStatement, String idCode, String description, Double value, Category category) {
-        super(description, value);
+        super(description, value, null, null, idStatement.getIdPeriod(), category, idStatement.getIdBank().getCurrency());
         this.idStatement = idStatement;
         this.idCode = idCode;
-        this.category = category;
+
     }
 
     /**
      * {@inheritDoc
      */
     @Override
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public List<DataObject> getParents() {
-        List<DataObject> toReturn = new ArrayList<>();
+        List<DataObject> toReturn = super.getParents();
         toReturn.add(idStatement);
-        toReturn.add(category);
         return toReturn;
+
     }
 
     /**
@@ -49,24 +49,24 @@ public class Transaction extends MoneyEvent {
     @Override
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public String getId() {
-        return getIdStatement().getId() + " " + getIdCode();
+        return getDestinationContainer().getId() + " " + getIdCode();
     }
 
     /**
      * {@inheritDoc
      */
     @Override
-    public Currency getCurrency() {
-        return idStatement.getIdBank().getCurrency();
+    public boolean isThisSource(DataObject sourceContainer, Category category) {
+        return false;
     }
 
-    //------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    public Statement getIdStatement() {
-        return idStatement;
+    public Period getDestinationContainer() {
+        return super.getDestinationContainer();
     }
 
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
@@ -74,25 +74,20 @@ public class Transaction extends MoneyEvent {
         return idCode;
     }
 
-    public Category getCategory() {
-        return category;
+    public Category getDestinationCategory() {
+        return super.getDestinationCategory();
+    }
+
+    public Statement getIdStatement() {
+        return idStatement;
     }
 
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Setters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @SetterProperties(sourceMethod = "getStatements")
-    public void setIdStatement(Statement idStatement) {
-        this.idStatement.notifyChildUnLink(this);
-        this.idStatement = idStatement;
-        this.idStatement.notifyChildLink(this);
-    }
-
     @SetterProperties(sourceMethod = "getCategories")
-    public void setCategory(Category category) {
-        this.category.notifyChildUnLink(this);
-        this.category = category;
-        this.category.notifyChildLink(this);
+    public void setDestinationCategory(Category category) {
+        super.setDestinationCategory(category);
     }
 }

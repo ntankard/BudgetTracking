@@ -3,9 +3,10 @@ package com.ntankard.Tracking.DataBase;
 import com.ntankard.Tracking.DataBase.Core.*;
 import com.ntankard.Tracking.DataBase.Core.Base.DataObject;
 import com.ntankard.Tracking.DataBase.Core.Currency;
-import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryTransfer;
-import com.ntankard.Tracking.DataBase.Core.Transfers.NonPeriodFundTransfer;
-import com.ntankard.Tracking.DataBase.Core.Transfers.PeriodTransfer;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.CategoryTransfer;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.NonPeriodFundTransfer;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodTransfer;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
 import com.ntankard.Tracking.DataBase.Interface.PeriodCategory;
 
 import java.text.NumberFormat;

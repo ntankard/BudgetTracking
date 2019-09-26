@@ -67,7 +67,7 @@ public class ModelData_Columns {
      */
     private List<Currency> getCurrencies(Category category) {
         List<Currency> currencies = core.getCategoryTransferSummaries().get(category).getCurrencies();
-        for (Currency currency : core.getTransactionSummaries().get(category).getCurrencies()) {
+        for (Currency currency : (List<Currency>) core.getTransactionSummaries().get(category).getCurrencies()) {
             if (!currencies.contains(currency)) {
                 currencies.add(currency);
             }

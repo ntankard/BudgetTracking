@@ -1,12 +1,12 @@
 package com.ntankard.Tracking.Frames.Swing.PeriodSummary.ModelData;
 
 import com.ntankard.Tracking.DataBase.Core.Period;
-import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryTransfer;
-import com.ntankard.Tracking.DataBase.Core.Transfers.NonPeriodFundTransfer;
-import com.ntankard.Tracking.DataBase.Core.Transfers.PeriodTransfer;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.CategoryTransfer;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.NonPeriodFundTransfer;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodTransfer;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
 import com.ntankard.Tracking.Frames.Swing.PeriodSummary.ModelData.Rows.*;
-import com.ntankard.Tracking.Frames.Swing.PeriodSummary.ModelData.Rows.Transfer.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,13 +33,13 @@ public class ModelData_Rows {
 
         addSection(new SummaryRows(trackingDatabase, core, columns));
         addSection(new DividerRow("Transaction", trackingDatabase, core, columns));
-        addSection(new TransactionRows(trackingDatabase, core, columns));
+        addSection(new TransferRow<>(trackingDatabase, core, columns, Transaction.class));
         addSection(new DividerRow("Category", trackingDatabase, core, columns));
-        addSection(new InterTransferRow<>(trackingDatabase, core, columns, CategoryTransfer.class));
+        addSection(new TransferRow<>(trackingDatabase, core, columns, CategoryTransfer.class));
         addSection(new DividerRow("Period", trackingDatabase, core, columns));
-        addSection(new InterTransferRow<>(trackingDatabase, core, columns, PeriodTransfer.class));
+        addSection(new TransferRow<>(trackingDatabase, core, columns, PeriodTransfer.class));
         addSection(new DividerRow("External", trackingDatabase, core, columns));
-        addSection(new InterTransferRow<>(trackingDatabase, core, columns, NonPeriodFundTransfer.class));
+        addSection(new TransferRow<>(trackingDatabase, core, columns, NonPeriodFundTransfer.class));
     }
 
     /**

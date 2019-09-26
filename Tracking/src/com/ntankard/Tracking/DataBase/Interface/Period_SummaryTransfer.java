@@ -1,6 +1,6 @@
 package com.ntankard.Tracking.DataBase.Interface;
 
-import com.ntankard.Tracking.DataBase.Core.Base.Transfer;
+import com.ntankard.Tracking.DataBase.Core.Base.MoneyEvent;
 import com.ntankard.Tracking.DataBase.Core.Category;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period;
@@ -8,29 +8,41 @@ import com.ntankard.Tracking.DataBase.Core.Period;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Period_SummaryTransfer<T extends Transfer> extends Period_Summary<T> {
+public class Period_SummaryTransfer<T extends MoneyEvent> {
 
     /**
-     * All the Transfers for this period (not yet filtered by category)
+     * All the MoneyEvents for this period (not yet filtered by category)
      */
-    protected List<T> transfers;
+    private List<T> transfers;
+
+    /**
+     * The period to summarise
+     */
+    private Period period;
+
+    /**
+     * The category to filler on
+     */
+    private Category category;
 
     /**
      * Constructor
      *
      * @param period    The period to summarise
      * @param category  The category to filler on
-     * @param transfers All the Transfers for this period (not yet filtered by category)
+     * @param transfers All the MoneyEvents for this period (not yet filtered by category)
      */
     public Period_SummaryTransfer(Period period, Category category, List<T> transfers) {
-        super(period, category);
+        this.period = period;
+        this.category = category;
         this.transfers = transfers;
     }
 
     /**
-     * {@inheritDoc
+     * Get all the events tied to the this period category pair
+     *
+     * @return All the events tied to the this period category pair
      */
-    @Override
     public List<T> getEvents() {
         List<T> toReturn = new ArrayList<>();
         for (T periodTransfer : transfers) {
@@ -42,9 +54,11 @@ public class Period_SummaryTransfer<T extends Transfer> extends Period_Summary<T
     }
 
     /**
-     * {@inheritDoc
+     * Sum all the transfers for this category, in this period that are in the specified currency
+     *
+     * @param toSum The currency to sum
+     * @return All the transfers for this category, in this period that are in the specified currency
      */
-    @Override
     public double getTotal(Currency toSum) {
         double sum = 0;
         for (T nonPeriodFundTransfer : getEvents()) {
@@ -57,5 +71,34 @@ public class Period_SummaryTransfer<T extends Transfer> extends Period_Summary<T
             }
         }
         return sum;
+    }
+
+    /**
+     * Sum all the transfers for this category, in this period. Return in the primary currency
+     *
+     * @return All the transfers for this category, in this period. Return in the primary currency
+     */
+    public double getTotal() {
+        double sum = 0;
+        for (Currency currency : getCurrencies()) {
+            sum += getTotal(currency) * currency.getToPrimary();
+        }
+        return sum;
+    }
+
+    /**
+     * Get a list of all the currencies used in the events
+     *
+     * @return A list of all the currencies used in the events
+     */
+    public List<Currency> getCurrencies() {
+        List<Currency> toReturn = new ArrayList<>();
+        for (T moneyEvent : getEvents()) {
+            Currency currency = moneyEvent.getCurrency();
+            if (!toReturn.contains(currency)) {
+                toReturn.add(currency);
+            }
+        }
+        return toReturn;
     }
 }

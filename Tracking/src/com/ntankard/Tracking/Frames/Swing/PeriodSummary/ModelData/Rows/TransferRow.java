@@ -1,4 +1,4 @@
-package com.ntankard.Tracking.Frames.Swing.PeriodSummary.ModelData.Rows.Transfer;
+package com.ntankard.Tracking.Frames.Swing.PeriodSummary.ModelData.Rows;
 
 import com.ntankard.Tracking.DataBase.Core.Base.MoneyEvent;
 import com.ntankard.Tracking.DataBase.Core.Category;
@@ -8,9 +8,15 @@ import com.ntankard.Tracking.DataBase.TrackingDatabase;
 import com.ntankard.Tracking.Frames.Swing.PeriodSummary.ModelData.ModelData_Columns;
 import com.ntankard.Tracking.Frames.Swing.PeriodSummary.ModelData.Rows.DataRows;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public abstract class TransferRow<T extends MoneyEvent> extends DataRows<T> {
+public class TransferRow<T extends MoneyEvent> extends DataRows<T> {
+
+    /**
+     * The class type of T
+     */
+    private final Class<T> typeParameterClass;
 
     /**
      * Constructor
@@ -19,8 +25,17 @@ public abstract class TransferRow<T extends MoneyEvent> extends DataRows<T> {
      * @param core             The Period this table is built around
      * @param columns          The columns of the table
      */
-    public TransferRow(TrackingDatabase trackingDatabase, Period core, ModelData_Columns columns) {
+    public TransferRow(TrackingDatabase trackingDatabase, Period core, ModelData_Columns columns, Class<T> typeParameterClass) {
         super(trackingDatabase, core, columns);
+        this.typeParameterClass = typeParameterClass;
+    }
+
+    /**
+     * {@inheritDoc
+     */
+    @Override
+    public double getTotal_impl(Category category) {
+        return core.getTransferSummary(typeParameterClass, category).getTotal();
     }
 
     /**
@@ -54,7 +69,7 @@ public abstract class TransferRow<T extends MoneyEvent> extends DataRows<T> {
         if (rowIndex < categoryRows.size()) {
             T rowData = categoryRows.get(rowIndex);
             if (currency == null) {
-                return getDescription(rowData);
+                return rowData;
             } else {
                 if (getValueCurrency(rowData).equals(currency)) {
                     return trackingDatabase.getCurrencyFormat(currency).format(getValue(rowData, category));
@@ -70,13 +85,6 @@ public abstract class TransferRow<T extends MoneyEvent> extends DataRows<T> {
      */
     public String getDescription(T rowData) {
         return rowData.getDescription();
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    public Currency getValueCurrency(T rowData) {
-        return rowData.getCurrency();
     }
 
     /**
@@ -101,15 +109,15 @@ public abstract class TransferRow<T extends MoneyEvent> extends DataRows<T> {
      * @param category The category of the column
      * @return The Value
      */
-    protected abstract double getValue(T rowData, Category category);
-
-    /**
-     * Extract all the rows for a specified category
-     *
-     * @param category The category to get
-     * @return All the rows for a specified category
-     */
-    protected abstract List<T> getRows(Category category);
+    private double getValue(T rowData, Category category) {
+        if (rowData.isThisSource(core, category)) {
+            return -rowData.getValue();
+        }
+        if (rowData.isThisDestination(core, category)) {
+            return rowData.getValue();
+        }
+        throw new RuntimeException("Bad row");
+    }
 
     /**
      * Get the total for a specific currency used in a category for the specific row type
@@ -118,5 +126,27 @@ public abstract class TransferRow<T extends MoneyEvent> extends DataRows<T> {
      * @param currency The currency to get the total for
      * @return The formatted total
      */
-    protected abstract double getCurrencyTotal_impl(Category category, Currency currency);
+    private double getCurrencyTotal_impl(Category category, Currency currency) {
+        return core.getTransferSummary(typeParameterClass, category).getTotal(currency);
+    }
+
+    /**
+     * Extract all the rows for a specified category
+     *
+     * @param category The category to get
+     * @return All the rows for a specified category
+     */
+    private List<T> getRows(Category category) {
+        if (core.getTransferSummary(typeParameterClass, category) == null) {
+            return new ArrayList<>();
+        }
+        return new ArrayList<T>(core.getTransferSummary(typeParameterClass, category).getEvents());
+    }
+
+    /**
+     * {@inheritDoc
+     */
+    private Currency getValueCurrency(T rowData) {
+        return rowData.getCurrency();
+    }
 }

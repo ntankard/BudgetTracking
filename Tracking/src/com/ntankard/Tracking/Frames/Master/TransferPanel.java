@@ -5,9 +5,9 @@ import com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList;
 import com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList.ElementController;
 import com.ntankard.DynamicGUI.Util.Swing.Base.UpdatableJPanel;
 import com.ntankard.DynamicGUI.Util.Updatable;
-import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryTransfer;
-import com.ntankard.Tracking.DataBase.Core.Transfers.NonPeriodFundTransfer;
-import com.ntankard.Tracking.DataBase.Core.Transfers.PeriodTransfer;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.CategoryTransfer;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.NonPeriodFundTransfer;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodTransfer;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
 
 import javax.swing.*;

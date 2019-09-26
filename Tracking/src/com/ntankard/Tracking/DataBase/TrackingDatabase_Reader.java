@@ -1,9 +1,10 @@
 package com.ntankard.Tracking.DataBase;
 
 import com.ntankard.Tracking.DataBase.Core.*;
-import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryTransfer;
-import com.ntankard.Tracking.DataBase.Core.Transfers.NonPeriodFundTransfer;
-import com.ntankard.Tracking.DataBase.Core.Transfers.PeriodTransfer;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.CategoryTransfer;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.NonPeriodFundTransfer;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodTransfer;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -302,7 +303,7 @@ public class TrackingDatabase_Reader {
             line.add(t.getIdCode());
             line.add(t.getDescription());
             line.add(t.getValue().toString());
-            line.add(t.getCategory().toString());
+            line.add(t.getDestinationCategory().toString());
             lines.add(line);
         }
 

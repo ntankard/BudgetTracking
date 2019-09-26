@@ -4,6 +4,7 @@ import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.Base.DataObject;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -121,15 +122,16 @@ public class Statement extends DataObject {
     public double getCategoryTotal(Category category) {
         double total = 0;
         for (Transaction t : getTransactions()) {
-            if (t.getCategory().equals(category)) {
+            if (t.getDestinationCategory().equals(category)) {
                 total += t.getValue();
             }
         }
         return total;
     }
 
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public List<Transaction> getTransactions() {
-        return new ArrayList<Transaction>(getChildren(Transaction.class));
+        return new ArrayList<>(getChildren(Transaction.class));
     }
 
     //------------------------------------------------------------------------------------------------------------------

@@ -1,9 +1,11 @@
 package com.ntankard.Tracking.Frames.Swing.PeriodSummary;
 
 import com.ntankard.DynamicGUI.Util.Updatable;
+import com.ntankard.Tracking.DataBase.Core.Base.MoneyEvent;
 import com.ntankard.Tracking.DataBase.Core.Category;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
 import com.ntankard.Tracking.Frames.Swing.PeriodSummary.ModelData.ModelData_Columns;
 import com.ntankard.Tracking.Frames.Swing.PeriodSummary.ModelData.ModelData_Rows;
@@ -12,7 +14,6 @@ import com.ntankard.Tracking.Frames.Swing.PeriodSummary.ModelData.Rows.DividerRo
 import com.ntankard.Tracking.Frames.Swing.PeriodSummary.PeriodSummary_Renderer.RendererObject;
 
 import javax.swing.table.AbstractTableModel;
-
 import java.awt.*;
 
 
@@ -138,7 +139,12 @@ public class PeriodSummary_Model extends AbstractTableModel implements Updatable
 
         } else { // Data list
 
-            value.coreObject = dataRow.getValue(category, currency, sectionIndex - 5);
+            Object data = dataRow.getValue(category, currency, sectionIndex - 5);
+            if (data instanceof MoneyEvent) {
+                value.coreObject = ((MoneyEvent) data).getDescription();
+            } else {
+                value.coreObject = data;
+            }
 
             value.bottom = STANDARD_LINE;
             if (columns.isDescription(columnIndex)) {

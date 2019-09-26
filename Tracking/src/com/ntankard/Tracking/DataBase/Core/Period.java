@@ -4,11 +4,10 @@ import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.Base.DataObject;
-import com.ntankard.Tracking.DataBase.Core.Base.Transfer;
-import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryTransfer;
-import com.ntankard.Tracking.DataBase.Core.Transfers.NonPeriodFundTransfer;
-import com.ntankard.Tracking.DataBase.Core.Transfers.PeriodTransfer;
-import com.ntankard.Tracking.DataBase.Interface.Period_SummaryTransaction;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.CategoryTransfer;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.NonPeriodFundTransfer;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodTransfer;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
 import com.ntankard.Tracking.DataBase.Interface.Period_SummaryTransfer;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
 
@@ -69,27 +68,48 @@ public class Period extends DataObject {
     private Calendar end;
 
     // Special Access
-    private Map<Category, Period_SummaryTransaction> transactionSummaries = new HashMap<>();
     private Map<Class, Map<Category, Period_SummaryTransfer>> transferSummaries = new HashMap<>();
+
+    // Master database
+    private TrackingDatabase trackingDatabase;
 
     /**
      * Private constructor
      */
-    private Period(String id, Calendar start, Calendar end, TrackingDatabase database) {
+    private Period(String id, Calendar start, Calendar end, TrackingDatabase trackingDatabase) {
         this.id = id;
         this.start = start;
         this.end = end;
+        this.trackingDatabase = trackingDatabase;
+
+        updateSummaries();
+    }
+
+    /**
+     * {@inheritDoc
+     */
+    @Override
+    public void notifyChildLink(DataObject linkObject) {
+        super.notifyChildLink(linkObject);
+        updateSummaries();
+    }
+
+    /**
+     * Update the summary map
+     */
+    private void updateSummaries() {
+        transferSummaries.clear();
 
         transferSummaries.put(CategoryTransfer.class, new HashMap<>());
         transferSummaries.put(PeriodTransfer.class, new HashMap<>());
         transferSummaries.put(NonPeriodFundTransfer.class, new HashMap<>());
+        transferSummaries.put(Transaction.class, new HashMap<>());
 
-        for (Category category : database.getCategories()) {
+        for (Category category : trackingDatabase.getCategories()) {
             transferSummaries.get(CategoryTransfer.class).put(category, new Period_SummaryTransfer<>(this, category, getChildren(CategoryTransfer.class)));
-            transferSummaries.get(PeriodTransfer.class).put(category, new Period_SummaryTransfer<>(this, category, database.getPeriodTransfers()));
+            transferSummaries.get(PeriodTransfer.class).put(category, new Period_SummaryTransfer<>(this, category, getChildren(PeriodTransfer.class)));
             transferSummaries.get(NonPeriodFundTransfer.class).put(category, new Period_SummaryTransfer<>(this, category, getChildren(NonPeriodFundTransfer.class)));
-
-            transactionSummaries.put(category, new Period_SummaryTransaction(this, category, getChildren(Statement.class)));
+            transferSummaries.get(Transaction.class).put(category, new Period_SummaryTransfer<>(this, category, getChildren(Transaction.class)));
         }
     }
 
@@ -253,8 +273,8 @@ public class Period extends DataObject {
         return end;
     }
 
-    public Map<Category, Period_SummaryTransaction> getTransactionSummaries() {
-        return transactionSummaries;
+    public Map<Category, Period_SummaryTransfer> getTransactionSummaries() {
+        return transferSummaries.get(Transaction.class);
     }
 
     public Map<Category, Period_SummaryTransfer> getCategoryTransferSummaries() {
