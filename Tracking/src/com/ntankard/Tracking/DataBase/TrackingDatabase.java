@@ -1,8 +1,12 @@
 package com.ntankard.Tracking.DataBase;
 
-import com.ntankard.Tracking.DataBase.Core.*;
-import com.ntankard.Tracking.DataBase.Core.Base.DataObject;
-import com.ntankard.Tracking.DataBase.Core.Currency;
+import com.ntankard.Tracking.DataBase.Core.DataObject;
+import com.ntankard.Tracking.DataBase.Core.MoneyContainers.NonPeriodFund;
+import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
+import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
+import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Bank;
+import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
+import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.CategoryTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.NonPeriodFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodTransfer;

@@ -3,7 +3,7 @@ package com.ntankard.Tracking.Frames.Swing.PeriodSummary;
 import com.ntankard.DynamicGUI.Util.Swing.Base.UpdatableJScrollPane;
 import com.ntankard.DynamicGUI.Util.TableColumnAdjuster;
 import com.ntankard.DynamicGUI.Util.Updatable;
-import com.ntankard.Tracking.DataBase.Core.Period;
+import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
 
 import javax.swing.*;

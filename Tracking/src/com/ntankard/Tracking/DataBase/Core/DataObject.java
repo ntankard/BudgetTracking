@@ -1,4 +1,4 @@
-package com.ntankard.Tracking.DataBase.Core.Base;
+package com.ntankard.Tracking.DataBase.Core;
 
 import java.util.ArrayList;
 import java.util.HashMap;

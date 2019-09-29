@@ -1,8 +1,8 @@
-package com.ntankard.Tracking.DataBase.Core;
+package com.ntankard.Tracking.DataBase.Core.ReferenceTypes;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.MemberProperties;
-import com.ntankard.Tracking.DataBase.Core.Base.DataObject;
+import com.ntankard.Tracking.DataBase.Core.DataObject;
 
 import java.util.ArrayList;
 import java.util.List;

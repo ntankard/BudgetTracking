@@ -1,13 +1,14 @@
-package com.ntankard.Tracking.DataBase.Core;
+package com.ntankard.Tracking.DataBase.Core.MoneyContainers;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
-import com.ntankard.Tracking.DataBase.Core.Base.DataObject;
+import com.ntankard.Tracking.DataBase.Core.DataObject;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.CategoryTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.NonPeriodFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
+import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.Interface.Period_SummaryTransfer;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
 
@@ -20,7 +21,7 @@ import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY_YE
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-public class Period extends DataObject {
+public class Period extends MoneyContainer {
 
     /**
      * Build a period over an entire month

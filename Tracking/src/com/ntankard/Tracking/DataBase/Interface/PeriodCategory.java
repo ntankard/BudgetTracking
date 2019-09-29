@@ -1,7 +1,7 @@
 package com.ntankard.Tracking.DataBase.Interface;
 
 import com.ntankard.ClassExtension.DisplayProperties;
-import com.ntankard.Tracking.DataBase.Core.Period;
+import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataContext.ZERO_SCALE;

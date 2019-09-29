@@ -4,11 +4,10 @@ import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.DynamicGUI.Components.Object.SetterProperties;
-import com.ntankard.Tracking.DataBase.Core.Base.MoneyEvent;
-import com.ntankard.Tracking.DataBase.Core.Category;
-import com.ntankard.Tracking.DataBase.Core.Currency;
-import com.ntankard.Tracking.DataBase.Core.NonPeriodFund;
-import com.ntankard.Tracking.DataBase.Core.Period;
+import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
+import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
+import com.ntankard.Tracking.DataBase.Core.MoneyContainers.NonPeriodFund;
+import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 
 @ClassExtensionProperties(includeParent = true)
 public class NonPeriodFundTransfer extends MoneyEvent<Period, NonPeriodFund> {

@@ -3,11 +3,10 @@ package com.ntankard.Tracking.DataBase.Core.MoneyEvents;
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.DynamicGUI.Components.Object.SetterProperties;
-import com.ntankard.Tracking.DataBase.Core.Base.DataObject;
-import com.ntankard.Tracking.DataBase.Core.Base.MoneyEvent;
-import com.ntankard.Tracking.DataBase.Core.Category;
-import com.ntankard.Tracking.DataBase.Core.Period;
-import com.ntankard.Tracking.DataBase.Core.Statement;
+import com.ntankard.Tracking.DataBase.Core.DataObject;
+import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
+import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
+import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
 
 import java.util.List;
 

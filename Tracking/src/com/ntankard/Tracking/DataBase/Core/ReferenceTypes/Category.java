@@ -1,8 +1,8 @@
-package com.ntankard.Tracking.DataBase.Core;
+package com.ntankard.Tracking.DataBase.Core.ReferenceTypes;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.MemberProperties;
-import com.ntankard.Tracking.DataBase.Core.Base.DataObject;
+import com.ntankard.Tracking.DataBase.Core.DataObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,24 +10,20 @@ import java.util.List;
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-public class Currency extends DataObject {
+public class Category extends DataObject {
 
     // My parents
 
     // My values
     private String id;
-    private double toSecondary;
-    private double toPrimary;
-    private boolean isPrimary;
+    private int order;
 
     /**
      * Constructor
      */
-    public Currency(String id, double toSecondary, double toPrimary, boolean isPrimary) {
+    public Category(String id, int order) {
         this.id = id;
-        this.toSecondary = toSecondary;
-        this.toPrimary = toPrimary;
-        this.isPrimary = isPrimary;
+        this.order = order;
     }
 
     /**
@@ -51,15 +47,8 @@ public class Currency extends DataObject {
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    public double getToSecondary() {
-        return toSecondary;
-    }
-
-    public double getToPrimary() {
-        return toPrimary;
-    }
-
-    public boolean isPrimary() {
-        return isPrimary;
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    public int getOrder() {
+        return order;
     }
 }

@@ -1,8 +1,8 @@
-package com.ntankard.Tracking.DataBase.Core;
+package com.ntankard.Tracking.DataBase.Core.ReferenceTypes;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.MemberProperties;
-import com.ntankard.Tracking.DataBase.Core.Base.DataObject;
+import com.ntankard.Tracking.DataBase.Core.DataObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,20 +10,25 @@ import java.util.List;
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-public class NonPeriodFund extends DataObject {
+public class Currency extends DataObject {
 
     // My parents
 
     // My values
     private String id;
+    private double toSecondary;
+    private double toPrimary;
+    private boolean isPrimary;
 
     /**
      * Constructor
      */
-    public NonPeriodFund(String id) {
+    public Currency(String id, double toSecondary, double toPrimary, boolean isPrimary) {
         this.id = id;
+        this.toSecondary = toSecondary;
+        this.toPrimary = toPrimary;
+        this.isPrimary = isPrimary;
     }
-
 
     /**
      * {@inheritDoc
@@ -43,10 +48,18 @@ public class NonPeriodFund extends DataObject {
     }
 
     //------------------------------------------------------------------------------------------------------------------
-    //#################################################### Setters #####################################################
+    //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    public void setId(String id) {
-        this.id = id;
+    public double getToSecondary() {
+        return toSecondary;
+    }
+
+    public double getToPrimary() {
+        return toPrimary;
+    }
+
+    public boolean isPrimary() {
+        return isPrimary;
     }
 }
