@@ -59,7 +59,7 @@ public class TrackingDatabase_Reader {
      * @return The database
      */
     public static TrackingDatabase read(String corePath) {
-        TrackingDatabase data = new TrackingDatabase();
+        TrackingDatabase data = TrackingDatabase.get();
 
         // Find the latest data
         int max = 0;
@@ -169,7 +169,7 @@ public class TrackingDatabase_Reader {
         for (String[] lines : allLines) {
             int month = Integer.parseInt(lines[0]);
             int year = Integer.parseInt(lines[1]);
-            data.addPeriod(Period.Month(month, year, data));
+            data.addPeriod(Period.Month(month, year));
         }
     }
 
@@ -303,8 +303,8 @@ public class TrackingDatabase_Reader {
         ArrayList<List<String>> lines = new ArrayList<>();
         for (Transaction t : data.getTransactions()) {
             List<String> line = new ArrayList<>();
-            line.add(t.getIdStatement().getIdBank().getId());
-            line.add(t.getIdStatement().getIdPeriod().getId());
+            line.add(t.getSourceContainer().getIdBank().getId());
+            line.add(t.getSourceContainer().getIdPeriod().getId());
             line.add(t.getIdCode());
             line.add(t.getDescription());
             line.add(t.getValue().toString());

@@ -170,7 +170,7 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
 
         transaction_panel.getMainPanel().setLocaleInspector(rowObject -> {
             Transaction transaction = (Transaction) rowObject;
-            if (transaction.getIdStatement().getIdBank().getCurrency().getId().equals("YEN")) {
+            if (transaction.getSourceContainer().getIdBank().getCurrency().getId().equals("YEN")) {
                 return Locale.JAPAN;
             }
             return Locale.US;
@@ -193,7 +193,7 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
         newPeriod = new DynamicGUI_DisplayList.ListControl_Button<>("New Period", period_panel);
         newPeriod.addActionListener(e -> {
             Period last = trackingDatabase.getPeriods().get(trackingDatabase.getPeriods().size() - 1);
-            Period period = Period.Month(last.getNextPeriodTime().get(Calendar.MONTH) + 1, last.getNextPeriodTime().get(Calendar.YEAR), trackingDatabase);
+            Period period = Period.Month(last.getNextPeriodTime().get(Calendar.MONTH) + 1, last.getNextPeriodTime().get(Calendar.YEAR));
             trackingDatabase.addPeriod(period);
             notifyUpdate();
         });

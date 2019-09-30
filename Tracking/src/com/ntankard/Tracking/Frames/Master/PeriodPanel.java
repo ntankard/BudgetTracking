@@ -201,7 +201,7 @@ public class PeriodPanel extends UpdatableJPanel {
         periodTransfer_list.clear();
         nonPeriodFundTransfer_list.clear();
 
-        statement_list.addAll(core.getStatements());
+        statement_list.addAll(core.<Statement>getChildren(Statement.class));
         for (CategoryTransfer categoryTransfer : trackingDatabase.getCategoryTransfers()) {
             if (categoryTransfer.getSourceContainer().equals(core)) {
                 categoryTransfer_list.add(categoryTransfer);

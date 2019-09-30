@@ -4,14 +4,11 @@ import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.DataObject;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Bank;
-import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ntankard.ClassExtension.DisplayProperties.DataContext.ZERO_TARGET;
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
@@ -44,6 +41,15 @@ public class Statement extends MoneyContainer {
      * {@inheritDoc
      */
     @Override
+    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
+    public String getId() {
+        return getIdBank().getId() + " " + getIdPeriod().getId();
+    }
+
+    /**
+     * {@inheritDoc
+     */
+    @Override
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public List<DataObject> getParents() {
         List<DataObject> toReturn = new ArrayList<>();
@@ -52,32 +58,9 @@ public class Statement extends MoneyContainer {
         return toReturn;
     }
 
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
-    public String getId() {
-        return getIdBank().getId() + " " + getIdPeriod().getId();
-    }
-
     //------------------------------------------------------------------------------------------------------------------
     //############################################# Calculated accessors ###############################################
     //------------------------------------------------------------------------------------------------------------------
-
-    /**
-     * Get the sum of all transactions for this statement
-     *
-     * @return The sum of all transactions for this statement
-     */
-    @DisplayProperties(dataType = CURRENCY, order = 6)
-    public Double getTotalSpend() {
-        double sum = 0.0;
-        for (Transaction t : getTransactions()) {
-            sum += t.getValue();
-        }
-        return sum;
-    }
 
     /**
      * Get the real spend based on the difference between the starting and ending balance
@@ -99,41 +82,6 @@ public class Statement extends MoneyContainer {
     @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
     public Double getNetTransfer() {
         return transferIn - transferOut;
-    }
-
-    /**
-     * Get the amount that differs between the Total Spend and the Expected spend. If this is not 0 money is missing
-     *
-     * @return The amount that differs between the Total Spend and the Expected spend
-     */
-    @DisplayProperties(dataType = CURRENCY, dataContext = ZERO_TARGET)
-    public Double getMissingSpend() {
-        double val = getExpectedSpend() + getTotalSpend();
-        if (Math.abs(val) < 0.001) {
-            val = 0.0;
-        }
-        return val;
-    }
-
-    /**
-     * Get all values for a given category
-     *
-     * @param category The category to check
-     * @return The total values
-     */
-    public double getCategoryTotal(Category category) {
-        double total = 0;
-        for (Transaction t : getTransactions()) {
-            if (t.getDestinationCategory().equals(category)) {
-                total += t.getValue();
-            }
-        }
-        return total;
-    }
-
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    public List<Transaction> getTransactions() {
-        return new ArrayList<>(getChildren(Transaction.class));
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -190,3 +138,47 @@ public class Statement extends MoneyContainer {
         this.transferOut = transferOut;
     }
 }
+
+
+//    /**
+//     * Get the amount that differs between the Total Spend and the Expected spend. If this is not 0 money is missing
+//     *
+//     * @return The amount that differs between the Total Spend and the Expected spend
+//     */
+//    @DisplayProperties(dataType = CURRENCY, dataContext = ZERO_TARGET)
+//    public Double getMissingSpend() {
+//        double val = getExpectedSpend() + getTotalSpend();
+//        if (Math.abs(val) < 0.001) {
+//            val = 0.0;
+//        }
+//        return val;
+//    }
+
+//    /**
+//     * Get all values for a given category
+//     *
+//     * @param category The category to check
+//     * @return The total values
+//     */
+//    public double getCategoryTotal(Category category) {
+//        double total = 0;
+//        for (Transaction t : this.<Transaction>getChildren(Transaction.class)) {
+//            if (t.getDestinationCategory().equals(category)) {
+//                total += t.getValue();
+//            }
+//        }
+//        return total;
+//    }
+//    /**
+//     * Get the sum of all transactions for this statement
+//     *
+//     * @return The sum of all transactions for this statement
+//     */
+//    @DisplayProperties(dataType = CURRENCY, order = 6)
+//    public Double getTotalSpend() {
+//        double sum = 0.0;
+//        for (Transaction t : this.<Transaction>getChildren(Transaction.class)) {
+//            sum += t.getValue();
+//        }
+//        return sum;
+//    }

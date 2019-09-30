@@ -33,20 +33,20 @@ public class Bank extends DataObject {
      * {@inheritDoc
      */
     @Override
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    public List<DataObject> getParents() {
-        List<DataObject> toReturn = new ArrayList<>();
-        toReturn.add(currency);
-        return toReturn;
+    @MemberProperties(verbosityLevel = TRACE_DISPLAY)
+    public String getId() {
+        return getIdBank() + "-" + getIdAccount();
     }
 
     /**
      * {@inheritDoc
      */
     @Override
-    @MemberProperties(verbosityLevel = TRACE_DISPLAY)
-    public String getId() {
-        return getIdBank() + "-" + getIdAccount();
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    public List<DataObject> getParents() {
+        List<DataObject> toReturn = new ArrayList<>();
+        toReturn.add(currency);
+        return toReturn;
     }
 
     //------------------------------------------------------------------------------------------------------------------

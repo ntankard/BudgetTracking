@@ -13,13 +13,6 @@ public abstract class DataObject {
     private Map<Class, List<DataObject>> children = new HashMap<>();
 
     /**
-     * Get all the parents of this object
-     *
-     * @return All the parents of this object
-     */
-    public abstract List<DataObject> getParents();
-
-    /**
      * Get the unique identifier for this data object
      *
      * @return The unique identifier for this data object
@@ -51,6 +44,13 @@ public abstract class DataObject {
             dataObject.notifyChildUnLink(this);
         }
     }
+
+    /**
+     * Get all the parents of this object
+     *
+     * @return All the parents of this object
+     */
+    public abstract List<DataObject> getParents();
 
     /**
      * Notify that a child has linked to this object as its parent

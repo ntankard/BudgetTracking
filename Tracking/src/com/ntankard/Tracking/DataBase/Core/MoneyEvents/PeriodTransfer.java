@@ -12,8 +12,6 @@ import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 @ClassExtensionProperties(includeParent = true)
 public class PeriodTransfer extends MoneyEvent<Period, Period> {
 
-    // My parents
-
     // My values
     private String id;
 

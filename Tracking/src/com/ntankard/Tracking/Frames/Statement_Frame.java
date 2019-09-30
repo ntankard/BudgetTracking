@@ -125,7 +125,7 @@ public class Statement_Frame extends UpdatableJPanel {
     public void update() {
         transaction_list.clear();
 
-        transaction_list.addAll(core.getTransactions());
+        transaction_list.addAll(core.<Transaction>getChildren(Transaction.class));
 
         transaction_panel.update();
         statement_panel.update();

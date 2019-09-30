@@ -1,8 +1,9 @@
 package com.ntankard.Tracking.Frames.Swing.PeriodSummary.ModelData;
 
+import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
-import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
+import com.ntankard.Tracking.DataBase.Interface.MoneyEvent_Sets.PeriodCategory_Set;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
 
 import java.util.ArrayList;
@@ -66,25 +67,7 @@ public class ModelData_Columns {
      * @return All currencies that transaction are in for a specific category
      */
     private List<Currency> getCurrencies(Category category) {
-        List<Currency> currencies = core.getCategoryTransferSummaries().get(category).getCurrencies();
-        for (Currency currency : (List<Currency>) core.getTransactionSummaries().get(category).getCurrencies()) {
-            if (!currencies.contains(currency)) {
-                currencies.add(currency);
-            }
-        }
-        for (Currency currency : (List<Currency>) core.getPeriodTransferSummaries().get(category).getCurrencies()) {
-            if (!currencies.contains(currency)) {
-                currencies.add(currency);
-            }
-        }
-
-        // Force all currencies to show
-        if (currencies.size() != 0) {
-            currencies = new ArrayList<>(trackingDatabase.getCurrencies());
-        }
-        currencies.sort(Comparator.comparing(Currency::getId).reversed());
-
-        return currencies;
+        return new PeriodCategory_Set(core,category).getCurrencies();
     }
 
     /**

@@ -12,8 +12,6 @@ import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 @ClassExtensionProperties(includeParent = true)
 public class NonPeriodFund extends MoneyContainer {
 
-    // My parents
-
     // My values
     private String id;
 
@@ -24,6 +22,13 @@ public class NonPeriodFund extends MoneyContainer {
         this.id = id;
     }
 
+    /**
+     * {@inheritDoc
+     */
+    @Override
+    public String getId() {
+        return id;
+    }
 
     /**
      * {@inheritDoc
@@ -32,14 +37,6 @@ public class NonPeriodFund extends MoneyContainer {
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public List<DataObject> getParents() {
         return new ArrayList<>();
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public String getId() {
-        return id;
     }
 
     //------------------------------------------------------------------------------------------------------------------

@@ -12,8 +12,6 @@ import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 @ClassExtensionProperties(includeParent = true)
 public class Category extends DataObject {
 
-    // My parents
-
     // My values
     private String id;
     private int order;
@@ -30,17 +28,17 @@ public class Category extends DataObject {
      * {@inheritDoc
      */
     @Override
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    public List<DataObject> getParents() {
-        return new ArrayList<>();
+    public String getId() {
+        return id;
     }
 
     /**
      * {@inheritDoc
      */
     @Override
-    public String getId() {
-        return id;
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    public List<DataObject> getParents() {
+        return new ArrayList<>();
     }
 
     //------------------------------------------------------------------------------------------------------------------

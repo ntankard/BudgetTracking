@@ -123,7 +123,7 @@ public class Period_Frame extends UpdatableJPanel {
         transaction_panel = DynamicGUI_DisplayList.newIntractableTable(transaction_list, new MemberClass(Transaction.class), true, ALWAYS_DISPLAY, this);
         transaction_panel.getMainPanel().setLocaleInspector(rowObject -> {
             Transaction transaction = (Transaction) rowObject;
-            if (transaction.getIdStatement().getIdBank().getCurrency().getId().equals("YEN")) {
+            if (transaction.getSourceContainer().getIdBank().getCurrency().getId().equals("YEN")) {
                 return Locale.JAPAN;
             }
             return Locale.US;
@@ -162,9 +162,9 @@ public class Period_Frame extends UpdatableJPanel {
         categoryTransfer_list.clear();
         transaction_list.clear();
 
-        statement_list.addAll(core.getStatements());
+        statement_list.addAll(core.getChildren(Statement.class));
         categoryTransfer_list.addAll(core.getChildren(CategoryTransfer.class));
-        transaction_list.addAll(core.getTransactions());
+        transaction_list.addAll(core.getChildren(Transaction.class));
 
         statement_panel.update();
         categoryTransfer_panel.update();

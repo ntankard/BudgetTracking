@@ -2,6 +2,7 @@ package com.ntankard.Tracking.DataBase.Interface;
 
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
+import com.ntankard.Tracking.DataBase.Interface.MoneyEvent_Sets.PeriodCategory_Set;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataContext.ZERO_SCALE;
@@ -24,46 +25,46 @@ public class PeriodCategory {
 
     @DisplayProperties(order = 1, dataType = CURRENCY_YEN, dataContext = ZERO_SCALE)
     public Double getIncome() {
-        return period.getCategoryTotal(database.getCategory("Income"));
+        return new PeriodCategory_Set(period, database.getCategory("Income")).getTotal();
     }
 
     @DisplayProperties(order = 2, dataType = CURRENCY_YEN, dataContext = ZERO_SCALE)
     public Double getMembership() {
-        return period.getCategoryTotal(database.getCategory("Membership"));
+        return new PeriodCategory_Set(period, database.getCategory("Membership")).getTotal();
     }
 
     @DisplayProperties(order = 3, dataType = CURRENCY_YEN, dataContext = ZERO_SCALE)
     public Double getBills() {
-        return period.getCategoryTotal(database.getCategory("Bills"));
+        return new PeriodCategory_Set(period, database.getCategory("Bills")).getTotal();
     }
 
     @DisplayProperties(order = 4, dataType = CURRENCY_YEN, dataContext = ZERO_SCALE)
     public Double getShopping() {
-        return period.getCategoryTotal(database.getCategory("Shopping"));
+        return new PeriodCategory_Set(period, database.getCategory("Shopping")).getTotal();
     }
 
     @DisplayProperties(order = 5, dataType = CURRENCY_YEN, dataContext = ZERO_SCALE)
     public Double getEntertainment() {
-        return period.getCategoryTotal(database.getCategory("Entertainment"));
+        return new PeriodCategory_Set(period, database.getCategory("Entertainment")).getTotal();
     }
 
     @DisplayProperties(order = 6, dataType = CURRENCY_YEN, dataContext = ZERO_SCALE)
     public Double getFood() {
-        return period.getCategoryTotal(database.getCategory("Food"));
+        return new PeriodCategory_Set(period, database.getCategory("Food")).getTotal();
     }
 
     @DisplayProperties(order = 7, dataType = CURRENCY_YEN, dataContext = ZERO_SCALE)
     public Double getRent() {
-        return period.getCategoryTotal(database.getCategory("Rent"));
+        return new PeriodCategory_Set(period, database.getCategory("Rent")).getTotal();
     }
 
     @DisplayProperties(order = 8, dataType = CURRENCY_YEN, dataContext = ZERO_SCALE)
     public Double getTravel() {
-        return period.getCategoryTotal(database.getCategory("Travel"));
+        return new PeriodCategory_Set(period, database.getCategory("Travel")).getTotal();
     }
 
     @DisplayProperties(order = 9, dataType = CURRENCY_YEN, dataContext = ZERO_SCALE)
     public Double getUnaccounted() {
-        return period.getCategoryTotal(database.getCategory("Unaccounted"));
+        return new PeriodCategory_Set(period, database.getCategory("Unaccounted")).getTotal();
     }
 }

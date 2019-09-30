@@ -4,42 +4,24 @@ import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.DynamicGUI.Components.Object.SetterProperties;
 import com.ntankard.Tracking.DataBase.Core.DataObject;
-import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
-
-import java.util.List;
+import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-public class Transaction extends MoneyEvent<Period, Period> {
-
-    // My parents
+public class Transaction extends MoneyEvent<Statement, Period> {
 
     // My values
     private String idCode;
-    private Statement idStatement;
 
     /**
      * Constructor
      */
     public Transaction(Statement idStatement, String idCode, String description, Double value, Category category) {
-        super(description, value, null, null, idStatement.getIdPeriod(), category, idStatement.getIdBank().getCurrency());
-        this.idStatement = idStatement;
+        super(description, value, idStatement, null, idStatement.getIdPeriod(), category, idStatement.getIdBank().getCurrency());
         this.idCode = idCode;
-
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public List<DataObject> getParents() {
-        List<DataObject> toReturn = super.getParents();
-        toReturn.add(idStatement);
-        return toReturn;
-
     }
 
     /**
@@ -59,7 +41,7 @@ public class Transaction extends MoneyEvent<Period, Period> {
         return false;
     }
 
-//------------------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------------------------------
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
@@ -77,9 +59,11 @@ public class Transaction extends MoneyEvent<Period, Period> {
         return super.getDestinationCategory();
     }
 
-    public Statement getIdStatement() {
-        return idStatement;
+    @Override
+    public Statement getSourceContainer() {
+        return super.getSourceContainer();
     }
+
 
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Setters #####################################################

@@ -71,13 +71,6 @@ public abstract class MoneyEvent<SourceType extends DataObject, DestinationType 
     }
 
     /**
-     * {@inheritDoc
-     */
-    public Currency getCurrency() {
-        return currency;
-    }
-
-    /**
      * Is this combination of container and category the source of this transaction?
      *
      * @param sourceContainer The container to check
@@ -129,18 +122,20 @@ public abstract class MoneyEvent<SourceType extends DataObject, DestinationType 
         return destinationCategory;
     }
 
+    public Currency getCurrency() {
+        return currency;
+    }
+
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Setters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    /**
-     * {@inheritDoc
-     */
-    @SetterProperties(sourceMethod = "getCurrencies")
-    public void setCurrency(Currency currency) {
-        this.currency.notifyChildUnLink(this);
-        this.currency = currency;
-        this.currency.notifyChildLink(this);
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setValue(Double value) {
+        this.value = value;
     }
 
     protected void setSourceCategory(Category source) {
@@ -167,11 +162,10 @@ public abstract class MoneyEvent<SourceType extends DataObject, DestinationType 
         this.destinationContainer.notifyChildLink(this);
     }
 
-    public void setValue(Double value) {
-        this.value = value;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    @SetterProperties(sourceMethod = "getCurrencies")
+    public void setCurrency(Currency currency) {
+        this.currency.notifyChildUnLink(this);
+        this.currency = currency;
+        this.currency.notifyChildLink(this);
     }
 }

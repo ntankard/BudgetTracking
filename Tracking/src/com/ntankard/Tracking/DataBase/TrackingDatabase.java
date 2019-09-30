@@ -18,6 +18,16 @@ import java.util.*;
 
 public class TrackingDatabase {
 
+    // Singleton constructor
+    private static TrackingDatabase master;
+
+    public static TrackingDatabase get() {
+        if (master == null) {
+            master = new TrackingDatabase();
+        }
+        return master;
+    }
+
     // Core Containers
     private List<Currency> currencies = new ArrayList<>();
     private List<Category> categories = new ArrayList<>();
@@ -43,7 +53,14 @@ public class TrackingDatabase {
     private Map<String, CategoryTransfer> categoryTransferMap = new HashMap<>();
     private Map<String, NonPeriodFund> nonPeriodFundMap = new HashMap<>();
 
+    // Flag for database construction
     private boolean isFinalized = false;
+
+    /**
+     * Private Constructor
+     */
+    private TrackingDatabase() {
+    }
 
     /**
      * Repair any missing data
@@ -92,7 +109,7 @@ public class TrackingDatabase {
      * @return The matching statement
      */
     private Statement getStatement(Period period, Bank bank) {
-        for (Statement s : period.getStatements()) {
+        for (Statement s : period.<Statement>getChildren(Statement.class)) {
             if (s.getIdBank() == bank) {
                 return s;
             }
@@ -131,7 +148,7 @@ public class TrackingDatabase {
      */
     public String getNextTransactionId(Statement s) {
         int max = 0;
-        for (Transaction t : s.getTransactions()) {
+        for (Transaction t : s.<Transaction>getChildren(Transaction.class)) {
             int value = Integer.parseInt(t.getIdCode());
             if (value > max) {
                 max = value;
