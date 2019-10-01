@@ -1,9 +1,8 @@
 package com.ntankard.Tracking.Dispaly.Swing.PeriodSummary.ModelData.Rows;
 
+import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
-import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
-import com.ntankard.Tracking.DataBase.TrackingDatabase;
 import com.ntankard.Tracking.Dispaly.Swing.PeriodSummary.ModelData.ModelData_Columns;
 
 public class DividerRow extends DataRows<Object> {
@@ -16,8 +15,8 @@ public class DividerRow extends DataRows<Object> {
     /**
      * {@inheritDoc
      */
-    public DividerRow(String name, TrackingDatabase trackingDatabase, Period core, ModelData_Columns columns) {
-        super(trackingDatabase, core, columns);
+    public DividerRow(String name, Period core, ModelData_Columns columns) {
+        super(core, columns);
         this.name = name;
     }
 

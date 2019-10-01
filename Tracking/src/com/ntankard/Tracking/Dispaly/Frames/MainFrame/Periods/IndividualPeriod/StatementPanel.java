@@ -7,9 +7,8 @@ import com.ntankard.DynamicGUI.Util.Swing.Base.UpdatableJScrollPane;
 import com.ntankard.DynamicGUI.Util.Updatable;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
-import com.ntankard.Tracking.DataBase.TrackingDatabase;
-import com.ntankard.Tracking.Dispaly.Util.StatementLocaleInspector;
 import com.ntankard.Tracking.Dispaly.Frames.Statement_Frame;
+import com.ntankard.Tracking.Dispaly.Util.StatementLocaleInspector;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -27,9 +27,6 @@ public class PeriodSummary_Model extends AbstractTableModel implements Updatable
     private final static Color HIGHLIGHTED_BACKGROUND = new Color(220, 220, 220);
     private final static Color HIGHLIGHTED_TEXT = Color.RED;
 
-    // Core data
-    private Period core;
-    private TrackingDatabase trackingDatabase;
 
     // Table data
     private final ModelData_Columns columns;
@@ -42,12 +39,9 @@ public class PeriodSummary_Model extends AbstractTableModel implements Updatable
      * @param core             The Period this panel is built around
      */
     public PeriodSummary_Model(TrackingDatabase trackingDatabase, Period core) {
-        this.trackingDatabase = trackingDatabase;
-        this.core = core;
-
-        this.columns = new ModelData_Columns(trackingDatabase, core);
+        this.columns = new ModelData_Columns(core);
         this.columns.update();
-        this.rows = new ModelData_Rows(trackingDatabase, core, columns);
+        this.rows = new ModelData_Rows(core, columns);
 
         update();
     }

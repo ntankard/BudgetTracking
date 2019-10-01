@@ -1,9 +1,9 @@
 package com.ntankard.Tracking.Dispaly.Swing.PeriodSummary.ModelData.Rows;
 
+import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.MoneyEvent;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
-import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Interface.MoneyEvent_Sets.PeriodCategoryType_Set;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
 import com.ntankard.Tracking.Dispaly.Swing.PeriodSummary.ModelData.ModelData_Columns;
@@ -21,12 +21,11 @@ public class TransferRow<T extends MoneyEvent> extends DataRows<T> {
     /**
      * Constructor
      *
-     * @param trackingDatabase The master database
-     * @param core             The Period this table is built around
-     * @param columns          The columns of the table
+     * @param core    The Period this table is built around
+     * @param columns The columns of the table
      */
-    public TransferRow(TrackingDatabase trackingDatabase, Period core, ModelData_Columns columns, Class<T> typeParameterClass) {
-        super(trackingDatabase, core, columns);
+    public TransferRow(Period core, ModelData_Columns columns, Class<T> typeParameterClass) {
+        super(core, columns);
         this.typeParameterClass = typeParameterClass;
     }
 
@@ -72,7 +71,7 @@ public class TransferRow<T extends MoneyEvent> extends DataRows<T> {
                 return rowData;
             } else {
                 if (getValueCurrency(rowData).equals(currency)) {
-                    return trackingDatabase.getCurrencyFormat(currency).format(getValue(rowData, category));
+                    return TrackingDatabase.get().getCurrencyFormat(currency).format(getValue(rowData, category));
                 }
             }
         }
@@ -97,7 +96,7 @@ public class TransferRow<T extends MoneyEvent> extends DataRows<T> {
     public Object getCurrencyTotal(Category category, Currency currency) {
         if (currency != null) {
             double total = getCurrencyTotal_impl(category, currency);
-            return trackingDatabase.getCurrencyFormat(currency).format(total);
+            return TrackingDatabase.get().getCurrencyFormat(currency).format(total);
         }
         return null;
     }

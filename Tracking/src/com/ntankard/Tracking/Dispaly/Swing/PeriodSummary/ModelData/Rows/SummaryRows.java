@@ -4,7 +4,6 @@ import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
 import com.ntankard.Tracking.DataBase.Interface.MoneyEvent_Sets.PeriodCategory_Set;
-import com.ntankard.Tracking.DataBase.TrackingDatabase;
 import com.ntankard.Tracking.Dispaly.Swing.PeriodSummary.ModelData.ModelData_Columns;
 
 public class SummaryRows extends DataRows<Object> {
@@ -12,8 +11,8 @@ public class SummaryRows extends DataRows<Object> {
     /**
      * {@inheritDoc
      */
-    public SummaryRows(TrackingDatabase trackingDatabase, Period core, ModelData_Columns columns) {
-        super(trackingDatabase, core, columns);
+    public SummaryRows(Period core, ModelData_Columns columns) {
+        super(core, columns);
     }
 
     /**

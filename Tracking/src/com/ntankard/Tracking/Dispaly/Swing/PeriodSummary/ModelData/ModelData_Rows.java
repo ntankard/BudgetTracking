@@ -15,7 +15,6 @@ public class ModelData_Rows {
 
     // Core data
     private Period core;
-    private TrackingDatabase trackingDatabase;
 
     // Column data
     private List<Section> sections = new ArrayList<>();
@@ -23,23 +22,21 @@ public class ModelData_Rows {
     /**
      * Constructor
      *
-     * @param trackingDatabase The master database
-     * @param core             The Period this table is built around
-     * @param columns          The columns of the table
+     * @param core    The Period this table is built around
+     * @param columns The columns of the table
      */
-    public ModelData_Rows(TrackingDatabase trackingDatabase, Period core, ModelData_Columns columns) {
-        this.trackingDatabase = trackingDatabase;
+    public ModelData_Rows(Period core, ModelData_Columns columns) {
         this.core = core;
 
-        addSection(new SummaryRows(trackingDatabase, core, columns));
-        addSection(new DividerRow("Transaction", trackingDatabase, core, columns));
-        addSection(new TransferRow<>(trackingDatabase, core, columns, Transaction.class));
-        addSection(new DividerRow("Category", trackingDatabase, core, columns));
-        addSection(new TransferRow<>(trackingDatabase, core, columns, CategoryTransfer.class));
-        addSection(new DividerRow("Period", trackingDatabase, core, columns));
-        addSection(new TransferRow<>(trackingDatabase, core, columns, PeriodTransfer.class));
-        addSection(new DividerRow("External", trackingDatabase, core, columns));
-        addSection(new TransferRow<>(trackingDatabase, core, columns, NonPeriodFundTransfer.class));
+        addSection(new SummaryRows(core, columns));
+        addSection(new DividerRow("Transaction", core, columns));
+        addSection(new TransferRow<>(core, columns, Transaction.class));
+        addSection(new DividerRow("Category", core, columns));
+        addSection(new TransferRow<>(core, columns, CategoryTransfer.class));
+        addSection(new DividerRow("Period", core, columns));
+        addSection(new TransferRow<>(core, columns, PeriodTransfer.class));
+        addSection(new DividerRow("External", core, columns));
+        addSection(new TransferRow<>(core, columns, NonPeriodFundTransfer.class));
     }
 
     /**

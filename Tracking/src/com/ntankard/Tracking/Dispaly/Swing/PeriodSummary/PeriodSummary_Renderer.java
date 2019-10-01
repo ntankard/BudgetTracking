@@ -29,6 +29,9 @@ public class PeriodSummary_Renderer extends DefaultTableCellRenderer {
         }
     }
 
+    /**
+     * {@inheritDoc
+     */
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
@@ -59,6 +62,4 @@ public class PeriodSummary_Renderer extends DefaultTableCellRenderer {
 
         return component;
     }
-
-
 }

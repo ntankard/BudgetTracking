@@ -13,7 +13,6 @@ import java.util.Map;
 public abstract class DataRows<T> {
 
     // Core data
-    protected final TrackingDatabase trackingDatabase;
     protected final Period core;
     protected final ModelData_Columns columns;
 
@@ -24,12 +23,10 @@ public abstract class DataRows<T> {
     /**
      * Constructor
      *
-     * @param trackingDatabase The master database
      * @param core             The Period this table is built around
      * @param columns          The columns of the table
      */
-    public DataRows(TrackingDatabase trackingDatabase, Period core, ModelData_Columns columns) {
-        this.trackingDatabase = trackingDatabase;
+    public DataRows(Period core, ModelData_Columns columns) {
         this.core = core;
         this.columns = columns;
     }
@@ -41,7 +38,7 @@ public abstract class DataRows<T> {
      * @return The formatted total
      */
     public Object getTotal(Category category) {
-        return trackingDatabase.getCurrencyFormat("YEN").format(getTotal_impl(category));
+        return TrackingDatabase.get().getCurrencyFormat("YEN").format(getTotal_impl(category));
     }
 
     /**

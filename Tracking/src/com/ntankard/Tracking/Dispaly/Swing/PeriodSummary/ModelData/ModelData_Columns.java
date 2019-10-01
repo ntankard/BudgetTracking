@@ -14,7 +14,6 @@ public class ModelData_Columns {
 
     // Core data
     private Period core;
-    private TrackingDatabase trackingDatabase;
 
     // Column data
     public final List<Category> categories = new ArrayList<>();
@@ -23,11 +22,9 @@ public class ModelData_Columns {
     /**
      * Constructor
      *
-     * @param trackingDatabase The master database
      * @param core             The Period this table is built around
      */
-    public ModelData_Columns(TrackingDatabase trackingDatabase, Period core) {
-        this.trackingDatabase = trackingDatabase;
+    public ModelData_Columns(Period core) {
         this.core = core;
         update();
     }
@@ -40,7 +37,7 @@ public class ModelData_Columns {
         columns.clear();
 
         // Find all categories
-        categories.addAll(trackingDatabase.getCategories());
+        categories.addAll(TrackingDatabase.get().getCategories());
         categories.sort(Comparator.comparingInt(Category::getOrder));
 
         for (Category category : categories) {
