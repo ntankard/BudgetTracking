@@ -1,13 +1,13 @@
-package com.ntankard.Tracking.Dispaly.Master;
+package com.ntankard.Tracking.Dispaly.Frames.MainFrame;
 
 import com.ntankard.DynamicGUI.Util.Swing.Containers.ButtonPanel;
 import com.ntankard.DynamicGUI.Util.Updatable;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.TrackingDatabase_Reader;
-import com.ntankard.Tracking.Dispaly.Master.DatabaseLists.MoneyContainerPanel;
-import com.ntankard.Tracking.Dispaly.Master.DatabaseLists.ReferenceTypesPanel;
-import com.ntankard.Tracking.Dispaly.Master.Periods.PeriodTabPanel;
-import com.ntankard.Tracking.Dispaly.Master.DatabaseLists.MoneyEventPanel;
+import com.ntankard.Tracking.Dispaly.Frames.MainFrame.DatabaseLists.MoneyContainerPanel;
+import com.ntankard.Tracking.Dispaly.Frames.MainFrame.DatabaseLists.ReferenceTypesPanel;
+import com.ntankard.Tracking.Dispaly.Frames.MainFrame.Periods.PeriodTabPanel;
+import com.ntankard.Tracking.Dispaly.Frames.MainFrame.DatabaseLists.MoneyEventPanel;
 
 import javax.swing.*;
 import java.awt.*;

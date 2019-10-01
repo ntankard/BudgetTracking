@@ -1,4 +1,4 @@
-package com.ntankard.Tracking.Old;
+package com.ntankard.Tracking.Dispaly.Frames;
 
 import com.ntankard.ClassExtension.MemberClass;
 import com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList;
@@ -22,7 +22,6 @@ import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 public class Statement_Frame extends UpdatableJPanel {
 
     // Core Data
-    private TrackingDatabase trackingDatabase;
     private Statement core;
 
     // The data displayed (clone of the data in the database)
@@ -35,13 +34,12 @@ public class Statement_Frame extends UpdatableJPanel {
     /**
      * Create and open the period frame
      *
-     * @param trackingDatabase The master database
-     * @param core             The Statement this panel is built around
-     * @param master           The parent of this frame
+     * @param core   The Statement this panel is built around
+     * @param master The parent of this frame
      */
-    public static void open(TrackingDatabase trackingDatabase, Statement core, Updatable master) {
+    public static void open(Statement core, Updatable master) {
         JFrame _frame = new JFrame("Statement");
-        _frame.setContentPane(new Statement_Frame(trackingDatabase, core, master));
+        _frame.setContentPane(new Statement_Frame(core, master));
         _frame.pack();
         _frame.setVisible(true);
 
@@ -53,13 +51,11 @@ public class Statement_Frame extends UpdatableJPanel {
     /**
      * Constructor
      *
-     * @param trackingDatabase The master database
-     * @param core             The Statement this panel is built around
-     * @param master           The parent of this frame
+     * @param core   The Statement this panel is built around
+     * @param master The parent of this frame
      */
-    private Statement_Frame(TrackingDatabase trackingDatabase, Statement core, Updatable master) {
+    private Statement_Frame(Statement core, Updatable master) {
         super(master);
-        this.trackingDatabase = trackingDatabase;
         this.core = core;
         createUIComponents();
         update();
@@ -78,24 +74,24 @@ public class Statement_Frame extends UpdatableJPanel {
 
             @Override
             public Transaction newElement() {
-                String idCode = trackingDatabase.getNextTransactionId(core);
-                return new Transaction(core, idCode, "", 0.0, trackingDatabase.getCategory("Unaccounted"));
+                String idCode = TrackingDatabase.get().getNextTransactionId(core);
+                return new Transaction(core, idCode, "", 0.0, TrackingDatabase.get().getCategory("Unaccounted"));
             }
 
             @Override
             public void deleteElement(Transaction toDel) {
-                trackingDatabase.removeTransaction(toDel);
+                TrackingDatabase.get().removeTransaction(toDel);
                 notifyUpdate();
             }
 
             @Override
             public void addElement(Transaction newObj) {
-                trackingDatabase.addTransaction(newObj);
+                TrackingDatabase.get().addTransaction(newObj);
                 notifyUpdate();
             }
-        }, this, trackingDatabase);
+        }, this, TrackingDatabase.get());
         transaction_panel.getMainPanel().setLocaleInspector(rowObject -> {
-            if(core.getIdBank().getCurrency().getId().equals("YEN")){
+            if (core.getIdBank().getCurrency().getId().equals("YEN")) {
                 return Locale.JAPAN;
             }
             return Locale.US;
@@ -105,7 +101,7 @@ public class Statement_Frame extends UpdatableJPanel {
         data_tPanel.addTab("Transactions", transaction_panel);
         this.add(data_tPanel, BorderLayout.CENTER);
 
-        statement_panel = DynamicGUI_IntractableObject.newIntractableObjectPanel(core, INFO_DISPLAY, false, this, trackingDatabase);
+        statement_panel = DynamicGUI_IntractableObject.newIntractableObjectPanel(core, INFO_DISPLAY, false, this, TrackingDatabase.get());
         this.add(statement_panel, BorderLayout.EAST);
     }
 
@@ -115,7 +111,7 @@ public class Statement_Frame extends UpdatableJPanel {
     @Override
     public void notifyUpdate() {
         super.notifyUpdate();
-        SwingUtilities.invokeLater(() -> update());
+        SwingUtilities.invokeLater(this::update);
     }
 
     /**

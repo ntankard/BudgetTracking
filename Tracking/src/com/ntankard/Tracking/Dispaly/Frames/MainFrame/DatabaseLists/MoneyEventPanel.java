@@ -1,4 +1,4 @@
-package com.ntankard.Tracking.Dispaly.Master.DatabaseLists;
+package com.ntankard.Tracking.Dispaly.Frames.MainFrame.DatabaseLists;
 
 import com.ntankard.ClassExtension.MemberClass;
 import com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList;

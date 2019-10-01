@@ -1,7 +1,7 @@
 package com.ntankard.Tracking;
 
 import com.ntankard.Tracking.DataBase.TrackingDatabase_Reader;
-import com.ntankard.Tracking.Dispaly.Master.Master_Frame;
+import com.ntankard.Tracking.Dispaly.Frames.MainFrame.Master_Frame;
 
 public class Main {
 

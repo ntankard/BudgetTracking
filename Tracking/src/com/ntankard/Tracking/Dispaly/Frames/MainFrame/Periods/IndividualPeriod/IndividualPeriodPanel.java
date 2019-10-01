@@ -1,4 +1,4 @@
-package com.ntankard.Tracking.Dispaly.Master.Periods.IndividualPeriod;
+package com.ntankard.Tracking.Dispaly.Frames.MainFrame.Periods.IndividualPeriod;
 
 import com.ntankard.DynamicGUI.Util.Swing.Base.UpdatableJPanel;
 import com.ntankard.DynamicGUI.Util.Updatable;

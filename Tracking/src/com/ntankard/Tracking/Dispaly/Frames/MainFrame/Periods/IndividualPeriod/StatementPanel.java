@@ -1,20 +1,18 @@
-package com.ntankard.Tracking.Dispaly.Master.Periods.IndividualPeriod;
+package com.ntankard.Tracking.Dispaly.Frames.MainFrame.Periods.IndividualPeriod;
 
 import com.ntankard.ClassExtension.MemberClass;
 import com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList;
 import com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList.ListControl_Button;
-import com.ntankard.DynamicGUI.Components.List.Types.Table.Decoder.CurrencyDecoder_LocaleSource;
 import com.ntankard.DynamicGUI.Util.Swing.Base.UpdatableJScrollPane;
 import com.ntankard.DynamicGUI.Util.Updatable;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
 import com.ntankard.Tracking.Dispaly.Util.StatementLocaleInspector;
-import com.ntankard.Tracking.Old.Statement_Frame;
+import com.ntankard.Tracking.Dispaly.Frames.Statement_Frame;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import static com.ntankard.ClassExtension.MemberProperties.ALWAYS_DISPLAY;
 import static com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList.ListControl_Button.EnableCondition.SINGLE;
@@ -50,7 +48,7 @@ public class StatementPanel extends UpdatableJScrollPane {
         ListControl_Button manageStatementBtn = new ListControl_Button<>("Manage Statement", statement_panel, SINGLE, false);
         manageStatementBtn.addActionListener(e -> {
             List selected = statement_panel.getMainPanel().getSelectedItems();
-            Statement_Frame.open(TrackingDatabase.get(), (Statement) selected.get(0), this);
+            Statement_Frame.open((Statement) selected.get(0), this);
         });
         statement_panel.addButton(manageStatementBtn);
 

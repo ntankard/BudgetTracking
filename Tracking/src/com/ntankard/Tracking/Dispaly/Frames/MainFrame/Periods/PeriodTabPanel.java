@@ -1,10 +1,10 @@
-package com.ntankard.Tracking.Dispaly.Master.Periods;
+package com.ntankard.Tracking.Dispaly.Frames.MainFrame.Periods;
 
 import com.ntankard.DynamicGUI.Util.Swing.Base.UpdatableJPanel;
 import com.ntankard.DynamicGUI.Util.Updatable;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
-import com.ntankard.Tracking.Dispaly.Master.Periods.IndividualPeriod.IndividualPeriodPanel;
+import com.ntankard.Tracking.Dispaly.Frames.MainFrame.Periods.IndividualPeriod.IndividualPeriodPanel;
 
 import javax.swing.*;
 import java.awt.*;

@@ -10,6 +10,7 @@ import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
+import com.ntankard.Tracking.Dispaly.Frames.Statement_Frame;
 import com.ntankard.Tracking.Dispaly.Swing.PeriodSummary.PeriodSummary;
 
 import javax.swing.*;
@@ -96,7 +97,7 @@ public class Period_Frame extends UpdatableJPanel {
         setRecord = new DynamicGUI_DisplayList.ListControl_Button<>("Manage Period", statement_panel, SINGLE, false);
         setRecord.addActionListener(e -> {
             List selected = statement_panel.getMainPanel().getSelectedItems();
-            Statement_Frame.open(trackingDatabase, (Statement) selected.get(0), this);
+            Statement_Frame.open((Statement) selected.get(0), this);
         });
         statement_panel.addButton(setRecord);
 
