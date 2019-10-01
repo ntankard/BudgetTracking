@@ -1,4 +1,4 @@
-package com.ntankard.Tracking.Frames.Swing.PeriodSummary;
+package com.ntankard.Tracking.Dispaly.Swing.PeriodSummary;
 
 import com.ntankard.DynamicGUI.Util.Updatable;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.MoneyEvent;
@@ -6,11 +6,11 @@ import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
-import com.ntankard.Tracking.Frames.Swing.PeriodSummary.ModelData.ModelData_Columns;
-import com.ntankard.Tracking.Frames.Swing.PeriodSummary.ModelData.ModelData_Rows;
-import com.ntankard.Tracking.Frames.Swing.PeriodSummary.ModelData.Rows.DataRows;
-import com.ntankard.Tracking.Frames.Swing.PeriodSummary.ModelData.Rows.DividerRow;
-import com.ntankard.Tracking.Frames.Swing.PeriodSummary.PeriodSummary_Renderer.RendererObject;
+import com.ntankard.Tracking.Dispaly.Swing.PeriodSummary.ModelData.ModelData_Columns;
+import com.ntankard.Tracking.Dispaly.Swing.PeriodSummary.ModelData.ModelData_Rows;
+import com.ntankard.Tracking.Dispaly.Swing.PeriodSummary.ModelData.Rows.DataRows;
+import com.ntankard.Tracking.Dispaly.Swing.PeriodSummary.ModelData.Rows.DividerRow;
+import com.ntankard.Tracking.Dispaly.Swing.PeriodSummary.PeriodSummary_Renderer.RendererObject;
 
 import javax.swing.table.AbstractTableModel;
 import java.awt.*;

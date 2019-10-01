@@ -1,19 +1,24 @@
-package com.ntankard.Tracking.Frames.Swing.PeriodSummary.ModelData.Rows;
+package com.ntankard.Tracking.Dispaly.Swing.PeriodSummary.ModelData.Rows;
 
-import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
-import com.ntankard.Tracking.DataBase.Interface.MoneyEvent_Sets.PeriodCategory_Set;
+import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
-import com.ntankard.Tracking.Frames.Swing.PeriodSummary.ModelData.ModelData_Columns;
+import com.ntankard.Tracking.Dispaly.Swing.PeriodSummary.ModelData.ModelData_Columns;
 
-public class SummaryRows extends DataRows<Object> {
+public class DividerRow extends DataRows<Object> {
+
+    /**
+     * The name to put on the divider
+     */
+    private String name;
 
     /**
      * {@inheritDoc
      */
-    public SummaryRows(TrackingDatabase trackingDatabase, Period core, ModelData_Columns columns) {
+    public DividerRow(String name, TrackingDatabase trackingDatabase, Period core, ModelData_Columns columns) {
         super(trackingDatabase, core, columns);
+        this.name = name;
     }
 
     /**
@@ -21,7 +26,7 @@ public class SummaryRows extends DataRows<Object> {
      */
     @Override
     public int getRowCount() {
-        return 2;
+        return 1;
     }
 
     /**
@@ -29,7 +34,14 @@ public class SummaryRows extends DataRows<Object> {
      */
     @Override
     public void update() {
+    }
 
+    /**
+     * {@inheritDoc
+     */
+    @Override
+    public Object getTotal(Category category) {
+        return null;
     }
 
     /**
@@ -37,7 +49,7 @@ public class SummaryRows extends DataRows<Object> {
      */
     @Override
     public double getTotal_impl(Category category) {
-        return new PeriodCategory_Set(core, category).getTotal();
+        return 0.0;
     }
 
     /**
@@ -53,6 +65,6 @@ public class SummaryRows extends DataRows<Object> {
      */
     @Override
     public Object getValue(Category category, Currency currency, int rowIndex) {
-        return null;
+        return name;
     }
 }

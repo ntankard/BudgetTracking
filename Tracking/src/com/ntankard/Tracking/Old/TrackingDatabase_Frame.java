@@ -1,4 +1,4 @@
-package com.ntankard.Tracking.Frames;
+package com.ntankard.Tracking.Old;
 
 import com.ntankard.ClassExtension.MemberClass;
 import com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList;
@@ -13,7 +13,6 @@ import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Bank;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
-import com.ntankard.Tracking.DataBase.Interface.PeriodCategory;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.TrackingDatabase_Reader;
 

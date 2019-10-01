@@ -1,4 +1,4 @@
-package com.ntankard.Tracking.Frames;
+package com.ntankard.Tracking.Old;
 
 import com.ntankard.ClassExtension.MemberClass;
 import com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList;
@@ -10,7 +10,7 @@ import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
-import com.ntankard.Tracking.Frames.Swing.PeriodSummary.PeriodSummary;
+import com.ntankard.Tracking.Dispaly.Swing.PeriodSummary.PeriodSummary;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

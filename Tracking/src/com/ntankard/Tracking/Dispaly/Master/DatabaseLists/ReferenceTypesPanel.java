@@ -1,4 +1,4 @@
-package com.ntankard.Tracking.Frames.Master;
+package com.ntankard.Tracking.Dispaly.Master.DatabaseLists;
 
 import com.ntankard.ClassExtension.MemberClass;
 import com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList;
@@ -16,10 +16,7 @@ import java.util.List;
 
 import static com.ntankard.ClassExtension.MemberProperties.ALWAYS_DISPLAY;
 
-public class BaseTypePanel extends UpdatableJPanel {
-
-    // Core Data
-    private TrackingDatabase trackingDatabase;
+public class ReferenceTypesPanel extends UpdatableJPanel {
 
     // The data displayed (clone of the data in the database)
     private List<Currency> currency_list = new ArrayList<>();
@@ -34,9 +31,8 @@ public class BaseTypePanel extends UpdatableJPanel {
     /**
      * Constructor
      */
-    public BaseTypePanel(TrackingDatabase trackingDatabase, Updatable master) {
+    public ReferenceTypesPanel(Updatable master) {
         super(master);
-        this.trackingDatabase = trackingDatabase;
         createUIComponents();
     }
 
@@ -69,9 +65,9 @@ public class BaseTypePanel extends UpdatableJPanel {
         currency_list.clear();
         bank_list.clear();
 
-        category_list.addAll(trackingDatabase.getCategories());
-        currency_list.addAll(trackingDatabase.getCurrencies());
-        bank_list.addAll(trackingDatabase.getBanks());
+        category_list.addAll(TrackingDatabase.get().getCategories());
+        currency_list.addAll(TrackingDatabase.get().getCurrencies());
+        bank_list.addAll(TrackingDatabase.get().getBanks());
 
         category_panel.update();
         currency_panel.update();

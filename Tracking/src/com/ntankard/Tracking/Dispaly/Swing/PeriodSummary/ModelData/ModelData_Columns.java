@@ -1,4 +1,4 @@
-package com.ntankard.Tracking.Frames.Swing.PeriodSummary.ModelData;
+package com.ntankard.Tracking.Dispaly.Swing.PeriodSummary.ModelData;
 
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;

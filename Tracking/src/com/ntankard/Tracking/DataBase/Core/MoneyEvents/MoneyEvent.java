@@ -82,6 +82,16 @@ public abstract class MoneyEvent<SourceType extends DataObject, DestinationType 
     }
 
     /**
+     * Is this combination of container and category the source of this transaction?
+     *
+     * @param sourceContainer The container to check
+     * @return True if the params represent this transfers source
+     */
+    public boolean isThisSource(DataObject sourceContainer) {
+        return this.sourceContainer.equals(sourceContainer);
+    }
+
+    /**
      * Is this combination of container and category the destination of this transaction?
      *
      * @param destinationContainer The container to check
@@ -90,6 +100,16 @@ public abstract class MoneyEvent<SourceType extends DataObject, DestinationType 
      */
     public boolean isThisDestination(DataObject destinationContainer, Category category) {
         return this.destinationContainer.equals(destinationContainer) && this.destinationCategory.equals(category);
+    }
+
+    /**
+     * Is this combination of container and category the destination of this transaction?
+     *
+     * @param destinationContainer The container to check
+     * @return True if the params represent this transfers destination
+     */
+    public boolean isThisDestination(DataObject destinationContainer) {
+        return this.destinationContainer.equals(destinationContainer);
     }
 
     //------------------------------------------------------------------------------------------------------------------

@@ -11,7 +11,7 @@ import com.ntankard.Tracking.DataBase.Core.MoneyEvents.CategoryTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.NonPeriodFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
-import com.ntankard.Tracking.DataBase.Interface.PeriodCategory;
+import com.ntankard.Tracking.Old.PeriodCategory;
 
 import java.text.NumberFormat;
 import java.util.*;
