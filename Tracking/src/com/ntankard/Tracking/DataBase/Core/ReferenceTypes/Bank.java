@@ -19,14 +19,16 @@ public class Bank extends DataObject {
     // My values
     private String idBank;
     private String idAccount;
+    private int order;
 
     /**
      * Constructor
      */
-    public Bank(String idBank, String idAccount, Currency currency) {
+    public Bank(String idBank, String idAccount, Currency currency, int order) {
         this.idBank = idBank;
         this.idAccount = idAccount;
         this.currency = currency;
+        this.order = order;
     }
 
     /**
@@ -63,5 +65,10 @@ public class Bank extends DataObject {
 
     public Currency getCurrency() {
         return currency;
+    }
+
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    public int getOrder() {
+        return order;
     }
 }

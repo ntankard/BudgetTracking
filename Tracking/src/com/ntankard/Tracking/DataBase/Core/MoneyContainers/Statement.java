@@ -4,11 +4,13 @@ import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.DataObject;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Bank;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.ntankard.ClassExtension.DisplayProperties.DataContext.ZERO_TARGET;
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
@@ -59,7 +61,7 @@ public class Statement extends MoneyContainer {
     }
 
     //------------------------------------------------------------------------------------------------------------------
-    //############################################# Calculated accessors ###############################################
+    //##################################### Calculated accessors, from base data #######################################
     //------------------------------------------------------------------------------------------------------------------
 
     /**
@@ -67,8 +69,7 @@ public class Statement extends MoneyContainer {
      *
      * @return The real spend based on the difference between the starting and ending balance
      */
-    @DisplayProperties(dataType = CURRENCY)
-    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
+    @DisplayProperties(dataType = CURRENCY, order = 5)
     public Double getExpectedSpend() {
         return end - start - getNetTransfer();
     }
@@ -78,10 +79,42 @@ public class Statement extends MoneyContainer {
      *
      * @return The net transfer in and out of the account
      */
-    @DisplayProperties(dataType = CURRENCY, order = 5)
+    @DisplayProperties(dataType = CURRENCY)
     @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
     public Double getNetTransfer() {
         return transferIn - transferOut;
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    //###################################### Calculated accessors, from children #######################################
+    //------------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Get the amount that differs between the Total Spend and the Expected spend. If this is not 0 money is missing
+     *
+     * @return The amount that differs between the Total Spend and the Expected spend
+     */
+    @DisplayProperties(dataType = CURRENCY, dataContext = ZERO_TARGET, order = 7)
+    public Double getMissingSpend() {
+        double val = getExpectedSpend() + getTotalSpend();
+        if (Math.abs(val) < 0.001) {
+            val = 0.0;
+        }
+        return val;
+    }
+
+    /**
+     * Get the sum of all transactions for this statement
+     *
+     * @return The sum of all transactions for this statement
+     */
+    @DisplayProperties(dataType = CURRENCY, order = 6)
+    public Double getTotalSpend() {
+        double sum = 0.0;
+        for (Transaction t : this.<Transaction>getChildren(Transaction.class)) {
+            sum += t.getValue();
+        }
+        return sum;
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -138,22 +171,6 @@ public class Statement extends MoneyContainer {
         this.transferOut = transferOut;
     }
 }
-
-
-//    /**
-//     * Get the amount that differs between the Total Spend and the Expected spend. If this is not 0 money is missing
-//     *
-//     * @return The amount that differs between the Total Spend and the Expected spend
-//     */
-//    @DisplayProperties(dataType = CURRENCY, dataContext = ZERO_TARGET)
-//    public Double getMissingSpend() {
-//        double val = getExpectedSpend() + getTotalSpend();
-//        if (Math.abs(val) < 0.001) {
-//            val = 0.0;
-//        }
-//        return val;
-//    }
-
 //    /**
 //     * Get all values for a given category
 //     *
@@ -168,17 +185,4 @@ public class Statement extends MoneyContainer {
 //            }
 //        }
 //        return total;
-//    }
-//    /**
-//     * Get the sum of all transactions for this statement
-//     *
-//     * @return The sum of all transactions for this statement
-//     */
-//    @DisplayProperties(dataType = CURRENCY, order = 6)
-//    public Double getTotalSpend() {
-//        double sum = 0.0;
-//        for (Transaction t : this.<Transaction>getChildren(Transaction.class)) {
-//            sum += t.getValue();
-//        }
-//        return sum;
 //    }

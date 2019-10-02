@@ -125,6 +125,14 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
         int min = statement_panel.getMainPanel().getListSelectionModel().getMaxSelectionIndex();
         statement_list.clear();
         statement_list.addAll(core.getChildren(Statement.class));
+        statement_list.sort((o1, o2) -> {
+            if (o1.getIdBank().getOrder() == o2.getIdBank().getOrder()) {
+                return 0;
+            } else if (o1.getIdBank().getOrder() > o2.getIdBank().getOrder()) {
+                return 1;
+            }
+            return -1;
+        });
         statement_panel.update();
         statement_panel.getMainPanel().getListSelectionModel().setSelectionInterval(min, max);
     }

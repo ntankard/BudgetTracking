@@ -204,8 +204,9 @@ public class TrackingDatabase_Reader {
             String bank = lines[0];
             String account = lines[1];
             String currencyID = lines[2];
+            int order = Integer.parseInt(lines[3]);
 
-            data.addBank(new Bank(bank, account, data.getCurrency(currencyID)));
+            data.addBank(new Bank(bank, account, data.getCurrency(currencyID), order));
         }
     }
 
@@ -223,6 +224,7 @@ public class TrackingDatabase_Reader {
             line.add(t.getIdBank());
             line.add(t.getIdAccount());
             line.add(t.getCurrency().getId());
+            line.add(t.getOrder() + "");
             lines.add(line);
         }
 
