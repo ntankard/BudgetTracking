@@ -130,7 +130,7 @@ public class Period_Frame extends UpdatableJPanel {
             return Locale.US;
         });
 
-        periodSummary_panel = new PeriodSummary(trackingDatabase, core, this);
+        periodSummary_panel = new PeriodSummary(core, true, this);
 
         this.add(statement_panel, BorderLayout.CENTER);
 

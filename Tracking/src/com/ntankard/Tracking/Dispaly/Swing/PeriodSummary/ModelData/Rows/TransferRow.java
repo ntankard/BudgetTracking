@@ -1,5 +1,6 @@
 package com.ntankard.Tracking.Dispaly.Swing.PeriodSummary.ModelData.Rows;
 
+import com.ntankard.Tracking.DataBase.Core.DataObject;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.MoneyEvent;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
@@ -68,7 +69,7 @@ public class TransferRow<T extends MoneyEvent> extends DataRows<T> {
         if (rowIndex < categoryRows.size()) {
             T rowData = categoryRows.get(rowIndex);
             if (currency == null) {
-                return rowData;
+                return rowData.getDescription();
             } else {
                 if (getValueCurrency(rowData).equals(currency)) {
                     return TrackingDatabase.get().getCurrencyFormat(currency).format(getValue(rowData, category));
@@ -77,6 +78,23 @@ public class TransferRow<T extends MoneyEvent> extends DataRows<T> {
         }
 
         return "";
+    }
+
+    /**
+     * Get the core data object that is driving this cell (same return for multiple rows)
+     *
+     * @param category The category to search in
+     * @param rowIndex The transaction number to get
+     * @return The core object
+     */
+    public DataObject getDataObject(Category category, int rowIndex) {
+        List<T> categoryRows = this.rows.get(category);
+
+        if (rowIndex < categoryRows.size()) {
+            return categoryRows.get(rowIndex);
+        }
+
+        return null;
     }
 
     /**

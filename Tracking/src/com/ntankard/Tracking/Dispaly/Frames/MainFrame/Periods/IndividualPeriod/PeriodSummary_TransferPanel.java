@@ -54,7 +54,7 @@ public class PeriodSummary_TransferPanel extends UpdatableJPanel {
         this.removeAll();
         this.setLayout(new GridBagLayout());
 
-        periodSummary_panel = new PeriodSummary(TrackingDatabase.get(), core, this);
+        periodSummary_panel = new PeriodSummary(core, true, this);
 
         categoryTransfer_panel = DynamicGUI_DisplayList.newIntractableTable(categoryTransfer_list, new MemberClass(CategoryTransfer.class), false, true, ALWAYS_DISPLAY, new CategoryTransfer_ElementController(core, this), this, TrackingDatabase.get());
         periodTransfer_panel = DynamicGUI_DisplayList.newIntractableTable(periodTransfer_list, new MemberClass(PeriodTransfer.class), false, true, ALWAYS_DISPLAY, new PeriodTransfer_ElementController(core, this), this, TrackingDatabase.get());

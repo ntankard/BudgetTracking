@@ -41,7 +41,7 @@ public class StatementPanel extends UpdatableJScrollPane {
      * Create the GUI components
      */
     private void createUIComponents() {
-        statement_panel = newIntractableTable(statement_list, new MemberClass(Statement.class), true, ALWAYS_DISPLAY, this);
+        statement_panel = newIntractableTable(statement_list, new MemberClass(Statement.class), false, ALWAYS_DISPLAY, this);
         statement_panel.getMainPanel().setLocaleInspector(new StatementLocaleInspector());
 
         ListControl_Button manageStatementBtn = new ListControl_Button<>("Manage Statement", statement_panel, SINGLE, false);

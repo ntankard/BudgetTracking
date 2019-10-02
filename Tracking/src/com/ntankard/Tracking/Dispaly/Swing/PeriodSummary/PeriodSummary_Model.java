@@ -1,22 +1,37 @@
 package com.ntankard.Tracking.Dispaly.Swing.PeriodSummary;
 
 import com.ntankard.DynamicGUI.Util.Updatable;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.MoneyEvent;
+import com.ntankard.Tracking.DataBase.Core.DataObject;
+import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
-import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
-import com.ntankard.Tracking.DataBase.TrackingDatabase;
 import com.ntankard.Tracking.Dispaly.Swing.PeriodSummary.ModelData.ModelData_Columns;
 import com.ntankard.Tracking.Dispaly.Swing.PeriodSummary.ModelData.ModelData_Rows;
 import com.ntankard.Tracking.Dispaly.Swing.PeriodSummary.ModelData.Rows.DataRows;
 import com.ntankard.Tracking.Dispaly.Swing.PeriodSummary.ModelData.Rows.DividerRow;
+import com.ntankard.Tracking.Dispaly.Swing.PeriodSummary.ModelData.Rows.TransferRow;
 import com.ntankard.Tracking.Dispaly.Swing.PeriodSummary.PeriodSummary_Renderer.RendererObject;
 
 import javax.swing.table.AbstractTableModel;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class PeriodSummary_Model extends AbstractTableModel implements Updatable {
+
+    // External formatting
+    public interface CustomFormatter {
+        /**
+         * Apply any special forming to the rendererObject based on the dataObject
+         *
+         * @param dataObject     The object to asses
+         * @param rendererObject The object to store the custom forming
+         */
+        void doFormat(DataObject dataObject, RendererObject rendererObject);
+    }
+
+    private List<CustomFormatter> formatterList = new ArrayList<>();
 
     // Line sizes
     private static final int BLANK_LINE = 0;
@@ -27,23 +42,28 @@ public class PeriodSummary_Model extends AbstractTableModel implements Updatable
     private final static Color HIGHLIGHTED_BACKGROUND = new Color(220, 220, 220);
     private final static Color HIGHLIGHTED_TEXT = Color.RED;
 
-
     // Table data
     private final ModelData_Columns columns;
     private final ModelData_Rows rows;
 
     /**
      * Constructor
-     *
-     * @param trackingDatabase The master database
-     * @param core             The Period this panel is built around
      */
-    public PeriodSummary_Model(TrackingDatabase trackingDatabase, Period core) {
+    public PeriodSummary_Model(Period core, boolean addTransfers) {
         this.columns = new ModelData_Columns(core);
         this.columns.update();
-        this.rows = new ModelData_Rows(core, columns);
+        this.rows = new ModelData_Rows(core, columns, addTransfers);
 
         update();
+    }
+
+    /**
+     * Add a new custom formatter for data cells
+     *
+     * @param customFormatter The formatter to add
+     */
+    public void addCustomFormatter(CustomFormatter customFormatter) {
+        formatterList.add(customFormatter);
     }
 
     /**
@@ -131,13 +151,17 @@ public class PeriodSummary_Model extends AbstractTableModel implements Updatable
             value.bottom = STANDARD_LINE;
 
         } else { // Data list
-
-            Object data = dataRow.getValue(category, currency, sectionIndex - 5);
-            if (data instanceof MoneyEvent) {
-                value.coreObject = ((MoneyEvent) data).getDescription();
-            } else {
-                value.coreObject = data;
+            if (dataRow instanceof TransferRow) {
+                TransferRow transferRow = (TransferRow) dataRow;
+                DataObject obj = transferRow.getDataObject(category, sectionIndex - 5);
+                if (obj != null) {
+                    for (CustomFormatter customFormatter : formatterList) {
+                        customFormatter.doFormat(obj, value);
+                    }
+                }
             }
+
+            value.coreObject = dataRow.getValue(category, currency, sectionIndex - 5);
 
             value.bottom = STANDARD_LINE;
             if (columns.isDescription(columnIndex)) {
@@ -152,7 +176,6 @@ public class PeriodSummary_Model extends AbstractTableModel implements Updatable
         if (rows.isEndOfSection(rowIndex)) {
             value.bottom = THICK_LINE;
         }
-
         return value;
     }
 

@@ -15,28 +15,39 @@ public class ModelData_Rows {
 
     // Core data
     private Period core;
+    private ModelData_Columns columns;
+    private boolean addTransfers;
 
     // Column data
     private List<Section> sections = new ArrayList<>();
 
     /**
      * Constructor
-     *
-     * @param core    The Period this table is built around
-     * @param columns The columns of the table
      */
-    public ModelData_Rows(Period core, ModelData_Columns columns) {
+    public ModelData_Rows(Period core, ModelData_Columns columns, boolean addTransfers) {
         this.core = core;
+        this.addTransfers = addTransfers;
+        this.columns = columns;
+        addSections();
+    }
+
+    /**
+     * Add all the sections
+     */
+    private void addSections() {
+        this.sections.clear();
 
         addSection(new SummaryRows(core, columns));
         addSection(new DividerRow("Transaction", core, columns));
         addSection(new TransferRow<>(core, columns, Transaction.class));
-        addSection(new DividerRow("Category", core, columns));
-        addSection(new TransferRow<>(core, columns, CategoryTransfer.class));
-        addSection(new DividerRow("Period", core, columns));
-        addSection(new TransferRow<>(core, columns, PeriodTransfer.class));
-        addSection(new DividerRow("External", core, columns));
-        addSection(new TransferRow<>(core, columns, NonPeriodFundTransfer.class));
+        if (addTransfers) {
+            addSection(new DividerRow("Category", core, columns));
+            addSection(new TransferRow<>(core, columns, CategoryTransfer.class));
+            addSection(new DividerRow("Period", core, columns));
+            addSection(new TransferRow<>(core, columns, PeriodTransfer.class));
+            addSection(new DividerRow("External", core, columns));
+            addSection(new TransferRow<>(core, columns, NonPeriodFundTransfer.class));
+        }
     }
 
     /**
@@ -58,6 +69,7 @@ public class ModelData_Rows {
      * Recalculate the row data
      */
     public void update() {
+        addSections();
         for (Section row : sections) {
             row.dataRows.update();
         }

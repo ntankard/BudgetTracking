@@ -8,17 +8,17 @@ import java.awt.*;
 public class PeriodSummary_Renderer extends DefaultTableCellRenderer {
 
     public static class RendererObject {
-        Object coreObject = "";
+        public Object coreObject = "";
 
-        int top = 0;
-        int left = 0;
-        int bottom = 0;
-        int right = 0;
+        public int top = 0;
+        public int left = 0;
+        public int bottom = 0;
+        public int right = 0;
 
-        Color foreground = null;
-        Color background = null;
+        public Color foreground = null;
+        public Color background = null;
 
-        boolean isBold = false;
+        public boolean isBold = false;
 
         @Override
         public String toString() {

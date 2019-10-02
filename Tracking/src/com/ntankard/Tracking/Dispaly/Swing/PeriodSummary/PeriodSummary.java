@@ -4,7 +4,6 @@ import com.ntankard.DynamicGUI.Util.Swing.Base.UpdatableJScrollPane;
 import com.ntankard.DynamicGUI.Util.TableColumnAdjuster;
 import com.ntankard.DynamicGUI.Util.Updatable;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
-import com.ntankard.Tracking.DataBase.TrackingDatabase;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,8 +11,8 @@ import java.awt.*;
 public class PeriodSummary extends UpdatableJScrollPane {
 
     // Core Data
-    private TrackingDatabase trackingDatabase;
     private Period core;
+    private boolean addTransfers;
 
     /**
      * The model driving the table
@@ -27,15 +26,11 @@ public class PeriodSummary extends UpdatableJScrollPane {
 
     /**
      * Constructor
-     *
-     * @param trackingDatabase The master database
-     * @param core             The Period this panel is built around
-     * @param master           The parent of this frame
      */
-    public PeriodSummary(TrackingDatabase trackingDatabase, Period core, Updatable master) {
+    public PeriodSummary(Period core, boolean addTransfers, Updatable master) {
         super(master);
-        this.trackingDatabase = trackingDatabase;
         this.core = core;
+        this.addTransfers = addTransfers;
         createUIComponents();
         update();
     }
@@ -44,7 +39,7 @@ public class PeriodSummary extends UpdatableJScrollPane {
      * Create the GUI components
      */
     private void createUIComponents() {
-        model = new PeriodSummary_Model(trackingDatabase, core);
+        model = new PeriodSummary_Model(core, addTransfers);
 
         JTable table = new JTable(model);
 
@@ -58,6 +53,15 @@ public class PeriodSummary extends UpdatableJScrollPane {
         tableColumnAdjuster = new TableColumnAdjuster(table);
 
         this.setViewportView(table);
+    }
+
+    /**
+     * Get the model driving the table
+     *
+     * @return The model driving the table
+     */
+    public PeriodSummary_Model getModel() {
+        return model;
     }
 
     /**
