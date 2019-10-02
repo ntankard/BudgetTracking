@@ -13,18 +13,16 @@ import com.ntankard.Tracking.Dispaly.Swing.PeriodSummary.PeriodSummary;
 import com.ntankard.Tracking.Dispaly.Util.MoneyEventLocaleInspector;
 import com.ntankard.Tracking.Dispaly.Util.StatementLocaleInspector;
 
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.ntankard.ClassExtension.MemberProperties.ALWAYS_DISPLAY;
-import static com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList.*;
+import static com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList.ListControl_Button;
 import static com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList.ListControl_Button.EnableCondition.SINGLE;
 import static com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList.newIntractableTable;
 
-public class PeriodSummary_StatementPanel extends UpdatableJPanel implements ListSelectionListener {
+public class PeriodSummary_StatementPanel extends UpdatableJPanel {
 
     // Core Data
     private Period core;
@@ -76,7 +74,7 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel implements Lis
             Statement_Frame.open((Statement) selected.get(0), this);
         });
         statement_panel.addButton(manageStatementBtn);
-        statement_panel.getMainPanel().getListSelectionModel().addListSelectionListener(this);
+        statement_panel.getMainPanel().getListSelectionModel().addListSelectionListener(e -> updateTransactions());
 
         transaction_panel = newIntractableTable(transaction_list, new MemberClass(Transaction.class), true, true, ALWAYS_DISPLAY, new DynamicGUI_DisplayList.ElementController<Transaction>() {
             @Override
@@ -129,14 +127,6 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel implements Lis
         statement_list.addAll(core.getChildren(Statement.class));
         statement_panel.update();
         statement_panel.getMainPanel().getListSelectionModel().setSelectionInterval(min, max);
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public void valueChanged(ListSelectionEvent e) {
-        updateTransactions();
     }
 
     /**
