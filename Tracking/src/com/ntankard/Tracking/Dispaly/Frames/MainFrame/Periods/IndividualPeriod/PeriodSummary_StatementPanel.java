@@ -8,6 +8,7 @@ import com.ntankard.DynamicGUI.Util.Updatable;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
+import com.ntankard.Tracking.DataBase.Interface.Summary.PeriodTransaction_Summary;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
 import com.ntankard.Tracking.Dispaly.Frames.Statement_Frame;
 import com.ntankard.Tracking.Dispaly.Swing.PeriodSummary.PeriodSummary;
@@ -40,6 +41,7 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
     private DynamicGUI_DisplayList<Statement> statement_panel;
     private DynamicGUI_DisplayList<Transaction> transaction_panel;
     private DynamicGUI_IntractableObject period_panel;
+    private DynamicGUI_IntractableObject periodTotal_panel;
 
     /**
      * Constructor
@@ -80,7 +82,7 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
         statement_panel.addButton(manageStatementBtn);
         statement_panel.getMainPanel().getListSelectionModel().addListSelectionListener(e -> updateTransactions());
 
-        transaction_panel = newIntractableTable(transaction_list, new MemberClass(Transaction.class), true, true, ALWAYS_DISPLAY, new DynamicGUI_DisplayList.ElementController<Transaction>() {
+        transaction_panel = newIntractableTable(transaction_list, new MemberClass(Transaction.class), false, true, ALWAYS_DISPLAY, new DynamicGUI_DisplayList.ElementController<Transaction>() {
             @Override
             public Transaction newElement() {
                 String idCode = TrackingDatabase.get().getNextTransactionId(selectedStatement);
@@ -102,6 +104,7 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
         transaction_panel.getMainPanel().setLocaleInspector(new MoneyEventLocaleInspector());
 
         period_panel = DynamicGUI_IntractableObject.newIntractableObjectPanel(core, ALWAYS_DISPLAY, false, this, TrackingDatabase.get());
+        periodTotal_panel = DynamicGUI_IntractableObject.newIntractableObjectPanel(new PeriodTransaction_Summary(core), ALWAYS_DISPLAY, false, this);
 
         GridBagConstraints summaryContainer_C = new GridBagConstraints();
 
@@ -109,7 +112,7 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
         summaryContainer_C.weightx = 1;
 
         summaryContainer_C.weighty = 1;
-        summaryContainer_C.gridwidth = 3;
+        summaryContainer_C.gridwidth = 4;
         this.add(periodSummary_panel, summaryContainer_C);
 
         summaryContainer_C.gridwidth = 1;
@@ -118,10 +121,14 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
         summaryContainer_C.weightx = 10;
         this.add(statement_panel, summaryContainer_C);
         summaryContainer_C.gridx = 1;
+        summaryContainer_C.weightx = 6;
         this.add(transaction_panel, summaryContainer_C);
         summaryContainer_C.gridx = 2;
         summaryContainer_C.weightx = 1;
         this.add(period_panel, summaryContainer_C);
+        summaryContainer_C.gridx = 3;
+        summaryContainer_C.weightx = 1;
+        this.add(periodTotal_panel, summaryContainer_C);
     }
 
     /**
@@ -169,5 +176,6 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
         transaction_panel.update();
         periodSummary_panel.update();
         period_panel.update();
+        periodTotal_panel.update();
     }
 }
