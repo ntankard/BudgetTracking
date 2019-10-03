@@ -8,6 +8,7 @@ import com.ntankard.DynamicGUI.Util.Updatable;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
+import com.ntankard.Tracking.Dispaly.Util.MoneyEventLocaleInspector;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -89,7 +90,7 @@ public class Statement_Frame extends UpdatableJPanel {
                 TrackingDatabase.get().addTransaction(newObj);
                 notifyUpdate();
             }
-        }, this, TrackingDatabase.get());
+        }, new MoneyEventLocaleInspector(), this, TrackingDatabase.get());
         transaction_panel.getMainPanel().setLocaleInspector(rowObject -> {
             if (core.getIdBank().getCurrency().getId().equals("YEN")) {
                 return Locale.JAPAN;
@@ -101,7 +102,7 @@ public class Statement_Frame extends UpdatableJPanel {
         data_tPanel.addTab("Transactions", transaction_panel);
         this.add(data_tPanel, BorderLayout.CENTER);
 
-        statement_panel = DynamicGUI_IntractableObject.newIntractableObjectPanel(core, INFO_DISPLAY, false, this, TrackingDatabase.get());
+        statement_panel = DynamicGUI_IntractableObject.newIntractableObjectPanel(core, INFO_DISPLAY, true, this, TrackingDatabase.get());
         this.add(statement_panel, BorderLayout.EAST);
     }
 

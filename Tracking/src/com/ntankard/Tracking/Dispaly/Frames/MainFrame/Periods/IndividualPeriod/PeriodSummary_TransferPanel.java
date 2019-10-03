@@ -56,9 +56,9 @@ public class PeriodSummary_TransferPanel extends UpdatableJPanel {
 
         periodSummary_panel = new PeriodSummary(core, true, this);
 
-        categoryTransfer_panel = DynamicGUI_DisplayList.newIntractableTable(categoryTransfer_list, new MemberClass(CategoryTransfer.class), false, true, ALWAYS_DISPLAY, new CategoryTransfer_ElementController(core, this), this, TrackingDatabase.get());
-        periodTransfer_panel = DynamicGUI_DisplayList.newIntractableTable(periodTransfer_list, new MemberClass(PeriodTransfer.class), false, true, ALWAYS_DISPLAY, new PeriodTransfer_ElementController(core, this), this, TrackingDatabase.get());
-        nonPeriodFundTransfer_panel = DynamicGUI_DisplayList.newIntractableTable(nonPeriodFundTransfer_list, new MemberClass(NonPeriodFundTransfer.class), false, true, ALWAYS_DISPLAY, new NonPeriodTransfer_ElementController(core, this), this, TrackingDatabase.get());
+        categoryTransfer_panel = DynamicGUI_DisplayList.newIntractableTable(categoryTransfer_list, new MemberClass(CategoryTransfer.class), false, true, ALWAYS_DISPLAY, new CategoryTransfer_ElementController(core, this), new MoneyEventLocaleInspector(), this, TrackingDatabase.get());
+        periodTransfer_panel = DynamicGUI_DisplayList.newIntractableTable(periodTransfer_list, new MemberClass(PeriodTransfer.class), false, true, ALWAYS_DISPLAY, new PeriodTransfer_ElementController(core, this), new MoneyEventLocaleInspector(), this, TrackingDatabase.get());
+        nonPeriodFundTransfer_panel = DynamicGUI_DisplayList.newIntractableTable(nonPeriodFundTransfer_list, new MemberClass(NonPeriodFundTransfer.class), false, true, ALWAYS_DISPLAY, new NonPeriodTransfer_ElementController(core, this), new MoneyEventLocaleInspector(), this, TrackingDatabase.get());
 
         categoryTransfer_panel.getMainPanel().setLocaleInspector(new MoneyEventLocaleInspector());
         periodTransfer_panel.getMainPanel().setLocaleInspector(new MoneyEventLocaleInspector());

@@ -130,7 +130,7 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
                 trackingDatabase.addPeriodTransfer(newObj);
                 notifyUpdate();
             }
-        }, this, trackingDatabase);
+        }, null, this, trackingDatabase);
         nonPeriodFund_panel = DynamicGUI_DisplayList.newIntractableTable(nonPeriodFund_list, new MemberClass(NonPeriodFund.class), true, true, ALWAYS_DISPLAY, new DynamicGUI_DisplayList.ElementController<NonPeriodFund>() {
             @Override
             public NonPeriodFund newElement() {
@@ -147,7 +147,7 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
                 trackingDatabase.addNonPeriodFund(newObj);
                 notifyUpdate();
             }
-        }, this, trackingDatabase);
+        }, null, this, trackingDatabase);
         nonPeriodFundTransfer_panel = DynamicGUI_DisplayList.newIntractableTable(nonPeriodFundTransfer_list, new MemberClass(NonPeriodFundTransfer.class), true, true, ALWAYS_DISPLAY, new DynamicGUI_DisplayList.ElementController<NonPeriodFundTransfer>() {
             @Override
             public NonPeriodFundTransfer newElement() {
@@ -165,7 +165,7 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
                 trackingDatabase.addNonPeriodFundTransfer(newObj);
                 notifyUpdate();
             }
-        }, this, trackingDatabase);
+        }, null, this, trackingDatabase);
 
         transaction_panel.getMainPanel().setLocaleInspector(rowObject -> {
             Transaction transaction = (Transaction) rowObject;

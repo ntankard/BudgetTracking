@@ -2,6 +2,7 @@ package com.ntankard.Tracking.Dispaly.Frames.MainFrame.Periods.IndividualPeriod;
 
 import com.ntankard.ClassExtension.MemberClass;
 import com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList;
+import com.ntankard.DynamicGUI.Components.Object.DynamicGUI_IntractableObject;
 import com.ntankard.DynamicGUI.Util.Swing.Base.UpdatableJPanel;
 import com.ntankard.DynamicGUI.Util.Updatable;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
@@ -16,8 +17,10 @@ import com.ntankard.Tracking.Dispaly.Util.StatementLocaleInspector;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import static com.ntankard.ClassExtension.MemberProperties.ALWAYS_DISPLAY;
+import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 import static com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList.ListControl_Button;
 import static com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList.ListControl_Button.EnableCondition.SINGLE;
 import static com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList.newIntractableTable;
@@ -36,6 +39,7 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
     private PeriodSummary periodSummary_panel;
     private DynamicGUI_DisplayList<Statement> statement_panel;
     private DynamicGUI_DisplayList<Transaction> transaction_panel;
+    private DynamicGUI_IntractableObject period_panel;
 
     /**
      * Constructor
@@ -94,8 +98,10 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
                 TrackingDatabase.get().addTransaction(newObj);
                 notifyUpdate();
             }
-        }, this, TrackingDatabase.get());
+        }, new MoneyEventLocaleInspector(), this, TrackingDatabase.get());
         transaction_panel.getMainPanel().setLocaleInspector(new MoneyEventLocaleInspector());
+
+        period_panel = DynamicGUI_IntractableObject.newIntractableObjectPanel(core, ALWAYS_DISPLAY, false, this, TrackingDatabase.get());
 
         GridBagConstraints summaryContainer_C = new GridBagConstraints();
 
@@ -103,15 +109,19 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
         summaryContainer_C.weightx = 1;
 
         summaryContainer_C.weighty = 1;
-        summaryContainer_C.gridwidth = 2;
+        summaryContainer_C.gridwidth = 3;
         this.add(periodSummary_panel, summaryContainer_C);
 
         summaryContainer_C.gridwidth = 1;
         summaryContainer_C.gridy = 1;
 
+        summaryContainer_C.weightx = 10;
         this.add(statement_panel, summaryContainer_C);
         summaryContainer_C.gridx = 1;
         this.add(transaction_panel, summaryContainer_C);
+        summaryContainer_C.gridx = 2;
+        summaryContainer_C.weightx = 1;
+        this.add(period_panel, summaryContainer_C);
     }
 
     /**
@@ -158,5 +168,6 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
         // Update the UI
         transaction_panel.update();
         periodSummary_panel.update();
+        period_panel.update();
     }
 }

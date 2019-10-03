@@ -119,7 +119,7 @@ public class Period_Frame extends UpdatableJPanel {
                 trackingDatabase.addCategoryTransfer(newObj);
                 notifyUpdate();
             }
-        }, this, trackingDatabase);
+        }, null, this, trackingDatabase);
 
         transaction_panel = DynamicGUI_DisplayList.newIntractableTable(transaction_list, new MemberClass(Transaction.class), true, ALWAYS_DISPLAY, this);
         transaction_panel.getMainPanel().setLocaleInspector(rowObject -> {

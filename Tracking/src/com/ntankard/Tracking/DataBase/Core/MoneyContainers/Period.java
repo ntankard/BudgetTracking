@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import static com.ntankard.ClassExtension.DisplayProperties.DataContext.ZERO_BELOW_BAD;
+import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY_AUD;
+import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY_YEN;
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
@@ -82,6 +85,7 @@ public class Period extends MoneyContainer {
      */
     @Override
     @DisplayProperties(order = 1, name = "Period")
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public String getId() {
         return id;
     }
@@ -93,6 +97,91 @@ public class Period extends MoneyContainer {
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public List<DataObject> getParents() {
         return new ArrayList<>();
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    //###################################### Calculated accessors, from children #######################################
+    //------------------------------------------------------------------------------------------------------------------
+
+    // Inter currency transfers ----------------------------------------------------------------------------------------
+
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    public Double getAUDMissingTransfer() {
+        Double value = 0.0;
+        for (Statement t : this.<Statement>getChildren(Statement.class)) {
+            if (t.getIdBank().getCurrency().getId().equals("AUD")) {
+                value += t.getNetTransfer();
+            }
+        }
+        return value;
+    }
+
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    public Double getYENMissingTransfer() {
+        Double value = 0.0;
+        for (Statement t : this.<Statement>getChildren(Statement.class)) {
+            if (t.getIdBank().getCurrency().getId().equals("YEN")) {
+                value += t.getNetTransfer();
+            }
+        }
+        return value;
+    }
+
+    public Double getTransferRate() {
+        Double aud = getAUDMissingTransfer();
+        Double yen = getYENMissingTransfer();
+        if (aud != 0.0 && yen != 0.0) {
+            return -yen / aud;
+        }
+        return 0.0;
+    }
+
+    // Period totals ---------------------------------------------------------------------------------------------------
+
+    @DisplayProperties(name = "Balance", order = 0, dataType = CURRENCY_YEN)
+    public Double getStartBalance() {
+        Double value = 0.0;
+        for (Statement t : this.<Statement>getChildren(Statement.class)) {
+            value += (t.getStart() * t.getIdBank().getCurrency().getToPrimary());
+        }
+        return value;
+    }
+
+    @DisplayProperties(name = "Balance", order = 2, dataType = CURRENCY_YEN)
+    public Double getEndBalance() {
+        Double value = 0.0;
+        for (Statement t : this.<Statement>getChildren(Statement.class)) {
+            value += (t.getEnd() * t.getIdBank().getCurrency().getToPrimary());
+        }
+        return value;
+    }
+
+    @DisplayProperties(name = "Balance", order = 1, dataType = CURRENCY_AUD)
+    public Double getStartBalanceSecondary() {
+        double value = 0.0;
+        for (Statement t : this.<Statement>getChildren(Statement.class)) {
+            value += (t.getStart() * t.getIdBank().getCurrency().getToSecondary());
+        }
+        return value;
+    }
+
+    @DisplayProperties(name = "Balance", order = 3, dataType = CURRENCY_AUD)
+    public Double getEndBalanceSecondary() {
+        double value = 0.0;
+        for (Statement t : this.<Statement>getChildren(Statement.class)) {
+            value += (t.getEnd() * t.getIdBank().getCurrency().getToSecondary());
+        }
+        return value;
+    }
+
+    @DisplayProperties(order = 4, dataType = CURRENCY_YEN, dataContext = ZERO_BELOW_BAD)
+    public Double getProfit() {
+        return getEndBalance() - getStartBalance();
+    }
+
+    @DisplayProperties(name = "Profit", order = 5, dataType = CURRENCY_AUD, dataContext = ZERO_BELOW_BAD)
+    public Double getProfitSecondary() {
+        return getEndBalanceSecondary() - getStartBalanceSecondary();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -109,96 +198,3 @@ public class Period extends MoneyContainer {
         return end;
     }
 }
-
-
-//    // Inter currency transfers ----------------------------------------------------------------------------------------
-//
-//    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-//    public Double getAUDMissingTransfer() {
-//        Double value = 0.0;
-//        for (Statement t : this.<Statement>getChildren(Statement.class)) {
-//            if (t.getIdBank().getCurrency().getId().equals("AUD")) {
-//                value += t.getNetTransfer();
-//            }
-//        }
-//        return value;
-//    }
-//
-//    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-//    public Double getYENMissingTransfer() {
-//        Double value = 0.0;
-//        for (Statement t : this.<Statement>getChildren(Statement.class)) {
-//            if (t.getIdBank().getCurrency().getId().equals("YEN")) {
-//                value += t.getNetTransfer();
-//            }
-//        }
-//        return value;
-//    }
-//
-//    public Double getTransferRate() {
-//        Double aud = getAUDMissingTransfer();
-//        Double yen = getYENMissingTransfer();
-//        if (aud != 0.0 && yen != 0.0) {
-//            return -yen / aud;
-//        }
-//        return 0.0;
-//    }
-//
-//    // Period totals ---------------------------------------------------------------------------------------------------
-//
-//    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-//    public Double getStartBalance() {
-//        Double value = 0.0;
-//        for (Statement t : this.<Statement>getChildren(Statement.class)) {
-//            value += (t.getStart() * t.getIdBank().getCurrency().getToPrimary());
-//        }
-//        return value;
-//    }
-//
-//    @DisplayProperties(name = "Balance", order = 2, dataType = CURRENCY_YEN)
-//    public Double getEndBalance() {
-//        Double value = 0.0;
-//        for (Statement t : this.<Statement>getChildren(Statement.class)) {
-//            value += (t.getEnd() * t.getIdBank().getCurrency().getToPrimary());
-//        }
-//        return value;
-//    }
-//
-//    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-//    public Double getStartBalanceSecondary() {
-//        double value = 0.0;
-//        for (Statement t : this.<Statement>getChildren(Statement.class)) {
-//            value += (t.getStart() * t.getIdBank().getCurrency().getToSecondary());
-//        }
-//        return value;
-//    }
-//
-//    @DisplayProperties(name = "Balance", order = 4, dataType = CURRENCY_AUD)
-//    public Double getEndBalanceSecondary() {
-//        double value = 0.0;
-//        for (Statement t : this.<Statement>getChildren(Statement.class)) {
-//            value += (t.getEnd() * t.getIdBank().getCurrency().getToSecondary());
-//        }
-//        return value;
-//    }
-//
-//    @DisplayProperties(order = 3, dataType = CURRENCY_YEN, dataContext = ZERO_BELOW_BAD)
-//    public Double getProfit() {
-//        return getEndBalance() - getStartBalance();
-//    }
-//
-//    @DisplayProperties(name = "Profit", order = 5, dataType = CURRENCY_AUD, dataContext = ZERO_BELOW_BAD)
-//    public Double getProfitSecondary() {
-//        return getEndBalanceSecondary() - getStartBalanceSecondary();
-//    }
-//
-//    // Filtered lists --------------------------------------------------------------------------------------------------
-//
-//    public double getCategoryTotal(Category member) {
-//        double total = 0;
-//        for (Statement s : this.<Statement>getChildren(Statement.class)) {
-//            total += s.getCategoryTotal(member) * s.getIdBank().getCurrency().getToPrimary();
-//        }
-//
-//        return total;
-//    }
