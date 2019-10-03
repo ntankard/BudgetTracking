@@ -8,6 +8,7 @@ import com.ntankard.Tracking.Dispaly.Frames.MainFrame.DatabaseLists.MoneyContain
 import com.ntankard.Tracking.Dispaly.Frames.MainFrame.DatabaseLists.ReferenceTypesPanel;
 import com.ntankard.Tracking.Dispaly.Frames.MainFrame.Periods.PeriodTabPanel;
 import com.ntankard.Tracking.Dispaly.Frames.MainFrame.DatabaseLists.MoneyEventPanel;
+import com.ntankard.Tracking.Dispaly.Frames.MainFrame.SummaryGraphs.SummaryGraphPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,6 +20,7 @@ public class Master_Frame extends JPanel implements Updatable {
     private MoneyEventPanel transferPanel;
     private ReferenceTypesPanel baseTypePanel;
     private MoneyContainerPanel moneyContainerPanel;
+    private SummaryGraphPanel summaryGraphPanel;
 
     /**
      * Create and open the tracking frame
@@ -67,6 +69,7 @@ public class Master_Frame extends JPanel implements Updatable {
         transferPanel = new MoneyEventPanel(this);
         baseTypePanel = new ReferenceTypesPanel(this);
         moneyContainerPanel = new MoneyContainerPanel(this);
+        summaryGraphPanel = new SummaryGraphPanel(this);
 
         JTabbedPane databasePanel = new JTabbedPane();
         databasePanel.addTab("Transfers", transferPanel);
@@ -76,6 +79,7 @@ public class Master_Frame extends JPanel implements Updatable {
         JTabbedPane master_tPanel = new JTabbedPane();
         master_tPanel.addTab("Periods", periodPanel);
         master_tPanel.addTab("Database", databasePanel);
+        master_tPanel.addTab("Summary", summaryGraphPanel);
 
         this.add(master_tPanel, BorderLayout.CENTER);
     }
@@ -97,5 +101,6 @@ public class Master_Frame extends JPanel implements Updatable {
         transferPanel.update();
         baseTypePanel.update();
         moneyContainerPanel.update();
+        summaryGraphPanel.update();
     }
 }
