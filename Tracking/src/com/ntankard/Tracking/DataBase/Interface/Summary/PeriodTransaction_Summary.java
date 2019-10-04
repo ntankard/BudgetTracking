@@ -46,6 +46,6 @@ public class PeriodTransaction_Summary {
             sum += new PeriodCategory_Set(core, category).getTotal();
         }
         sum += getHex();
-        return sum;
+        return -sum;
     }
 }
