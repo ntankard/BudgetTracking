@@ -184,10 +184,15 @@ public class PeriodSummary_Model extends AbstractTableModel implements Updatable
      */
     @Override
     public void update() {
+        int count = getColumnCount();
+
         columns.update();
         rows.update();
 
         // Apply the update
+        if (count != getColumnCount()) {
+            fireTableStructureChanged();
+        }
         fireTableDataChanged();
     }
 

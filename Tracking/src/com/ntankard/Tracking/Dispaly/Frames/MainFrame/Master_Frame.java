@@ -2,6 +2,7 @@ package com.ntankard.Tracking.Dispaly.Frames.MainFrame;
 
 import com.ntankard.DynamicGUI.Util.Swing.Containers.ButtonPanel;
 import com.ntankard.DynamicGUI.Util.Updatable;
+import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.TrackingDatabase_Reader;
 import com.ntankard.Tracking.Dispaly.Frames.MainFrame.DatabaseLists.MoneyContainerPanel;
@@ -12,6 +13,7 @@ import com.ntankard.Tracking.Dispaly.Frames.MainFrame.SummaryGraphs.SummaryGraph
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Calendar;
 
 public class Master_Frame extends JPanel implements Updatable {
 
@@ -59,9 +61,18 @@ public class Master_Frame extends JPanel implements Updatable {
         JButton update_btn = new JButton("Update");
         update_btn.addActionListener(e -> notifyUpdate());
 
+        JButton addPeriod_btn = new JButton("Add Period");
+        addPeriod_btn.addActionListener(e -> {
+            Period last = TrackingDatabase.get().getPeriods().get(TrackingDatabase.get().getPeriods().size() - 1);
+            Period period = Period.Month(last.getNextPeriodTime().get(Calendar.MONTH) + 1, last.getNextPeriodTime().get(Calendar.YEAR));
+            TrackingDatabase.get().addPeriod(period);
+            notifyUpdate();
+        });
+
         ButtonPanel btnPanel = new ButtonPanel();
         btnPanel.addButton(save_btn);
         btnPanel.addButton(update_btn);
+        btnPanel.addButton(addPeriod_btn);
 
         this.add(btnPanel, BorderLayout.NORTH);
 

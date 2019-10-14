@@ -13,6 +13,11 @@ public abstract class DataObject {
     private Map<Class, List<DataObject>> children = new HashMap<>();
 
     /**
+     * All my children sorted by class, and mapped to there data object ID
+     */
+    private Map<Class, Map<String, DataObject>> childrenMap = new HashMap<>();
+
+    /**
      * Get the unique identifier for this data object
      *
      * @return The unique identifier for this data object
@@ -61,11 +66,18 @@ public abstract class DataObject {
         Class classType = linkObject.getClass();
         if (!children.containsKey(classType)) {
             children.put(classType, new ArrayList<>());
+            childrenMap.put(classType, new HashMap<>());
         }
 
         List<DataObject> classChildren = children.get(classType);
+
         if (!classChildren.contains(linkObject)) {
             classChildren.add(linkObject);
+        }
+
+        Map<String, DataObject> classChildrenMap = childrenMap.get(classType);
+        if (!classChildrenMap.containsKey(linkObject.getId())) {
+            classChildrenMap.put(linkObject.getId(), linkObject);
         }
     }
 
@@ -80,6 +92,7 @@ public abstract class DataObject {
             return;
         }
 
+        childrenMap.get(classType).remove(linkObject);
         children.get(classType).remove(linkObject);
     }
 
@@ -96,5 +109,21 @@ public abstract class DataObject {
         }
 
         return (List<T>) children.get(type);
+    }
+
+    /**
+     * Get the list of children for a a specific class type
+     *
+     * @param type The class type to get
+     * @param key  The ID of the object to get
+     * @param <T>  The Object type
+     * @return The list of children for a a specific class type
+     */
+    public <T extends DataObject> T getChildren(Class type, String key) {
+        if (!childrenMap.containsKey(type)) {
+            childrenMap.put(type, new HashMap<>());
+        }
+
+        return (T) childrenMap.get(type).get(key);
     }
 }

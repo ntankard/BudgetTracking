@@ -81,6 +81,18 @@ public class Period extends MoneyContainer {
     }
 
     /**
+     * Get the expected ID for the previous period
+     *
+     * @return The expected ID for the previous period
+     */
+    public String getLastId() {
+        Calendar toReturn = (Calendar) start.clone();
+        toReturn.add(Calendar.SECOND, -1);
+        SimpleDateFormat monthFormat = new SimpleDateFormat("yyyy-MM");
+        return monthFormat.format(toReturn.getTime());
+    }
+
+    /**
      * {@inheritDoc
      */
     @Override

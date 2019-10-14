@@ -71,7 +71,7 @@ public class Statement extends MoneyContainer {
      */
     @DisplayProperties(dataType = CURRENCY, order = 5)
     public Double getExpectedSpend() {
-        return end - start - getNetTransfer();
+        return -(end - start - getNetTransfer());
     }
 
     /**
@@ -96,7 +96,7 @@ public class Statement extends MoneyContainer {
      */
     @DisplayProperties(dataType = CURRENCY, dataContext = ZERO_TARGET, order = 7)
     public Double getMissingSpend() {
-        double val = getExpectedSpend() + getTotalSpend();
+        double val = getExpectedSpend() - getTotalSpend();
         if (Math.abs(val) < 0.001) {
             val = 0.0;
         }

@@ -16,6 +16,7 @@ public class IndividualPeriodPanel extends UpdatableJPanel {
     private PeriodSummary_StatementPanel periodSummary_statementPanel;
     private PeriodSummary_TransferPanel periodSummary_transferPanel;
     private StatementPanel statementPanel;
+    private SummaryPanel summaryPanel;
 
     /**
      * Constructor
@@ -33,7 +34,9 @@ public class IndividualPeriodPanel extends UpdatableJPanel {
         this.removeAll();
         this.setLayout(new BorderLayout());
 
-        // The GUI components
+        summaryPanel = new SummaryPanel(core, this);
+        this.add(summaryPanel, BorderLayout.NORTH);
+
         JTabbedPane master_tPanel = new JTabbedPane();
 
         periodSummary_statementPanel = new PeriodSummary_StatementPanel(core, this);
@@ -56,5 +59,6 @@ public class IndividualPeriodPanel extends UpdatableJPanel {
         periodSummary_statementPanel.update();
         periodSummary_transferPanel.update();
         statementPanel.update();
+        summaryPanel.update();
     }
 }
