@@ -56,7 +56,7 @@ public class Master_Frame extends JPanel implements Updatable {
         this.setPreferredSize(new Dimension(1500, 1000));
 
         JButton save_btn = new JButton("Save");
-        save_btn.addActionListener(e -> TrackingDatabase_Reader.save(TrackingDatabase.get(), "C:\\Users\\Nicholas\\Documents\\Projects\\BudgetTrackingData"));
+        save_btn.addActionListener(e -> TrackingDatabase_Reader.save(TrackingDatabase.get(), "C:\\Users\\Nicholas\\Google Drive\\BudgetTrackingData"));
 
         JButton update_btn = new JButton("Update");
         update_btn.addActionListener(e -> notifyUpdate());
