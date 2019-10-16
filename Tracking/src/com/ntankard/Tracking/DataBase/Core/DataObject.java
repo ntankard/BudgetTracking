@@ -106,6 +106,7 @@ public abstract class DataObject {
     public <T extends DataObject> List<T> getChildren(Class type) {
         if (!children.containsKey(type)) {
             children.put(type, new ArrayList<>());
+            childrenMap.put(type, new HashMap<>());
         }
 
         return (List<T>) children.get(type);
@@ -121,6 +122,7 @@ public abstract class DataObject {
      */
     public <T extends DataObject> T getChildren(Class type, String key) {
         if (!childrenMap.containsKey(type)) {
+            children.put(type, new ArrayList<>());
             childrenMap.put(type, new HashMap<>());
         }
 

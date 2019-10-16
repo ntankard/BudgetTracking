@@ -4,6 +4,7 @@ import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.DataObject;
+import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -125,6 +126,14 @@ public class Period extends MoneyContainer {
                 value += t.getNetTransfer();
             }
         }
+
+        if (value > 0 && value < 0.0001) {
+            value = 0.0;
+        }
+        if (value < 0 && value > -0.0001) {
+            value = 0.0;
+        }
+
         return value;
     }
 
@@ -136,6 +145,14 @@ public class Period extends MoneyContainer {
                 value += t.getNetTransfer();
             }
         }
+
+        if (value > 0 && value < 0.0001) {
+            value = 0.0;
+        }
+        if (value < 0 && value > -0.0001) {
+            value = 0.0;
+        }
+
         return value;
     }
 
@@ -189,6 +206,17 @@ public class Period extends MoneyContainer {
     @DisplayProperties(order = 4, dataType = CURRENCY_YEN, dataContext = ZERO_BELOW_BAD)
     public Double getProfit() {
         return getEndBalance() - getStartBalance();
+    }
+
+    @DisplayProperties(name = "Balance", order = 2, dataType = CURRENCY_YEN)
+    public Double getEndBalance(Currency currency) {
+        Double value = 0.0;
+        for (Statement t : this.<Statement>getChildren(Statement.class)) {
+            if (t.getIdBank().getCurrency().equals(currency)) {
+                value += (t.getEnd() * t.getIdBank().getCurrency().getToPrimary());
+            }
+        }
+        return value;
     }
 
     @DisplayProperties(name = "Profit", order = 5, dataType = CURRENCY_AUD, dataContext = ZERO_BELOW_BAD)

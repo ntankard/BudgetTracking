@@ -47,8 +47,9 @@ public class SavingsGraph extends UpdatableJPanel {
         final XYPlot plot = xyLineChart.getXYPlot();
 
         XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
-        renderer.setSeriesPaint(0, Color.RED);
+        renderer.setSeriesPaint(0, Color.BLUE);
         renderer.setSeriesPaint(1, Color.YELLOW);
+        renderer.setSeriesPaint(2, Color.RED);
         plot.setRenderer(renderer);
 
         this.add(chartPanel, BorderLayout.CENTER);
@@ -60,19 +61,22 @@ public class SavingsGraph extends UpdatableJPanel {
      * @return The generated data
      */
     private XYDataset createDataset() {
+        final XYSeries aud = new XYSeries("AUD");
+        final XYSeries yen = new XYSeries("YEN");
         final XYSeries total = new XYSeries("Total");
-        final XYSeries savings = new XYSeries("Savings");
 
         int i = -1;
         for (Period period : TrackingDatabase.get().getPeriods()) {
-            savings.add(i, period.getProfit());
+            aud.add(i, period.getEndBalance(TrackingDatabase.get().getCurrency("AUD")));
+            yen.add(i, period.getEndBalance(TrackingDatabase.get().getCurrency("YEN")));
             total.add(i, period.getEndBalance());
             i++;
         }
 
         final XYSeriesCollection dataset = new XYSeriesCollection();
+        dataset.addSeries(aud);
+        dataset.addSeries(yen);
         dataset.addSeries(total);
-        dataset.addSeries(savings);
         return dataset;
     }
 

@@ -71,7 +71,7 @@ public class SummaryPanel extends UpdatableJPanel {
      */
     @Override
     public void update() {
-        NumberFormat formatter = TrackingDatabase.get().getCurrencyFormat("AUD");
+        NumberFormat formatter = TrackingDatabase.get().getCurrencyFormat("YEN");
         Currency YEN = TrackingDatabase.get().getCurrency("YEN");
 
         double savingMin = Double.MAX_VALUE;
@@ -96,7 +96,7 @@ public class SummaryPanel extends UpdatableJPanel {
         }
 
         double profit = core.getProfit();
-        netMoney_txt.setText(formatter.format(profit * YEN.getToSecondary()));
+        netMoney_txt.setText(formatter.format(profit * YEN.getToPrimary()));
         if (profit > 0.0) {
             int scale = getScale(profit, netMax);
             netMoney_txt.setBackground(new Color(scale, 255, scale));
@@ -106,7 +106,7 @@ public class SummaryPanel extends UpdatableJPanel {
         }
 
         double saving = new PeriodTransaction_Summary(core).getSavings();
-        savings_txt.setText(formatter.format(saving * YEN.getToSecondary()));
+        savings_txt.setText(formatter.format(saving * YEN.getToPrimary()));
         if (saving > 0.0) {
             int scale = getScale(saving, savingMax);
             savings_txt.setBackground(new Color(scale, 255, scale));
@@ -156,14 +156,28 @@ public class SummaryPanel extends UpdatableJPanel {
         }
 
         // Check that all transfers in and out are accounted for
-        if (core.getTransferRate() < 60 || core.getTransferRate() > 80) {
-            transferStatus_lbl.setText(" Imposable transfer rate ");
-            transferStatus_lbl.setForeground(Color.RED);
+        if (core.getTransferRate() == 0.0) {
+            if (core.getAUDMissingTransfer() != 0.0 || core.getYENMissingTransfer() != 0.0) {
+                if (core.getAUDMissingTransfer() != 0.0) {
+                    transferStatus_lbl.setText(" Unresolved transfer AUD " + core.getAUDMissingTransfer() + " ");
+                    transferStatus_lbl.setForeground(Color.RED);
+                } else {
+                    transferStatus_lbl.setText(" Unresolved transfer YEN " + core.getYENMissingTransfer() + " ");
+                    transferStatus_lbl.setForeground(Color.RED);
+                }
+            } else {
+                transferStatus_lbl.setText(" Valid transfer rate ");
+                transferStatus_lbl.setForeground(Color.GREEN);
+            }
         } else {
-            transferStatus_lbl.setText(" Valid transfer rate ");
-            transferStatus_lbl.setForeground(Color.GREEN);
+            if (core.getTransferRate() != 0.0 && (core.getTransferRate() < 60 || core.getTransferRate() > 80)) {
+                transferStatus_lbl.setText(" Imposable transfer rate ");
+                transferStatus_lbl.setForeground(Color.RED);
+            } else {
+                transferStatus_lbl.setText(" Valid transfer rate ");
+                transferStatus_lbl.setForeground(Color.GREEN);
+            }
         }
-
     }
 
     /**
