@@ -10,6 +10,7 @@ import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Bank;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
+import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.NonPeriodFundEvent;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -50,6 +51,7 @@ public class TrackingDatabase_Reader {
         savePeriodTransfer(data, csvFile);
         saveNonPeriodFund(data, csvFile);
         saveNonPeriodFundTransfer(data, csvFile);
+        saveNonPeriodFundEvent(data, csvFile);
     }
 
     /**
@@ -83,6 +85,7 @@ public class TrackingDatabase_Reader {
         readPeriodTransfer(data, csvFile);
         readNonPeriodFund(data, csvFile);
         readNonPeriodFundTransfer(data, csvFile);
+        readNonPeriodFundEvent(data, csvFile);
 
         data.finalizeData();
         return data;
@@ -500,6 +503,44 @@ public class TrackingDatabase_Reader {
         }
 
         writeLines(csvFile + "NonPeriodFundTransfer.csv", lines);
+    }
+
+    /**
+     * Read a set of nonPeriodFundTransfer
+     *
+     * @param data The database to place the data
+     */
+    private static void readNonPeriodFundEvent(TrackingDatabase data, String csvFileRoot) {
+        String csvFile = csvFileRoot + "NonPeriodFundEvent.csv";
+        ArrayList<String[]> allLines = readLines(csvFile);
+        for (String[] lines : allLines) {
+
+            String nonPeriodFundCode = lines[0];
+            String idCode = lines[1];
+
+            data.addNonPeriodFundEvent(new NonPeriodFundEvent(
+                    data.getNonPeriodFund(nonPeriodFundCode),
+                    idCode
+            ));
+        }
+    }
+
+    /**
+     * Save a set of nonPeriodFundEvent
+     *
+     * @param data    The database to get the data
+     * @param csvFile The path to write the files to
+     */
+    private static void saveNonPeriodFundEvent(TrackingDatabase data, String csvFile) {
+        ArrayList<List<String>> lines = new ArrayList<>();
+        for (NonPeriodFundEvent t : data.getNonPeriodFundEvents()) {
+            List<String> line = new ArrayList<>();
+            line.add(t.getIdNonPeriodFund().toString());
+            line.add(t.getIdCode());
+            lines.add(line);
+        }
+
+        writeLines(csvFile + "NonPeriodFundEvent.csv", lines);
     }
 
     /**

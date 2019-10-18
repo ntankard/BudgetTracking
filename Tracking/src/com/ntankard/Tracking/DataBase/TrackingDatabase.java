@@ -11,6 +11,7 @@ import com.ntankard.Tracking.DataBase.Core.MoneyEvents.CategoryTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.NonPeriodFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
+import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.NonPeriodFundEvent;
 import com.ntankard.Tracking.Old.PeriodCategory;
 
 import java.text.NumberFormat;
@@ -39,6 +40,7 @@ public class TrackingDatabase {
     private List<PeriodTransfer> periodTransfers = new ArrayList<>();
     private List<NonPeriodFund> nonPeriodFunds = new ArrayList<>();
     private List<NonPeriodFundTransfer> nonPeriodFundTransfers = new ArrayList<>();
+    private List<NonPeriodFundEvent> nonPeriodFundEvents = new ArrayList<>();
 
     // Special Containers
     private List<PeriodCategory> periodCategory = new ArrayList<>();
@@ -70,10 +72,30 @@ public class TrackingDatabase {
             fixPeriod(p);
         }
 
+        for (NonPeriodFund nonPeriodFund : nonPeriodFunds) {
+            fixNonPeriodFundEvent(nonPeriodFund);
+        }
+
         currencyFormat.put(getCurrency("AUD"), NumberFormat.getCurrencyInstance(Locale.US));
         currencyFormat.put(getCurrency("YEN"), NumberFormat.getCurrencyInstance(Locale.JAPAN));
 
         isFinalized = true;
+    }
+
+    /**
+     * Create default for each
+     */
+    private void fixNonPeriodFundEvent(NonPeriodFund nonPeriodFunds) {
+        boolean found = false;
+        for (NonPeriodFundEvent nonPeriodFundEvent : nonPeriodFunds.<NonPeriodFundEvent>getChildren(NonPeriodFundEvent.class)) {
+            if (nonPeriodFundEvent.getIdCode().equals("NONE")) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            addNonPeriodFundEvent(new NonPeriodFundEvent(nonPeriodFunds, "NONE"));
+        }
     }
 
     /**
@@ -267,6 +289,11 @@ public class TrackingDatabase {
         nonPeriodFundTransfer.notifyParentLink();
     }
 
+    public void addNonPeriodFundEvent(NonPeriodFundEvent nonPeriodFundEvent) {
+        this.nonPeriodFundEvents.add(nonPeriodFundEvent);
+        nonPeriodFundEvent.notifyParentLink();
+    }
+
     //------------------------------------------------------------------------------------------------------------------
     //############################################## Remove Rows #######################################################
     //------------------------------------------------------------------------------------------------------------------
@@ -290,6 +317,11 @@ public class TrackingDatabase {
     public void removeNonPeriodFundTransfer(NonPeriodFundTransfer nonPeriodFundTransfer) {
         nonPeriodFundTransfer.notifyParentUnLink();
         this.nonPeriodFundTransfers.remove(nonPeriodFundTransfer);
+    }
+
+    public void removeNonPeriodFundEvent(NonPeriodFundEvent nonPeriodFundEvent) {
+        nonPeriodFundEvent.notifyParentUnLink();
+        this.nonPeriodFundTransfers.remove(nonPeriodFundEvent);
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -381,5 +413,9 @@ public class TrackingDatabase {
 
     public List<NonPeriodFundTransfer> getNonPeriodFundTransfers() {
         return Collections.unmodifiableList(nonPeriodFundTransfers);
+    }
+
+    public List<NonPeriodFundEvent> getNonPeriodFundEvents() {
+        return Collections.unmodifiableList(nonPeriodFundEvents);
     }
 }

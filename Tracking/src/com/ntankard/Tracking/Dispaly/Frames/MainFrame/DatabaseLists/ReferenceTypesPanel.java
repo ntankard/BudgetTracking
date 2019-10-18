@@ -7,6 +7,7 @@ import com.ntankard.DynamicGUI.Util.Updatable;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Bank;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
+import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.NonPeriodFundEvent;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
 
 import javax.swing.*;
@@ -22,11 +23,13 @@ public class ReferenceTypesPanel extends UpdatableJPanel {
     private List<Currency> currency_list = new ArrayList<>();
     private List<Category> category_list = new ArrayList<>();
     private List<Bank> bank_list = new ArrayList<>();
+    private List<NonPeriodFundEvent> nonPeriodFundEvent_list = new ArrayList<>();
 
     // The GUI components
     private DynamicGUI_DisplayList<Category> category_panel;
     private DynamicGUI_DisplayList<Currency> currency_panel;
     private DynamicGUI_DisplayList<Bank> bank_panel;
+    private DynamicGUI_DisplayList<NonPeriodFundEvent> nonPeriodFundEvent_panel;
 
     /**
      * Constructor
@@ -47,11 +50,13 @@ public class ReferenceTypesPanel extends UpdatableJPanel {
         category_panel = DynamicGUI_DisplayList.newIntractableTable(category_list, new MemberClass(Category.class), true, ALWAYS_DISPLAY, this);
         currency_panel = DynamicGUI_DisplayList.newIntractableTable(currency_list, new MemberClass(Currency.class), true, ALWAYS_DISPLAY, this);
         bank_panel = DynamicGUI_DisplayList.newIntractableTable(bank_list, new MemberClass(Bank.class), true, ALWAYS_DISPLAY, this);
+        nonPeriodFundEvent_panel = DynamicGUI_DisplayList.newIntractableTable(nonPeriodFundEvent_list, new MemberClass(NonPeriodFundEvent.class), true, ALWAYS_DISPLAY, this);
 
         JTabbedPane master_tPanel = new JTabbedPane();
         master_tPanel.addTab("Category", category_panel);
         master_tPanel.addTab("Currency", currency_panel);
         master_tPanel.addTab("Bank", bank_panel);
+        master_tPanel.addTab("Non Period Fund Event", nonPeriodFundEvent_panel);
 
         this.add(master_tPanel, BorderLayout.CENTER);
     }
@@ -64,13 +69,16 @@ public class ReferenceTypesPanel extends UpdatableJPanel {
         category_list.clear();
         currency_list.clear();
         bank_list.clear();
+        nonPeriodFundEvent_list.clear();
 
         category_list.addAll(TrackingDatabase.get().getCategories());
         currency_list.addAll(TrackingDatabase.get().getCurrencies());
         bank_list.addAll(TrackingDatabase.get().getBanks());
+        nonPeriodFundEvent_list.addAll(TrackingDatabase.get().getNonPeriodFundEvents());
 
         category_panel.update();
         currency_panel.update();
         bank_panel.update();
+        nonPeriodFundEvent_panel.update();
     }
 }
