@@ -7,6 +7,7 @@ import com.ntankard.Tracking.DataBase.TrackingDatabase;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.SymbolAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
@@ -52,6 +53,15 @@ public class SavingsGraph extends UpdatableJPanel {
         renderer.setSeriesPaint(2, Color.RED);
         plot.setRenderer(renderer);
 
+        String[] axisLabel = new String[TrackingDatabase.get().getPeriods().size()];
+        int i = 0;
+        for (Period period : TrackingDatabase.get().getPeriods()) {
+            axisLabel[i] = period.getId();
+            i++;
+        }
+        SymbolAxis sa = new SymbolAxis("Period", axisLabel);
+        plot.setDomainAxis(sa);
+
         this.add(chartPanel, BorderLayout.CENTER);
     }
 
@@ -65,7 +75,7 @@ public class SavingsGraph extends UpdatableJPanel {
         final XYSeries yen = new XYSeries("YEN");
         final XYSeries total = new XYSeries("Total");
 
-        int i = -1;
+        int i = 0;
         for (Period period : TrackingDatabase.get().getPeriods()) {
             aud.add(i, period.getEndBalance(TrackingDatabase.get().getCurrency("AUD")));
             yen.add(i, period.getEndBalance(TrackingDatabase.get().getCurrency("YEN")));
