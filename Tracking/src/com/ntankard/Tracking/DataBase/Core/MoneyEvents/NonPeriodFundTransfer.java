@@ -10,7 +10,7 @@ import com.ntankard.Tracking.DataBase.Core.MoneyContainers.NonPeriodFund;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 
 @ClassExtensionProperties(includeParent = true)
-public class NonPeriodFundTransfer extends MoneyEvent<Period, NonPeriodFund> {
+public class NonPeriodFundTransfer extends MoneyEvent<Period, Category, NonPeriodFund, Category> {
 
     // My values
     private String id;

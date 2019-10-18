@@ -11,7 +11,7 @@ import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-public class Transaction extends MoneyEvent<Statement, Period> {
+public class Transaction extends MoneyEvent<Statement, Category, Period, Category> {
 
     // My values
     private String idCode;

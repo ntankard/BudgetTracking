@@ -15,7 +15,7 @@ import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-public abstract class MoneyEvent<SourceType extends DataObject, DestinationType extends DataObject> extends DataObject {
+public abstract class MoneyEvent<SourceType extends DataObject, SourceCategory extends DataObject, DestinationType extends DataObject, DestinationCategory extends DataObject> extends DataObject {
 
     /**
      * A summary of the event
@@ -29,15 +29,15 @@ public abstract class MoneyEvent<SourceType extends DataObject, DestinationType 
 
     // My parents
     private SourceType sourceContainer;
-    private Category sourceCategory;
+    private SourceCategory sourceCategory;
     private DestinationType destinationContainer;
-    private Category destinationCategory;
+    private DestinationCategory destinationCategory;
     private Currency currency;
 
     /**
      * Constructor
      */
-    public MoneyEvent(String description, Double value, SourceType sourceContainer, Category sourceCategory, DestinationType destinationContainer, Category destinationCategory, Currency currency) {
+    public MoneyEvent(String description, Double value, SourceType sourceContainer, SourceCategory sourceCategory, DestinationType destinationContainer, DestinationCategory destinationCategory, Currency currency) {
         this.description = description;
         this.value = value;
         this.sourceContainer = sourceContainer;
@@ -130,7 +130,7 @@ public abstract class MoneyEvent<SourceType extends DataObject, DestinationType 
         return sourceContainer;
     }
 
-    protected Category getSourceCategory() {
+    protected SourceCategory getSourceCategory() {
         return sourceCategory;
     }
 
@@ -138,7 +138,7 @@ public abstract class MoneyEvent<SourceType extends DataObject, DestinationType 
         return destinationContainer;
     }
 
-    protected Category getDestinationCategory() {
+    protected DestinationCategory getDestinationCategory() {
         return destinationCategory;
     }
 
@@ -158,7 +158,7 @@ public abstract class MoneyEvent<SourceType extends DataObject, DestinationType 
         this.value = value;
     }
 
-    protected void setSourceCategory(Category source) {
+    protected void setSourceCategory(SourceCategory source) {
         this.sourceCategory.notifyChildUnLink(this);
         this.sourceCategory = source;
         this.sourceCategory.notifyChildLink(this);
@@ -170,7 +170,7 @@ public abstract class MoneyEvent<SourceType extends DataObject, DestinationType 
         this.sourceContainer.notifyChildLink(this);
     }
 
-    protected void setDestinationCategory(Category destination) {
+    protected void setDestinationCategory(DestinationCategory destination) {
         this.destinationCategory.notifyChildUnLink(this);
         this.destinationCategory = destination;
         this.destinationCategory.notifyChildLink(this);

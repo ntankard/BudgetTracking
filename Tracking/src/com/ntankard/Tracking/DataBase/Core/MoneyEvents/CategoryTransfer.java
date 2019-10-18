@@ -9,7 +9,7 @@ import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 
 @ClassExtensionProperties(includeParent = true)
-public class CategoryTransfer extends MoneyEvent<Period, Period> {
+public class CategoryTransfer extends MoneyEvent<Period, Category, Period, Category> {
 
     // My values
     private String idCode;
