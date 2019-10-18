@@ -37,6 +37,7 @@ public class PeriodTransfer extends MoneyEvent<Period, Category, Period, Categor
     //------------------------------------------------------------------------------------------------------------------
 
     @DisplayProperties(order = 2)
+    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
     @Override
     public Period getSourceContainer() {
         return super.getSourceContainer();

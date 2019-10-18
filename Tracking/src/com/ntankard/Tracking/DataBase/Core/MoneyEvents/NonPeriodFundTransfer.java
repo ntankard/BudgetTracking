@@ -37,6 +37,7 @@ public class NonPeriodFundTransfer extends MoneyEvent<Period, Category, NonPerio
     //------------------------------------------------------------------------------------------------------------------
 
     @DisplayProperties(order = 2)
+    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
     @Override
     public Period getSourceContainer() {
         return super.getSourceContainer();

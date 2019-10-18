@@ -19,8 +19,8 @@ public class NonPeriodFundChargeTransfer extends MoneyEvent<Period, Category, No
     /**
      * Constructor
      */
-    public NonPeriodFundChargeTransfer(String id, Period source, Category sourceCategory, NonPeriodFund destination, NonPeriodFundEvent destinationCategory, Currency currency, String description, Double value) {
-        super(description, value, source, sourceCategory, destination, destinationCategory, currency);
+    public NonPeriodFundChargeTransfer(String id, Period source, NonPeriodFund destination, NonPeriodFundEvent destinationCategory, Currency currency, String description, Double value) {
+        super(description, value, source, null, destination, destinationCategory, currency);
         this.id = id;
     }
 
@@ -38,6 +38,7 @@ public class NonPeriodFundChargeTransfer extends MoneyEvent<Period, Category, No
     //------------------------------------------------------------------------------------------------------------------
 
     @DisplayProperties(order = 2)
+    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
     @Override
     public Period getSourceContainer() {
         return super.getSourceContainer();
@@ -49,11 +50,6 @@ public class NonPeriodFundChargeTransfer extends MoneyEvent<Period, Category, No
         return super.getDestinationContainer();
     }
 
-    @DisplayProperties(order = 3)
-    @Override
-    public Category getSourceCategory() {
-        return super.getSourceCategory();
-    }
 
     @DisplayProperties(order = 5)
     @Override
@@ -75,12 +71,6 @@ public class NonPeriodFundChargeTransfer extends MoneyEvent<Period, Category, No
     @Override
     public void setDestinationContainer(NonPeriodFund destination) {
         super.setDestinationContainer(destination);
-    }
-
-    @SetterProperties(sourceMethod = "getCategories")
-    @Override
-    public void setSourceCategory(Category sourceCategory) {
-        super.setSourceCategory(sourceCategory);
     }
 
     @SetterProperties(sourceMethod = "getNonPeriodFundEvents")
