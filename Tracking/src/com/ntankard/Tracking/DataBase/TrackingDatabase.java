@@ -4,13 +4,10 @@ import com.ntankard.Tracking.DataBase.Core.DataObject;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.NonPeriodFund;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.*;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Bank;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.CategoryTransfer;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.NonPeriodFundTransfer;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodTransfer;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.NonPeriodFundEvent;
 import com.ntankard.Tracking.Old.PeriodCategory;
 
@@ -41,6 +38,7 @@ public class TrackingDatabase {
     private List<NonPeriodFund> nonPeriodFunds = new ArrayList<>();
     private List<NonPeriodFundTransfer> nonPeriodFundTransfers = new ArrayList<>();
     private List<NonPeriodFundEvent> nonPeriodFundEvents = new ArrayList<>();
+    private List<NonPeriodFundChargeTransfer> nonPeriodFundChargeTransfers = new ArrayList<>();
 
     // Special Containers
     private List<PeriodCategory> periodCategory = new ArrayList<>();
@@ -54,6 +52,7 @@ public class TrackingDatabase {
     private Map<Period, Map<Bank, Statement>> statementMap = new HashMap<>();
     private Map<String, CategoryTransfer> categoryTransferMap = new HashMap<>();
     private Map<String, NonPeriodFund> nonPeriodFundMap = new HashMap<>();
+    private Map<String, NonPeriodFundEvent> nonPeriodFundEventMap = new HashMap<>();
 
     // Flag for database construction
     private boolean isFinalized = false;
@@ -291,7 +290,13 @@ public class TrackingDatabase {
 
     public void addNonPeriodFundEvent(NonPeriodFundEvent nonPeriodFundEvent) {
         this.nonPeriodFundEvents.add(nonPeriodFundEvent);
+        nonPeriodFundEventMap.put(nonPeriodFundEvent.getId(), nonPeriodFundEvent);
         nonPeriodFundEvent.notifyParentLink();
+    }
+
+    public void addNonPeriodFundChargeTransfer(NonPeriodFundChargeTransfer nonPeriodFundChargeTransfer) {
+        this.nonPeriodFundChargeTransfers.add(nonPeriodFundChargeTransfer);
+        nonPeriodFundChargeTransfer.notifyParentLink();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -324,6 +329,11 @@ public class TrackingDatabase {
         this.nonPeriodFundTransfers.remove(nonPeriodFundEvent);
     }
 
+    public void removeNonPeriodFundChargeTransfer(NonPeriodFundChargeTransfer nonPeriodFundChargeTransfer) {
+        nonPeriodFundChargeTransfer.notifyParentUnLink();
+        this.nonPeriodFundChargeTransfers.remove(nonPeriodFundChargeTransfer);
+    }
+
     //------------------------------------------------------------------------------------------------------------------
     //############################################# Map accessors ######################################################
     //------------------------------------------------------------------------------------------------------------------
@@ -354,6 +364,11 @@ public class TrackingDatabase {
     public CategoryTransfer getCategoryTransfer(String categoryTransferId) {
         return categoryTransferMap.get(categoryTransferId);
     }
+
+    public NonPeriodFundEvent getNonPeriodFundEvent(String destinationNonPeriodFundEventId) {
+        return nonPeriodFundEventMap.get(destinationNonPeriodFundEventId);
+    }
+
 
     public NonPeriodFund getNonPeriodFund(String nonPeriodFundsId) {
         return nonPeriodFundMap.get(nonPeriodFundsId);
@@ -417,5 +432,9 @@ public class TrackingDatabase {
 
     public List<NonPeriodFundEvent> getNonPeriodFundEvents() {
         return Collections.unmodifiableList(nonPeriodFundEvents);
+    }
+
+    public List<NonPeriodFundChargeTransfer> getNonPeriodFundChargeTransfers() {
+        return Collections.unmodifiableList(nonPeriodFundChargeTransfers);
     }
 }
