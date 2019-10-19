@@ -19,8 +19,8 @@ public class NonPeriodFundChargeTransfer extends MoneyEvent<Period, Category, No
     /**
      * Constructor
      */
-    public NonPeriodFundChargeTransfer(String id, Period source, NonPeriodFund destination, NonPeriodFundEvent destinationCategory, Currency currency, String description, Double value) {
-        super(description, value, source, null, destination, destinationCategory, currency);
+    public NonPeriodFundChargeTransfer(String id, Period source, NonPeriodFund destination, Currency currency, String description, Double value) {
+        super(description, value, source, null, destination, null, currency);
         this.id = id;
     }
 
@@ -51,12 +51,6 @@ public class NonPeriodFundChargeTransfer extends MoneyEvent<Period, Category, No
     }
 
 
-    @DisplayProperties(order = 5)
-    @Override
-    public NonPeriodFundEvent getDestinationCategory() {
-        return super.getDestinationCategory();
-    }
-
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Setters #####################################################
     //------------------------------------------------------------------------------------------------------------------
@@ -71,11 +65,5 @@ public class NonPeriodFundChargeTransfer extends MoneyEvent<Period, Category, No
     @Override
     public void setDestinationContainer(NonPeriodFund destination) {
         super.setDestinationContainer(destination);
-    }
-
-    @SetterProperties(sourceMethod = "getNonPeriodFundEvents")
-    @Override
-    public void setDestinationCategory(NonPeriodFundEvent destination) {
-        super.setDestinationCategory(destination);
     }
 }

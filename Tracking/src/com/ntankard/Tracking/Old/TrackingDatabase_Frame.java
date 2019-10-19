@@ -13,6 +13,7 @@ import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Bank;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
+import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.NonPeriodFundEvent;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.TrackingDatabase_Reader;
 
@@ -152,7 +153,7 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
             @Override
             public NonPeriodFundTransfer newElement() {
                 String idCode = trackingDatabase.getNextNonPeriodFundTransferId();
-                return new NonPeriodFundTransfer(idCode, trackingDatabase.getPeriods().get(0), trackingDatabase.getNonPeriodFunds().get(0), trackingDatabase.getCategory("Unaccounted"), trackingDatabase.getCurrency("YEN"), "", 0.0);
+                return new NonPeriodFundTransfer(idCode, trackingDatabase.getPeriods().get(0), trackingDatabase.getNonPeriodFunds().get(0), trackingDatabase.getCategory("Unaccounted"), trackingDatabase.getNonPeriodFunds().get(0).<NonPeriodFundEvent>getChildren(NonPeriodFundEvent.class).get(0) , trackingDatabase.getCurrency("YEN"), "", 0.0);
             }
 
             @Override

@@ -39,7 +39,6 @@ public class NonPeriodChargeTransfer_ElementController implements DynamicGUI_Dis
                 idCode,
                 period,
                 TrackingDatabase.get().getNonPeriodFunds().get(0),
-                TrackingDatabase.get().getNonPeriodFunds().get(0).<NonPeriodFundEvent>getChildren(NonPeriodFundEvent.class).get(0),
                 TrackingDatabase.get().getCurrency("YEN"),
                 "",
                 0.0);

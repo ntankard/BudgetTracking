@@ -82,8 +82,8 @@ public class TrackingDatabase_Reader {
         readCategoryTransfer(data, csvFile);
         readPeriodTransfer(data, csvFile);
         readNonPeriodFund(data, csvFile);
-        readNonPeriodFundTransfer(data, csvFile);
         readNonPeriodFundEvent(data, csvFile);
+        readNonPeriodFundTransfer(data, csvFile);
         readNonPeriodFundChargeTransfer(data, csvFile);
 
         data.finalizeData();
@@ -465,15 +465,17 @@ public class TrackingDatabase_Reader {
             String sourcePeriodId = lines[1];
             String destinationNonPeriodFundId = lines[2];
             String categoryID = lines[3];
-            String currencyID = lines[4];
-            String description = lines[5];
-            double value = Double.parseDouble(lines[6]);
+            String nonPeriodFundEventId = lines[4];
+            String currencyID = lines[5];
+            String description = lines[6];
+            double value = Double.parseDouble(lines[7]);
 
             data.addNonPeriodFundTransfer(new NonPeriodFundTransfer(
                     id,
                     data.getPeriod(sourcePeriodId),
                     data.getNonPeriodFund(destinationNonPeriodFundId),
                     data.getCategory(categoryID),
+                    data.getNonPeriodFundEvent(nonPeriodFundEventId),
                     data.getCurrency(currencyID),
                     description,
                     value
@@ -495,6 +497,7 @@ public class TrackingDatabase_Reader {
             line.add(t.getSourceContainer().getId());
             line.add(t.getDestinationContainer().getId());
             line.add(t.getSourceCategory().getId());
+            line.add(t.getDestinationCategory().getId());
             line.add(t.getCurrency().getId());
             line.add(t.getDescription());
             line.add(t.getValue().toString());
@@ -555,7 +558,6 @@ public class TrackingDatabase_Reader {
             String id = lines[0];
             String sourcePeriodId = lines[1];
             String destinationNonPeriodFundId = lines[2];
-            String destinationNonPeriodFundEventId = lines[3];
             String currencyID = lines[4];
             String description = lines[5];
             double value = Double.parseDouble(lines[6]);
@@ -564,7 +566,6 @@ public class TrackingDatabase_Reader {
                     id,
                     data.getPeriod(sourcePeriodId),
                     data.getNonPeriodFund(destinationNonPeriodFundId),
-                    data.getNonPeriodFundEvent(destinationNonPeriodFundEventId),
                     data.getCurrency(currencyID),
                     description,
                     value
@@ -585,7 +586,6 @@ public class TrackingDatabase_Reader {
             line.add(t.getId());
             line.add(t.getSourceContainer().getId());
             line.add(t.getDestinationContainer().getId());
-            line.add(t.getDestinationCategory().getId());
             line.add(t.getCurrency().getId());
             line.add(t.getDescription());
             line.add(t.getValue().toString());

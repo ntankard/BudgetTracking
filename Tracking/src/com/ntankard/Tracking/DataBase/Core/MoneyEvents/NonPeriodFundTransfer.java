@@ -8,9 +8,10 @@ import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.NonPeriodFund;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
+import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.NonPeriodFundEvent;
 
 @ClassExtensionProperties(includeParent = true)
-public class NonPeriodFundTransfer extends MoneyEvent<Period, Category, NonPeriodFund, Category> {
+public class NonPeriodFundTransfer extends MoneyEvent<Period, Category, NonPeriodFund, NonPeriodFundEvent> {
 
     // My values
     private String id;
@@ -18,8 +19,8 @@ public class NonPeriodFundTransfer extends MoneyEvent<Period, Category, NonPerio
     /**
      * Constructor
      */
-    public NonPeriodFundTransfer(String id, Period source, NonPeriodFund destination, Category sourceCategory, Currency currency, String description, Double value) {
-        super(description, value, source, sourceCategory, destination, sourceCategory, currency);
+    public NonPeriodFundTransfer(String id, Period source, NonPeriodFund destination, Category sourceCategory, NonPeriodFundEvent destinationCategory, Currency currency, String description, Double value) {
+        super(description, value, source, sourceCategory, destination, destinationCategory, currency);
         this.id = id;
     }
 
@@ -55,6 +56,11 @@ public class NonPeriodFundTransfer extends MoneyEvent<Period, Category, NonPerio
         return super.getSourceCategory();
     }
 
+    @Override
+    public NonPeriodFundEvent getDestinationCategory() {
+        return super.getDestinationCategory();
+    }
+
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Setters #####################################################
     //------------------------------------------------------------------------------------------------------------------
@@ -75,6 +81,11 @@ public class NonPeriodFundTransfer extends MoneyEvent<Period, Category, NonPerio
     @Override
     public void setSourceCategory(Category sourceCategory) {
         super.setSourceCategory(sourceCategory);
-        super.setDestinationCategory(sourceCategory);
+    }
+
+    @SetterProperties(sourceMethod = "getNonPeriodFundEvents")
+    @Override
+    public void setDestinationCategory(NonPeriodFundEvent destination) {
+        super.setDestinationCategory(destination);
     }
 }
