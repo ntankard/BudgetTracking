@@ -1,14 +1,14 @@
 package com.ntankard.Tracking.DataBase;
 
 import com.ntankard.Tracking.DataBase.Core.DataObject;
-import com.ntankard.Tracking.DataBase.Core.MoneyContainers.NonPeriodFund;
+import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Fund;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.*;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Bank;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
-import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.NonPeriodFundEvent;
+import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.FundEvent;
 import com.ntankard.Tracking.Old.PeriodCategory;
 
 import java.text.NumberFormat;
@@ -35,10 +35,10 @@ public class TrackingDatabase {
     private List<Transaction> transactions = new ArrayList<>();
     private List<CategoryTransfer> categoryTransfers = new ArrayList<>();
     private List<PeriodTransfer> periodTransfers = new ArrayList<>();
-    private List<NonPeriodFund> nonPeriodFunds = new ArrayList<>();
-    private List<NonPeriodFundTransfer> nonPeriodFundTransfers = new ArrayList<>();
-    private List<NonPeriodFundEvent> nonPeriodFundEvents = new ArrayList<>();
-    private List<NonPeriodFundChargeTransfer> nonPeriodFundChargeTransfers = new ArrayList<>();
+    private List<Fund> funds = new ArrayList<>();
+    private List<PeriodFundTransfer> periodFundTransfers = new ArrayList<>();
+    private List<FundEvent> fundEvents = new ArrayList<>();
+    private List<FundChargeTransfer> fundChargeTransfers = new ArrayList<>();
 
     // Special Containers
     private List<PeriodCategory> periodCategory = new ArrayList<>();
@@ -51,8 +51,8 @@ public class TrackingDatabase {
     private Map<String, Period> periodMap = new HashMap<>();
     private Map<Period, Map<Bank, Statement>> statementMap = new HashMap<>();
     private Map<String, CategoryTransfer> categoryTransferMap = new HashMap<>();
-    private Map<String, NonPeriodFund> nonPeriodFundMap = new HashMap<>();
-    private Map<String, NonPeriodFundEvent> nonPeriodFundEventMap = new HashMap<>();
+    private Map<String, Fund> fundMap = new HashMap<>();
+    private Map<String, FundEvent> fundEventMap = new HashMap<>();
 
     // Flag for database construction
     private boolean isFinalized = false;
@@ -71,8 +71,8 @@ public class TrackingDatabase {
             fixPeriod(p);
         }
 
-        for (NonPeriodFund nonPeriodFund : nonPeriodFunds) {
-            fixNonPeriodFundEvent(nonPeriodFund);
+        for (Fund fund : funds) {
+            fixFundEvent(fund);
         }
 
         currencyFormat.put(getCurrency("AUD"), NumberFormat.getCurrencyInstance(Locale.US));
@@ -84,16 +84,16 @@ public class TrackingDatabase {
     /**
      * Create default for each
      */
-    private void fixNonPeriodFundEvent(NonPeriodFund nonPeriodFunds) {
+    private void fixFundEvent(Fund funds) {
         boolean found = false;
-        for (NonPeriodFundEvent nonPeriodFundEvent : nonPeriodFunds.<NonPeriodFundEvent>getChildren(NonPeriodFundEvent.class)) {
-            if (nonPeriodFundEvent.getIdCode().equals("NONE")) {
+        for (FundEvent fundEvent : funds.<FundEvent>getChildren(FundEvent.class)) {
+            if (fundEvent.getIdCode().equals("NONE")) {
                 found = true;
                 break;
             }
         }
         if (!found) {
-            addNonPeriodFundEvent(new NonPeriodFundEvent(nonPeriodFunds, "NONE"));
+            addFundEvent(new FundEvent(funds, "NONE"));
         }
     }
 
@@ -211,9 +211,9 @@ public class TrackingDatabase {
         return (max + 1) + "";
     }
 
-    public String getNextNonPeriodFundTransferId() {
+    public String getNextPeriodFundTransferId() {
         int max = 0;
-        for (NonPeriodFundTransfer t : getNonPeriodFundTransfers()) {
+        for (PeriodFundTransfer t : getPeriodFundTransfers()) {
             int value = Integer.parseInt(t.getId());
             if (value > max) {
                 max = value;
@@ -277,26 +277,26 @@ public class TrackingDatabase {
         periodTransfer.notifyParentLink();
     }
 
-    public void addNonPeriodFund(NonPeriodFund nonPeriodFund) {
-        this.nonPeriodFunds.add(nonPeriodFund);
-        this.nonPeriodFundMap.put(nonPeriodFund.getId(), nonPeriodFund);
-        nonPeriodFund.notifyParentLink();
+    public void addFund(Fund fund) {
+        this.funds.add(fund);
+        this.fundMap.put(fund.getId(), fund);
+        fund.notifyParentLink();
     }
 
-    public void addNonPeriodFundTransfer(NonPeriodFundTransfer nonPeriodFundTransfer) {
-        this.nonPeriodFundTransfers.add(nonPeriodFundTransfer);
-        nonPeriodFundTransfer.notifyParentLink();
+    public void addPeriodFundTransfer(PeriodFundTransfer periodFundTransfer) {
+        this.periodFundTransfers.add(periodFundTransfer);
+        periodFundTransfer.notifyParentLink();
     }
 
-    public void addNonPeriodFundEvent(NonPeriodFundEvent nonPeriodFundEvent) {
-        this.nonPeriodFundEvents.add(nonPeriodFundEvent);
-        nonPeriodFundEventMap.put(nonPeriodFundEvent.getId(), nonPeriodFundEvent);
-        nonPeriodFundEvent.notifyParentLink();
+    public void addFundEvent(FundEvent fundEvent) {
+        this.fundEvents.add(fundEvent);
+        fundEventMap.put(fundEvent.getId(), fundEvent);
+        fundEvent.notifyParentLink();
     }
 
-    public void addNonPeriodFundChargeTransfer(NonPeriodFundChargeTransfer nonPeriodFundChargeTransfer) {
-        this.nonPeriodFundChargeTransfers.add(nonPeriodFundChargeTransfer);
-        nonPeriodFundChargeTransfer.notifyParentLink();
+    public void addFundChargeTransfer(FundChargeTransfer fundChargeTransfer) {
+        this.fundChargeTransfers.add(fundChargeTransfer);
+        fundChargeTransfer.notifyParentLink();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -319,19 +319,19 @@ public class TrackingDatabase {
         this.periodTransfers.remove(periodTransfer);
     }
 
-    public void removeNonPeriodFundTransfer(NonPeriodFundTransfer nonPeriodFundTransfer) {
-        nonPeriodFundTransfer.notifyParentUnLink();
-        this.nonPeriodFundTransfers.remove(nonPeriodFundTransfer);
+    public void removePeriodFundTransfer(PeriodFundTransfer periodFundTransfer) {
+        periodFundTransfer.notifyParentUnLink();
+        this.periodFundTransfers.remove(periodFundTransfer);
     }
 
-    public void removeNonPeriodFundEvent(NonPeriodFundEvent nonPeriodFundEvent) {
-        nonPeriodFundEvent.notifyParentUnLink();
-        this.nonPeriodFundTransfers.remove(nonPeriodFundEvent);
+    public void removeFundEvent(FundEvent fundEvent) {
+        fundEvent.notifyParentUnLink();
+        this.periodFundTransfers.remove(fundEvent);
     }
 
-    public void removeNonPeriodFundChargeTransfer(NonPeriodFundChargeTransfer nonPeriodFundChargeTransfer) {
-        nonPeriodFundChargeTransfer.notifyParentUnLink();
-        this.nonPeriodFundChargeTransfers.remove(nonPeriodFundChargeTransfer);
+    public void removeFundChargeTransfer(FundChargeTransfer fundChargeTransfer) {
+        fundChargeTransfer.notifyParentUnLink();
+        this.fundChargeTransfers.remove(fundChargeTransfer);
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -365,13 +365,13 @@ public class TrackingDatabase {
         return categoryTransferMap.get(categoryTransferId);
     }
 
-    public NonPeriodFundEvent getNonPeriodFundEvent(String destinationNonPeriodFundEventId) {
-        return nonPeriodFundEventMap.get(destinationNonPeriodFundEventId);
+    public FundEvent getFundEvent(String fundEventId) {
+        return fundEventMap.get(fundEventId);
     }
 
 
-    public NonPeriodFund getNonPeriodFund(String nonPeriodFundsId) {
-        return nonPeriodFundMap.get(nonPeriodFundsId);
+    public Fund getFund(String fundId) {
+        return fundMap.get(fundId);
     }
 
     public NumberFormat getCurrencyFormat(Currency currency) {
@@ -422,19 +422,19 @@ public class TrackingDatabase {
         return Collections.unmodifiableList(periodTransfers);
     }
 
-    public List<NonPeriodFund> getNonPeriodFunds() {
-        return Collections.unmodifiableList(nonPeriodFunds);
+    public List<Fund> getFunds() {
+        return Collections.unmodifiableList(funds);
     }
 
-    public List<NonPeriodFundTransfer> getNonPeriodFundTransfers() {
-        return Collections.unmodifiableList(nonPeriodFundTransfers);
+    public List<PeriodFundTransfer> getPeriodFundTransfers() {
+        return Collections.unmodifiableList(periodFundTransfers);
     }
 
-    public List<NonPeriodFundEvent> getNonPeriodFundEvents() {
-        return Collections.unmodifiableList(nonPeriodFundEvents);
+    public List<FundEvent> getFundEvents() {
+        return Collections.unmodifiableList(fundEvents);
     }
 
-    public List<NonPeriodFundChargeTransfer> getNonPeriodFundChargeTransfers() {
-        return Collections.unmodifiableList(nonPeriodFundChargeTransfers);
+    public List<FundChargeTransfer> getFundChargeTransfers() {
+        return Collections.unmodifiableList(fundChargeTransfers);
     }
 }

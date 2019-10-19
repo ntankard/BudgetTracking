@@ -4,14 +4,14 @@ import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.DynamicGUI.Components.Object.SetterProperties;
+import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Fund;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
-import com.ntankard.Tracking.DataBase.Core.MoneyContainers.NonPeriodFund;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
-import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.NonPeriodFundEvent;
+import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.FundEvent;
 
 @ClassExtensionProperties(includeParent = true)
-public class NonPeriodFundTransfer extends MoneyEvent<Period, Category, NonPeriodFund, NonPeriodFundEvent> {
+public class PeriodFundTransfer extends MoneyEvent<Period, Category, Fund, FundEvent> {
 
     // My values
     private String id;
@@ -19,7 +19,7 @@ public class NonPeriodFundTransfer extends MoneyEvent<Period, Category, NonPerio
     /**
      * Constructor
      */
-    public NonPeriodFundTransfer(String id, Period source, NonPeriodFund destination, Category sourceCategory, NonPeriodFundEvent destinationCategory, Currency currency, String description, Double value) {
+    public PeriodFundTransfer(String id, Period source, Fund destination, Category sourceCategory, FundEvent destinationCategory, Currency currency, String description, Double value) {
         super(description, value, source, sourceCategory, destination, destinationCategory, currency);
         this.id = id;
     }
@@ -46,7 +46,7 @@ public class NonPeriodFundTransfer extends MoneyEvent<Period, Category, NonPerio
 
     @DisplayProperties(order = 4)
     @Override
-    public NonPeriodFund getDestinationContainer() {
+    public Fund getDestinationContainer() {
         return super.getDestinationContainer();
     }
 
@@ -57,7 +57,7 @@ public class NonPeriodFundTransfer extends MoneyEvent<Period, Category, NonPerio
     }
 
     @Override
-    public NonPeriodFundEvent getDestinationCategory() {
+    public FundEvent getDestinationCategory() {
         return super.getDestinationCategory();
     }
 
@@ -71,9 +71,9 @@ public class NonPeriodFundTransfer extends MoneyEvent<Period, Category, NonPerio
         super.setSourceContainer(source);
     }
 
-    @SetterProperties(sourceMethod = "getNonPeriodFunds")
+    @SetterProperties(sourceMethod = "getFunds")
     @Override
-    public void setDestinationContainer(NonPeriodFund destination) {
+    public void setDestinationContainer(Fund destination) {
         super.setDestinationContainer(destination);
     }
 
@@ -83,9 +83,9 @@ public class NonPeriodFundTransfer extends MoneyEvent<Period, Category, NonPerio
         super.setSourceCategory(sourceCategory);
     }
 
-    @SetterProperties(sourceMethod = "getNonPeriodFundEvents")
+    @SetterProperties(sourceMethod = "getFundEvents")
     @Override
-    public void setDestinationCategory(NonPeriodFundEvent destination) {
+    public void setDestinationCategory(FundEvent destination) {
         super.setDestinationCategory(destination);
     }
 }

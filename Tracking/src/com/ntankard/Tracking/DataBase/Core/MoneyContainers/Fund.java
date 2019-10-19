@@ -10,7 +10,7 @@ import java.util.List;
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-public class NonPeriodFund extends MoneyContainer {
+public class Fund extends MoneyContainer {
 
     // My values
     private String id;
@@ -18,7 +18,7 @@ public class NonPeriodFund extends MoneyContainer {
     /**
      * Constructor
      */
-    public NonPeriodFund(String id) {
+    public Fund(String id) {
         this.id = id;
     }
 

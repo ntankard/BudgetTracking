@@ -3,11 +3,11 @@ package com.ntankard.Tracking.Dispaly.Util.ElementControllers;
 import com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList.ElementController;
 import com.ntankard.DynamicGUI.Util.Updatable;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.NonPeriodFundTransfer;
-import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.NonPeriodFundEvent;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodFundTransfer;
+import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.FundEvent;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
 
-public class NonPeriodTransfer_ElementController implements ElementController<NonPeriodFundTransfer> {
+public class PeriodFundTransfer_ElementController implements ElementController<PeriodFundTransfer> {
 
     /**
      * Data to use when creating a new object
@@ -22,7 +22,7 @@ public class NonPeriodTransfer_ElementController implements ElementController<No
     /**
      * Constructor
      */
-    public NonPeriodTransfer_ElementController(Period period, Updatable master) {
+    public PeriodFundTransfer_ElementController(Period period, Updatable master) {
         this.period = period;
         this.master = master;
     }
@@ -31,14 +31,14 @@ public class NonPeriodTransfer_ElementController implements ElementController<No
      * {@inheritDoc
      */
     @Override
-    public NonPeriodFundTransfer newElement() {
-        String idCode = TrackingDatabase.get().getNextNonPeriodFundTransferId();
-        return new NonPeriodFundTransfer(
+    public PeriodFundTransfer newElement() {
+        String idCode = TrackingDatabase.get().getNextPeriodFundTransferId();
+        return new PeriodFundTransfer(
                 idCode,
                 period,
-                TrackingDatabase.get().getNonPeriodFunds().get(0),
+                TrackingDatabase.get().getFunds().get(0),
                 TrackingDatabase.get().getCategory("Unaccounted"),
-                TrackingDatabase.get().getNonPeriodFunds().get(0).<NonPeriodFundEvent>getChildren(NonPeriodFundEvent.class).get(0),
+                TrackingDatabase.get().getFunds().get(0).<FundEvent>getChildren(FundEvent.class).get(0),
                 TrackingDatabase.get().getCurrency("YEN"),
                 "",
                 0.0);
@@ -48,8 +48,8 @@ public class NonPeriodTransfer_ElementController implements ElementController<No
      * {@inheritDoc
      */
     @Override
-    public void deleteElement(NonPeriodFundTransfer toDel) {
-        TrackingDatabase.get().removeNonPeriodFundTransfer(toDel);
+    public void deleteElement(PeriodFundTransfer toDel) {
+        TrackingDatabase.get().removePeriodFundTransfer(toDel);
         master.notifyUpdate();
     }
 
@@ -57,8 +57,8 @@ public class NonPeriodTransfer_ElementController implements ElementController<No
      * {@inheritDoc
      */
     @Override
-    public void addElement(NonPeriodFundTransfer newObj) {
-        TrackingDatabase.get().addNonPeriodFundTransfer(newObj);
+    public void addElement(PeriodFundTransfer newObj) {
+        TrackingDatabase.get().addPeriodFundTransfer(newObj);
         master.notifyUpdate();
     }
 }

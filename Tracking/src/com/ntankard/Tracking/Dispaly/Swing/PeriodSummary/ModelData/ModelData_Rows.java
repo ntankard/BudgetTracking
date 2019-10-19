@@ -2,10 +2,9 @@ package com.ntankard.Tracking.Dispaly.Swing.PeriodSummary.ModelData;
 
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.CategoryTransfer;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.NonPeriodFundTransfer;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
-import com.ntankard.Tracking.DataBase.TrackingDatabase;
 import com.ntankard.Tracking.Dispaly.Swing.PeriodSummary.ModelData.Rows.*;
 
 import java.util.ArrayList;
@@ -46,7 +45,7 @@ public class ModelData_Rows {
             addSection(new DividerRow("Period", core, columns));
             addSection(new TransferRow<>(core, columns, PeriodTransfer.class));
             addSection(new DividerRow("External", core, columns));
-            addSection(new TransferRow<>(core, columns, NonPeriodFundTransfer.class));
+            addSection(new TransferRow<>(core, columns, PeriodFundTransfer.class));
         }
     }
 

@@ -36,7 +36,7 @@ public class PeriodCategory_Set extends MoneyEvent_Set<MoneyEvent> {
         toReturn.addAll(new PeriodCategoryType_Set<>(period, category, Transaction.class).getMoneyEvents());
         toReturn.addAll(new PeriodCategoryType_Set<>(period, category, CategoryTransfer.class).getMoneyEvents());
         toReturn.addAll(new PeriodCategoryType_Set<>(period, category, PeriodTransfer.class).getMoneyEvents());
-        toReturn.addAll(new PeriodCategoryType_Set<>(period, category, NonPeriodFundTransfer.class).getMoneyEvents());
+        toReturn.addAll(new PeriodCategoryType_Set<>(period, category, PeriodFundTransfer.class).getMoneyEvents());
         return toReturn;
     }
 

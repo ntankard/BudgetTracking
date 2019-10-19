@@ -4,14 +4,14 @@ import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.DynamicGUI.Components.Object.SetterProperties;
+import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Fund;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
-import com.ntankard.Tracking.DataBase.Core.MoneyContainers.NonPeriodFund;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
-import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.NonPeriodFundEvent;
+import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.FundEvent;
 
 @ClassExtensionProperties(includeParent = true)
-public class NonPeriodFundChargeTransfer extends MoneyEvent<Period, Category, NonPeriodFund, NonPeriodFundEvent> {
+public class FundChargeTransfer extends MoneyEvent<Period, Category, Fund, FundEvent> {
 
     // My values
     private String id;
@@ -19,7 +19,7 @@ public class NonPeriodFundChargeTransfer extends MoneyEvent<Period, Category, No
     /**
      * Constructor
      */
-    public NonPeriodFundChargeTransfer(String id, Period source, NonPeriodFund destination, Currency currency, String description, Double value) {
+    public FundChargeTransfer(String id, Period source, Fund destination, Currency currency, String description, Double value) {
         super(description, value, source, null, destination, null, currency);
         this.id = id;
     }
@@ -46,7 +46,7 @@ public class NonPeriodFundChargeTransfer extends MoneyEvent<Period, Category, No
 
     @DisplayProperties(order = 4)
     @Override
-    public NonPeriodFund getDestinationContainer() {
+    public Fund getDestinationContainer() {
         return super.getDestinationContainer();
     }
 
@@ -61,9 +61,9 @@ public class NonPeriodFundChargeTransfer extends MoneyEvent<Period, Category, No
         super.setSourceContainer(source);
     }
 
-    @SetterProperties(sourceMethod = "getNonPeriodFunds")
+    @SetterProperties(sourceMethod = "getFunds")
     @Override
-    public void setDestinationContainer(NonPeriodFund destination) {
+    public void setDestinationContainer(Fund destination) {
         super.setDestinationContainer(destination);
     }
 }

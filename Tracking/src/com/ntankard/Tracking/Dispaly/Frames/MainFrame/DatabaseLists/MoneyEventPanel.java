@@ -21,15 +21,15 @@ public class MoneyEventPanel extends UpdatableJPanel {
     private List<Transaction> transaction_list = new ArrayList<>();
     private List<CategoryTransfer> categoryTransfer_list = new ArrayList<>();
     private List<PeriodTransfer> periodTransfer_list = new ArrayList<>();
-    private List<NonPeriodFundTransfer> nonPeriodFundTransfer_list = new ArrayList<>();
-    private List<NonPeriodFundChargeTransfer> nonPeriodFundChargeTransfer_list = new ArrayList<>();
+    private List<PeriodFundTransfer> periodFundTransfer_list = new ArrayList<>();
+    private List<FundChargeTransfer> fundChargeTransfer_list = new ArrayList<>();
 
     // The GUI components
     private DynamicGUI_DisplayList<Transaction> transaction_panel;
     private DynamicGUI_DisplayList<CategoryTransfer> categoryTransfer_panel;
     private DynamicGUI_DisplayList<PeriodTransfer> periodTransfer_panel;
-    private DynamicGUI_DisplayList<NonPeriodFundTransfer> nonPeriodFundTransfer_panel;
-    private DynamicGUI_DisplayList<NonPeriodFundChargeTransfer> nonPeriodFundChargeTransfer_panel;
+    private DynamicGUI_DisplayList<PeriodFundTransfer> periodFundTransfer_panel;
+    private DynamicGUI_DisplayList<FundChargeTransfer> fundChargeTransfer_panel;
 
     /**
      * Constructor
@@ -50,21 +50,21 @@ public class MoneyEventPanel extends UpdatableJPanel {
         transaction_panel = DynamicGUI_DisplayList.newIntractableTable(transaction_list, new MemberClass(Transaction.class), true, ALWAYS_DISPLAY, this);
         categoryTransfer_panel = DynamicGUI_DisplayList.newIntractableTable(categoryTransfer_list, new MemberClass(CategoryTransfer.class), true, ALWAYS_DISPLAY, this);
         periodTransfer_panel = DynamicGUI_DisplayList.newIntractableTable(periodTransfer_list, new MemberClass(PeriodTransfer.class), true, ALWAYS_DISPLAY, this);
-        nonPeriodFundTransfer_panel = DynamicGUI_DisplayList.newIntractableTable(nonPeriodFundTransfer_list, new MemberClass(NonPeriodFundTransfer.class), true, ALWAYS_DISPLAY, this);
-        nonPeriodFundChargeTransfer_panel = DynamicGUI_DisplayList.newIntractableTable(nonPeriodFundChargeTransfer_list, new MemberClass(NonPeriodFundChargeTransfer.class), true, ALWAYS_DISPLAY, this);
+        periodFundTransfer_panel = DynamicGUI_DisplayList.newIntractableTable(periodFundTransfer_list, new MemberClass(PeriodFundTransfer.class), true, ALWAYS_DISPLAY, this);
+        fundChargeTransfer_panel = DynamicGUI_DisplayList.newIntractableTable(fundChargeTransfer_list, new MemberClass(FundChargeTransfer.class), true, ALWAYS_DISPLAY, this);
 
         transaction_panel.getMainPanel().setLocaleInspector(new MoneyEventLocaleInspector());
         categoryTransfer_panel.getMainPanel().setLocaleInspector(new MoneyEventLocaleInspector());
         periodTransfer_panel.getMainPanel().setLocaleInspector(new MoneyEventLocaleInspector());
-        nonPeriodFundTransfer_panel.getMainPanel().setLocaleInspector(new MoneyEventLocaleInspector());
-        nonPeriodFundChargeTransfer_panel.getMainPanel().setLocaleInspector(new MoneyEventLocaleInspector());
+        periodFundTransfer_panel.getMainPanel().setLocaleInspector(new MoneyEventLocaleInspector());
+        fundChargeTransfer_panel.getMainPanel().setLocaleInspector(new MoneyEventLocaleInspector());
 
         JTabbedPane master_tPanel = new JTabbedPane();
         master_tPanel.addTab("Transaction", transaction_panel);
         master_tPanel.addTab("Category Transfer", categoryTransfer_panel);
         master_tPanel.addTab("Period Transfer", periodTransfer_panel);
-        master_tPanel.addTab("Non Period Fund Transfer", nonPeriodFundTransfer_panel);
-        master_tPanel.addTab("Non Period Fund Charge Transfer", nonPeriodFundChargeTransfer_panel);
+        master_tPanel.addTab("Non Period Fund Transfer", periodFundTransfer_panel);
+        master_tPanel.addTab("Non Period Fund Charge Transfer", fundChargeTransfer_panel);
 
         this.add(master_tPanel, BorderLayout.CENTER);
     }
@@ -77,19 +77,19 @@ public class MoneyEventPanel extends UpdatableJPanel {
         transaction_list.clear();
         categoryTransfer_list.clear();
         periodTransfer_list.clear();
-        nonPeriodFundTransfer_list.clear();
-        nonPeriodFundChargeTransfer_list.clear();
+        periodFundTransfer_list.clear();
+        fundChargeTransfer_list.clear();
 
         transaction_list.addAll(TrackingDatabase.get().getTransactions());
         categoryTransfer_list.addAll(TrackingDatabase.get().getCategoryTransfers());
         periodTransfer_list.addAll(TrackingDatabase.get().getPeriodTransfers());
-        nonPeriodFundTransfer_list.addAll(TrackingDatabase.get().getNonPeriodFundTransfers());
-        nonPeriodFundChargeTransfer_list.addAll(TrackingDatabase.get().getNonPeriodFundChargeTransfers());
+        periodFundTransfer_list.addAll(TrackingDatabase.get().getPeriodFundTransfers());
+        fundChargeTransfer_list.addAll(TrackingDatabase.get().getFundChargeTransfers());
 
         transaction_panel.update();
         categoryTransfer_panel.update();
         periodTransfer_panel.update();
-        nonPeriodFundTransfer_panel.update();
-        nonPeriodFundChargeTransfer_panel.update();
+        periodFundTransfer_panel.update();
+        fundChargeTransfer_panel.update();
     }
 }

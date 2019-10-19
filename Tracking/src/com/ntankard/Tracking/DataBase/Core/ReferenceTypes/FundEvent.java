@@ -3,7 +3,7 @@ package com.ntankard.Tracking.DataBase.Core.ReferenceTypes;
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.DataObject;
-import com.ntankard.Tracking.DataBase.Core.MoneyContainers.NonPeriodFund;
+import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Fund;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,10 +11,10 @@ import java.util.List;
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-public class NonPeriodFundEvent extends DataObject {
+public class FundEvent extends DataObject {
 
     // My parent
-    private NonPeriodFund idNonPeriodFund;
+    private Fund idFund;
 
     // My values
     private String idCode;
@@ -22,8 +22,8 @@ public class NonPeriodFundEvent extends DataObject {
     /**
      * Constructor
      */
-    public NonPeriodFundEvent(NonPeriodFund idNonPeriodFund, String idCode) {
-        this.idNonPeriodFund = idNonPeriodFund;
+    public FundEvent(Fund idFund, String idCode) {
+        this.idFund = idFund;
         this.idCode = idCode;
     }
 
@@ -32,7 +32,7 @@ public class NonPeriodFundEvent extends DataObject {
      */
     @Override
     public String getId() {
-        return idNonPeriodFund.toString() + " " + idCode;
+        return idFund.toString() + " " + idCode;
     }
 
     /**
@@ -42,7 +42,7 @@ public class NonPeriodFundEvent extends DataObject {
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public List<DataObject> getParents() {
         List<DataObject> toReturn = new ArrayList<>();
-        toReturn.add(idNonPeriodFund);
+        toReturn.add(idFund);
         return toReturn;
     }
 
@@ -50,8 +50,8 @@ public class NonPeriodFundEvent extends DataObject {
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    public NonPeriodFund getIdNonPeriodFund() {
-        return idNonPeriodFund;
+    public Fund getIdFund() {
+        return idFund;
     }
 
     public String getIdCode() {
