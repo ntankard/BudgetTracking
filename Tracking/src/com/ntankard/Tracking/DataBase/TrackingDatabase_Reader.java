@@ -558,9 +558,9 @@ public class TrackingDatabase_Reader {
             String id = lines[0];
             String sourcePeriodId = lines[1];
             String destinationFundId = lines[2];
-            String currencyID = lines[4];
-            String description = lines[5];
-            double value = Double.parseDouble(lines[6]);
+            String currencyID = lines[3];
+            String description = lines[4];
+            double value = Double.parseDouble(lines[5]);
 
             data.addFundChargeTransfer(new FundChargeTransfer(
                     id,
