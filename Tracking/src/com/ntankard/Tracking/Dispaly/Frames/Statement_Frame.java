@@ -6,18 +6,16 @@ import com.ntankard.DynamicGUI.Components.Object.DynamicGUI_IntractableObject;
 import com.ntankard.DynamicGUI.Util.Swing.Base.UpdatableJPanel;
 import com.ntankard.DynamicGUI.Util.Updatable;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.CategoryTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
-import com.ntankard.Tracking.Dispaly.Util.MoneyEventLocaleInspector;
+import com.ntankard.Tracking.Dispaly.Util.LocaleInspectors.CurrencyBound_LocaleSource;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import static com.ntankard.ClassExtension.MemberProperties.ALWAYS_DISPLAY;
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
@@ -78,7 +76,7 @@ public class Statement_Frame extends UpdatableJPanel {
             @Override
             public Transaction newElement() {
                 String idCode = TrackingDatabase.get().getNextId(Transaction.class);
-                return new Transaction(core, idCode, "", 0.0, TrackingDatabase.get().get(Category.class,"Unaccounted"));
+                return new Transaction(core, idCode, "", 0.0, TrackingDatabase.get().get(Category.class, "Unaccounted"));
             }
 
             @Override
@@ -92,13 +90,8 @@ public class Statement_Frame extends UpdatableJPanel {
                 TrackingDatabase.get().add(newObj);
                 notifyUpdate();
             }
-        }, new MoneyEventLocaleInspector(), this, TrackingDatabase.get());
-        transaction_panel.getMainPanel().setLocaleInspector(rowObject -> {
-            if (core.getIdBank().getCurrency().getId().equals("YEN")) {
-                return Locale.JAPAN;
-            }
-            return Locale.US;
-        });
+        }, new CurrencyBound_LocaleSource(), this, TrackingDatabase.get());
+        transaction_panel.getMainPanel().setNumberFormatSource(rowObject -> core.getIdBank().getCurrency().getNumberFormat());
 
         JTabbedPane data_tPanel = new JTabbedPane();
         data_tPanel.addTab("Transactions", transaction_panel);

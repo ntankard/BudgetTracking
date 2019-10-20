@@ -2,6 +2,7 @@ package com.ntankard.Tracking.DataBase.Core.ReferenceTypes;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.MemberProperties;
+import com.ntankard.Tracking.DataBase.Core.CurrencyBound;
 import com.ntankard.Tracking.DataBase.Core.DataObject;
 
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 import static com.ntankard.ClassExtension.MemberProperties.TRACE_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-public class Bank extends DataObject {
+public class Bank extends DataObject implements CurrencyBound {
 
     // My parents
     private Currency currency;

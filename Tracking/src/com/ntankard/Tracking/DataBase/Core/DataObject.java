@@ -1,6 +1,10 @@
 package com.ntankard.Tracking.DataBase.Core;
 
+import com.ntankard.ClassExtension.MemberProperties;
+
 import java.util.*;
+
+import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
 public abstract class DataObject {
 
@@ -131,6 +135,7 @@ public abstract class DataObject {
      *
      * @return The list of all children
      */
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public List<DataObject> getChildren() {
         List<DataObject> toReturn = new ArrayList<>();
         for (Class aClass : children.keySet()) {

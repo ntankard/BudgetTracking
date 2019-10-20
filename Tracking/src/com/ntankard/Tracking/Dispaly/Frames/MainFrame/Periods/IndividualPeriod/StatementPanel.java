@@ -8,7 +8,7 @@ import com.ntankard.DynamicGUI.Util.Updatable;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
 import com.ntankard.Tracking.Dispaly.Frames.Statement_Frame;
-import com.ntankard.Tracking.Dispaly.Util.StatementLocaleInspector;
+import com.ntankard.Tracking.Dispaly.Util.LocaleInspectors.CurrencyBound_LocaleSource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +42,7 @@ public class StatementPanel extends UpdatableJScrollPane {
      */
     private void createUIComponents() {
         statement_panel = newIntractableTable(statement_list, new MemberClass(Statement.class), false, ALWAYS_DISPLAY, this);
-        statement_panel.getMainPanel().setLocaleInspector(new StatementLocaleInspector());
+        statement_panel.getMainPanel().setNumberFormatSource(new CurrencyBound_LocaleSource());
 
         ListControl_Button manageStatementBtn = new ListControl_Button<>("Manage Statement", statement_panel, SINGLE, false);
         manageStatementBtn.addActionListener(e -> {

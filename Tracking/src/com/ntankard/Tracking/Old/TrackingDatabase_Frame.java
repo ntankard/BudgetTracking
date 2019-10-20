@@ -22,7 +22,6 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 import static com.ntankard.ClassExtension.MemberProperties.ALWAYS_DISPLAY;
 import static com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList.ListControl_Button.EnableCondition.SINGLE;
@@ -168,19 +167,13 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
             }
         }, null, this, trackingDatabase);
 
-        transaction_panel.getMainPanel().setLocaleInspector(rowObject -> {
+        transaction_panel.getMainPanel().setNumberFormatSource(rowObject -> {
             Transaction transaction = (Transaction) rowObject;
-            if (transaction.getSourceContainer().getIdBank().getCurrency().getId().equals("YEN")) {
-                return Locale.JAPAN;
-            }
-            return Locale.US;
+            return transaction.getSourceContainer().getIdBank().getCurrency().getNumberFormat();
         });
-        statement_panel.getMainPanel().setLocaleInspector(rowObject -> {
+        statement_panel.getMainPanel().setNumberFormatSource(rowObject -> {
             Statement statement = (Statement) rowObject;
-            if (statement.getIdBank().getCurrency().getId().equals("YEN")) {
-                return Locale.JAPAN;
-            }
-            return Locale.US;
+            return statement.getIdBank().getCurrency().getNumberFormat();
         });
 
         managePeriod = new DynamicGUI_DisplayList.ListControl_Button<>("Manage Period", period_panel, SINGLE, false);

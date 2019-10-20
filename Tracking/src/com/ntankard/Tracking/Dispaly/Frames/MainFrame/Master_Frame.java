@@ -2,14 +2,19 @@ package com.ntankard.Tracking.Dispaly.Frames.MainFrame;
 
 import com.ntankard.DynamicGUI.Util.Swing.Containers.ButtonPanel;
 import com.ntankard.DynamicGUI.Util.Updatable;
+import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Fund;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
+import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.*;
+import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Bank;
+import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
+import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
+import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.FundEvent;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.TrackingDatabase_Reader;
-import com.ntankard.Tracking.Dispaly.Frames.MainFrame.DatabaseLists.MoneyContainerPanel;
-import com.ntankard.Tracking.Dispaly.Frames.MainFrame.DatabaseLists.ReferenceTypesPanel;
 import com.ntankard.Tracking.Dispaly.Frames.MainFrame.Periods.PeriodTabPanel;
-import com.ntankard.Tracking.Dispaly.Frames.MainFrame.DatabaseLists.MoneyEventPanel;
 import com.ntankard.Tracking.Dispaly.Frames.MainFrame.SummaryGraphs.SummaryGraphPanel;
+import com.ntankard.Tracking.Dispaly.Util.Panels.DataObject_TabDisplayList;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,18 +24,20 @@ public class Master_Frame extends JPanel implements Updatable {
 
     // The GUI components
     private PeriodTabPanel periodPanel;
-    private MoneyEventPanel transferPanel;
-    private ReferenceTypesPanel baseTypePanel;
-    private MoneyContainerPanel moneyContainerPanel;
+    private DataObject_TabDisplayList transferPanel;
+    private DataObject_TabDisplayList baseTypePanel;
+    private DataObject_TabDisplayList moneyContainerPanel;
     private SummaryGraphPanel summaryGraphPanel;
+
+    private String savePath;
 
     /**
      * Create and open the tracking frame
      */
-    public static void open() {
+    public static void open(String savePath) {
         SwingUtilities.invokeLater(() -> {
             JFrame _frame = new JFrame("Budget");
-            _frame.setContentPane(new Master_Frame());
+            _frame.setContentPane(new Master_Frame(savePath));
             _frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
             _frame.pack();
             _frame.setVisible(true);
@@ -42,7 +49,8 @@ public class Master_Frame extends JPanel implements Updatable {
     /**
      * Constructor
      */
-    private Master_Frame() {
+    private Master_Frame(String savePath) {
+        this.savePath = savePath;
         createUIComponents();
         update();
     }
@@ -56,7 +64,7 @@ public class Master_Frame extends JPanel implements Updatable {
         this.setPreferredSize(new Dimension(1500, 1000));
 
         JButton save_btn = new JButton("Save");
-        save_btn.addActionListener(e -> TrackingDatabase_Reader.save(TrackingDatabase.get(), "C:\\Users\\Nicholas\\Google Drive\\BudgetTrackingData"));
+        save_btn.addActionListener(e -> TrackingDatabase_Reader.save(TrackingDatabase.get(), savePath));
 
         JButton update_btn = new JButton("Update");
         update_btn.addActionListener(e -> notifyUpdate());
@@ -77,15 +85,31 @@ public class Master_Frame extends JPanel implements Updatable {
         this.add(btnPanel, BorderLayout.NORTH);
 
         periodPanel = new PeriodTabPanel(this);
-        transferPanel = new MoneyEventPanel(this);
-        baseTypePanel = new ReferenceTypesPanel(this);
-        moneyContainerPanel = new MoneyContainerPanel(this);
-        summaryGraphPanel = new SummaryGraphPanel(this);
+
+        transferPanel = new DataObject_TabDisplayList(this);
+        transferPanel.add("Transaction", Transaction.class);
+        transferPanel.add("Category Transfer", CategoryTransfer.class);
+        transferPanel.add("Period Transfer", PeriodTransfer.class);
+        transferPanel.add("Non Period Fund Transfer", PeriodFundTransfer.class);
+        transferPanel.add("Non Period Fund Charge Transfer", FundChargeTransfer.class);
+
+        baseTypePanel = new DataObject_TabDisplayList(this);
+        baseTypePanel.add("Category", Category.class);
+        baseTypePanel.add("Currency", Currency.class);
+        baseTypePanel.add("Bank", Bank.class);
+        baseTypePanel.add("Non Period Fund Event", FundEvent.class);
+
+        moneyContainerPanel = new DataObject_TabDisplayList(this);
+        moneyContainerPanel.add("Fund", Fund.class);
+        moneyContainerPanel.add("Periods", Period.class);
+        moneyContainerPanel.add("Statement", Statement.class);
 
         JTabbedPane databasePanel = new JTabbedPane();
         databasePanel.addTab("Transfers", transferPanel);
         databasePanel.addTab("Base Type", baseTypePanel);
         databasePanel.addTab("Containers", moneyContainerPanel);
+
+        summaryGraphPanel = new SummaryGraphPanel(this);
 
         JTabbedPane master_tPanel = new JTabbedPane();
         master_tPanel.addTab("Periods", periodPanel);

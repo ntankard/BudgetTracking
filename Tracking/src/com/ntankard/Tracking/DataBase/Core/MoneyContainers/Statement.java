@@ -3,9 +3,11 @@ package com.ntankard.Tracking.DataBase.Core.MoneyContainers;
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
+import com.ntankard.Tracking.DataBase.Core.CurrencyBound;
 import com.ntankard.Tracking.DataBase.Core.DataObject;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Bank;
+import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +17,7 @@ import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-public class Statement extends MoneyContainer {
+public class Statement extends MoneyContainer implements CurrencyBound {
 
     // My parents
     private Bank idBank;
@@ -58,6 +60,15 @@ public class Statement extends MoneyContainer {
         toReturn.add(idBank);
         toReturn.add(idPeriod);
         return toReturn;
+    }
+
+    /**
+     * {@inheritDoc
+     */
+    @Override
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    public Currency getCurrency() {
+        return idBank.getCurrency();
     }
 
     //------------------------------------------------------------------------------------------------------------------

@@ -5,8 +5,9 @@ import com.ntankard.Tracking.Dispaly.Frames.MainFrame.Master_Frame;
 
 public class Main {
 
-    public static void main(String args[]) {
-        TrackingDatabase_Reader.read("C:\\Users\\Nicholas\\Google Drive\\BudgetTrackingData");
-        Master_Frame.open();
+    public static void main(String[] args) {
+        String savePath = "C:\\Users\\Nicholas\\Google Drive\\BudgetTrackingData";
+        TrackingDatabase_Reader.read(savePath);
+        Master_Frame.open(savePath);
     }
 }

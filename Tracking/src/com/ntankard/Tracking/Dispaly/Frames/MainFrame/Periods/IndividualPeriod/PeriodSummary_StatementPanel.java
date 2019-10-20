@@ -13,8 +13,7 @@ import com.ntankard.Tracking.DataBase.Interface.Summary.PeriodTransaction_Summar
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
 import com.ntankard.Tracking.Dispaly.Frames.Statement_Frame;
 import com.ntankard.Tracking.Dispaly.Swing.PeriodSummary.PeriodSummary;
-import com.ntankard.Tracking.Dispaly.Util.MoneyEventLocaleInspector;
-import com.ntankard.Tracking.Dispaly.Util.StatementLocaleInspector;
+import com.ntankard.Tracking.Dispaly.Util.LocaleInspectors.CurrencyBound_LocaleSource;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -71,7 +70,7 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
         });
 
         statement_panel = newIntractableTable(statement_list, new MemberClass(Statement.class), false, ALWAYS_DISPLAY, this);
-        statement_panel.getMainPanel().setLocaleInspector(new StatementLocaleInspector());
+        statement_panel.getMainPanel().setNumberFormatSource(new CurrencyBound_LocaleSource());
 
         ListControl_Button manageStatementBtn = new ListControl_Button<>("Manage Statement", statement_panel, SINGLE, false);
         manageStatementBtn.addActionListener(e -> {
@@ -99,8 +98,8 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
                 TrackingDatabase.get().add(newObj);
                 notifyUpdate();
             }
-        }, new MoneyEventLocaleInspector(), this, TrackingDatabase.get());
-        transaction_panel.getMainPanel().setLocaleInspector(new MoneyEventLocaleInspector());
+        }, new CurrencyBound_LocaleSource(), this, TrackingDatabase.get());
+        transaction_panel.getMainPanel().setNumberFormatSource(new CurrencyBound_LocaleSource());
 
         period_panel = DynamicGUI_IntractableObject.newIntractableObjectPanel(core, ALWAYS_DISPLAY, false, this, TrackingDatabase.get());
         periodTotal_panel = DynamicGUI_IntractableObject.newIntractableObjectPanel(new PeriodTransaction_Summary(core), ALWAYS_DISPLAY, false, this);

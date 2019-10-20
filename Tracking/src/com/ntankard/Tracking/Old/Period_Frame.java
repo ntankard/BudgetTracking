@@ -8,7 +8,6 @@ import com.ntankard.DynamicGUI.Util.Updatable;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.CategoryTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
@@ -21,7 +20,6 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import static com.ntankard.ClassExtension.MemberProperties.ALWAYS_DISPLAY;
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
@@ -90,12 +88,9 @@ public class Period_Frame extends UpdatableJPanel {
         this.setLayout(new BorderLayout());
 
         statement_panel = DynamicGUI_DisplayList.newIntractableTable(statement_list, new MemberClass(Statement.class), true, ALWAYS_DISPLAY, this);
-        statement_panel.getMainPanel().setLocaleInspector(rowObject -> {
+        statement_panel.getMainPanel().setNumberFormatSource(rowObject -> {
             Statement statement = (Statement) rowObject;
-            if (statement.getIdBank().getCurrency().getId().equals("YEN")) {
-                return Locale.JAPAN;
-            }
-            return Locale.US;
+            return statement.getIdBank().getCurrency().getNumberFormat();
         });
         setRecord = new DynamicGUI_DisplayList.ListControl_Button<>("Manage Period", statement_panel, SINGLE, false);
         setRecord.addActionListener(e -> {
@@ -125,12 +120,9 @@ public class Period_Frame extends UpdatableJPanel {
         }, null, this, trackingDatabase);
 
         transaction_panel = DynamicGUI_DisplayList.newIntractableTable(transaction_list, new MemberClass(Transaction.class), true, ALWAYS_DISPLAY, this);
-        transaction_panel.getMainPanel().setLocaleInspector(rowObject -> {
+        transaction_panel.getMainPanel().setNumberFormatSource(rowObject -> {
             Transaction transaction = (Transaction) rowObject;
-            if (transaction.getSourceContainer().getIdBank().getCurrency().getId().equals("YEN")) {
-                return Locale.JAPAN;
-            }
-            return Locale.US;
+            return transaction.getSourceContainer().getIdBank().getCurrency().getNumberFormat();
         });
 
         periodSummary_panel = new PeriodSummary(core, true, this);
