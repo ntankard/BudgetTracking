@@ -71,10 +71,10 @@ public class ReferenceTypesPanel extends UpdatableJPanel {
         bank_list.clear();
         fundEvent_list.clear();
 
-        category_list.addAll(TrackingDatabase.get().getCategories());
-        currency_list.addAll(TrackingDatabase.get().getCurrencies());
-        bank_list.addAll(TrackingDatabase.get().getBanks());
-        fundEvent_list.addAll(TrackingDatabase.get().getFundEvents());
+        category_list.addAll(TrackingDatabase.get().get(Category.class));
+        currency_list.addAll(TrackingDatabase.get().get(Currency.class));
+        bank_list.addAll(TrackingDatabase.get().get(Bank.class));
+        fundEvent_list.addAll(TrackingDatabase.get().get(FundEvent.class));
 
         category_panel.update();
         currency_panel.update();

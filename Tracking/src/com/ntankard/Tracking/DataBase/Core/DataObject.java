@@ -1,9 +1,6 @@
 package com.ntankard.Tracking.DataBase.Core;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public abstract class DataObject {
 
@@ -103,7 +100,7 @@ public abstract class DataObject {
      * @param <T>  The Object type
      * @return The list of children for a a specific class type
      */
-    public <T extends DataObject> List<T> getChildren(Class type) {
+    public <T extends DataObject> List<T> getChildren(Class<T> type) {
         if (!children.containsKey(type)) {
             children.put(type, new ArrayList<>());
             childrenMap.put(type, new HashMap<>());
@@ -120,12 +117,25 @@ public abstract class DataObject {
      * @param <T>  The Object type
      * @return The list of children for a a specific class type
      */
-    public <T extends DataObject> T getChildren(Class type, String key) {
+    public <T extends DataObject> T getChildren(Class<T> type, String key) {
         if (!childrenMap.containsKey(type)) {
             children.put(type, new ArrayList<>());
             childrenMap.put(type, new HashMap<>());
         }
 
         return (T) childrenMap.get(type).get(key);
+    }
+
+    /**
+     * Get the list of all children
+     *
+     * @return The list of all children
+     */
+    public List<DataObject> getChildren() {
+        List<DataObject> toReturn = new ArrayList<>();
+        for (Class aClass : children.keySet()) {
+            toReturn.addAll(children.get(aClass));
+        }
+        return toReturn;
     }
 }

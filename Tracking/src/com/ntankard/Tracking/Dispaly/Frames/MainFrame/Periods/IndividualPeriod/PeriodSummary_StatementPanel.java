@@ -8,6 +8,7 @@ import com.ntankard.DynamicGUI.Util.Updatable;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
+import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.Interface.Summary.PeriodTransaction_Summary;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
 import com.ntankard.Tracking.Dispaly.Frames.Statement_Frame;
@@ -18,10 +19,8 @@ import com.ntankard.Tracking.Dispaly.Util.StatementLocaleInspector;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import static com.ntankard.ClassExtension.MemberProperties.ALWAYS_DISPLAY;
-import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 import static com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList.ListControl_Button;
 import static com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList.ListControl_Button.EnableCondition.SINGLE;
 import static com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList.newIntractableTable;
@@ -85,19 +84,19 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
         transaction_panel = newIntractableTable(transaction_list, new MemberClass(Transaction.class), false, true, ALWAYS_DISPLAY, new DynamicGUI_DisplayList.ElementController<Transaction>() {
             @Override
             public Transaction newElement() {
-                String idCode = TrackingDatabase.get().getNextTransactionId(selectedStatement);
-                return new Transaction(selectedStatement, idCode, "", 0.0, TrackingDatabase.get().getCategory("Unaccounted"));
+                String idCode = TrackingDatabase.get().getNextId(Transaction.class);
+                return new Transaction(selectedStatement, idCode, "", 0.0, TrackingDatabase.get().get(Category.class, "Unaccounted"));
             }
 
             @Override
             public void deleteElement(Transaction toDel) {
-                TrackingDatabase.get().removeTransaction(toDel);
+                TrackingDatabase.get().remove(toDel);
                 notifyUpdate();
             }
 
             @Override
             public void addElement(Transaction newObj) {
-                TrackingDatabase.get().addTransaction(newObj);
+                TrackingDatabase.get().add(newObj);
                 notifyUpdate();
             }
         }, new MoneyEventLocaleInspector(), this, TrackingDatabase.get());

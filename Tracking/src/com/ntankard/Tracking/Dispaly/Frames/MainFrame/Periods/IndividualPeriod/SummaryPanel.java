@@ -71,14 +71,14 @@ public class SummaryPanel extends UpdatableJPanel {
      */
     @Override
     public void update() {
-        NumberFormat formatter = TrackingDatabase.get().getCurrencyFormat("YEN");
-        Currency YEN = TrackingDatabase.get().getCurrency("YEN");
+        NumberFormat formatter = TrackingDatabase.get().get(Currency.class, "YEN").getNumberFormat();
+        Currency YEN = TrackingDatabase.get().get(Currency.class, "YEN");
 
         double savingMin = Double.MAX_VALUE;
         double savingMax = Double.MIN_VALUE;
         double netMin = Double.MAX_VALUE;
         double netMax = Double.MIN_VALUE;
-        for (Period period : TrackingDatabase.get().getPeriods()) {
+        for (Period period : TrackingDatabase.get().get(Period.class)) {
             double saving = new PeriodTransaction_Summary(period).getSavings();
             if (saving > savingMax) {
                 savingMax = saving;
@@ -131,7 +131,7 @@ public class SummaryPanel extends UpdatableJPanel {
         }
 
         // Check the this periods start balances all match the previous ones end
-        Period last = TrackingDatabase.get().getPeriod(core.getLastId());
+        Period last = TrackingDatabase.get().get(Period.class, core.getLastId());
         if (last == null) {
             periodLink_lbl.setText(" First ");
             periodLink_lbl.setForeground(Color.GREEN);

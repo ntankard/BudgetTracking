@@ -23,12 +23,12 @@ public class PeriodCategoryType_Set<T extends MoneyEvent> extends MoneyEvent_Set
     /**
      * The type of object to group
      */
-    private Class toGet;
+    private Class<T> toGet;
 
     /**
      * Constructor
      */
-    public PeriodCategoryType_Set(Period period, Category category, Class toGet) {
+    public PeriodCategoryType_Set(Period period, Category category, Class<T> toGet) {
         this.period = period;
         this.category = category;
         this.toGet = toGet;
@@ -40,7 +40,7 @@ public class PeriodCategoryType_Set<T extends MoneyEvent> extends MoneyEvent_Set
     @Override
     public List<T> getMoneyEvents() {
         List<T> toReturn = new ArrayList<>();
-        for (T transaction : period.<T>getChildren(toGet)) {
+        for (T transaction : period.getChildren(toGet)) {
             if (isSource(transaction) || isDestination(transaction)) {
                 toReturn.add(transaction);
             }

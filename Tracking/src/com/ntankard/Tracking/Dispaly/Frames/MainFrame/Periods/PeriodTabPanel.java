@@ -58,12 +58,12 @@ public class PeriodTabPanel extends UpdatableJPanel {
      * @return True if there is new or removed period what warrant a complete panel regeneration
      */
     private boolean hasPeriodsChanged() {
-        if (TrackingDatabase.get().getPeriods().size() != periods.size()) {
+        if (TrackingDatabase.get().get(Period.class).size() != periods.size()) {
             return true;
         }
 
         for (int i = 0; i < periods.size(); i++) {
-            if (!periods.get(i).equals(TrackingDatabase.get().getPeriods().get(i))) {
+            if (!periods.get(i).equals(TrackingDatabase.get().get(Period.class).get(i))) {
                 return true;
             }
         }
@@ -82,7 +82,7 @@ public class PeriodTabPanel extends UpdatableJPanel {
 
             master_tPanel.removeAll();
 
-            periods.addAll(TrackingDatabase.get().getPeriods());
+            periods.addAll(TrackingDatabase.get().get(Period.class));
             for (Period period : periods) {
                 IndividualPeriodPanel panel = new IndividualPeriodPanel(period, this);
                 periodsPanels.add(panel);

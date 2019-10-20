@@ -80,11 +80,11 @@ public class MoneyEventPanel extends UpdatableJPanel {
         periodFundTransfer_list.clear();
         fundChargeTransfer_list.clear();
 
-        transaction_list.addAll(TrackingDatabase.get().getTransactions());
-        categoryTransfer_list.addAll(TrackingDatabase.get().getCategoryTransfers());
-        periodTransfer_list.addAll(TrackingDatabase.get().getPeriodTransfers());
-        periodFundTransfer_list.addAll(TrackingDatabase.get().getPeriodFundTransfers());
-        fundChargeTransfer_list.addAll(TrackingDatabase.get().getFundChargeTransfers());
+        transaction_list.addAll(TrackingDatabase.get().get(Transaction.class));
+        categoryTransfer_list.addAll(TrackingDatabase.get().get(CategoryTransfer.class));
+        periodTransfer_list.addAll(TrackingDatabase.get().get(PeriodTransfer.class));
+        periodFundTransfer_list.addAll(TrackingDatabase.get().get(PeriodFundTransfer.class));
+        fundChargeTransfer_list.addAll(TrackingDatabase.get().get(FundChargeTransfer.class));
 
         transaction_panel.update();
         categoryTransfer_panel.update();

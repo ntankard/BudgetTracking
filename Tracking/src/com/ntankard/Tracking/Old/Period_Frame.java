@@ -8,7 +8,10 @@ import com.ntankard.DynamicGUI.Util.Updatable;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.CategoryTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
+import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
+import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
 import com.ntankard.Tracking.Dispaly.Frames.Statement_Frame;
 import com.ntankard.Tracking.Dispaly.Swing.PeriodSummary.PeriodSummary;
@@ -104,19 +107,19 @@ public class Period_Frame extends UpdatableJPanel {
         categoryTransfer_panel = DynamicGUI_DisplayList.newIntractableTable(categoryTransfer_list, new MemberClass(CategoryTransfer.class), true, true, ALWAYS_DISPLAY, new DynamicGUI_DisplayList.ElementController<CategoryTransfer>() {
             @Override
             public void deleteElement(CategoryTransfer toDel) {
-                trackingDatabase.removeCategoryTransfer(toDel);
+                trackingDatabase.remove(toDel);
                 notifyUpdate();
             }
 
             @Override
             public CategoryTransfer newElement() {
-                String idCode = trackingDatabase.getNextCategoryTransferId(core);
-                return new CategoryTransfer(core, idCode, trackingDatabase.getCategory("Unaccounted"), trackingDatabase.getCategory("Unaccounted"), trackingDatabase.getCurrency("YEN"), "", 0.0);
+                String idCode = trackingDatabase.getNextId(CategoryTransfer.class);
+                return new CategoryTransfer(core, idCode, trackingDatabase.get(Category.class,"Unaccounted"), trackingDatabase.get(Category.class,"Unaccounted"), trackingDatabase.get(Currency.class, "YEN"), "", 0.0);
             }
 
             @Override
             public void addElement(CategoryTransfer newObj) {
-                trackingDatabase.addCategoryTransfer(newObj);
+                trackingDatabase.add(newObj);
                 notifyUpdate();
             }
         }, null, this, trackingDatabase);

@@ -2,8 +2,11 @@ package com.ntankard.Tracking.Dispaly.Util.ElementControllers;
 
 import com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList.ElementController;
 import com.ntankard.DynamicGUI.Util.Updatable;
+import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Fund;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodFundTransfer;
+import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
+import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.FundEvent;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
 
@@ -32,14 +35,14 @@ public class PeriodFundTransfer_ElementController implements ElementController<P
      */
     @Override
     public PeriodFundTransfer newElement() {
-        String idCode = TrackingDatabase.get().getNextPeriodFundTransferId();
+        String idCode = TrackingDatabase.get().getNextId(PeriodFundTransfer.class);
         return new PeriodFundTransfer(
                 idCode,
                 period,
-                TrackingDatabase.get().getFunds().get(0),
-                TrackingDatabase.get().getCategory("Unaccounted"),
-                TrackingDatabase.get().getFunds().get(0).<FundEvent>getChildren(FundEvent.class).get(0),
-                TrackingDatabase.get().getCurrency("YEN"),
+                TrackingDatabase.get().get(Fund.class).get(0),
+                TrackingDatabase.get().get(Category.class,"Unaccounted"),
+                TrackingDatabase.get().get(Fund.class).get(0).<FundEvent>getChildren(FundEvent.class).get(0),
+                TrackingDatabase.get().get(Currency.class, "YEN"),
                 "",
                 0.0);
     }
@@ -49,7 +52,7 @@ public class PeriodFundTransfer_ElementController implements ElementController<P
      */
     @Override
     public void deleteElement(PeriodFundTransfer toDel) {
-        TrackingDatabase.get().removePeriodFundTransfer(toDel);
+        TrackingDatabase.get().remove(toDel);
         master.notifyUpdate();
     }
 
@@ -58,7 +61,7 @@ public class PeriodFundTransfer_ElementController implements ElementController<P
      */
     @Override
     public void addElement(PeriodFundTransfer newObj) {
-        TrackingDatabase.get().addPeriodFundTransfer(newObj);
+        TrackingDatabase.get().add(newObj);
         master.notifyUpdate();
     }
 }

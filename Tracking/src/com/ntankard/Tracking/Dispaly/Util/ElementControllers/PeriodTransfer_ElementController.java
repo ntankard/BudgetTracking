@@ -4,6 +4,8 @@ import com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList.ElementCon
 import com.ntankard.DynamicGUI.Util.Updatable;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodTransfer;
+import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
+import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
 
 public class PeriodTransfer_ElementController implements ElementController<PeriodTransfer> {
@@ -31,13 +33,13 @@ public class PeriodTransfer_ElementController implements ElementController<Perio
      */
     @Override
     public PeriodTransfer newElement() {
-        String idCode = TrackingDatabase.get().getNextPeriodTransferId();
+        String idCode = TrackingDatabase.get().getNextId(PeriodTransfer.class);
         return new PeriodTransfer(
                 idCode,
                 period,
-                TrackingDatabase.get().getPeriods().get(1),
-                TrackingDatabase.get().getCurrency("YEN"),
-                TrackingDatabase.get().getCategory("Unaccounted"),
+                TrackingDatabase.get().get(Period.class).get(1),
+                TrackingDatabase.get().get(Currency.class, "YEN"),
+                TrackingDatabase.get().get(Category.class, "Unaccounted"),
                 "",
                 0.0);
     }
@@ -47,7 +49,7 @@ public class PeriodTransfer_ElementController implements ElementController<Perio
      */
     @Override
     public void deleteElement(PeriodTransfer toDel) {
-        TrackingDatabase.get().removePeriodTransfer(toDel);
+        TrackingDatabase.get().remove(toDel);
         master.notifyUpdate();
     }
 
@@ -56,7 +58,7 @@ public class PeriodTransfer_ElementController implements ElementController<Perio
      */
     @Override
     public void addElement(PeriodTransfer newObj) {
-        TrackingDatabase.get().addPeriodTransfer(newObj);
+        TrackingDatabase.get().add(newObj);
         master.notifyUpdate();
     }
 }

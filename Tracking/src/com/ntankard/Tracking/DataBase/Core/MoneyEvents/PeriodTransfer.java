@@ -12,24 +12,11 @@ import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 @ClassExtensionProperties(includeParent = true)
 public class PeriodTransfer extends MoneyEvent<Period, Category, Period, Category> {
 
-    // My values
-    private String id;
-
     /**
      * Constructor
      */
     public PeriodTransfer(String id, Period source, Period destination, Currency currency, Category category, String description, Double value) {
-        super(description, value, source, category, destination, category, currency);
-        this.id = id;
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
-    public String getId() {
-        return id;
+        super(id, description, value, source, category, destination, category, currency);
     }
 
     //------------------------------------------------------------------------------------------------------------------

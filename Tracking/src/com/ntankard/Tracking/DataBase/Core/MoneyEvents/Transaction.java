@@ -13,24 +13,11 @@ import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 @ClassExtensionProperties(includeParent = true)
 public class Transaction extends MoneyEvent<Statement, Category, Period, Category> {
 
-    // My values
-    private String idCode;
-
     /**
      * Constructor
      */
-    public Transaction(Statement idStatement, String idCode, String description, Double value, Category category) {
-        super(description, value, idStatement, null, idStatement.getIdPeriod(), category, idStatement.getIdBank().getCurrency());
-        this.idCode = idCode;
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    public String getId() {
-        return getDestinationContainer().getId() + " " + getIdCode();
+    public Transaction(Statement idStatement, String id, String description, Double value, Category category) {
+        super(id, description, value, idStatement, null, idStatement.getIdPeriod(), category, idStatement.getIdBank().getCurrency());
     }
 
     /**
@@ -46,15 +33,12 @@ public class Transaction extends MoneyEvent<Statement, Category, Period, Categor
     //------------------------------------------------------------------------------------------------------------------
 
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    @Override
     public Period getDestinationContainer() {
         return super.getDestinationContainer();
     }
 
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    public String getIdCode() {
-        return idCode;
-    }
-
+    @Override
     public Category getDestinationCategory() {
         return super.getDestinationCategory();
     }

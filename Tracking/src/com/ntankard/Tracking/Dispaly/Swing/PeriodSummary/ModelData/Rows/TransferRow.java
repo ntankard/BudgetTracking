@@ -72,7 +72,7 @@ public class TransferRow<T extends MoneyEvent> extends DataRows<T> {
                 return rowData.getDescription();
             } else {
                 if (getValueCurrency(rowData).equals(currency)) {
-                    return TrackingDatabase.get().getCurrencyFormat(currency).format(getValue(rowData, category));
+                    return currency.getNumberFormat().format(getValue(rowData, category));
                 }
             }
         }
@@ -114,7 +114,7 @@ public class TransferRow<T extends MoneyEvent> extends DataRows<T> {
     public Object getCurrencyTotal(Category category, Currency currency) {
         if (currency != null) {
             double total = getCurrencyTotal_impl(category, currency);
-            return TrackingDatabase.get().getCurrencyFormat(currency).format(total);
+            return currency.getNumberFormat().format(total);
         }
         return null;
     }

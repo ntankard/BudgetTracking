@@ -31,7 +31,7 @@ public class PeriodTransaction_Summary {
      */
     @DisplayProperties(dataType = CURRENCY_YEN)
     public Double getHex() {
-        return new PeriodCategoryType_Set<Transaction>(core, TrackingDatabase.get().getCategory("Income"), Transaction.class).getTotal() * -0.06;
+        return new PeriodCategoryType_Set<>(core, TrackingDatabase.get().get(Category.class, "Income"), Transaction.class).getTotal() * -0.06;
     }
 
     /**
@@ -42,7 +42,7 @@ public class PeriodTransaction_Summary {
     @DisplayProperties(dataType = CURRENCY_YEN)
     public Double getSavings() {
         Double sum = 0.0;
-        for (Category category : TrackingDatabase.get().getCategories()) {
+        for (Category category : TrackingDatabase.get().get(Category.class)) {
             sum += new PeriodCategory_Set(core, category).getTotal();
         }
         sum += getHex();

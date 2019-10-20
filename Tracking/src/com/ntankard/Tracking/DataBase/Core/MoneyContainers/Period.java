@@ -5,6 +5,7 @@ import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.DataObject;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
+import com.ntankard.Tracking.DataBase.TrackingDatabase;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -82,6 +83,28 @@ public class Period extends MoneyContainer {
     }
 
     /**
+     * Find the Period before this one
+     *
+     * @return The last period or null
+     */
+    public Period getPreviousPeriod() {
+        for (Period p : TrackingDatabase.get().get(Period.class)) {
+            Calendar lastEnd = p.getEnd();
+            Calendar nextStart = getStart();
+
+            lastEnd.add(Calendar.SECOND, +1);
+            if (lastEnd.get(Calendar.YEAR) == nextStart.get(Calendar.YEAR)) {
+                if (lastEnd.get(Calendar.MONTH) == nextStart.get(Calendar.MONTH)) {
+                    return p;
+                }
+            }
+            lastEnd.add(Calendar.SECOND, -1);
+        }
+
+        return null;
+    }
+
+    /**
      * Get the expected ID for the previous period
      *
      * @return The expected ID for the previous period
@@ -121,7 +144,7 @@ public class Period extends MoneyContainer {
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public Double getAUDMissingTransfer() {
         Double value = 0.0;
-        for (Statement t : this.<Statement>getChildren(Statement.class)) {
+        for (Statement t : this.getChildren(Statement.class)) {
             if (t.getIdBank().getCurrency().getId().equals("AUD")) {
                 value += t.getNetTransfer();
             }
@@ -140,7 +163,7 @@ public class Period extends MoneyContainer {
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public Double getYENMissingTransfer() {
         Double value = 0.0;
-        for (Statement t : this.<Statement>getChildren(Statement.class)) {
+        for (Statement t : this.getChildren(Statement.class)) {
             if (t.getIdBank().getCurrency().getId().equals("YEN")) {
                 value += t.getNetTransfer();
             }
@@ -170,7 +193,7 @@ public class Period extends MoneyContainer {
     @DisplayProperties(name = "Balance", order = 0, dataType = CURRENCY_YEN)
     public Double getStartBalance() {
         Double value = 0.0;
-        for (Statement t : this.<Statement>getChildren(Statement.class)) {
+        for (Statement t : this.getChildren(Statement.class)) {
             value += (t.getStart() * t.getIdBank().getCurrency().getToPrimary());
         }
         return value;
@@ -179,7 +202,7 @@ public class Period extends MoneyContainer {
     @DisplayProperties(name = "Balance", order = 2, dataType = CURRENCY_YEN)
     public Double getEndBalance() {
         Double value = 0.0;
-        for (Statement t : this.<Statement>getChildren(Statement.class)) {
+        for (Statement t : this.getChildren(Statement.class)) {
             value += (t.getEnd() * t.getIdBank().getCurrency().getToPrimary());
         }
         return value;
@@ -188,7 +211,7 @@ public class Period extends MoneyContainer {
     @DisplayProperties(name = "Balance", order = 1, dataType = CURRENCY_AUD)
     public Double getStartBalanceSecondary() {
         double value = 0.0;
-        for (Statement t : this.<Statement>getChildren(Statement.class)) {
+        for (Statement t : this.getChildren(Statement.class)) {
             value += (t.getStart() * t.getIdBank().getCurrency().getToSecondary());
         }
         return value;
@@ -197,7 +220,7 @@ public class Period extends MoneyContainer {
     @DisplayProperties(name = "Balance", order = 3, dataType = CURRENCY_AUD)
     public Double getEndBalanceSecondary() {
         double value = 0.0;
-        for (Statement t : this.<Statement>getChildren(Statement.class)) {
+        for (Statement t : this.getChildren(Statement.class)) {
             value += (t.getEnd() * t.getIdBank().getCurrency().getToSecondary());
         }
         return value;
@@ -211,7 +234,7 @@ public class Period extends MoneyContainer {
     @DisplayProperties(name = "Balance", order = 2, dataType = CURRENCY_YEN)
     public Double getEndBalance(Currency currency) {
         Double value = 0.0;
-        for (Statement t : this.<Statement>getChildren(Statement.class)) {
+        for (Statement t : this.getChildren(Statement.class)) {
             if (t.getIdBank().getCurrency().equals(currency)) {
                 value += (t.getEnd() * t.getIdBank().getCurrency().getToPrimary());
             }

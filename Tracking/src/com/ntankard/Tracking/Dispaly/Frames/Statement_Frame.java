@@ -6,7 +6,9 @@ import com.ntankard.DynamicGUI.Components.Object.DynamicGUI_IntractableObject;
 import com.ntankard.DynamicGUI.Util.Swing.Base.UpdatableJPanel;
 import com.ntankard.DynamicGUI.Util.Updatable;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.CategoryTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
+import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
 import com.ntankard.Tracking.Dispaly.Util.MoneyEventLocaleInspector;
 
@@ -75,19 +77,19 @@ public class Statement_Frame extends UpdatableJPanel {
 
             @Override
             public Transaction newElement() {
-                String idCode = TrackingDatabase.get().getNextTransactionId(core);
-                return new Transaction(core, idCode, "", 0.0, TrackingDatabase.get().getCategory("Unaccounted"));
+                String idCode = TrackingDatabase.get().getNextId(Transaction.class);
+                return new Transaction(core, idCode, "", 0.0, TrackingDatabase.get().get(Category.class,"Unaccounted"));
             }
 
             @Override
             public void deleteElement(Transaction toDel) {
-                TrackingDatabase.get().removeTransaction(toDel);
+                TrackingDatabase.get().remove(toDel);
                 notifyUpdate();
             }
 
             @Override
             public void addElement(Transaction newObj) {
-                TrackingDatabase.get().addTransaction(newObj);
+                TrackingDatabase.get().add(newObj);
                 notifyUpdate();
             }
         }, new MoneyEventLocaleInspector(), this, TrackingDatabase.get());

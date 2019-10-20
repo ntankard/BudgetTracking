@@ -65,9 +65,9 @@ public class MoneyContainerPanel extends UpdatableJPanel {
         period_list.clear();
         statement_list.clear();
 
-        fund_list.addAll(TrackingDatabase.get().getFunds());
-        period_list.addAll(TrackingDatabase.get().getPeriods());
-        statement_list.addAll(TrackingDatabase.get().getStatements());
+        fund_list.addAll(TrackingDatabase.get().get(Fund.class));
+        period_list.addAll(TrackingDatabase.get().get(Period.class));
+        statement_list.addAll(TrackingDatabase.get().get(Statement.class));
 
         fund_panel.update();
         period_panel.update();

@@ -3,6 +3,7 @@ package com.ntankard.Tracking.Dispaly.Frames.MainFrame.SummaryGraphs;
 import com.ntankard.DynamicGUI.Util.Swing.Base.UpdatableJPanel;
 import com.ntankard.DynamicGUI.Util.Updatable;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
+import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -53,9 +54,9 @@ public class SavingsGraph extends UpdatableJPanel {
         renderer.setSeriesPaint(2, Color.RED);
         plot.setRenderer(renderer);
 
-        String[] axisLabel = new String[TrackingDatabase.get().getPeriods().size()];
+        String[] axisLabel = new String[TrackingDatabase.get().get(Period.class).size()];
         int i = 0;
-        for (Period period : TrackingDatabase.get().getPeriods()) {
+        for (Period period : TrackingDatabase.get().<Period>get(Period.class)) {
             axisLabel[i] = period.getId();
             i++;
         }
@@ -76,9 +77,9 @@ public class SavingsGraph extends UpdatableJPanel {
         final XYSeries total = new XYSeries("Total");
 
         int i = 0;
-        for (Period period : TrackingDatabase.get().getPeriods()) {
-            aud.add(i, period.getEndBalance(TrackingDatabase.get().getCurrency("AUD")));
-            yen.add(i, period.getEndBalance(TrackingDatabase.get().getCurrency("YEN")));
+        for (Period period : TrackingDatabase.get().get(Period.class)) {
+            aud.add(i, period.getEndBalance(TrackingDatabase.get().get(Currency.class, "AUD")));
+            yen.add(i, period.getEndBalance(TrackingDatabase.get().get(Currency.class, "YEN")));
             total.add(i, period.getEndBalance());
             i++;
         }

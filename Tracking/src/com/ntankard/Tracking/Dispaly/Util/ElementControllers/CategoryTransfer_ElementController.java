@@ -4,6 +4,9 @@ import com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList.ElementCon
 import com.ntankard.DynamicGUI.Util.Updatable;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.CategoryTransfer;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodTransfer;
+import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
+import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
 
 public class CategoryTransfer_ElementController implements ElementController<CategoryTransfer> {
@@ -31,13 +34,13 @@ public class CategoryTransfer_ElementController implements ElementController<Cat
      */
     @Override
     public CategoryTransfer newElement() {
-        String idCode = TrackingDatabase.get().getNextPeriodTransferId();
+        String idCode = TrackingDatabase.get().getNextId(CategoryTransfer.class);
         return new CategoryTransfer(
                 period,
                 idCode,
-                TrackingDatabase.get().getCategory("Unaccounted"),
-                TrackingDatabase.get().getCategory("Unaccounted"),
-                TrackingDatabase.get().getCurrency("YEN"),
+                TrackingDatabase.get().get(Category.class,"Unaccounted"),
+                TrackingDatabase.get().get(Category.class,"Unaccounted"),
+                TrackingDatabase.get().get(Currency.class, "YEN"),
                 "",
                 0.0);
     }
@@ -47,7 +50,7 @@ public class CategoryTransfer_ElementController implements ElementController<Cat
      */
     @Override
     public void deleteElement(CategoryTransfer toDel) {
-        TrackingDatabase.get().removeCategoryTransfer(toDel);
+        TrackingDatabase.get().remove(toDel);
         master.notifyUpdate();
     }
 
@@ -56,7 +59,7 @@ public class CategoryTransfer_ElementController implements ElementController<Cat
      */
     @Override
     public void addElement(CategoryTransfer newObj) {
-        TrackingDatabase.get().addCategoryTransfer(newObj);
+        TrackingDatabase.get().add(newObj);
         master.notifyUpdate();
     }
 }

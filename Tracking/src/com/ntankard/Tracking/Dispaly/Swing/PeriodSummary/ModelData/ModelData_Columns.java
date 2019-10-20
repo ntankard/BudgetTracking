@@ -37,7 +37,7 @@ public class ModelData_Columns {
         columns.clear();
 
         // Find all categories
-        categories.addAll(TrackingDatabase.get().getCategories());
+        categories.addAll(TrackingDatabase.get().get(Category.class));
         categories.sort(Comparator.comparingInt(Category::getOrder));
 
         for (Category category : categories) {

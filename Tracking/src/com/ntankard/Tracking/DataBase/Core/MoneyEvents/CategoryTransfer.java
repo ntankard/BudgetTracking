@@ -11,34 +11,16 @@ import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 @ClassExtensionProperties(includeParent = true)
 public class CategoryTransfer extends MoneyEvent<Period, Category, Period, Category> {
 
-    // My values
-    private String idCode;
-
     /**
      * Constructor
      */
-    public CategoryTransfer(Period idPeriod, String idCode, Category source, Category destination, Currency currency, String description, Double value) {
-        super(description, value, idPeriod, source, idPeriod, destination, currency);
-        this.idCode = idCode;
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
-    public String getId() {
-        return getSourceContainer().getId() + " " + getIdCode();
+    public CategoryTransfer(Period idPeriod, String id, Category source, Category destination, Currency currency, String description, Double value) {
+        super(id, description, value, idPeriod, source, idPeriod, destination, currency);
     }
 
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
-
-    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
-    public String getIdCode() {
-        return idCode;
-    }
 
     @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
     @DisplayProperties(order = 2)

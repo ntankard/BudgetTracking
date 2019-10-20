@@ -32,7 +32,7 @@ public class FundEvent extends DataObject {
      */
     @Override
     public String getId() {
-        return idFund.toString() + " " + idCode;
+        return idFund.toString() + "-" + idCode;
     }
 
     /**
@@ -44,6 +44,14 @@ public class FundEvent extends DataObject {
         List<DataObject> toReturn = new ArrayList<>();
         toReturn.add(idFund);
         return toReturn;
+    }
+
+    /**
+     * {@inheritDoc
+     */
+    @Override
+    public String toString() {
+        return idCode;
     }
 
     //------------------------------------------------------------------------------------------------------------------

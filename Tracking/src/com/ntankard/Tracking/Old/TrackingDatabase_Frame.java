@@ -116,19 +116,19 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
         periodTransfer_panel = DynamicGUI_DisplayList.newIntractableTable(periodTransfer_list, new MemberClass(PeriodTransfer.class), true, true, ALWAYS_DISPLAY, new DynamicGUI_DisplayList.ElementController<PeriodTransfer>() {
             @Override
             public PeriodTransfer newElement() {
-                String idCode = trackingDatabase.getNextPeriodTransferId();
-                return new PeriodTransfer(idCode, trackingDatabase.getPeriods().get(0), trackingDatabase.getPeriods().get(1), trackingDatabase.getCurrency("YEN"), trackingDatabase.getCategory("Unaccounted"), "", 0.0);
+                String idCode = trackingDatabase.getNextId(PeriodTransfer.class);
+                return new PeriodTransfer(idCode, trackingDatabase.<Period>get(Period.class).get(0), trackingDatabase.<Period>get(Period.class).get(1), trackingDatabase.get(Currency.class, "YEN"), trackingDatabase.get(Category.class, "Unaccounted"), "", 0.0);
             }
 
             @Override
             public void deleteElement(PeriodTransfer toDel) {
-                trackingDatabase.removePeriodTransfer(toDel);
+                trackingDatabase.remove(toDel);
                 notifyUpdate();
             }
 
             @Override
             public void addElement(PeriodTransfer newObj) {
-                trackingDatabase.addPeriodTransfer(newObj);
+                trackingDatabase.add(newObj);
                 notifyUpdate();
             }
         }, null, this, trackingDatabase);
@@ -145,15 +145,15 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
 
             @Override
             public void addElement(Fund newObj) {
-                trackingDatabase.addFund(newObj);
+                trackingDatabase.add(newObj);
                 notifyUpdate();
             }
         }, null, this, trackingDatabase);
         periodFundTransfer_panel = DynamicGUI_DisplayList.newIntractableTable(periodFundTransfer_list, new MemberClass(PeriodFundTransfer.class), true, true, ALWAYS_DISPLAY, new DynamicGUI_DisplayList.ElementController<PeriodFundTransfer>() {
             @Override
             public PeriodFundTransfer newElement() {
-                String idCode = trackingDatabase.getNextPeriodFundTransferId();
-                return new PeriodFundTransfer(idCode, trackingDatabase.getPeriods().get(0), trackingDatabase.getFunds().get(0), trackingDatabase.getCategory("Unaccounted"), trackingDatabase.getFunds().get(0).<FundEvent>getChildren(FundEvent.class).get(0) , trackingDatabase.getCurrency("YEN"), "", 0.0);
+                String idCode = trackingDatabase.getNextId(PeriodFundTransfer.class);
+                return new PeriodFundTransfer(idCode, trackingDatabase.<Period>get(Period.class).get(0), trackingDatabase.get(Fund.class).get(0), trackingDatabase.get(Category.class, "Unaccounted"), trackingDatabase.get(Fund.class).get(0).<FundEvent>getChildren(FundEvent.class).get(0), trackingDatabase.get(Currency.class, "YEN"), "", 0.0);
             }
 
             @Override
@@ -163,7 +163,7 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
 
             @Override
             public void addElement(PeriodFundTransfer newObj) {
-                trackingDatabase.addPeriodFundTransfer(newObj);
+                trackingDatabase.add(newObj);
                 notifyUpdate();
             }
         }, null, this, trackingDatabase);
@@ -192,9 +192,9 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
 
         newPeriod = new DynamicGUI_DisplayList.ListControl_Button<>("New Period", period_panel);
         newPeriod.addActionListener(e -> {
-            Period last = trackingDatabase.getPeriods().get(trackingDatabase.getPeriods().size() - 1);
+            Period last = trackingDatabase.<Period>get(Period.class).get(trackingDatabase.<Period>get(Period.class).size() - 1);
             Period period = Period.Month(last.getNextPeriodTime().get(Calendar.MONTH) + 1, last.getNextPeriodTime().get(Calendar.YEAR));
-            trackingDatabase.addPeriod(period);
+            trackingDatabase.add(period);
             notifyUpdate();
         });
         period_panel.addButton(newPeriod);
@@ -239,17 +239,17 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
         fund_list.clear();
         periodFundTransfer_list.clear();
 
-        currency_list.addAll(trackingDatabase.getCurrencies());
-        category_list.addAll(trackingDatabase.getCategories());
-        bank_list.addAll(trackingDatabase.getBanks());
-        period_list.addAll(trackingDatabase.getPeriods());
-        statement_list.addAll(trackingDatabase.getStatements());
-        transaction_list.addAll(trackingDatabase.getTransactions());
-        categoryTransfer_list.addAll(trackingDatabase.getCategoryTransfers());
-        periodCategory_list.addAll(trackingDatabase.getPeriodCategory());
-        periodTransfer_list.addAll(trackingDatabase.getPeriodTransfers());
-        fund_list.addAll(trackingDatabase.getFunds());
-        periodFundTransfer_list.addAll(trackingDatabase.getPeriodFundTransfers());
+        currency_list.addAll(trackingDatabase.get(Currency.class));
+        category_list.addAll(trackingDatabase.get(Category.class));
+        bank_list.addAll(trackingDatabase.get(Bank.class));
+        period_list.addAll(trackingDatabase.get(Period.class));
+        statement_list.addAll(trackingDatabase.get(Statement.class));
+        transaction_list.addAll(trackingDatabase.get(Transaction.class));
+        categoryTransfer_list.addAll(trackingDatabase.get(CategoryTransfer.class));
+        //periodCategory_list.addAll(trackingDatabase.get(PeriodTransfer.class));
+        periodTransfer_list.addAll(trackingDatabase.get(PeriodTransfer.class));
+        fund_list.addAll(trackingDatabase.get(Fund.class));
+        periodFundTransfer_list.addAll(trackingDatabase.get(PeriodFundTransfer.class));
 
         currency_panel.update();
         category_panel.update();

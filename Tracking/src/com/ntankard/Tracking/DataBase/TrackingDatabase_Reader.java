@@ -103,7 +103,9 @@ public class TrackingDatabase_Reader {
             double toSecondary = Double.parseDouble(lines[1]);
             double toPrimary = Double.parseDouble(lines[2]);
             boolean isPrimary = Boolean.parseBoolean(lines[3]);
-            data.addCurrency(new Currency(id, toSecondary, toPrimary, isPrimary));
+            String language = lines[4];
+            String country = lines[5];
+            data.add(new Currency(id, toSecondary, toPrimary, isPrimary, language, country));
         }
     }
 
@@ -115,12 +117,14 @@ public class TrackingDatabase_Reader {
      */
     private static void saveCurrency(TrackingDatabase data, String csvFile) {
         ArrayList<List<String>> lines = new ArrayList<>();
-        for (Currency t : data.getCurrencies()) {
+        for (Currency t : data.get(Currency.class)) {
             List<String> line = new ArrayList<>();
             line.add(t.getId());
             line.add(t.getToSecondary() + "");
             line.add(t.getToPrimary() + "");
             line.add(t.isPrimary() + "");
+            line.add(t.getLanguage());
+            line.add(t.getCountry());
             lines.add(line);
         }
 
@@ -138,7 +142,7 @@ public class TrackingDatabase_Reader {
         for (String[] lines : allLines) {
             String id = lines[0];
             int order = Integer.parseInt(lines[1]);
-            data.addCategory(new Category(id, order));
+            data.add(new Category(id, order));
         }
     }
 
@@ -150,7 +154,7 @@ public class TrackingDatabase_Reader {
      */
     private static void saveCategory(TrackingDatabase data, String csvFile) {
         ArrayList<List<String>> lines = new ArrayList<>();
-        for (Category t : data.getCategories()) {
+        for (Category t : data.get(Category.class)) {
             List<String> line = new ArrayList<>();
             line.add(t.getId());
             line.add(t.getOrder() + "");
@@ -171,7 +175,7 @@ public class TrackingDatabase_Reader {
         for (String[] lines : allLines) {
             int month = Integer.parseInt(lines[0]);
             int year = Integer.parseInt(lines[1]);
-            data.addPeriod(Period.Month(month, year));
+            data.add(Period.Month(month, year));
         }
     }
 
@@ -183,7 +187,7 @@ public class TrackingDatabase_Reader {
      */
     private static void savePeriod(TrackingDatabase data, String csvFile) {
         ArrayList<List<String>> lines = new ArrayList<>();
-        for (Period t : data.getPeriods()) {
+        for (Period t : data.get(Period.class)) {
             List<String> line = new ArrayList<>();
             line.add((t.getStart().get(Calendar.MONTH) + 1) + "");
             line.add((t.getStart().get(Calendar.YEAR)) + "");
@@ -208,7 +212,7 @@ public class TrackingDatabase_Reader {
             String currencyID = lines[2];
             int order = Integer.parseInt(lines[3]);
 
-            data.addBank(new Bank(bank, account, data.getCurrency(currencyID), order));
+            data.add(new Bank(bank, account, data.get(Currency.class, currencyID), order));
         }
     }
 
@@ -221,7 +225,7 @@ public class TrackingDatabase_Reader {
      */
     private static void saveBank(TrackingDatabase data, String csvFile) {
         ArrayList<List<String>> lines = new ArrayList<>();
-        for (Bank t : data.getBanks()) {
+        for (Bank t : data.get(Bank.class)) {
             List<String> line = new ArrayList<>();
             line.add(t.getIdBank());
             line.add(t.getIdAccount());
@@ -250,7 +254,7 @@ public class TrackingDatabase_Reader {
             double transferIn = Double.parseDouble(lines[4]);
             double transferOut = Double.parseDouble(lines[5]);
 
-            data.addStatement(new Statement(data.getBank(bankId), data.getPeriod(periodId), start, end, transferIn, transferOut));
+            data.add(new Statement(data.get(Bank.class, bankId), data.get(Period.class, periodId), start, end, transferIn, transferOut));
         }
     }
 
@@ -262,7 +266,7 @@ public class TrackingDatabase_Reader {
      */
     private static void saveStatement(TrackingDatabase data, String csvFile) {
         ArrayList<List<String>> lines = new ArrayList<>();
-        for (Statement t : data.getStatements()) {
+        for (Statement t : data.get(Statement.class)) {
             List<String> line = new ArrayList<>();
             line.add(t.getIdBank().getId());
             line.add(t.getIdPeriod().getId());
@@ -286,14 +290,13 @@ public class TrackingDatabase_Reader {
         String csvFile = csvFileRoot + "Transaction.csv";
         ArrayList<String[]> allLines = readLines(csvFile);
         for (String[] lines : allLines) {
-            String bankID = lines[0];
-            String PeriodID = lines[1];
-            String id = lines[2];
-            String description = lines[3];
-            double value = Double.parseDouble(lines[4]);
-            String categoryId = lines[5];
+            String statementID = lines[0];
+            String id = lines[1];
+            String description = lines[2];
+            double value = Double.parseDouble(lines[3]);
+            String categoryId = lines[4];
 
-            data.addTransaction(new Transaction(data.getStatement(data.getBank(bankID), data.getPeriod(PeriodID)), id, description, value, data.getCategory(categoryId)));
+            data.add(new Transaction(data.get(Statement.class, statementID), id, description, value, data.get(Category.class, categoryId)));
         }
     }
 
@@ -305,11 +308,10 @@ public class TrackingDatabase_Reader {
      */
     private static void saveTransaction(TrackingDatabase data, String csvFile) {
         ArrayList<List<String>> lines = new ArrayList<>();
-        for (Transaction t : data.getTransactions()) {
+        for (Transaction t : data.get(Transaction.class)) {
             List<String> line = new ArrayList<>();
-            line.add(t.getSourceContainer().getIdBank().getId());
-            line.add(t.getSourceContainer().getIdPeriod().getId());
-            line.add(t.getIdCode());
+            line.add(t.getSourceContainer().getId());
+            line.add(t.getId());
             line.add(t.getDescription());
             line.add(t.getValue().toString());
             line.add(t.getDestinationCategory().getId());
@@ -336,7 +338,7 @@ public class TrackingDatabase_Reader {
             String description = lines[5];
             double value = Double.parseDouble(lines[6]);
 
-            data.addCategoryTransfer(new CategoryTransfer(data.getPeriod(PeriodID), id, data.getCategory(sourceCategoryId), data.getCategory(destinationCategoryId), data.getCurrency(currencyID), description, value));
+            data.add(new CategoryTransfer(data.get(Period.class, PeriodID), id, data.get(Category.class, sourceCategoryId), data.get(Category.class, destinationCategoryId), data.get(Currency.class, currencyID), description, value));
         }
     }
 
@@ -348,10 +350,10 @@ public class TrackingDatabase_Reader {
      */
     private static void saveCategoryTransfer(TrackingDatabase data, String csvFile) {
         ArrayList<List<String>> lines = new ArrayList<>();
-        for (CategoryTransfer t : data.getCategoryTransfers()) {
+        for (CategoryTransfer t : data.get(CategoryTransfer.class)) {
             List<String> line = new ArrayList<>();
             line.add(t.getSourceContainer().getId());
-            line.add(t.getIdCode());
+            line.add(t.getId());
             line.add(t.getSourceCategory().getId());
             line.add(t.getDestinationCategory().getId());
             line.add(t.getCurrency().getId());
@@ -381,12 +383,12 @@ public class TrackingDatabase_Reader {
             String description = lines[5];
             double value = Double.parseDouble(lines[6]);
 
-            data.addPeriodTransfer(new PeriodTransfer(
+            data.add(new PeriodTransfer(
                     id,
-                    data.getPeriod(sourcePeriodId),
-                    data.getPeriod(destinationPeriodId),
-                    data.getCurrency(currencyID),
-                    data.getCategory(categoryID),
+                    data.get(Period.class, sourcePeriodId),
+                    data.get(Period.class, destinationPeriodId),
+                    data.get(Currency.class, currencyID),
+                    data.get(Category.class, categoryID),
                     description,
                     value
             ));
@@ -401,7 +403,7 @@ public class TrackingDatabase_Reader {
      */
     private static void savePeriodTransfer(TrackingDatabase data, String csvFile) {
         ArrayList<List<String>> lines = new ArrayList<>();
-        for (PeriodTransfer t : data.getPeriodTransfers()) {
+        for (PeriodTransfer t : data.get(PeriodTransfer.class)) {
             List<String> line = new ArrayList<>();
             line.add(t.getId());
             line.add(t.getSourceContainer().getId());
@@ -428,7 +430,7 @@ public class TrackingDatabase_Reader {
 
             String id = lines[0];
 
-            data.addFund(new Fund(
+            data.add(new Fund(
                     id
             ));
         }
@@ -442,7 +444,7 @@ public class TrackingDatabase_Reader {
      */
     private static void saveFund(TrackingDatabase data, String csvFile) {
         ArrayList<List<String>> lines = new ArrayList<>();
-        for (Fund t : data.getFunds()) {
+        for (Fund t : data.get(Fund.class)) {
             List<String> line = new ArrayList<>();
             line.add(t.getId());
             lines.add(line);
@@ -470,13 +472,13 @@ public class TrackingDatabase_Reader {
             String description = lines[6];
             double value = Double.parseDouble(lines[7]);
 
-            data.addPeriodFundTransfer(new PeriodFundTransfer(
+            data.add(new PeriodFundTransfer(
                     id,
-                    data.getPeriod(sourcePeriodId),
-                    data.getFund(destinationFundId),
-                    data.getCategory(categoryID),
-                    data.getFundEvent(fundEventId),
-                    data.getCurrency(currencyID),
+                    data.get(Period.class, sourcePeriodId),
+                    data.get(Fund.class, destinationFundId),
+                    data.get(Category.class, categoryID),
+                    data.get(FundEvent.class, fundEventId),
+                    data.get(Currency.class, currencyID),
                     description,
                     value
             ));
@@ -491,7 +493,7 @@ public class TrackingDatabase_Reader {
      */
     private static void savePeriodFundTransfer(TrackingDatabase data, String csvFile) {
         ArrayList<List<String>> lines = new ArrayList<>();
-        for (PeriodFundTransfer t : data.getPeriodFundTransfers()) {
+        for (PeriodFundTransfer t : data.get(PeriodFundTransfer.class)) {
             List<String> line = new ArrayList<>();
             line.add(t.getId());
             line.add(t.getSourceContainer().getId());
@@ -520,8 +522,8 @@ public class TrackingDatabase_Reader {
             String fundCode = lines[0];
             String idCode = lines[1];
 
-            data.addFundEvent(new FundEvent(
-                    data.getFund(fundCode),
+            data.add(new FundEvent(
+                    data.get(Fund.class, fundCode),
                     idCode
             ));
         }
@@ -535,7 +537,7 @@ public class TrackingDatabase_Reader {
      */
     private static void saveFundEvent(TrackingDatabase data, String csvFile) {
         ArrayList<List<String>> lines = new ArrayList<>();
-        for (FundEvent t : data.getFundEvents()) {
+        for (FundEvent t : data.get(FundEvent.class)) {
             List<String> line = new ArrayList<>();
             line.add(t.getIdFund().getId());
             line.add(t.getIdCode());
@@ -562,11 +564,11 @@ public class TrackingDatabase_Reader {
             String description = lines[4];
             double value = Double.parseDouble(lines[5]);
 
-            data.addFundChargeTransfer(new FundChargeTransfer(
+            data.add(new FundChargeTransfer(
                     id,
-                    data.getPeriod(sourcePeriodId),
-                    data.getFund(destinationFundId),
-                    data.getCurrency(currencyID),
+                    data.get(Period.class, sourcePeriodId),
+                    data.get(Fund.class, destinationFundId),
+                    data.get(Currency.class, currencyID),
                     description,
                     value
             ));
@@ -581,7 +583,7 @@ public class TrackingDatabase_Reader {
      */
     private static void saveFundChargeTransfer(TrackingDatabase data, String csvFile) {
         ArrayList<List<String>> lines = new ArrayList<>();
-        for (FundChargeTransfer t : data.getFundChargeTransfers()) {
+        for (FundChargeTransfer t : data.get(FundChargeTransfer.class)) {
             List<String> line = new ArrayList<>();
             line.add(t.getId());
             line.add(t.getSourceContainer().getId());

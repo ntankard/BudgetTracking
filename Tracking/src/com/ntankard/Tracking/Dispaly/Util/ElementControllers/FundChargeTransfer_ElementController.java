@@ -2,8 +2,11 @@ package com.ntankard.Tracking.Dispaly.Util.ElementControllers;
 
 import com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList;
 import com.ntankard.DynamicGUI.Util.Updatable;
+import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Fund;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.FundChargeTransfer;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodFundTransfer;
+import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
 
 
@@ -32,12 +35,12 @@ public class FundChargeTransfer_ElementController implements DynamicGUI_DisplayL
      */
     @Override
     public FundChargeTransfer newElement() {
-        String idCode = TrackingDatabase.get().getNextPeriodFundTransferId();
+        String idCode = TrackingDatabase.get().getNextId(PeriodFundTransfer.class);
         return new FundChargeTransfer(
                 idCode,
                 period,
-                TrackingDatabase.get().getFunds().get(0),
-                TrackingDatabase.get().getCurrency("YEN"),
+                TrackingDatabase.get().get(Fund.class).get(0),
+                TrackingDatabase.get().get(Currency.class, "YEN"),
                 "",
                 0.0);
     }
@@ -47,7 +50,7 @@ public class FundChargeTransfer_ElementController implements DynamicGUI_DisplayL
      */
     @Override
     public void deleteElement(FundChargeTransfer toDel) {
-        TrackingDatabase.get().removeFundChargeTransfer(toDel);
+        TrackingDatabase.get().remove(toDel);
         master.notifyUpdate();
     }
 
@@ -56,7 +59,7 @@ public class FundChargeTransfer_ElementController implements DynamicGUI_DisplayL
      */
     @Override
     public void addElement(FundChargeTransfer newObj) {
-        TrackingDatabase.get().addFundChargeTransfer(newObj);
+        TrackingDatabase.get().add(newObj);
         master.notifyUpdate();
     }
 }

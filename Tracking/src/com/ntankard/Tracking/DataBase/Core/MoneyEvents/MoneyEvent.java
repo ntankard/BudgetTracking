@@ -5,6 +5,7 @@ import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.DynamicGUI.Components.Object.SetterProperties;
 import com.ntankard.Tracking.DataBase.Core.DataObject;
+import com.ntankard.Tracking.DataBase.Core.IdDataObject;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
 
@@ -15,7 +16,7 @@ import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-public abstract class MoneyEvent<SourceType extends DataObject, SourceCategory extends DataObject, DestinationType extends DataObject, DestinationCategory extends DataObject> extends DataObject {
+public abstract class MoneyEvent<SourceType extends DataObject, SourceCategory extends DataObject, DestinationType extends DataObject, DestinationCategory extends DataObject> extends IdDataObject {
 
     /**
      * A summary of the event
@@ -37,7 +38,8 @@ public abstract class MoneyEvent<SourceType extends DataObject, SourceCategory e
     /**
      * Constructor
      */
-    public MoneyEvent(String description, Double value, SourceType sourceContainer, SourceCategory sourceCategory, DestinationType destinationContainer, DestinationCategory destinationCategory, Currency currency) {
+    public MoneyEvent(String id, String description, Double value, SourceType sourceContainer, SourceCategory sourceCategory, DestinationType destinationContainer, DestinationCategory destinationCategory, Currency currency) {
+        super(id);
         this.description = description;
         this.value = value;
         this.sourceContainer = sourceContainer;

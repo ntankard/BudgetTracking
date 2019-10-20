@@ -38,7 +38,7 @@ public abstract class DataRows<T> {
      * @return The formatted total
      */
     public Object getTotal(Category category) {
-        return TrackingDatabase.get().getCurrencyFormat("YEN").format(getTotal_impl(category));
+        return TrackingDatabase.get().get(Currency.class,"YEN").getNumberFormat().format(getTotal_impl(category));
     }
 
     /**

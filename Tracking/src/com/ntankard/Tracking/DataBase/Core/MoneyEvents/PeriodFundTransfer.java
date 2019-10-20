@@ -13,24 +13,11 @@ import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.FundEvent;
 @ClassExtensionProperties(includeParent = true)
 public class PeriodFundTransfer extends MoneyEvent<Period, Category, Fund, FundEvent> {
 
-    // My values
-    private String id;
-
     /**
      * Constructor
      */
     public PeriodFundTransfer(String id, Period source, Fund destination, Category sourceCategory, FundEvent destinationCategory, Currency currency, String description, Double value) {
-        super(description, value, source, sourceCategory, destination, destinationCategory, currency);
-        this.id = id;
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
-    public String getId() {
-        return id;
+        super(id, description, value, source, sourceCategory, destination, destinationCategory, currency);
     }
 
     //------------------------------------------------------------------------------------------------------------------
