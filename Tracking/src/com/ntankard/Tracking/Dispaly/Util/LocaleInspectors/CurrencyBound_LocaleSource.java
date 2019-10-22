@@ -1,6 +1,6 @@
 package com.ntankard.Tracking.Dispaly.Util.LocaleInspectors;
 
-import com.ntankard.DynamicGUI.Components.List.Types.Table.Decoder.CurrencyDecoder_NumberFormatSource;
+import com.ntankard.DynamicGUI.Util.Decoder.CurrencyDecoder_NumberFormatSource;
 import com.ntankard.Tracking.DataBase.Core.CurrencyBound;
 
 import java.text.NumberFormat;
