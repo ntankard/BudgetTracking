@@ -44,13 +44,13 @@ public class CategoryTransfer extends MoneyEvent<Period, Category, Period, Categ
     //#################################################### Setters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @SetterProperties(sourceMethod = "getCategories")
+    @SetterProperties(sourceMethod = "getData")
     @Override
     public void setDestinationCategory(Category destination) {
         super.setDestinationCategory(destination);
     }
 
-    @SetterProperties(sourceMethod = "getCategories")
+    @SetterProperties(sourceMethod = "getData")
     @Override
     public void setSourceCategory(Category source) {
         super.setSourceCategory(source);

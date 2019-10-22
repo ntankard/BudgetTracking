@@ -185,7 +185,7 @@ public abstract class MoneyEvent<SourceType extends DataObject, SourceCategory e
         this.destinationContainer.notifyChildLink(this);
     }
 
-    @SetterProperties(sourceMethod = "getCurrencies")
+    @SetterProperties(sourceMethod = "getData")
     public void setCurrency(Currency currency) {
         this.currency.notifyChildUnLink(this);
         this.currency = currency;

@@ -53,7 +53,7 @@ public class Transaction extends MoneyEvent<Statement, Category, Period, Categor
     //#################################################### Setters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @SetterProperties(sourceMethod = "getCategories")
+    @SetterProperties(sourceMethod = "getData")
     public void setDestinationCategory(Category category) {
         super.setDestinationCategory(category);
     }

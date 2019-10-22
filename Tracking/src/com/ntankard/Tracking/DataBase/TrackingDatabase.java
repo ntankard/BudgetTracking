@@ -20,6 +20,7 @@ public class TrackingDatabase {
      */
     private Map<Class, List<DataObject>> dataObjects = new HashMap<>();
     private Map<Class, Map<String, DataObject>> dataObjectsMap = new HashMap<>();
+    private Map<String, Class> classMap = new HashMap<>();
 
     // Flag for database construction
     private boolean isFinalized = false;
@@ -68,6 +69,7 @@ public class TrackingDatabase {
     private <T extends DataObject> void addType(Class<T> aClass) {
         dataObjects.put(aClass, new ArrayList<>());
         dataObjectsMap.put(aClass, new HashMap<>());
+        classMap.put(aClass.getSimpleName(), aClass);
     }
 
     /**
@@ -235,10 +237,22 @@ public class TrackingDatabase {
      *
      * @param type The data type to get
      * @param <T>  The data type to return (same as type)
-     * @return A unmodifiableList of all element sof that type
+     * @return A unmodifiableList of all elements of that type
      */
     @SuppressWarnings("unchecked")
     public <T extends DataObject> List<T> get(Class<T> type) {
         return Collections.unmodifiableList((List<T>) dataObjects.get(type));
+    }
+
+    /**
+     * Get all elements of the database of a certain type name
+     *
+     * @param type The data type to get
+     * @param <T>  The data type to return (same as type)
+     * @return A unmodifiableList of all elements of that type
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends DataObject> List<T> getData(String type) {
+        return get(classMap.get(type));
     }
 }

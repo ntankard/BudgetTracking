@@ -45,19 +45,19 @@ public class PeriodTransfer extends MoneyEvent<Period, Category, Period, Categor
     //#################################################### Setters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @SetterProperties(sourceMethod = "getPeriods")
+    @SetterProperties(sourceMethod = "getData")
     @Override
     public void setSourceContainer(Period source) {
         super.setSourceContainer(source);
     }
 
-    @SetterProperties(sourceMethod = "getPeriods")
+    @SetterProperties(sourceMethod = "getData")
     @Override
     public void setDestinationContainer(Period destination) {
         super.setDestinationContainer(destination);
     }
 
-    @SetterProperties(sourceMethod = "getCategories")
+    @SetterProperties(sourceMethod = "getData")
     @Override
     public void setSourceCategory(Category category) {
         super.setSourceCategory(category);

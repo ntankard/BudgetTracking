@@ -42,13 +42,13 @@ public class FundChargeTransfer extends MoneyEvent<Period, Category, Fund, FundE
     //#################################################### Setters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @SetterProperties(sourceMethod = "getPeriods")
+    @SetterProperties(sourceMethod = "getData")
     @Override
     public void setSourceContainer(Period source) {
         super.setSourceContainer(source);
     }
 
-    @SetterProperties(sourceMethod = "getFunds")
+    @SetterProperties(sourceMethod = "getData")
     @Override
     public void setDestinationContainer(Fund destination) {
         super.setDestinationContainer(destination);

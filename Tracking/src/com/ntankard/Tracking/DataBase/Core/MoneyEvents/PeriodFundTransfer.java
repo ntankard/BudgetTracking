@@ -52,25 +52,25 @@ public class PeriodFundTransfer extends MoneyEvent<Period, Category, Fund, FundE
     //#################################################### Setters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @SetterProperties(sourceMethod = "getPeriods")
+    @SetterProperties(sourceMethod = "getData")
     @Override
     public void setSourceContainer(Period source) {
         super.setSourceContainer(source);
     }
 
-    @SetterProperties(sourceMethod = "getFunds")
+    @SetterProperties(sourceMethod = "getData")
     @Override
     public void setDestinationContainer(Fund destination) {
         super.setDestinationContainer(destination);
     }
 
-    @SetterProperties(sourceMethod = "getCategories")
+    @SetterProperties(sourceMethod = "getData")
     @Override
     public void setSourceCategory(Category sourceCategory) {
         super.setSourceCategory(sourceCategory);
     }
 
-    @SetterProperties(sourceMethod = "getFundEvents")
+    @SetterProperties(sourceMethod = "getData")
     @Override
     public void setDestinationCategory(FundEvent destination) {
         super.setDestinationCategory(destination);
