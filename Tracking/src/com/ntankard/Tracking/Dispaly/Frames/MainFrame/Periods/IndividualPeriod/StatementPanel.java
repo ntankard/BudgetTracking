@@ -1,10 +1,10 @@
 package com.ntankard.Tracking.Dispaly.Frames.MainFrame.Periods.IndividualPeriod;
 
 import com.ntankard.ClassExtension.MemberClass;
-import com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList;
-import com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList.ListControl_Button;
-import com.ntankard.DynamicGUI.Util.Swing.Base.UpdatableJScrollPane;
-import com.ntankard.DynamicGUI.Util.Updatable;
+import com.ntankard.DynamicGUI.Containers.DynamicGUI_DisplayList;
+import com.ntankard.DynamicGUI.Containers.DynamicGUI_DisplayList.ListControl_Button;
+import com.ntankard.DynamicGUI.Util.Update.UpdatableJScrollPane;
+import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
 import com.ntankard.Tracking.Dispaly.Frames.Statement_Frame;
@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.ntankard.ClassExtension.MemberProperties.ALWAYS_DISPLAY;
-import static com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList.ListControl_Button.EnableCondition.SINGLE;
-import static com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList.newIntractableTable;
+import static com.ntankard.DynamicGUI.Containers.DynamicGUI_DisplayList.ListControl_Button.EnableCondition.SINGLE;
+import static com.ntankard.DynamicGUI.Containers.DynamicGUI_DisplayList.newIntractableTable;
 
 public class StatementPanel extends UpdatableJScrollPane {
 

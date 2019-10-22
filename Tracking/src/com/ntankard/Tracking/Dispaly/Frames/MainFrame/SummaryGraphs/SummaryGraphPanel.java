@@ -1,7 +1,7 @@
 package com.ntankard.Tracking.Dispaly.Frames.MainFrame.SummaryGraphs;
 
-import com.ntankard.DynamicGUI.Util.Swing.Base.UpdatableJPanel;
-import com.ntankard.DynamicGUI.Util.Updatable;
+import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
+import com.ntankard.DynamicGUI.Util.Update.Updatable;
 
 import java.awt.*;
 

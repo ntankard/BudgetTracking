@@ -1,7 +1,7 @@
 package com.ntankard.Tracking.Dispaly.Frames.MainFrame;
 
-import com.ntankard.DynamicGUI.Util.Swing.Containers.ButtonPanel;
-import com.ntankard.DynamicGUI.Util.Updatable;
+import com.ntankard.DynamicGUI.Util.Containers.ButtonPanel;
+import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Fund;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;

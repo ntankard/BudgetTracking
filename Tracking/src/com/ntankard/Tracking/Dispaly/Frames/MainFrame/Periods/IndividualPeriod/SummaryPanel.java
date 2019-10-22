@@ -1,7 +1,7 @@
 package com.ntankard.Tracking.Dispaly.Frames.MainFrame.Periods.IndividualPeriod;
 
-import com.ntankard.DynamicGUI.Util.Swing.Base.UpdatableJPanel;
-import com.ntankard.DynamicGUI.Util.Updatable;
+import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
+import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;

@@ -2,7 +2,7 @@ package com.ntankard.Tracking.DataBase.Core.MoneyEvents;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.MemberProperties;
-import com.ntankard.DynamicGUI.Components.Object.SetterProperties;
+import com.ntankard.ClassExtension.SetterProperties;
 import com.ntankard.Tracking.DataBase.Core.DataObject;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;

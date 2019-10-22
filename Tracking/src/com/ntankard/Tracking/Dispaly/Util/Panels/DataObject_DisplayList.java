@@ -1,9 +1,9 @@
 package com.ntankard.Tracking.Dispaly.Util.Panels;
 
 import com.ntankard.ClassExtension.MemberClass;
-import com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList;
-import com.ntankard.DynamicGUI.Util.Swing.Base.UpdatableJPanel;
-import com.ntankard.DynamicGUI.Util.Updatable;
+import com.ntankard.DynamicGUI.Containers.DynamicGUI_DisplayList;
+import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
+import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.Tracking.DataBase.Core.DataObject;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
 

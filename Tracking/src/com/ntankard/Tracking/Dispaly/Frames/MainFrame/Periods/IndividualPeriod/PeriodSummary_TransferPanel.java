@@ -1,9 +1,9 @@
 package com.ntankard.Tracking.Dispaly.Frames.MainFrame.Periods.IndividualPeriod;
 
 import com.ntankard.ClassExtension.MemberClass;
-import com.ntankard.DynamicGUI.Components.List.DynamicGUI_DisplayList;
-import com.ntankard.DynamicGUI.Util.Swing.Base.UpdatableJPanel;
-import com.ntankard.DynamicGUI.Util.Updatable;
+import com.ntankard.DynamicGUI.Containers.DynamicGUI_DisplayList;
+import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
+import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.CategoryTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.FundChargeTransfer;
@@ -18,7 +18,6 @@ import com.ntankard.Tracking.Dispaly.Util.ElementControllers.PeriodFundTransfer_
 import com.ntankard.Tracking.Dispaly.Util.ElementControllers.PeriodTransfer_ElementController;
 import com.ntankard.Tracking.Dispaly.Util.LocaleInspectors.CurrencyBound_LocaleSource;
 
-import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;

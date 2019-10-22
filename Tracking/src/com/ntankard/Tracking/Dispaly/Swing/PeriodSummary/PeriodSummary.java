@@ -1,8 +1,8 @@
 package com.ntankard.Tracking.Dispaly.Swing.PeriodSummary;
 
-import com.ntankard.DynamicGUI.Util.Swing.Base.UpdatableJScrollPane;
-import com.ntankard.DynamicGUI.Util.TableColumnAdjuster;
-import com.ntankard.DynamicGUI.Util.Updatable;
+import com.ntankard.DynamicGUI.Util.Update.UpdatableJScrollPane;
+import com.ntankard.DynamicGUI.Util.Table.TableColumnAdjuster;
+import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 
 import javax.swing.*;
