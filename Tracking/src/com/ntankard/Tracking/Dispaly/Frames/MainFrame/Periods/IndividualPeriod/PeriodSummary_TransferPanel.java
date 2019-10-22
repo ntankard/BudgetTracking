@@ -70,9 +70,9 @@ public class PeriodSummary_TransferPanel extends UpdatableJPanel {
         periodTransfer_panel.getMainPanel().setNumberFormatSource(new CurrencyBound_LocaleSource());
         periodFundTransfer_panel.getMainPanel().setNumberFormatSource(new CurrencyBound_LocaleSource());
 
-        categoryTransfer_panel.setNorth(new JLabel("Category Transfer"));
-        periodTransfer_panel.setNorth(new JLabel("Periods Transfer"));
-        periodFundTransfer_panel.setNorth(new JLabel("Other Transfer"));
+        categoryTransfer_panel.setTitle("Category Transfer");
+        periodTransfer_panel.setTitle("Periods Transfer");
+        periodFundTransfer_panel.setTitle("Other Transfer");
 
         GridBagConstraints summaryContainer_C = new GridBagConstraints();
 
