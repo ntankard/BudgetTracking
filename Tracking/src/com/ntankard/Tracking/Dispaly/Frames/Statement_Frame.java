@@ -97,7 +97,7 @@ public class Statement_Frame extends UpdatableJPanel {
         data_tPanel.addTab("Transactions", transaction_panel);
         this.add(data_tPanel, BorderLayout.CENTER);
 
-        statement_panel = DynamicGUI_IntractableObject.newIntractableObjectPanel(core, INFO_DISPLAY, true, this, TrackingDatabase.get());
+        statement_panel = new DynamicGUI_IntractableObject<>(core, this).setVerbosity(INFO_DISPLAY).setSources(TrackingDatabase.get());
         this.add(statement_panel, BorderLayout.EAST);
     }
 

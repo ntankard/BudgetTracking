@@ -109,7 +109,7 @@ public class Period_Frame extends UpdatableJPanel {
             @Override
             public CategoryTransfer newElement() {
                 String idCode = trackingDatabase.getNextId(CategoryTransfer.class);
-                return new CategoryTransfer(core, idCode, trackingDatabase.get(Category.class,"Unaccounted"), trackingDatabase.get(Category.class,"Unaccounted"), trackingDatabase.get(Currency.class, "YEN"), "", 0.0);
+                return new CategoryTransfer(core, idCode, trackingDatabase.get(Category.class, "Unaccounted"), trackingDatabase.get(Category.class, "Unaccounted"), trackingDatabase.get(Currency.class, "YEN"), "", 0.0);
             }
 
             @Override
@@ -136,7 +136,7 @@ public class Period_Frame extends UpdatableJPanel {
         data_tPanel.addTab("Transactions", transaction_panel);
         this.add(data_tPanel, BorderLayout.CENTER);
 
-        period_panel = DynamicGUI_IntractableObject.newIntractableObjectPanel(core, INFO_DISPLAY, false, this, trackingDatabase);
+        period_panel = new DynamicGUI_IntractableObject<>(core, this).setVerbosity(INFO_DISPLAY).setSources(trackingDatabase);
         this.add(period_panel, BorderLayout.EAST);
     }
 
@@ -167,6 +167,7 @@ public class Period_Frame extends UpdatableJPanel {
         transaction_panel.update();
 
         periodSummary_panel.update();
+        period_panel.update();
 
         //statement_panel.getMainPanel().getListSelectionModel().setSelectionInterval(4, 4);
     }

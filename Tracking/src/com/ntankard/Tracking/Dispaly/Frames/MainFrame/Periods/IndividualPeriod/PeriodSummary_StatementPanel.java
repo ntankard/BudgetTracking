@@ -101,8 +101,8 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
         }, new CurrencyBound_LocaleSource(), this, TrackingDatabase.get());
         transaction_panel.getMainPanel().setNumberFormatSource(new CurrencyBound_LocaleSource());
 
-        period_panel = DynamicGUI_IntractableObject.newIntractableObjectPanel(core, ALWAYS_DISPLAY, false, this, TrackingDatabase.get());
-        periodTotal_panel = DynamicGUI_IntractableObject.newIntractableObjectPanel(new PeriodTransaction_Summary(core), ALWAYS_DISPLAY, false, this);
+        period_panel = new DynamicGUI_IntractableObject<>(core, this);
+        periodTotal_panel = new DynamicGUI_IntractableObject<>(new PeriodTransaction_Summary(core), this);
 
         GridBagConstraints summaryContainer_C = new GridBagConstraints();
 
