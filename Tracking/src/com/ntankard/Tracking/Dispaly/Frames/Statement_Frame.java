@@ -1,8 +1,8 @@
 package com.ntankard.Tracking.Dispaly.Frames;
 
 import com.ntankard.ClassExtension.MemberClass;
-import com.ntankard.DynamicGUI.Containers.DynamicGUI_DisplayList;
 import com.ntankard.DynamicGUI.Containers.DynamicGUI_IntractableObject;
+import com.ntankard.DynamicGUI.Containers.DynamicGUI_DisplayList;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
@@ -17,7 +17,6 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ntankard.ClassExtension.MemberProperties.ALWAYS_DISPLAY;
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
 public class Statement_Frame extends UpdatableJPanel {
@@ -71,27 +70,31 @@ public class Statement_Frame extends UpdatableJPanel {
         this.setBorder(new EmptyBorder(12, 12, 12, 12));
         this.setLayout(new BorderLayout());
 
-        transaction_panel = DynamicGUI_DisplayList.newIntractableTable(transaction_list, new MemberClass(Transaction.class), true, true, ALWAYS_DISPLAY, new DynamicGUI_DisplayList.ElementController<Transaction>() {
+        transaction_panel = new DynamicGUI_DisplayList<>(transaction_list, new MemberClass(Transaction.class), this)
+                .addFilter()
+                .setSources(TrackingDatabase.get())
+                .setLocaleSource(new CurrencyBound_LocaleSource())
+                .addControlButtons(new DynamicGUI_DisplayList.ElementController<Transaction>() {
 
-            @Override
-            public Transaction newElement() {
-                String idCode = TrackingDatabase.get().getNextId(Transaction.class);
-                return new Transaction(core, idCode, "", 0.0, TrackingDatabase.get().get(Category.class, "Unaccounted"));
-            }
+                    @Override
+                    public Transaction newElement() {
+                        String idCode = TrackingDatabase.get().getNextId(Transaction.class);
+                        return new Transaction(core, idCode, "", 0.0, TrackingDatabase.get().get(Category.class, "Unaccounted"));
+                    }
 
-            @Override
-            public void deleteElement(Transaction toDel) {
-                TrackingDatabase.get().remove(toDel);
-                notifyUpdate();
-            }
+                    @Override
+                    public void deleteElement(Transaction toDel) {
+                        TrackingDatabase.get().remove(toDel);
+                        notifyUpdate();
+                    }
 
-            @Override
-            public void addElement(Transaction newObj) {
-                TrackingDatabase.get().add(newObj);
-                notifyUpdate();
-            }
-        }, new CurrencyBound_LocaleSource(), this, TrackingDatabase.get());
-        transaction_panel.getMainPanel().setNumberFormatSource(rowObject -> core.getIdBank().getCurrency().getNumberFormat());
+                    @Override
+                    public void addElement(Transaction newObj) {
+                        TrackingDatabase.get().add(newObj);
+                        notifyUpdate();
+                    }
+                });
+        transaction_panel.getMainPanel().setLocaleSource(rowObject -> core.getIdBank().getCurrency().getNumberFormat());
 
         JTabbedPane data_tPanel = new JTabbedPane();
         data_tPanel.addTab("Transactions", transaction_panel);
@@ -117,7 +120,7 @@ public class Statement_Frame extends UpdatableJPanel {
     public void update() {
         transaction_list.clear();
 
-        transaction_list.addAll(core.<Transaction>getChildren(Transaction.class));
+        transaction_list.addAll(core.getChildren(Transaction.class));
 
         transaction_panel.update();
         statement_panel.update();

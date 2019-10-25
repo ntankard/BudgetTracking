@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import static com.ntankard.ClassExtension.MemberProperties.ALWAYS_DISPLAY;
 import static com.ntankard.DynamicGUI.Containers.DynamicGUI_DisplayList.ListControl_Button.EnableCondition.SINGLE;
 
 public class TrackingDatabase_Frame extends JPanel implements Updatable {
@@ -104,74 +103,86 @@ public class TrackingDatabase_Frame extends JPanel implements Updatable {
         upload_btn.addActionListener(e -> TrackingDatabase_Reader.save(trackingDatabase, "C:\\Users\\Nicholas\\Documents\\Projects\\BudgetTrackingData"));
         this.add(upload_btn, BorderLayout.NORTH);
 
-        period_panel = DynamicGUI_DisplayList.newIntractableTable(period_list, new MemberClass(Period.class), true, ALWAYS_DISPLAY, this);
-        currency_panel = DynamicGUI_DisplayList.newIntractableTable(currency_list, new MemberClass(Currency.class), true, ALWAYS_DISPLAY, this);
-        category_panel = DynamicGUI_DisplayList.newIntractableTable(category_list, new MemberClass(Category.class), true, ALWAYS_DISPLAY, this);
-        bank_panel = DynamicGUI_DisplayList.newIntractableTable(bank_list, new MemberClass(Bank.class), true, ALWAYS_DISPLAY, this);
-        statement_panel = DynamicGUI_DisplayList.newIntractableTable(statement_list, new MemberClass(Statement.class), true, ALWAYS_DISPLAY, this);
-        transaction_panel = DynamicGUI_DisplayList.newIntractableTable(transaction_list, new MemberClass(Transaction.class), true, ALWAYS_DISPLAY, this);
-        categoryTransfer_panel = DynamicGUI_DisplayList.newIntractableTable(categoryTransfer_list, new MemberClass(CategoryTransfer.class), true, ALWAYS_DISPLAY, this);
-        periodCategory_table = DynamicGUI_DisplayList.newIntractableTable(periodCategory_list, new MemberClass(PeriodCategory.class), false, ALWAYS_DISPLAY, this);
-        periodTransfer_panel = DynamicGUI_DisplayList.newIntractableTable(periodTransfer_list, new MemberClass(PeriodTransfer.class), true, true, ALWAYS_DISPLAY, new DynamicGUI_DisplayList.ElementController<PeriodTransfer>() {
-            @Override
-            public PeriodTransfer newElement() {
-                String idCode = trackingDatabase.getNextId(PeriodTransfer.class);
-                return new PeriodTransfer(idCode, trackingDatabase.<Period>get(Period.class).get(0), trackingDatabase.<Period>get(Period.class).get(1), trackingDatabase.get(Currency.class, "YEN"), trackingDatabase.get(Category.class, "Unaccounted"), "", 0.0);
-            }
+        period_panel = new DynamicGUI_DisplayList<>(period_list, new MemberClass(Period.class), this).addFilter();
+        currency_panel = new DynamicGUI_DisplayList<>(currency_list, new MemberClass(Currency.class), this).addFilter();
+        category_panel = new DynamicGUI_DisplayList<>(category_list, new MemberClass(Category.class), this).addFilter();
+        bank_panel = new DynamicGUI_DisplayList<>(bank_list, new MemberClass(Bank.class), this).addFilter();
+        statement_panel = new DynamicGUI_DisplayList<>(statement_list, new MemberClass(Statement.class), this).addFilter();
+        transaction_panel = new DynamicGUI_DisplayList<>(transaction_list, new MemberClass(Transaction.class), this).addFilter();
+        categoryTransfer_panel = new DynamicGUI_DisplayList<>(categoryTransfer_list, new MemberClass(CategoryTransfer.class), this).addFilter();
 
-            @Override
-            public void deleteElement(PeriodTransfer toDel) {
-                trackingDatabase.remove(toDel);
-                notifyUpdate();
-            }
+        periodCategory_table = new DynamicGUI_DisplayList<>(periodCategory_list, new MemberClass(PeriodCategory.class), this);
 
-            @Override
-            public void addElement(PeriodTransfer newObj) {
-                trackingDatabase.add(newObj);
-                notifyUpdate();
-            }
-        }, null, this, trackingDatabase);
-        fund_panel = DynamicGUI_DisplayList.newIntractableTable(fund_list, new MemberClass(Fund.class), true, true, ALWAYS_DISPLAY, new DynamicGUI_DisplayList.ElementController<Fund>() {
-            @Override
-            public Fund newElement() {
-                return new Fund("");
-            }
 
-            @Override
-            public void deleteElement(Fund toDel) {
+        periodTransfer_panel = new DynamicGUI_DisplayList<>(periodTransfer_list, new MemberClass(PeriodTransfer.class), this)
+                .addFilter()
+                .setSources(trackingDatabase)
+                .addControlButtons(new DynamicGUI_DisplayList.ElementController<PeriodTransfer>() {
+                    @Override
+                    public PeriodTransfer newElement() {
+                        String idCode = trackingDatabase.getNextId(PeriodTransfer.class);
+                        return new PeriodTransfer(idCode, trackingDatabase.<Period>get(Period.class).get(0), trackingDatabase.<Period>get(Period.class).get(1), trackingDatabase.get(Currency.class, "YEN"), trackingDatabase.get(Category.class, "Unaccounted"), "", 0.0);
+                    }
 
-            }
+                    @Override
+                    public void deleteElement(PeriodTransfer toDel) {
+                        trackingDatabase.remove(toDel);
+                        notifyUpdate();
+                    }
 
-            @Override
-            public void addElement(Fund newObj) {
-                trackingDatabase.add(newObj);
-                notifyUpdate();
-            }
-        }, null, this, trackingDatabase);
-        periodFundTransfer_panel = DynamicGUI_DisplayList.newIntractableTable(periodFundTransfer_list, new MemberClass(PeriodFundTransfer.class), true, true, ALWAYS_DISPLAY, new DynamicGUI_DisplayList.ElementController<PeriodFundTransfer>() {
-            @Override
-            public PeriodFundTransfer newElement() {
-                String idCode = trackingDatabase.getNextId(PeriodFundTransfer.class);
-                return new PeriodFundTransfer(idCode, trackingDatabase.<Period>get(Period.class).get(0), trackingDatabase.get(Fund.class).get(0), trackingDatabase.get(Category.class, "Unaccounted"), trackingDatabase.get(Fund.class).get(0).<FundEvent>getChildren(FundEvent.class).get(0), trackingDatabase.get(Currency.class, "YEN"), "", 0.0);
-            }
+                    @Override
+                    public void addElement(PeriodTransfer newObj) {
+                        trackingDatabase.add(newObj);
+                        notifyUpdate();
+                    }
+                });
+        fund_panel = new DynamicGUI_DisplayList<>(fund_list, new MemberClass(Fund.class), this)
+                .addFilter()
+                .setSources(trackingDatabase)
+                .addControlButtons(new DynamicGUI_DisplayList.ElementController<Fund>() {
+                    @Override
+                    public Fund newElement() {
+                        return new Fund("");
+                    }
 
-            @Override
-            public void deleteElement(PeriodFundTransfer toDel) {
+                    @Override
+                    public void deleteElement(Fund toDel) {
 
-            }
+                    }
 
-            @Override
-            public void addElement(PeriodFundTransfer newObj) {
-                trackingDatabase.add(newObj);
-                notifyUpdate();
-            }
-        }, null, this, trackingDatabase);
+                    @Override
+                    public void addElement(Fund newObj) {
+                        trackingDatabase.add(newObj);
+                        notifyUpdate();
+                    }
+                });
+        periodFundTransfer_panel = new DynamicGUI_DisplayList<>(periodFundTransfer_list, new MemberClass(PeriodFundTransfer.class), this)
+                .addFilter()
+                .setSources(trackingDatabase)
+                .addControlButtons(new DynamicGUI_DisplayList.ElementController<PeriodFundTransfer>() {
+                    @Override
+                    public PeriodFundTransfer newElement() {
+                        String idCode = trackingDatabase.getNextId(PeriodFundTransfer.class);
+                        return new PeriodFundTransfer(idCode, trackingDatabase.<Period>get(Period.class).get(0), trackingDatabase.get(Fund.class).get(0), trackingDatabase.get(Category.class, "Unaccounted"), trackingDatabase.get(Fund.class).get(0).<FundEvent>getChildren(FundEvent.class).get(0), trackingDatabase.get(Currency.class, "YEN"), "", 0.0);
+                    }
 
-        transaction_panel.getMainPanel().setNumberFormatSource(rowObject -> {
+                    @Override
+                    public void deleteElement(PeriodFundTransfer toDel) {
+
+                    }
+
+                    @Override
+                    public void addElement(PeriodFundTransfer newObj) {
+                        trackingDatabase.add(newObj);
+                        notifyUpdate();
+                    }
+                });
+
+        transaction_panel.getMainPanel().setLocaleSource(rowObject -> {
             Transaction transaction = (Transaction) rowObject;
             return transaction.getSourceContainer().getIdBank().getCurrency().getNumberFormat();
         });
-        statement_panel.getMainPanel().setNumberFormatSource(rowObject -> {
+        statement_panel.getMainPanel().setLocaleSource(rowObject -> {
             Statement statement = (Statement) rowObject;
             return statement.getIdBank().getCurrency().getNumberFormat();
         });

@@ -1,8 +1,8 @@
 package com.ntankard.Tracking.Old;
 
 import com.ntankard.ClassExtension.MemberClass;
-import com.ntankard.DynamicGUI.Containers.DynamicGUI_DisplayList;
 import com.ntankard.DynamicGUI.Containers.DynamicGUI_IntractableObject;
+import com.ntankard.DynamicGUI.Containers.DynamicGUI_DisplayList;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.CategoryTransfer;
@@ -21,7 +21,6 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ntankard.ClassExtension.MemberProperties.ALWAYS_DISPLAY;
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 import static com.ntankard.DynamicGUI.Containers.DynamicGUI_DisplayList.ListControl_Button.EnableCondition.SINGLE;
 
@@ -87,40 +86,43 @@ public class Period_Frame extends UpdatableJPanel {
         this.setBorder(new EmptyBorder(12, 12, 12, 12));
         this.setLayout(new BorderLayout());
 
-        statement_panel = DynamicGUI_DisplayList.newIntractableTable(statement_list, new MemberClass(Statement.class), true, ALWAYS_DISPLAY, this);
-        statement_panel.getMainPanel().setNumberFormatSource(rowObject -> {
+        statement_panel = new DynamicGUI_DisplayList<>(statement_list, new MemberClass(Statement.class), this).addFilter();
+        statement_panel.getMainPanel().setLocaleSource(rowObject -> {
             Statement statement = (Statement) rowObject;
             return statement.getIdBank().getCurrency().getNumberFormat();
         });
-        setRecord = new DynamicGUI_DisplayList.ListControl_Button<>("Manage Period", statement_panel, SINGLE, false);
+        setRecord = new DynamicGUI_DisplayList.ListControl_Button<Statement>("Manage Period", statement_panel, SINGLE, false);
         setRecord.addActionListener(e -> {
             List selected = statement_panel.getMainPanel().getSelectedItems();
             Statement_Frame.open((Statement) selected.get(0), this);
         });
         statement_panel.addButton(setRecord);
 
-        categoryTransfer_panel = DynamicGUI_DisplayList.newIntractableTable(categoryTransfer_list, new MemberClass(CategoryTransfer.class), true, true, ALWAYS_DISPLAY, new DynamicGUI_DisplayList.ElementController<CategoryTransfer>() {
-            @Override
-            public void deleteElement(CategoryTransfer toDel) {
-                trackingDatabase.remove(toDel);
-                notifyUpdate();
-            }
+        categoryTransfer_panel = new DynamicGUI_DisplayList<>(categoryTransfer_list, new MemberClass(CategoryTransfer.class), this)
+                .addFilter()
+                .setSources(trackingDatabase)
+                .addControlButtons(new DynamicGUI_DisplayList.ElementController<CategoryTransfer>() {
+                    @Override
+                    public void deleteElement(CategoryTransfer toDel) {
+                        trackingDatabase.remove(toDel);
+                        notifyUpdate();
+                    }
 
-            @Override
-            public CategoryTransfer newElement() {
-                String idCode = trackingDatabase.getNextId(CategoryTransfer.class);
-                return new CategoryTransfer(core, idCode, trackingDatabase.get(Category.class, "Unaccounted"), trackingDatabase.get(Category.class, "Unaccounted"), trackingDatabase.get(Currency.class, "YEN"), "", 0.0);
-            }
+                    @Override
+                    public CategoryTransfer newElement() {
+                        String idCode = trackingDatabase.getNextId(CategoryTransfer.class);
+                        return new CategoryTransfer(core, idCode, trackingDatabase.get(Category.class, "Unaccounted"), trackingDatabase.get(Category.class, "Unaccounted"), trackingDatabase.get(Currency.class, "YEN"), "", 0.0);
+                    }
 
-            @Override
-            public void addElement(CategoryTransfer newObj) {
-                trackingDatabase.add(newObj);
-                notifyUpdate();
-            }
-        }, null, this, trackingDatabase);
+                    @Override
+                    public void addElement(CategoryTransfer newObj) {
+                        trackingDatabase.add(newObj);
+                        notifyUpdate();
+                    }
+                });
 
-        transaction_panel = DynamicGUI_DisplayList.newIntractableTable(transaction_list, new MemberClass(Transaction.class), true, ALWAYS_DISPLAY, this);
-        transaction_panel.getMainPanel().setNumberFormatSource(rowObject -> {
+        transaction_panel = new DynamicGUI_DisplayList<>(transaction_list, new MemberClass(Transaction.class), this).addFilter();
+        transaction_panel.getMainPanel().setLocaleSource(rowObject -> {
             Transaction transaction = (Transaction) rowObject;
             return transaction.getSourceContainer().getIdBank().getCurrency().getNumberFormat();
         });

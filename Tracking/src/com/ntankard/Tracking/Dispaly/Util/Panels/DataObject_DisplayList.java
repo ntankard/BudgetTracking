@@ -43,7 +43,10 @@ public class DataObject_DisplayList<T extends DataObject> extends UpdatableJPane
     private void createUIComponents() {
         this.removeAll();
         this.setLayout(new BorderLayout());
-        this.mainPanel = DynamicGUI_DisplayList.newIntractableTable(coreData, new MemberClass(tClass), addFilter, verbosityLevel, this);
+        this.mainPanel = new DynamicGUI_DisplayList<>(coreData, new MemberClass(tClass), this).setVerbosity(verbosityLevel);
+        if (addFilter) {
+            mainPanel.addFilter();
+        }
         this.add(mainPanel, BorderLayout.CENTER);
     }
 

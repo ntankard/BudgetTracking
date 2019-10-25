@@ -1,10 +1,10 @@
 package com.ntankard.Tracking.Dispaly.Frames.MainFrame.Periods.IndividualPeriod;
 
 import com.ntankard.ClassExtension.MemberClass;
-import com.ntankard.DynamicGUI.Containers.DynamicGUI_DisplayList;
 import com.ntankard.DynamicGUI.Containers.DynamicGUI_IntractableObject;
-import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
+import com.ntankard.DynamicGUI.Containers.DynamicGUI_DisplayList;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
+import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
@@ -19,10 +19,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ntankard.ClassExtension.MemberProperties.ALWAYS_DISPLAY;
-import static com.ntankard.DynamicGUI.Containers.DynamicGUI_DisplayList.ListControl_Button;
 import static com.ntankard.DynamicGUI.Containers.DynamicGUI_DisplayList.ListControl_Button.EnableCondition.SINGLE;
-import static com.ntankard.DynamicGUI.Containers.DynamicGUI_DisplayList.newIntractableTable;
 
 public class PeriodSummary_StatementPanel extends UpdatableJPanel {
 
@@ -69,10 +66,10 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
             }
         });
 
-        statement_panel = newIntractableTable(statement_list, new MemberClass(Statement.class), false, ALWAYS_DISPLAY, this);
-        statement_panel.getMainPanel().setNumberFormatSource(new CurrencyBound_LocaleSource());
+        statement_panel = new DynamicGUI_DisplayList<>(statement_list, new MemberClass(Statement.class), this);
+        statement_panel.getMainPanel().setLocaleSource(new CurrencyBound_LocaleSource());
 
-        ListControl_Button manageStatementBtn = new ListControl_Button<>("Manage Statement", statement_panel, SINGLE, false);
+        DynamicGUI_DisplayList.ListControl_Button manageStatementBtn = new DynamicGUI_DisplayList.ListControl_Button<Statement>("Manage Statement", statement_panel, SINGLE, false);
         manageStatementBtn.addActionListener(e -> {
             List selected = statement_panel.getMainPanel().getSelectedItems();
             Statement_Frame.open((Statement) selected.get(0), this);
@@ -80,26 +77,29 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
         statement_panel.addButton(manageStatementBtn);
         statement_panel.getMainPanel().getListSelectionModel().addListSelectionListener(e -> updateTransactions());
 
-        transaction_panel = newIntractableTable(transaction_list, new MemberClass(Transaction.class), false, true, ALWAYS_DISPLAY, new DynamicGUI_DisplayList.ElementController<Transaction>() {
-            @Override
-            public Transaction newElement() {
-                String idCode = TrackingDatabase.get().getNextId(Transaction.class);
-                return new Transaction(selectedStatement, idCode, "", 0.0, TrackingDatabase.get().get(Category.class, "Unaccounted"));
-            }
+        transaction_panel = new DynamicGUI_DisplayList<>(transaction_list, new MemberClass(Transaction.class), this)
+                .setLocaleSource(new CurrencyBound_LocaleSource())
+                .setSources(TrackingDatabase.get())
+                .addControlButtons(new DynamicGUI_DisplayList.ElementController<Transaction>() {
+                    @Override
+                    public Transaction newElement() {
+                        String idCode = TrackingDatabase.get().getNextId(Transaction.class);
+                        return new Transaction(selectedStatement, idCode, "", 0.0, TrackingDatabase.get().get(Category.class, "Unaccounted"));
+                    }
 
-            @Override
-            public void deleteElement(Transaction toDel) {
-                TrackingDatabase.get().remove(toDel);
-                notifyUpdate();
-            }
+                    @Override
+                    public void deleteElement(Transaction toDel) {
+                        TrackingDatabase.get().remove(toDel);
+                        notifyUpdate();
+                    }
 
-            @Override
-            public void addElement(Transaction newObj) {
-                TrackingDatabase.get().add(newObj);
-                notifyUpdate();
-            }
-        }, new CurrencyBound_LocaleSource(), this, TrackingDatabase.get());
-        transaction_panel.getMainPanel().setNumberFormatSource(new CurrencyBound_LocaleSource());
+                    @Override
+                    public void addElement(Transaction newObj) {
+                        TrackingDatabase.get().add(newObj);
+                        notifyUpdate();
+                    }
+                });
+        transaction_panel.getMainPanel().setLocaleSource(new CurrencyBound_LocaleSource());
 
         period_panel = new DynamicGUI_IntractableObject<>(core, this);
         periodTotal_panel = new DynamicGUI_IntractableObject<>(new PeriodTransaction_Summary(core), this);

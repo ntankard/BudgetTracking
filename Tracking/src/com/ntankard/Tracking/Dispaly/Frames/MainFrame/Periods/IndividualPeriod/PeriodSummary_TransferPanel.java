@@ -22,8 +22,6 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ntankard.ClassExtension.MemberProperties.ALWAYS_DISPLAY;
-
 public class PeriodSummary_TransferPanel extends UpdatableJPanel {
     // Core Data
     private Period core;
@@ -59,15 +57,22 @@ public class PeriodSummary_TransferPanel extends UpdatableJPanel {
 
         periodSummary_panel = new PeriodSummary(core, true, this);
 
-        categoryTransfer_panel = DynamicGUI_DisplayList.newIntractableTable(categoryTransfer_list, new MemberClass(CategoryTransfer.class), false, true, ALWAYS_DISPLAY, new CategoryTransfer_ElementController(core, this), new CurrencyBound_LocaleSource(), this, TrackingDatabase.get());
-        periodTransfer_panel = DynamicGUI_DisplayList.newIntractableTable(periodTransfer_list, new MemberClass(PeriodTransfer.class), false, true, ALWAYS_DISPLAY, new PeriodTransfer_ElementController(core, this), new CurrencyBound_LocaleSource(), this, TrackingDatabase.get());
-        periodFundTransfer_panel = DynamicGUI_DisplayList.newIntractableTable(periodFundTransfer_list, new MemberClass(PeriodFundTransfer.class), false, true, ALWAYS_DISPLAY, new PeriodFundTransfer_ElementController(core, this), new CurrencyBound_LocaleSource(), this, TrackingDatabase.get());
-        fundChargeTransfer_panel = DynamicGUI_DisplayList.newIntractableTable(fundChargeTransfer_list, new MemberClass(FundChargeTransfer.class), false, true, ALWAYS_DISPLAY, new FundChargeTransfer_ElementController(core, this), new CurrencyBound_LocaleSource(), this, TrackingDatabase.get());
-
-
-        categoryTransfer_panel.getMainPanel().setNumberFormatSource(new CurrencyBound_LocaleSource());
-        periodTransfer_panel.getMainPanel().setNumberFormatSource(new CurrencyBound_LocaleSource());
-        periodFundTransfer_panel.getMainPanel().setNumberFormatSource(new CurrencyBound_LocaleSource());
+        categoryTransfer_panel = new DynamicGUI_DisplayList<>(categoryTransfer_list, new MemberClass(CategoryTransfer.class), this)
+                .setSources(TrackingDatabase.get())
+                .setLocaleSource(new CurrencyBound_LocaleSource())
+                .addControlButtons(new CategoryTransfer_ElementController(core, this));
+        periodTransfer_panel = new DynamicGUI_DisplayList<>(periodTransfer_list, new MemberClass(PeriodTransfer.class), this)
+                .setSources(TrackingDatabase.get())
+                .setLocaleSource(new CurrencyBound_LocaleSource())
+                .addControlButtons(new PeriodTransfer_ElementController(core, this));
+        periodFundTransfer_panel = new DynamicGUI_DisplayList<>(periodFundTransfer_list, new MemberClass(PeriodFundTransfer.class), this)
+                .setSources(TrackingDatabase.get()).setLocaleSource(new CurrencyBound_LocaleSource())
+                .setLocaleSource(new CurrencyBound_LocaleSource())
+                .addControlButtons(new PeriodFundTransfer_ElementController(core, this));
+        fundChargeTransfer_panel = new DynamicGUI_DisplayList<>(fundChargeTransfer_list, new MemberClass(FundChargeTransfer.class), this)
+                .setSources(TrackingDatabase.get())
+                .setLocaleSource(new CurrencyBound_LocaleSource())
+                .addControlButtons(new FundChargeTransfer_ElementController(core, this));
 
         categoryTransfer_panel.setTitle("Category Transfer");
         periodTransfer_panel.setTitle("Periods Transfer");
