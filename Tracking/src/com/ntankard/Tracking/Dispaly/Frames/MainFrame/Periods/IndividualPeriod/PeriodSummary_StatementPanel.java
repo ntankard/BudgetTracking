@@ -1,25 +1,20 @@
 package com.ntankard.Tracking.Dispaly.Frames.MainFrame.Periods.IndividualPeriod;
 
-import com.ntankard.ClassExtension.MemberClass;
 import com.ntankard.DynamicGUI.Containers.DynamicGUI_IntractableObject;
-import com.ntankard.DynamicGUI.Containers.DynamicGUI_DisplayList;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
-import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.Interface.Summary.PeriodTransaction_Summary;
-import com.ntankard.Tracking.DataBase.TrackingDatabase;
-import com.ntankard.Tracking.Dispaly.Frames.Statement_Frame;
-import com.ntankard.Tracking.Dispaly.Swing.PeriodSummary.PeriodSummary;
-import com.ntankard.Tracking.Dispaly.Util.LocaleInspectors.CurrencyBound_LocaleSource;
+import com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.PeriodSummary;
+import com.ntankard.Tracking.Dispaly.DataObjectPanels.StatementPanel;
+import com.ntankard.Tracking.Dispaly.Util.ElementControllers.Transaction_ElementController;
+import com.ntankard.Tracking.Dispaly.Util.Panels.DataObject_DisplayList;
+import com.ntankard.Tracking.Dispaly.Util.Set.Children_Set;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
-
-import static com.ntankard.DynamicGUI.Containers.DynamicGUI_DisplayList.ListControl_Button.EnableCondition.SINGLE;
 
 public class PeriodSummary_StatementPanel extends UpdatableJPanel {
 
@@ -27,16 +22,16 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
     private Period core;
     private Statement selectedStatement = null;
 
-    // The data displayed (clone of the data in the database)
-    private List<Transaction> transaction_list = new ArrayList<>();
-    private List<Statement> statement_list = new ArrayList<>();
-
     // The GUI components
     private PeriodSummary periodSummary_panel;
-    private DynamicGUI_DisplayList<Statement> statement_panel;
-    private DynamicGUI_DisplayList<Transaction> transaction_panel;
+    private StatementPanel statement_panel;
+    private DataObject_DisplayList<Transaction> transaction_panel;
     private DynamicGUI_IntractableObject period_panel;
     private DynamicGUI_IntractableObject periodTotal_panel;
+
+    // StatementPanel Controllers stored to update the core objects
+    private Children_Set<Transaction, Statement> transaction_panel_set;
+    private Transaction_ElementController transaction_panel_controller;
 
     /**
      * Constructor
@@ -66,40 +61,22 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
             }
         });
 
-        statement_panel = new DynamicGUI_DisplayList<>(statement_list, new MemberClass(Statement.class), this);
-        statement_panel.getMainPanel().setLocaleSource(new CurrencyBound_LocaleSource());
-
-        DynamicGUI_DisplayList.ListControl_Button manageStatementBtn = new DynamicGUI_DisplayList.ListControl_Button<Statement>("Manage Statement", statement_panel, SINGLE, false);
-        manageStatementBtn.addActionListener(e -> {
-            List selected = statement_panel.getMainPanel().getSelectedItems();
-            Statement_Frame.open((Statement) selected.get(0), this);
+        statement_panel = new StatementPanel(core, this);
+        statement_panel.setComparator((o1, o2) -> {
+            if (o1.getIdBank().getOrder() == o2.getIdBank().getOrder()) {
+                return 0;
+            } else if (o1.getIdBank().getOrder() > o2.getIdBank().getOrder()) {
+                return 1;
+            }
+            return -1;
         });
-        statement_panel.addButton(manageStatementBtn);
         statement_panel.getMainPanel().getListSelectionModel().addListSelectionListener(e -> updateTransactions());
 
-        transaction_panel = new DynamicGUI_DisplayList<>(transaction_list, new MemberClass(Transaction.class), this)
-                .setLocaleSource(new CurrencyBound_LocaleSource())
-                .setSources(TrackingDatabase.get())
-                .addControlButtons(new DynamicGUI_DisplayList.ElementController<Transaction>() {
-                    @Override
-                    public Transaction newElement() {
-                        String idCode = TrackingDatabase.get().getNextId(Transaction.class);
-                        return new Transaction(selectedStatement, idCode, "", 0.0, TrackingDatabase.get().get(Category.class, "Unaccounted"));
-                    }
+        transaction_panel_set = new Children_Set<>(Transaction.class, null);
+        transaction_panel_controller = new Transaction_ElementController(selectedStatement, this);
 
-                    @Override
-                    public void deleteElement(Transaction toDel) {
-                        TrackingDatabase.get().remove(toDel);
-                        notifyUpdate();
-                    }
-
-                    @Override
-                    public void addElement(Transaction newObj) {
-                        TrackingDatabase.get().add(newObj);
-                        notifyUpdate();
-                    }
-                });
-        transaction_panel.getMainPanel().setLocaleSource(new CurrencyBound_LocaleSource());
+        transaction_panel = new DataObject_DisplayList<>(Transaction.class, transaction_panel_set, this);
+        transaction_panel.addControlButtons(transaction_panel_controller);
 
         period_panel = new DynamicGUI_IntractableObject<>(core, this);
         periodTotal_panel = new DynamicGUI_IntractableObject<>(new PeriodTransaction_Summary(core), this);
@@ -138,16 +115,6 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
 
         int max = statement_panel.getMainPanel().getListSelectionModel().getMaxSelectionIndex();
         int min = statement_panel.getMainPanel().getListSelectionModel().getMaxSelectionIndex();
-        statement_list.clear();
-        statement_list.addAll(core.getChildren(Statement.class));
-        statement_list.sort((o1, o2) -> {
-            if (o1.getIdBank().getOrder() == o2.getIdBank().getOrder()) {
-                return 0;
-            } else if (o1.getIdBank().getOrder() > o2.getIdBank().getOrder()) {
-                return 1;
-            }
-            return -1;
-        });
         statement_panel.update();
         statement_panel.getMainPanel().getListSelectionModel().setSelectionInterval(min, max);
     }
@@ -164,11 +131,9 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
             selectedStatement = null;
         }
 
-        // Populate the list from the selected statement
-        transaction_list.clear();
-        if (selectedStatement != null) {
-            transaction_list.addAll(selectedStatement.getChildren(Transaction.class));
-        }
+        // Update the core object of children
+        transaction_panel_set.setCore(selectedStatement);
+        transaction_panel_controller.setCore(selectedStatement);
 
         // Update the UI
         transaction_panel.update();

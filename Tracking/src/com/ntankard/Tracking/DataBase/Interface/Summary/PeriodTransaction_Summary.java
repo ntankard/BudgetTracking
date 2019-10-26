@@ -4,8 +4,8 @@ import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
-import com.ntankard.Tracking.DataBase.Interface.MoneyEvent_Sets.PeriodCategoryType_Set;
-import com.ntankard.Tracking.DataBase.Interface.MoneyEvent_Sets.PeriodCategory_Set;
+import com.ntankard.Tracking.Dispaly.Util.Set.MoneyEvent_Sets.PeriodCategoryType_Set;
+import com.ntankard.Tracking.Dispaly.Util.Set.MoneyEvent_Sets.PeriodCategory_Set;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY_YEN;

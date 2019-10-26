@@ -1,4 +1,4 @@
-package com.ntankard.Tracking.Dispaly.Swing.PeriodSummary;
+package com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary;
 
 import javax.swing.*;
 import javax.swing.border.MatteBorder;

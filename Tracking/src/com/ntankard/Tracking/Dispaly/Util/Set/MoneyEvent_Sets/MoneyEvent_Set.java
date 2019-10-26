@@ -1,19 +1,20 @@
-package com.ntankard.Tracking.DataBase.Interface.MoneyEvent_Sets;
+package com.ntankard.Tracking.Dispaly.Util.Set.MoneyEvent_Sets;
 
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.MoneyEvent;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
+import com.ntankard.Tracking.Dispaly.Util.Set.DataObjectSet;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class MoneyEvent_Set<M extends MoneyEvent> {
+public abstract class MoneyEvent_Set<M extends MoneyEvent> implements DataObjectSet<M> {
 
     /**
      * Get all the events in this set
      *
      * @return All the events in this set
      */
-    public abstract List<M> getMoneyEvents();
+    public abstract List<M> get();
 
     /**
      * Get all the events in this set for a currency
@@ -21,9 +22,9 @@ public abstract class MoneyEvent_Set<M extends MoneyEvent> {
      * @param currency The currency to get
      * @return All the events in this set for a currency
      */
-    public List<M> getMoneyEvents(Currency currency) {
+    public List<M> get(Currency currency) {
         List<M> toReturn = new ArrayList<>();
-        for (M moneyEvent : getMoneyEvents()) {
+        for (M moneyEvent : get()) {
             if (moneyEvent.getCurrency().equals(currency)) {
                 toReturn.add(moneyEvent);
             }
@@ -39,7 +40,7 @@ public abstract class MoneyEvent_Set<M extends MoneyEvent> {
      */
     public double getTotal(Currency toSum) {
         double sum = 0;
-        for (M moneyEvent : getMoneyEvents(toSum)) {
+        for (M moneyEvent : get(toSum)) {
             if (isSource(moneyEvent)) {
                 sum -= moneyEvent.getValue();
             } else if (isDestination(moneyEvent)) {
@@ -57,7 +58,7 @@ public abstract class MoneyEvent_Set<M extends MoneyEvent> {
      */
     public double getTotal() {
         double sum = 0;
-        for (M moneyEvent : getMoneyEvents()) {
+        for (M moneyEvent : get()) {
             if (isSource(moneyEvent)) {
                 sum -= moneyEvent.getValue() * moneyEvent.getCurrency().getToPrimary();
             } else if (isDestination(moneyEvent)) {
@@ -75,7 +76,7 @@ public abstract class MoneyEvent_Set<M extends MoneyEvent> {
      */
     public List<Currency> getCurrencies() {
         List<Currency> toReturn = new ArrayList<>();
-        for (M moneyEvent : getMoneyEvents()) {
+        for (M moneyEvent : get()) {
             Currency currency = moneyEvent.getCurrency();
             if (!toReturn.contains(currency)) {
                 toReturn.add(currency);

@@ -1,13 +1,12 @@
-package com.ntankard.Tracking.Dispaly.Swing.PeriodSummary.ModelData.Rows;
+package com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.ModelData.Rows;
 
 import com.ntankard.Tracking.DataBase.Core.DataObject;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.MoneyEvent;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
-import com.ntankard.Tracking.DataBase.Interface.MoneyEvent_Sets.PeriodCategoryType_Set;
-import com.ntankard.Tracking.DataBase.TrackingDatabase;
-import com.ntankard.Tracking.Dispaly.Swing.PeriodSummary.ModelData.ModelData_Columns;
+import com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.ModelData.ModelData_Columns;
+import com.ntankard.Tracking.Dispaly.Util.Set.MoneyEvent_Sets.PeriodCategoryType_Set;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -154,7 +153,7 @@ public class TransferRow<T extends MoneyEvent> extends DataRows<T> {
      * @return All the rows for a specified category
      */
     private List<T> getRows(Category category) {
-        return new ArrayList<T>(new PeriodCategoryType_Set(core, category, typeParameterClass).getMoneyEvents());
+        return new ArrayList<T>(new PeriodCategoryType_Set(core, category, typeParameterClass).get());
     }
 
     /**

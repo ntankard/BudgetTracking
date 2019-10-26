@@ -1,4 +1,4 @@
-package com.ntankard.Tracking.DataBase.Interface.MoneyEvent_Sets;
+package com.ntankard.Tracking.Dispaly.Util.Set.MoneyEvent_Sets;
 
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.*;
@@ -31,12 +31,12 @@ public class PeriodCategory_Set extends MoneyEvent_Set<MoneyEvent> {
      * {@inheritDoc
      */
     @Override
-    public List<MoneyEvent> getMoneyEvents() {
+    public List<MoneyEvent> get() {
         List<MoneyEvent> toReturn = new ArrayList<>();
-        toReturn.addAll(new PeriodCategoryType_Set<>(period, category, Transaction.class).getMoneyEvents());
-        toReturn.addAll(new PeriodCategoryType_Set<>(period, category, CategoryTransfer.class).getMoneyEvents());
-        toReturn.addAll(new PeriodCategoryType_Set<>(period, category, PeriodTransfer.class).getMoneyEvents());
-        toReturn.addAll(new PeriodCategoryType_Set<>(period, category, PeriodFundTransfer.class).getMoneyEvents());
+        toReturn.addAll(new PeriodCategoryType_Set<>(period, category, Transaction.class).get());
+        toReturn.addAll(new PeriodCategoryType_Set<>(period, category, CategoryTransfer.class).get());
+        toReturn.addAll(new PeriodCategoryType_Set<>(period, category, PeriodTransfer.class).get());
+        toReturn.addAll(new PeriodCategoryType_Set<>(period, category, PeriodFundTransfer.class).get());
         return toReturn;
     }
 

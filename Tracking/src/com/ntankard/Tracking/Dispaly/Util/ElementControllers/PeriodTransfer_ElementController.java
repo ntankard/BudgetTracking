@@ -1,14 +1,14 @@
 package com.ntankard.Tracking.Dispaly.Util.ElementControllers;
 
-import com.ntankard.DynamicGUI.Containers.DynamicGUI_DisplayList.ElementController;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodTransfer;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
+import com.ntankard.Tracking.Dispaly.Util.Panels.TrackingDatabase_ElementController;
 
-public class PeriodTransfer_ElementController implements ElementController<PeriodTransfer> {
+public class PeriodTransfer_ElementController extends TrackingDatabase_ElementController<PeriodTransfer> {
 
     /**
      * Data to use when creating a new object
@@ -16,16 +16,11 @@ public class PeriodTransfer_ElementController implements ElementController<Perio
     private Period period;
 
     /**
-     * The container to notify if the buttons make a database change
-     */
-    private Updatable master;
-
-    /**
      * Constructor
      */
     public PeriodTransfer_ElementController(Period period, Updatable master) {
+        super(master);
         this.period = period;
-        this.master = master;
     }
 
     /**
@@ -42,23 +37,5 @@ public class PeriodTransfer_ElementController implements ElementController<Perio
                 TrackingDatabase.get().get(Category.class, "Unaccounted"),
                 "",
                 0.0);
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public void deleteElement(PeriodTransfer toDel) {
-        TrackingDatabase.get().remove(toDel);
-        master.notifyUpdate();
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public void addElement(PeriodTransfer newObj) {
-        TrackingDatabase.get().add(newObj);
-        master.notifyUpdate();
     }
 }

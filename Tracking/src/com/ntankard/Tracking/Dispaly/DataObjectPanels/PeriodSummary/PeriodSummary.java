@@ -1,4 +1,4 @@
-package com.ntankard.Tracking.Dispaly.Swing.PeriodSummary;
+package com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary;
 
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJScrollPane;
 import com.ntankard.DynamicGUI.Util.Table.TableColumnAdjuster;

@@ -1,9 +1,9 @@
-package com.ntankard.Tracking.Dispaly.Swing.PeriodSummary.ModelData;
+package com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.ModelData;
 
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
-import com.ntankard.Tracking.DataBase.Interface.MoneyEvent_Sets.PeriodCategory_Set;
+import com.ntankard.Tracking.Dispaly.Util.Set.MoneyEvent_Sets.PeriodCategory_Set;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
 
 import java.util.ArrayList;

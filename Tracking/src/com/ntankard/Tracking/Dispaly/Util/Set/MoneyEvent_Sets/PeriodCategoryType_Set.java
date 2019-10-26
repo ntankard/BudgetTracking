@@ -1,4 +1,4 @@
-package com.ntankard.Tracking.DataBase.Interface.MoneyEvent_Sets;
+package com.ntankard.Tracking.Dispaly.Util.Set.MoneyEvent_Sets;
 
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.MoneyEvent;
@@ -38,7 +38,7 @@ public class PeriodCategoryType_Set<T extends MoneyEvent> extends MoneyEvent_Set
      * {@inheritDoc
      */
     @Override
-    public List<T> getMoneyEvents() {
+    public List<T> get() {
         List<T> toReturn = new ArrayList<>();
         for (T transaction : period.getChildren(toGet)) {
             if (isSource(transaction) || isDestination(transaction)) {

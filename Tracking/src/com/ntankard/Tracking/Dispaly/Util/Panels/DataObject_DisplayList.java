@@ -2,52 +2,73 @@ package com.ntankard.Tracking.Dispaly.Util.Panels;
 
 import com.ntankard.ClassExtension.MemberClass;
 import com.ntankard.DynamicGUI.Containers.DynamicGUI_DisplayList;
-import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
+import com.ntankard.Tracking.DataBase.Core.CurrencyBound;
 import com.ntankard.Tracking.DataBase.Core.DataObject;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
+import com.ntankard.Tracking.Dispaly.Util.LocaleInspectors.CurrencyBound_LocaleSource;
+import com.ntankard.Tracking.Dispaly.Util.Set.DataObjectSet;
+import com.ntankard.Tracking.Dispaly.Util.Set.Full_Set;
 
-import java.awt.*;
 import java.util.ArrayList;
-import java.util.List;
 
-import static com.ntankard.ClassExtension.MemberProperties.ALWAYS_DISPLAY;
-
-public class DataObject_DisplayList<T extends DataObject> extends UpdatableJPanel {
+public class DataObject_DisplayList<T extends DataObject> extends DynamicGUI_DisplayList<T> {
 
     /**
-     * The data type to display
+     * The source of data for the list
      */
-    private Class<T> tClass;
-
-    // Display settings
-    private int verbosityLevel = ALWAYS_DISPLAY;
-    private boolean addFilter = true;
-
-    // The GUI components
-    private List<T> coreData = new ArrayList<>();
-    private DynamicGUI_DisplayList<T> mainPanel;
+    private DataObjectSet<T> set;
 
     /**
-     * Constructor
+     * Constructor. Build a list for all object of type tClass. Filter added by default
+     *
+     * @param tClass The type of object to display
+     * @param master The parent to notify if data changes
      */
     public DataObject_DisplayList(Class<T> tClass, Updatable master) {
-        super(master);
-        this.tClass = tClass;
-        createUIComponents();
+        this(tClass, new Full_Set<>(tClass), master);
     }
 
     /**
-     * Create the GUI components
+     * Constructor. Build a list for all object of type tClass
+     *
+     * @param tClass The type of object to display
+     * @param filter Should a filter be added
+     * @param master The parent to notify if data changes
      */
-    private void createUIComponents() {
-        this.removeAll();
-        this.setLayout(new BorderLayout());
-        this.mainPanel = new DynamicGUI_DisplayList<>(coreData, new MemberClass(tClass), this).setVerbosity(verbosityLevel);
-        if (addFilter) {
-            mainPanel.addFilter();
+    public DataObject_DisplayList(Class<T> tClass, boolean filter, Updatable master) {
+        this(tClass, new Full_Set<>(tClass), filter, master);
+    }
+
+    /**
+     * Constructor. Build a list from a set of type tClass. Filter added by default
+     *
+     * @param tClass The type of object to display
+     * @param set    The source of data to display
+     * @param master The parent to notify if data changes
+     */
+    public DataObject_DisplayList(Class<T> tClass, DataObjectSet<T> set, Updatable master) {
+        this(tClass, set, true, master);
+    }
+
+    /**
+     * Constructor. Build a list from a set of type tClass. Filter added by default
+     *
+     * @param tClass The type of object to display
+     * @param set    The source of data to display
+     * @param filter Should a filter be added
+     * @param master The parent to notify if data changes
+     */
+    public DataObject_DisplayList(Class<T> tClass, DataObjectSet<T> set, boolean filter, Updatable master) {
+        super(new ArrayList<>(), new MemberClass(tClass), master);
+        this.set = set;
+        if (CurrencyBound.class.isAssignableFrom(tClass)) {
+            setLocaleSource(new CurrencyBound_LocaleSource());
         }
-        this.add(mainPanel, BorderLayout.CENTER);
+        setSources(TrackingDatabase.get());
+        if (filter) {
+            addFilter();
+        }
     }
 
     /**
@@ -55,8 +76,8 @@ public class DataObject_DisplayList<T extends DataObject> extends UpdatableJPane
      */
     @Override
     public void update() {
-        coreData.clear();
-        coreData.addAll(TrackingDatabase.get().get(tClass));
-        mainPanel.update();
+        base.clear();
+        base.addAll(set.get());
+        super.update();
     }
 }
