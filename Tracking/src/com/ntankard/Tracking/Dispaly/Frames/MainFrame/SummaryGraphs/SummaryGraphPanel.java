@@ -3,12 +3,16 @@ package com.ntankard.Tracking.Dispaly.Frames.MainFrame.SummaryGraphs;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 
+import javax.swing.*;
 import java.awt.*;
 
 public class SummaryGraphPanel extends UpdatableJPanel {
 
     // The GUI components
     private SavingsGraph savingsGraph;
+    private CategoryGraph categoryGraph;
+
+    private JTabbedPane master_tPanel;
 
     /**
      * Constructor
@@ -26,8 +30,13 @@ public class SummaryGraphPanel extends UpdatableJPanel {
         this.setLayout(new GridLayout(1, 1));
 
         savingsGraph = new SavingsGraph(this);
+        categoryGraph = new CategoryGraph(this);
 
-        this.add(savingsGraph);
+        master_tPanel = new JTabbedPane();
+        master_tPanel.addTab("Savings", savingsGraph);
+        master_tPanel.addTab("Category", categoryGraph);
+
+        this.add(master_tPanel);
     }
 
     /**
