@@ -24,7 +24,7 @@ public class Transaction extends MoneyEvent<Statement, Category, Period, Categor
      * {@inheritDoc
      */
     @Override
-    public boolean isThisSource(DataObject sourceContainer, Category category) {
+    public boolean isThisSource(DataObject sourceContainer, DataObject category) {
         return false;
     }
 

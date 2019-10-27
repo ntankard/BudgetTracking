@@ -1,10 +1,11 @@
-package com.ntankard.Tracking.DataBase.Core.MoneyEvents;
+package com.ntankard.Tracking.DataBase.Core.MoneyEvents.FundChargeTransfer;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.ClassExtension.SetterProperties;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Fund;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.MoneyEvent;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
@@ -25,7 +26,6 @@ public class FundChargeTransfer extends MoneyEvent<Period, Category, Fund, FundE
     //------------------------------------------------------------------------------------------------------------------
 
     @DisplayProperties(order = 2)
-    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
     @Override
     public Period getSourceContainer() {
         return super.getSourceContainer();

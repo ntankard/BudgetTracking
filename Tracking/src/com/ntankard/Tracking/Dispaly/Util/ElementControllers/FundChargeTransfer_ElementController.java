@@ -3,7 +3,7 @@ package com.ntankard.Tracking.Dispaly.Util.ElementControllers;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Fund;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.FundChargeTransfer;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.FundChargeTransfer.FundChargeTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;

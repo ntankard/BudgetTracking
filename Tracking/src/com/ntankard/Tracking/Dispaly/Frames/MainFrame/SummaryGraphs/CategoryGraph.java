@@ -5,7 +5,7 @@ import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
-import com.ntankard.Tracking.Dispaly.Util.Set.MoneyEvent_Sets.PeriodCategory_Set;
+import com.ntankard.Tracking.Dispaly.Util.Set.MoneyEvent_Sets.ContainerCategory_Set;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -87,7 +87,7 @@ public class CategoryGraph extends UpdatableJPanel {
         for (Period period : TrackingDatabase.get().get(Period.class)) {
             for(Category category : TrackingDatabase.get().get(Category.class)){
                 if(!category.getId().equals("Income")) {
-                    categories.get(category).add(i, new PeriodCategory_Set(period, category).getTotal());
+                    categories.get(category).add(i, new ContainerCategory_Set(period, category).getTotal());
                 }
             }
             i++;

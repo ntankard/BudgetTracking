@@ -3,7 +3,7 @@ package com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.ModelData;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
-import com.ntankard.Tracking.Dispaly.Util.Set.MoneyEvent_Sets.PeriodCategory_Set;
+import com.ntankard.Tracking.Dispaly.Util.Set.MoneyEvent_Sets.ContainerCategory_Set;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
 
 import java.util.ArrayList;
@@ -64,7 +64,7 @@ public class ModelData_Columns {
      * @return All currencies that transaction are in for a specific category
      */
     private List<Currency> getCurrencies(Category category) {
-        return new PeriodCategory_Set(core,category).getCurrencies();
+        return new ContainerCategory_Set(core,category).getCurrencies();
     }
 
     /**

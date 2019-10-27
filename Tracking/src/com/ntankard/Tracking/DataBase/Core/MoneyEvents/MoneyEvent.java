@@ -7,7 +7,6 @@ import com.ntankard.ClassExtension.SetterProperties;
 import com.ntankard.Tracking.DataBase.Core.CurrencyBound;
 import com.ntankard.Tracking.DataBase.Core.DataObject;
 import com.ntankard.Tracking.DataBase.Core.IdDataObject;
-import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
 
 import java.util.ArrayList;
@@ -80,7 +79,7 @@ public abstract class MoneyEvent<SourceType extends DataObject, SourceCategory e
      * @param category        The category to check
      * @return True if the params represent this transfers source
      */
-    public boolean isThisSource(DataObject sourceContainer, Category category) {
+    public boolean isThisSource(DataObject sourceContainer, DataObject category) {
         return this.sourceContainer.equals(sourceContainer) && this.sourceCategory.equals(category);
     }
 
@@ -101,7 +100,7 @@ public abstract class MoneyEvent<SourceType extends DataObject, SourceCategory e
      * @param category             The category to check
      * @return True if the params represent this transfers destination
      */
-    public boolean isThisDestination(DataObject destinationContainer, Category category) {
+    public boolean isThisDestination(DataObject destinationContainer, DataObject category) {
         return this.destinationContainer.equals(destinationContainer) && this.destinationCategory.equals(category);
     }
 

@@ -4,10 +4,10 @@ import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.CategoryTransfer;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.FundChargeTransfer;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.FundChargeTransfer.FundChargeTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodTransfer;
-import com.ntankard.Tracking.Dispaly.Util.Set.MoneyEvent_Sets.PeriodType_Set;
+import com.ntankard.Tracking.Dispaly.Util.Set.MoneyEvent_Sets.ContainerType_Set;
 import com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.PeriodSummary;
 import com.ntankard.Tracking.Dispaly.Util.ElementControllers.CategoryTransfer_ElementController;
 import com.ntankard.Tracking.Dispaly.Util.ElementControllers.FundChargeTransfer_ElementController;
@@ -46,16 +46,16 @@ public class PeriodSummary_TransferPanel extends UpdatableJPanel {
 
         periodSummary_panel = new PeriodSummary(core, true, this);
 
-        categoryTransfer_panel = new DataObject_DisplayList<>(CategoryTransfer.class, new PeriodType_Set<>(core, CategoryTransfer.class), false, this);
+        categoryTransfer_panel = new DataObject_DisplayList<>(CategoryTransfer.class, new ContainerType_Set<>(core, CategoryTransfer.class), false, this);
         categoryTransfer_panel.addControlButtons(new CategoryTransfer_ElementController(core, this));
 
-        periodTransfer_panel = new DataObject_DisplayList<>(PeriodTransfer.class, new PeriodType_Set<>(core, PeriodTransfer.class), false, this);
+        periodTransfer_panel = new DataObject_DisplayList<>(PeriodTransfer.class, new ContainerType_Set<>(core, PeriodTransfer.class), false, this);
         periodTransfer_panel.addControlButtons(new PeriodTransfer_ElementController(core, this));
 
-        periodFundTransfer_panel = new DataObject_DisplayList<>(PeriodFundTransfer.class, new PeriodType_Set<>(core, PeriodFundTransfer.class), false, this);
+        periodFundTransfer_panel = new DataObject_DisplayList<>(PeriodFundTransfer.class, new ContainerType_Set<>(core, PeriodFundTransfer.class), false, this);
         periodFundTransfer_panel.addControlButtons(new PeriodFundTransfer_ElementController(core, this));
 
-        fundChargeTransfer_panel = new DataObject_DisplayList<>(FundChargeTransfer.class, new PeriodType_Set<>(core, FundChargeTransfer.class), false, this);
+        fundChargeTransfer_panel = new DataObject_DisplayList<>(FundChargeTransfer.class, new ContainerType_Set<>(core, FundChargeTransfer.class), false, this);
         fundChargeTransfer_panel.addControlButtons(new FundChargeTransfer_ElementController(core, this));
 
         categoryTransfer_panel.setTitle("Category Transfer");

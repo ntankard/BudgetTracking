@@ -1,5 +1,6 @@
 package com.ntankard.Tracking.Dispaly.Util.Set.MoneyEvent_Sets;
 
+import com.ntankard.Tracking.DataBase.Core.DataObject;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.*;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
@@ -7,22 +8,22 @@ import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PeriodCategory_Set extends MoneyEvent_Set<MoneyEvent> {
+public class ContainerCategory_Set extends MoneyEvent_Set<MoneyEvent> {
 
     /**
      * The period to summarise
      */
-    private Period period;
+    private DataObject period;
 
     /**
      * The category to filler on
      */
-    private Category category;
+    private DataObject category;
 
     /**
      * Constructor
      */
-    public PeriodCategory_Set(Period period, Category category) {
+    public ContainerCategory_Set(DataObject period, DataObject category) {
         this.period = period;
         this.category = category;
     }
@@ -33,10 +34,10 @@ public class PeriodCategory_Set extends MoneyEvent_Set<MoneyEvent> {
     @Override
     public List<MoneyEvent> get() {
         List<MoneyEvent> toReturn = new ArrayList<>();
-        toReturn.addAll(new PeriodCategoryType_Set<>(period, category, Transaction.class).get());
-        toReturn.addAll(new PeriodCategoryType_Set<>(period, category, CategoryTransfer.class).get());
-        toReturn.addAll(new PeriodCategoryType_Set<>(period, category, PeriodTransfer.class).get());
-        toReturn.addAll(new PeriodCategoryType_Set<>(period, category, PeriodFundTransfer.class).get());
+        toReturn.addAll(new ContainerCategoryType_Set<>(period, category, Transaction.class).get());
+        toReturn.addAll(new ContainerCategoryType_Set<>(period, category, CategoryTransfer.class).get());
+        toReturn.addAll(new ContainerCategoryType_Set<>(period, category, PeriodTransfer.class).get());
+        toReturn.addAll(new ContainerCategoryType_Set<>(period, category, PeriodFundTransfer.class).get());
         return toReturn;
     }
 

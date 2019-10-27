@@ -1,5 +1,6 @@
 package com.ntankard.Tracking.Dispaly.Util.Set.MoneyEvent_Sets;
 
+import com.ntankard.Tracking.DataBase.Core.DataObject;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.MoneyEvent;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
@@ -8,17 +9,17 @@ import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PeriodCategoryType_Set<T extends MoneyEvent> extends MoneyEvent_Set<T> {
+public class ContainerCategoryType_Set<T extends MoneyEvent> extends MoneyEvent_Set<T> {
 
     /**
      * The period to summarise
      */
-    private Period period;
+    private DataObject period;
 
     /**
      * The category to filler on
      */
-    private Category category;
+    private DataObject category;
 
     /**
      * The type of object to group
@@ -28,7 +29,7 @@ public class PeriodCategoryType_Set<T extends MoneyEvent> extends MoneyEvent_Set
     /**
      * Constructor
      */
-    public PeriodCategoryType_Set(Period period, Category category, Class<T> toGet) {
+    public ContainerCategoryType_Set(DataObject period, DataObject category, Class<T> toGet) {
         this.period = period;
         this.category = category;
         this.toGet = toGet;

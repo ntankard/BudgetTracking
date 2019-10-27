@@ -6,7 +6,7 @@ import com.ntankard.Tracking.DataBase.Core.MoneyEvents.MoneyEvent;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
 import com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.ModelData.ModelData_Columns;
-import com.ntankard.Tracking.Dispaly.Util.Set.MoneyEvent_Sets.PeriodCategoryType_Set;
+import com.ntankard.Tracking.Dispaly.Util.Set.MoneyEvent_Sets.ContainerCategoryType_Set;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +34,7 @@ public class TransferRow<T extends MoneyEvent> extends DataRows<T> {
      */
     @Override
     public double getTotal_impl(Category category) {
-        return new PeriodCategoryType_Set(core, category, typeParameterClass).getTotal();
+        return new ContainerCategoryType_Set(core, category, typeParameterClass).getTotal();
     }
 
     /**
@@ -143,7 +143,7 @@ public class TransferRow<T extends MoneyEvent> extends DataRows<T> {
      * @return The formatted total
      */
     private double getCurrencyTotal_impl(Category category, Currency currency) {
-        return new PeriodCategoryType_Set(core, category, typeParameterClass).getTotal(currency);
+        return new ContainerCategoryType_Set(core, category, typeParameterClass).getTotal(currency);
     }
 
     /**
@@ -153,7 +153,7 @@ public class TransferRow<T extends MoneyEvent> extends DataRows<T> {
      * @return All the rows for a specified category
      */
     private List<T> getRows(Category category) {
-        return new ArrayList<T>(new PeriodCategoryType_Set(core, category, typeParameterClass).get());
+        return new ArrayList<T>(new ContainerCategoryType_Set(core, category, typeParameterClass).get());
     }
 
     /**

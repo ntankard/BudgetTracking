@@ -75,7 +75,7 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
         transaction_panel_set = new Children_Set<>(Transaction.class, null);
         transaction_panel_controller = new Transaction_ElementController(selectedStatement, this);
 
-        transaction_panel = new DataObject_DisplayList<>(Transaction.class, transaction_panel_set, this);
+        transaction_panel = new DataObject_DisplayList<>(Transaction.class, transaction_panel_set, false, this);
         transaction_panel.addControlButtons(transaction_panel_controller);
 
         period_panel = new DynamicGUI_IntractableObject<>(core, this);
