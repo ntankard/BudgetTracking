@@ -2,10 +2,8 @@ package com.ntankard.Tracking.DataBase.Interface.Summary;
 
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
-import com.ntankard.Tracking.Dispaly.Util.Set.MoneyEvent_Sets.PeriodCategoryType_Set;
-import com.ntankard.Tracking.Dispaly.Util.Set.MoneyEvent_Sets.PeriodCategory_Set;
+import com.ntankard.Tracking.Dispaly.Util.Set.MoneyEvent_Sets.ContainerCategory_Set;
 import com.ntankard.Tracking.DataBase.TrackingDatabase;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY_YEN;
@@ -31,7 +29,7 @@ public class PeriodTransaction_Summary {
      */
     @DisplayProperties(dataType = CURRENCY_YEN)
     public Double getHex() {
-        return new PeriodCategoryType_Set<>(core, TrackingDatabase.get().get(Category.class, "Income"), Transaction.class).getTotal() * -0.06;
+        return new ContainerCategory_Set(core, TrackingDatabase.get().get(Category.class, "Income")).getTotal() * -0.06;
     }
 
     /**
@@ -42,10 +40,22 @@ public class PeriodTransaction_Summary {
     @DisplayProperties(dataType = CURRENCY_YEN)
     public Double getSavings() {
         Double sum = 0.0;
+        sum += getNonCategory();
+        sum -= getHex();
+        return sum;
+    }
+
+    /**
+     * Get the amount on money not in a category
+     *
+     * @return The amount on money not in a category
+     */
+    @DisplayProperties(dataType = CURRENCY_YEN)
+    public Double getNonCategory() {
+        Double sum = 0.0;
         for (Category category : TrackingDatabase.get().get(Category.class)) {
-            sum += new PeriodCategory_Set(core, category).getTotal();
+            sum += new ContainerCategory_Set(core, category).getTotal();
         }
-        sum += getHex();
         return -sum;
     }
 }

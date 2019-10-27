@@ -34,6 +34,16 @@ public abstract class DataObject {
     }
 
     /**
+     * The class used to group these objects
+     *
+     * @return The class used to group these objects
+     */
+    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
+    public Class<?> getTypeClass() {
+        return getClass();
+    }
+
+    /**
      * Notify all the objects parents that this object has linked to them
      */
     public void notifyParentLink() {
@@ -64,7 +74,7 @@ public abstract class DataObject {
      * @param linkObject The child
      */
     public void notifyChildLink(DataObject linkObject) {
-        Class classType = linkObject.getClass();
+        Class classType = linkObject.getTypeClass();
         if (!children.containsKey(classType)) {
             children.put(classType, new ArrayList<>());
             childrenMap.put(classType, new HashMap<>());
@@ -88,7 +98,7 @@ public abstract class DataObject {
      * @param linkObject The child
      */
     public void notifyChildUnLink(DataObject linkObject) {
-        Class classType = linkObject.getClass();
+        Class classType = linkObject.getTypeClass();
         if (!children.containsKey(classType)) {
             return;
         }

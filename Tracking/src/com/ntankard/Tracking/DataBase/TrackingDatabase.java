@@ -6,6 +6,9 @@ import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Fund;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.*;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.FundChargeTransfer.FundChargeTransfer;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.FundChargeTransfer.HexChargeTransfer;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.FundChargeTransfer.SavingsChargeTransfer;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Bank;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
@@ -117,18 +120,28 @@ public class TrackingDatabase {
      * @param dataObject The object to add
      */
     public void add(DataObject dataObject) {
-        if (!dataObjects.containsKey(dataObject.getClass()) || !dataObjectsMap.containsKey(dataObject.getClass())) {
+        add(dataObject.getTypeClass(), dataObject);
+    }
+
+    /**
+     * Add a new element to the database. New elements are repaired if needed and all relevant parents are notified
+     *
+     * @param tClass     The object to add
+     * @param dataObject The type to store it under
+     */
+    public void add(Class tClass, DataObject dataObject) {
+        if (!dataObjects.containsKey(tClass) || !dataObjectsMap.containsKey(tClass)) {
             throw new RuntimeException("Impossible type");
         }
 
-        this.dataObjects.get(dataObject.getClass()).add(dataObject);
-        this.dataObjectsMap.get(dataObject.getClass()).put(dataObject.getId(), dataObject);
+        this.dataObjects.get(tClass).add(dataObject);
+        this.dataObjectsMap.get(tClass).put(dataObject.getId(), dataObject);
         if (isFinalized) {
             fix(dataObject);
         }
         dataObject.notifyParentLink();
 
-        if (dataObjects.get(dataObject.getClass()).size() != dataObjectsMap.get(dataObject.getClass()).size()) {
+        if (dataObjects.get(tClass).size() != dataObjectsMap.get(tClass).size()) {
             throw new RuntimeException("Duplicate ID");
         }
     }
@@ -139,7 +152,7 @@ public class TrackingDatabase {
      * @param dataObject The object to remove
      */
     public void remove(DataObject dataObject) {
-        if (!dataObjects.containsKey(dataObject.getClass()) || !dataObjectsMap.containsKey(dataObject.getClass())) {
+        if (!dataObjects.containsKey(dataObject.getTypeClass()) || !dataObjectsMap.containsKey(dataObject.getTypeClass())) {
             throw new RuntimeException("Impossible type");
         }
         if (dataObject.getChildren().size() != 0) {
@@ -147,10 +160,10 @@ public class TrackingDatabase {
         }
 
         dataObject.notifyParentUnLink();
-        this.dataObjects.get(dataObject.getClass()).remove(dataObject);
-        this.dataObjectsMap.get(dataObject.getClass()).remove(dataObject.getId());
+        this.dataObjects.get(dataObject.getTypeClass()).remove(dataObject);
+        this.dataObjectsMap.get(dataObject.getTypeClass()).remove(dataObject.getId());
 
-        if (dataObjects.get(dataObject.getClass()).size() != dataObjectsMap.get(dataObject.getClass()).size()) {
+        if (dataObjects.get(dataObject.getTypeClass()).size() != dataObjectsMap.get(dataObject.getTypeClass()).size()) {
             throw new RuntimeException("Error remove");
         }
     }
@@ -178,7 +191,7 @@ public class TrackingDatabase {
      * @param funds The fund to fix
      */
     private void fixFund(Fund funds) {
-        boolean found = false;
+        /*boolean found = false;
         for (FundEvent fundEvent : funds.getChildren(FundEvent.class)) {
             if (fundEvent.getIdCode().equals("NONE")) {
                 found = true;
@@ -187,7 +200,7 @@ public class TrackingDatabase {
         }
         if (!found) {
             add(new FundEvent(funds, "NONE"));
-        }
+        }*/
     }
 
     /**
@@ -212,6 +225,23 @@ public class TrackingDatabase {
 
                 add(new Statement(b, period, end, 0.0, 0.0, 0.0));
             }
+        }
+
+        boolean hexFound = false;
+        boolean saveFound = false;
+        for (FundChargeTransfer fundChargeTransfer : period.getChildren(FundChargeTransfer.class)) {
+            if (fundChargeTransfer instanceof HexChargeTransfer) {
+                hexFound = true;
+            }
+            if (fundChargeTransfer instanceof SavingsChargeTransfer) {
+                saveFound = true;
+            }
+        }
+        if (!hexFound) {
+            add(FundChargeTransfer.class, new HexChargeTransfer(period));
+        }
+        if (!saveFound) {
+            add(FundChargeTransfer.class, new SavingsChargeTransfer(period));
         }
     }
 

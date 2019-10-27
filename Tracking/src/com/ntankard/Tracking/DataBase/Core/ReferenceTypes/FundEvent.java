@@ -32,7 +32,7 @@ public class FundEvent extends DataObject {
      */
     @Override
     public String getId() {
-        return idFund.toString() + "-" + idCode;
+        return idCode;
     }
 
     /**

@@ -4,6 +4,9 @@ import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Fund;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.*;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.FundChargeTransfer.FundChargeTransfer;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.FundChargeTransfer.HexChargeTransfer;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.FundChargeTransfer.SavingsChargeTransfer;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Bank;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
@@ -47,8 +50,8 @@ public class TrackingDatabase_Reader {
         saveCategoryTransfer(data, csvFile);
         savePeriodTransfer(data, csvFile);
         saveFund(data, csvFile);
-        savePeriodFundTransfer(data, csvFile);
         saveFundEvent(data, csvFile);
+        savePeriodFundTransfer(data, csvFile);
         saveFundChargeTransfer(data, csvFile);
     }
 
@@ -584,14 +587,16 @@ public class TrackingDatabase_Reader {
     private static void saveFundChargeTransfer(TrackingDatabase data, String csvFile) {
         ArrayList<List<String>> lines = new ArrayList<>();
         for (FundChargeTransfer t : data.get(FundChargeTransfer.class)) {
-            List<String> line = new ArrayList<>();
-            line.add(t.getId());
-            line.add(t.getSourceContainer().getId());
-            line.add(t.getDestinationContainer().getId());
-            line.add(t.getCurrency().getId());
-            line.add(t.getDescription());
-            line.add(t.getValue().toString());
-            lines.add(line);
+            if (!(t instanceof HexChargeTransfer) && !(t instanceof SavingsChargeTransfer)) {
+                List<String> line = new ArrayList<>();
+                line.add(t.getId());
+                line.add(t.getSourceContainer().getId());
+                line.add(t.getDestinationContainer().getId());
+                line.add(t.getCurrency().getId());
+                line.add(t.getDescription());
+                line.add(t.getValue().toString());
+                lines.add(line);
+            }
         }
 
         writeLines(csvFile + "FundChargeTransfer.csv", lines);
