@@ -1,6 +1,6 @@
 package com.ntankard.Tracking.DataBase.Interface.Set;
 
-import com.ntankard.Tracking.DataBase.Core.DataObject;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 
 import java.util.ArrayList;
 import java.util.List;

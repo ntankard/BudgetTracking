@@ -1,7 +1,7 @@
 package com.ntankard.Tracking.DataBase.Database.SubContainers;
 
-import com.ntankard.Tracking.DataBase.Core.DataObject;
-import com.ntankard.Tracking.DataBase.Core.SpecialValues;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.SpecialValues;
 
 import java.util.HashMap;
 import java.util.Map;

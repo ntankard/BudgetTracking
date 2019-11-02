@@ -1,6 +1,6 @@
 package com.ntankard.Tracking.DataBase.Database;
 
-import com.ntankard.Tracking.DataBase.Core.DataObject;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.FundChargeTransfer.FundChargeTransfer;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

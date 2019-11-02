@@ -1,7 +1,7 @@
 package com.ntankard.Tracking.DataBase.Database.SubContainers;
 
-import com.ntankard.Tracking.DataBase.Core.DataObject;
-import com.ntankard.Tracking.DataBase.Core.HasDefault;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.HasDefault;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 
 public class DefaultObjectMap extends Container<Class, DataObject> {

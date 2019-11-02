@@ -1,6 +1,6 @@
 package com.ntankard.Tracking.DataBase.Interface.Set.MoneyEvent_Sets;
 
-import com.ntankard.Tracking.DataBase.Core.DataObject;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.MoneyEvent;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
 
