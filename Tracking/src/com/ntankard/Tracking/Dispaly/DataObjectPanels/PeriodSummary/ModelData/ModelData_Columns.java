@@ -3,8 +3,8 @@ package com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.ModelData;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
-import com.ntankard.Tracking.Dispaly.Util.Set.MoneyEvent_Sets.ContainerCategory_Set;
-import com.ntankard.Tracking.DataBase.TrackingDatabase;
+import com.ntankard.Tracking.DataBase.Interface.Set.MoneyEvent_Sets.ContainerCategory_Set;
+import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -75,9 +75,9 @@ public class ModelData_Columns {
      */
     public String getColumnName(int column) {
         if (columns.get(column).index == 0) {
-            return columns.get(column).category.getId();
+            return columns.get(column).category.toString();
         } else {
-            return columns.get(column).category.getId();
+            return columns.get(column).category.toString();
         }
     }
 

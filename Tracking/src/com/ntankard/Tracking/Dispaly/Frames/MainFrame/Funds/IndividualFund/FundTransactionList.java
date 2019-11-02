@@ -6,7 +6,7 @@ import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Fund;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.FundChargeTransfer.FundChargeTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodFundTransfer;
 import com.ntankard.Tracking.Dispaly.Util.Panels.DataObject_DisplayList;
-import com.ntankard.Tracking.Dispaly.Util.Set.Children_Set;
+import com.ntankard.Tracking.DataBase.Interface.Set.Children_Set;
 
 import java.awt.*;
 

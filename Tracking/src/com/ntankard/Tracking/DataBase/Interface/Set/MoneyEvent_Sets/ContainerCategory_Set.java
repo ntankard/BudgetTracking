@@ -1,9 +1,7 @@
-package com.ntankard.Tracking.Dispaly.Util.Set.MoneyEvent_Sets;
+package com.ntankard.Tracking.DataBase.Interface.Set.MoneyEvent_Sets;
 
 import com.ntankard.Tracking.DataBase.Core.DataObject;
-import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.*;
-import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 
 import java.util.ArrayList;
 import java.util.List;

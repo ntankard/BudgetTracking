@@ -11,7 +11,7 @@ import com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.PeriodSummar
 import com.ntankard.Tracking.Dispaly.DataObjectPanels.StatementPanel;
 import com.ntankard.Tracking.Dispaly.Util.ElementControllers.Transaction_ElementController;
 import com.ntankard.Tracking.Dispaly.Util.Panels.DataObject_DisplayList;
-import com.ntankard.Tracking.Dispaly.Util.Set.Children_Set;
+import com.ntankard.Tracking.DataBase.Interface.Set.Children_Set;
 
 import java.awt.*;
 import java.util.List;
@@ -63,9 +63,9 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
 
         statement_panel = new StatementPanel(core, this);
         statement_panel.setComparator((o1, o2) -> {
-            if (o1.getIdBank().getOrder() == o2.getIdBank().getOrder()) {
+            if (o1.getBank().getOrder() == o2.getBank().getOrder()) {
                 return 0;
-            } else if (o1.getIdBank().getOrder() > o2.getIdBank().getOrder()) {
+            } else if (o1.getBank().getOrder() > o2.getBank().getOrder()) {
                 return 1;
             }
             return -1;
@@ -133,7 +133,7 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
 
         // Update the core object of children
         transaction_panel_set.setCore(selectedStatement);
-        transaction_panel_controller.setCore(selectedStatement);
+        transaction_panel_controller.setStatement(selectedStatement);
 
         // Update the UI
         transaction_panel.update();

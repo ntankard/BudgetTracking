@@ -5,7 +5,7 @@ import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.CategoryTransfer;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
-import com.ntankard.Tracking.DataBase.TrackingDatabase;
+import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.Dispaly.Util.Panels.TrackingDatabase_ElementController;
 
 public class CategoryTransfer_ElementController extends TrackingDatabase_ElementController<CategoryTransfer> {
@@ -28,14 +28,12 @@ public class CategoryTransfer_ElementController extends TrackingDatabase_Element
      */
     @Override
     public CategoryTransfer newElement() {
-        String idCode = TrackingDatabase.get().getNextId(CategoryTransfer.class);
-        return new CategoryTransfer(
-                period,
-                idCode,
-                TrackingDatabase.get().get(Category.class, "Unaccounted"),
-                TrackingDatabase.get().get(Category.class, "Unaccounted"),
-                TrackingDatabase.get().get(Currency.class, "YEN"),
+        return new CategoryTransfer(TrackingDatabase.get().getNextId(CategoryTransfer.class),
                 "",
-                0.0);
+                0.0,
+                period,
+                TrackingDatabase.get().getDefault(Category.class),
+                TrackingDatabase.get().getDefault(Category.class),
+                TrackingDatabase.get().getDefault(Currency.class));
     }
 }

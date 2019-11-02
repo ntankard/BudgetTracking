@@ -7,7 +7,7 @@ import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.FundEvent;
-import com.ntankard.Tracking.DataBase.TrackingDatabase;
+import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.Dispaly.Util.Panels.TrackingDatabase_ElementController;
 
 public class PeriodFundTransfer_ElementController extends TrackingDatabase_ElementController<PeriodFundTransfer> {
@@ -30,15 +30,13 @@ public class PeriodFundTransfer_ElementController extends TrackingDatabase_Eleme
      */
     @Override
     public PeriodFundTransfer newElement() {
-        String idCode = TrackingDatabase.get().getNextId(PeriodFundTransfer.class);
-        return new PeriodFundTransfer(
-                idCode,
-                period,
-                TrackingDatabase.get().get(Fund.class).get(0),
-                TrackingDatabase.get().get(Category.class, "Unaccounted"),
-                TrackingDatabase.get().get(Fund.class).get(0).<FundEvent>getChildren(FundEvent.class).get(0),
-                TrackingDatabase.get().get(Currency.class, "YEN"),
+        return new PeriodFundTransfer(TrackingDatabase.get().getNextId(PeriodFundTransfer.class),
                 "",
-                0.0);
+                0.0,
+                period,
+                TrackingDatabase.get().getDefault(Category.class),
+                TrackingDatabase.get().getDefault(Fund.class),
+                TrackingDatabase.get().getDefault(Fund.class).getChildren(FundEvent.class).get(0),
+                TrackingDatabase.get().getDefault(Currency.class));
     }
 }

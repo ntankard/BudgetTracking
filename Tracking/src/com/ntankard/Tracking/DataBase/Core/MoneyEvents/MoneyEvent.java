@@ -6,27 +6,17 @@ import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.ClassExtension.SetterProperties;
 import com.ntankard.Tracking.DataBase.Core.CurrencyBound;
 import com.ntankard.Tracking.DataBase.Core.DataObject;
-import com.ntankard.Tracking.DataBase.Core.IdDataObject;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
+import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
-import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
+import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-public abstract class MoneyEvent<SourceType extends DataObject, SourceCategory extends DataObject, DestinationType extends DataObject, DestinationCategory extends DataObject> extends IdDataObject implements CurrencyBound {
-
-    /**
-     * A summary of the event
-     */
-    private String description;
-
-    /**
-     * The amount of the event
-     */
-    private double value;
+public abstract class MoneyEvent<SourceType extends DataObject, SourceCategory extends DataObject, DestinationType extends DataObject, DestinationCategory extends DataObject> extends DataObject implements CurrencyBound {
 
     // My parents
     private SourceType sourceContainer;
@@ -35,9 +25,14 @@ public abstract class MoneyEvent<SourceType extends DataObject, SourceCategory e
     private DestinationCategory destinationCategory;
     private Currency currency;
 
+    // My values
+    private String description;
+    private double value;
+
     /**
      * Constructor
      */
+    @ParameterMap(parameterGetters = {"getId", "getDescription", "getValue", "getSourceContainer", "getSourceCategory", "getDestinationContainer", "getDestinationCategory", "getCurrency"})
     public MoneyEvent(String id, String description, Double value, SourceType sourceContainer, SourceCategory sourceCategory, DestinationType destinationContainer, DestinationCategory destinationCategory, Currency currency) {
         super(id);
         this.description = description;
@@ -53,7 +48,8 @@ public abstract class MoneyEvent<SourceType extends DataObject, SourceCategory e
      * {@inheritDoc
      */
     @Override
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
+    @DisplayProperties(order = 21)
     public List<DataObject> getParents() {
         List<DataObject> toReturn = new ArrayList<>();
         if (sourceContainer != null) {
@@ -118,32 +114,38 @@ public abstract class MoneyEvent<SourceType extends DataObject, SourceCategory e
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @DisplayProperties(order = 0)
+    @DisplayProperties(order = 3)
     public String getDescription() {
         return description;
     }
 
-    @DisplayProperties(order = 1, dataType = CURRENCY)
+    @DisplayProperties(order = 4, dataType = CURRENCY)
     public Double getValue() {
         return value;
     }
 
+    @DisplayProperties(order = 5)
     protected SourceType getSourceContainer() {
         return sourceContainer;
     }
 
+    @DisplayProperties(order = 6)
     protected SourceCategory getSourceCategory() {
         return sourceCategory;
     }
 
+    @DisplayProperties(order = 7)
     protected DestinationType getDestinationContainer() {
         return destinationContainer;
     }
 
+    @DisplayProperties(order = 8)
     protected DestinationCategory getDestinationCategory() {
         return destinationCategory;
     }
 
+    @Override
+    @DisplayProperties(order = 9)
     public Currency getCurrency() {
         return currency;
     }

@@ -7,6 +7,7 @@ import com.ntankard.ClassExtension.SetterProperties;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
+import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
 
 @ClassExtensionProperties(includeParent = true)
@@ -15,30 +16,39 @@ public class PeriodTransfer extends MoneyEvent<Period, Category, Period, Categor
     /**
      * Constructor
      */
-    public PeriodTransfer(String id, Period source, Period destination, Currency currency, Category category, String description, Double value) {
-        super(id, description, value, source, category, destination, category, currency);
+    @ParameterMap(parameterGetters = {"getId", "getDescription", "getValue", "getSourceContainer", "getSourceCategory", "getDestinationContainer", "getCurrency"})
+    public PeriodTransfer(String id, String description, Double value, Period sourceContainer, Category sourceCategory, Period destinationContainer, Currency currency) {
+        super(id, description, value, sourceContainer, sourceCategory, destinationContainer, sourceCategory, currency);
     }
 
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @DisplayProperties(order = 2)
-    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
     @Override
+    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
+    @DisplayProperties(order = 5)
     public Period getSourceContainer() {
         return super.getSourceContainer();
     }
 
-    @DisplayProperties(order = 3)
     @Override
+    @DisplayProperties(order = 6)
+    public Category getSourceCategory() {
+        return super.getSourceCategory();
+    }
+
+    @Override
+    @DisplayProperties(order = 7)
     public Period getDestinationContainer() {
         return super.getDestinationContainer();
     }
 
     @Override
-    public Category getSourceCategory() {
-        return super.getSourceCategory();
+    @MemberProperties(verbosityLevel = MemberProperties.DEBUG_DISPLAY)
+    @DisplayProperties(order = 8)
+    public Category getDestinationCategory() {
+        return super.getDestinationCategory();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -53,14 +63,14 @@ public class PeriodTransfer extends MoneyEvent<Period, Category, Period, Categor
 
     @SetterProperties(sourceMethod = "getData")
     @Override
-    public void setDestinationContainer(Period destination) {
-        super.setDestinationContainer(destination);
+    public void setSourceCategory(Category category) {
+        super.setSourceCategory(category);
+        super.setDestinationCategory(category);
     }
 
     @SetterProperties(sourceMethod = "getData")
     @Override
-    public void setSourceCategory(Category category) {
-        super.setSourceCategory(category);
-        super.setDestinationCategory(category);
+    public void setDestinationContainer(Period destination) {
+        super.setDestinationContainer(destination);
     }
 }

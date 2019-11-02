@@ -1,68 +1,51 @@
 package com.ntankard.Tracking.DataBase.Core.ReferenceTypes;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
+import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.DataObject;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Fund;
+import com.ntankard.Tracking.DataBase.Core.NamedDataObject;
+import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
+import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-public class FundEvent extends DataObject {
+public class FundEvent extends NamedDataObject {
 
     // My parent
-    private Fund idFund;
-
-    // My values
-    private String idCode;
+    private Fund fund;
 
     /**
      * Constructor
      */
-    public FundEvent(Fund idFund, String idCode) {
-        this.idFund = idFund;
-        this.idCode = idCode;
+    @ParameterMap(parameterGetters = {"getId", "getName", "getFund"})
+    public FundEvent(String id, String name, Fund fund) {
+        super(id, name);
+        this.fund = fund;
     }
 
     /**
      * {@inheritDoc
      */
     @Override
-    public String getId() {
-        return idCode;
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
+    @DisplayProperties(order = 21)
     public List<DataObject> getParents() {
         List<DataObject> toReturn = new ArrayList<>();
-        toReturn.add(idFund);
+        toReturn.add(fund);
         return toReturn;
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public String toString() {
-        return idCode;
     }
 
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    public Fund getIdFund() {
-        return idFund;
-    }
-
-    public String getIdCode() {
-        return idCode;
+    @DisplayProperties(order = 3)
+    public Fund getFund() {
+        return fund;
     }
 }

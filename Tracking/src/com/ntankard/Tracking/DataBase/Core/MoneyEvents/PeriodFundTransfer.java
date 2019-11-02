@@ -9,6 +9,7 @@ import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.FundEvent;
+import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
 @ClassExtensionProperties(includeParent = true)
 public class PeriodFundTransfer extends MoneyEvent<Period, Category, Fund, FundEvent> {
@@ -16,34 +17,36 @@ public class PeriodFundTransfer extends MoneyEvent<Period, Category, Fund, FundE
     /**
      * Constructor
      */
-    public PeriodFundTransfer(String id, Period source, Fund destination, Category sourceCategory, FundEvent destinationCategory, Currency currency, String description, Double value) {
-        super(id, description, value, source, sourceCategory, destination, destinationCategory, currency);
+    @ParameterMap(parameterGetters = {"getId", "getDescription", "getValue", "getSourceContainer", "getSourceCategory", "getDestinationContainer", "getDestinationCategory", "getCurrency"})
+    public PeriodFundTransfer(String id, String description, Double value, Period sourceContainer, Category sourceCategory, Fund destinationContainer, FundEvent destinationCategory, Currency currency) {
+        super(id, description, value, sourceContainer, sourceCategory, destinationContainer, destinationCategory, currency);
     }
 
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @DisplayProperties(order = 2)
-    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
     @Override
+    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
+    @DisplayProperties(order = 5)
     public Period getSourceContainer() {
         return super.getSourceContainer();
     }
 
-    @DisplayProperties(order = 4)
     @Override
-    public Fund getDestinationContainer() {
-        return super.getDestinationContainer();
-    }
-
-    @DisplayProperties(order = 3)
-    @Override
+    @DisplayProperties(order = 6)
     public Category getSourceCategory() {
         return super.getSourceCategory();
     }
 
     @Override
+    @DisplayProperties(order = 7)
+    public Fund getDestinationContainer() {
+        return super.getDestinationContainer();
+    }
+
+    @Override
+    @DisplayProperties(order = 8)
     public FundEvent getDestinationCategory() {
         return super.getDestinationCategory();
     }
@@ -60,14 +63,14 @@ public class PeriodFundTransfer extends MoneyEvent<Period, Category, Fund, FundE
 
     @SetterProperties(sourceMethod = "getData")
     @Override
-    public void setDestinationContainer(Fund destination) {
-        super.setDestinationContainer(destination);
+    public void setSourceCategory(Category sourceCategory) {
+        super.setSourceCategory(sourceCategory);
     }
 
     @SetterProperties(sourceMethod = "getData")
     @Override
-    public void setSourceCategory(Category sourceCategory) {
-        super.setSourceCategory(sourceCategory);
+    public void setDestinationContainer(Fund destination) {
+        super.setDestinationContainer(destination);
     }
 
     @SetterProperties(sourceMethod = "getData")

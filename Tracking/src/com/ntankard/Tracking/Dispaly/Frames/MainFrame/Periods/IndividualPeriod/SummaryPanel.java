@@ -6,7 +6,7 @@ import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
 import com.ntankard.Tracking.DataBase.Interface.Summary.PeriodTransaction_Summary;
-import com.ntankard.Tracking.DataBase.TrackingDatabase;
+import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -71,8 +71,8 @@ public class SummaryPanel extends UpdatableJPanel {
      */
     @Override
     public void update() {
-        NumberFormat formatter = TrackingDatabase.get().get(Currency.class, "YEN").getNumberFormat();
-        Currency YEN = TrackingDatabase.get().get(Currency.class, "YEN");
+        NumberFormat formatter = TrackingDatabase.get().getDefault(Currency.class).getNumberFormat();
+        Currency YEN = TrackingDatabase.get().getDefault(Currency.class);
 
         double savingMin = Double.MAX_VALUE;
         double savingMax = Double.MIN_VALUE;
@@ -131,19 +131,20 @@ public class SummaryPanel extends UpdatableJPanel {
         }
 
         // Check the this periods start balances all match the previous ones end
-        Period last = TrackingDatabase.get().get(Period.class, core.getLastId());
+        Period last = core.getLast();
         if (last == null) {
             periodLink_lbl.setText(" First ");
             periodLink_lbl.setForeground(Color.GREEN);
         } else {
             boolean match = true;
             for (Statement statement : core.<Statement>getChildren(Statement.class)) {
-                String lastStatementId = statement.getIdBank().getId() + " " + last.getId();
-                Statement lastStatement = last.getChildren(Statement.class, lastStatementId);
+                //String lastStatementId = statement.getBank().getId() + " " + last.getId();
+                //Statement lastStatement = last.getChildren(Statement.class, lastStatementId);
 
-                if (!(lastStatement.getEnd().equals(statement.getStart()))) {
-                    match = false;
-                }
+                // if (!(lastStatement.getEnd().equals(statement.getStart()))) {
+                //   match = false;
+                // }
+                System.out.println("Fix this! cant find the last statment");
 
             }
             if (match) {
@@ -157,20 +158,21 @@ public class SummaryPanel extends UpdatableJPanel {
 
         // Check that all transfers in and out are accounted for
         if (core.getTransferRate() == 0.0) {
-            if (core.getAUDMissingTransfer() != 0.0 || core.getYENMissingTransfer() != 0.0) {
-                if (core.getAUDMissingTransfer() != 0.0) {
-                    transferStatus_lbl.setText(" Unresolved transfer AUD " + core.getAUDMissingTransfer() + " ");
+            boolean error = false;
+            for (Currency currency : TrackingDatabase.get().get(Currency.class)) {
+                if (core.getMissingTransfer(currency) != 0.0) {
+                    transferStatus_lbl.setText(" Unresolved transfer " + currency.toString() + " " + core.getMissingTransfer(currency) + " ");
                     transferStatus_lbl.setForeground(Color.RED);
-                } else {
-                    transferStatus_lbl.setText(" Unresolved transfer YEN " + core.getYENMissingTransfer() + " ");
-                    transferStatus_lbl.setForeground(Color.RED);
+                    error = true;
                 }
-            } else {
+            }
+            if(!error){
                 transferStatus_lbl.setText(" Valid transfer rate ");
                 transferStatus_lbl.setForeground(Color.GREEN);
             }
         } else {
             if (core.getTransferRate() != 0.0 && (core.getTransferRate() < 60 || core.getTransferRate() > 80)) {
+                //System.out.println(core.getTransferRate());
                 transferStatus_lbl.setText(" Imposable transfer rate ");
                 transferStatus_lbl.setForeground(Color.RED);
             } else {

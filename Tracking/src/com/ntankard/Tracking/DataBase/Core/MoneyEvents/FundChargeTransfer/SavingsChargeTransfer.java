@@ -6,7 +6,7 @@ import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Fund;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
 import com.ntankard.Tracking.DataBase.Interface.Summary.PeriodTransaction_Summary;
-import com.ntankard.Tracking.DataBase.TrackingDatabase;
+import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 
 @ClassExtensionProperties(includeParent = true)
 public class SavingsChargeTransfer extends FundChargeTransfer {
@@ -16,11 +16,12 @@ public class SavingsChargeTransfer extends FundChargeTransfer {
      */
     public SavingsChargeTransfer(Period source) {
         super(TrackingDatabase.get().getNextId(FundChargeTransfer.class),
-                source,
-                TrackingDatabase.get().get(Fund.class, "Savings"),
-                TrackingDatabase.get().get(Currency.class, "YEN"),
                 "Savings",
-                0.0);
+                0.0,
+                source,
+                TrackingDatabase.get().getSpecialValue(Fund.class, Fund.SAVINGS),
+                TrackingDatabase.get().getDefault(Currency.class)
+        );
     }
 
     @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)

@@ -1,12 +1,16 @@
 package com.ntankard.Tracking.DataBase.Core;
 
+import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 
 import java.util.*;
 
-import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
+import static com.ntankard.ClassExtension.MemberProperties.*;
 
 public abstract class DataObject {
+
+    // My values
+    private String id;
 
     /**
      * All my children sorted by class
@@ -19,11 +23,33 @@ public abstract class DataObject {
     private Map<Class, Map<String, DataObject>> childrenMap = new HashMap<>();
 
     /**
+     * Constructor
+     */
+    public DataObject(String id) {
+        this.id = id;
+    }
+
+    /**
      * Get the unique identifier for this data object
      *
      * @return The unique identifier for this data object
      */
-    public abstract String getId();
+    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
+    @DisplayProperties(order = 1)
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * The class used to group these objects
+     *
+     * @return The class used to group these objects
+     */
+    @MemberProperties(verbosityLevel = MemberProperties.DEBUG_DISPLAY)
+    @DisplayProperties(order = 20)
+    public Class<?> getTypeClass() {
+        return getClass();
+    }
 
     /**
      * {@inheritDoc
@@ -33,15 +59,9 @@ public abstract class DataObject {
         return getId();
     }
 
-    /**
-     * The class used to group these objects
-     *
-     * @return The class used to group these objects
-     */
-    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
-    public Class<?> getTypeClass() {
-        return getClass();
-    }
+    //------------------------------------------------------------------------------------------------------------------
+    //############################################# Parental Hierarchy  ################################################
+    //------------------------------------------------------------------------------------------------------------------
 
     /**
      * Notify all the objects parents that this object has linked to them
@@ -66,6 +86,8 @@ public abstract class DataObject {
      *
      * @return All the parents of this object
      */
+    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
+    @DisplayProperties(order = 21)
     public abstract List<DataObject> getParents();
 
     /**
@@ -103,7 +125,7 @@ public abstract class DataObject {
             return;
         }
 
-        childrenMap.get(classType).remove(linkObject);
+        childrenMap.get(classType).remove(linkObject.getId());
         children.get(classType).remove(linkObject);
     }
 
@@ -114,6 +136,7 @@ public abstract class DataObject {
      * @param <T>  The Object type
      * @return The list of children for a a specific class type
      */
+    @SuppressWarnings("unchecked")
     public <T extends DataObject> List<T> getChildren(Class<T> type) {
         if (!children.containsKey(type)) {
             children.put(type, new ArrayList<>());
@@ -131,6 +154,7 @@ public abstract class DataObject {
      * @param <T>  The Object type
      * @return The list of children for a a specific class type
      */
+    @SuppressWarnings("unchecked")
     public <T extends DataObject> T getChildren(Class<T> type, String key) {
         if (!childrenMap.containsKey(type)) {
             children.put(type, new ArrayList<>());
@@ -145,7 +169,8 @@ public abstract class DataObject {
      *
      * @return The list of all children
      */
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    @MemberProperties(verbosityLevel = TRACE_DISPLAY)
+    @DisplayProperties(order = 22)
     public List<DataObject> getChildren() {
         List<DataObject> toReturn = new ArrayList<>();
         for (Class aClass : children.keySet()) {

@@ -4,7 +4,7 @@ import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
-import com.ntankard.Tracking.DataBase.TrackingDatabase;
+import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -57,7 +57,7 @@ public class SavingsGraph extends UpdatableJPanel {
         String[] axisLabel = new String[TrackingDatabase.get().get(Period.class).size()];
         int i = 0;
         for (Period period : TrackingDatabase.get().<Period>get(Period.class)) {
-            axisLabel[i] = period.getId();
+            axisLabel[i] = period.toString();
             i++;
         }
         SymbolAxis sa = new SymbolAxis("Period", axisLabel);
@@ -72,22 +72,26 @@ public class SavingsGraph extends UpdatableJPanel {
      * @return The generated data
      */
     private XYDataset createDataset() {
-        final XYSeries aud = new XYSeries("AUD");
-        final XYSeries yen = new XYSeries("YEN");
-        final XYSeries total = new XYSeries("Total");
+        final XYSeriesCollection dataset = new XYSeriesCollection();
 
+        for(Currency currency : TrackingDatabase.get().get(Currency.class)){
+            final XYSeries cur = new XYSeries(currency.getName());
+            int i = 0;
+            for (Period period : TrackingDatabase.get().get(Period.class)) {
+                cur.add(i, period.getEndBalance(currency));
+                i++;
+            }
+            dataset.addSeries(cur);
+        }
+
+        final XYSeries total = new XYSeries("Total");
         int i = 0;
         for (Period period : TrackingDatabase.get().get(Period.class)) {
-            aud.add(i, period.getEndBalance(TrackingDatabase.get().get(Currency.class, "AUD")));
-            yen.add(i, period.getEndBalance(TrackingDatabase.get().get(Currency.class, "YEN")));
             total.add(i, period.getEndBalance());
             i++;
         }
-
-        final XYSeriesCollection dataset = new XYSeriesCollection();
-        dataset.addSeries(aud);
-        dataset.addSeries(yen);
         dataset.addSeries(total);
+
         return dataset;
     }
 

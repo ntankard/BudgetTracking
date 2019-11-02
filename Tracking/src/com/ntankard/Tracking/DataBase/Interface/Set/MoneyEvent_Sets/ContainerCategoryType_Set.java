@@ -1,10 +1,8 @@
-package com.ntankard.Tracking.Dispaly.Util.Set.MoneyEvent_Sets;
+package com.ntankard.Tracking.DataBase.Interface.Set.MoneyEvent_Sets;
 
 import com.ntankard.Tracking.DataBase.Core.DataObject;
-import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.MoneyEvent;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
-import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,9 +49,9 @@ public class ContainerCategoryType_Set<T extends MoneyEvent> extends MoneyEvent_
             toReturn.sort((o1, o2) -> {
                 Transaction t1 = (Transaction) o1;
                 Transaction t2 = (Transaction) o2;
-                if (t1.getSourceContainer().getIdBank().getOrder() == t2.getSourceContainer().getIdBank().getOrder()) {
+                if (t1.getSourceContainer().getBank().getOrder() == t2.getSourceContainer().getBank().getOrder()) {
                     return 0;
-                } else if (t1.getSourceContainer().getIdBank().getOrder() > t2.getSourceContainer().getIdBank().getOrder()) {
+                } else if (t1.getSourceContainer().getBank().getOrder() > t2.getSourceContainer().getBank().getOrder()) {
                     return 1;
                 }
                 return -1;

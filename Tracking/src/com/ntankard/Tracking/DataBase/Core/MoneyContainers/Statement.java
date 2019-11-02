@@ -8,20 +8,22 @@ import com.ntankard.Tracking.DataBase.Core.DataObject;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Bank;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
+import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataContext.ZERO_TARGET;
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
+import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-public class Statement extends MoneyContainer implements CurrencyBound {
+public class Statement extends DataObject implements CurrencyBound {
 
     // My parents
-    private Bank idBank;
-    private Period idPeriod;
+    private Bank bank;
+    private Period period;
 
     // My values
     private Double start;
@@ -32,9 +34,11 @@ public class Statement extends MoneyContainer implements CurrencyBound {
     /**
      * Constructor
      */
-    public Statement(Bank idBank, Period idPeriod, Double start, Double end, Double transferIn, Double transferOut) {
-        this.idBank = idBank;
-        this.idPeriod = idPeriod;
+    @ParameterMap(parameterGetters = {"getId", "getBank", "getPeriod", "getStart", "getEnd", "getTransferIn", "getTransferOut"})
+    public Statement(String id, Bank bank, Period period, Double start, Double end, Double transferIn, Double transferOut) {
+        super(id);
+        this.bank = bank;
+        this.period = period;
         this.start = start;
         this.end = end;
         this.transferIn = transferIn;
@@ -45,20 +49,20 @@ public class Statement extends MoneyContainer implements CurrencyBound {
      * {@inheritDoc
      */
     @Override
-    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
-    public String getId() {
-        return getIdBank().getId() + " " + getIdPeriod().getId();
+    public String toString() {
+        return bank.toString();
     }
 
     /**
      * {@inheritDoc
      */
     @Override
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
+    @DisplayProperties(order = 21)
     public List<DataObject> getParents() {
         List<DataObject> toReturn = new ArrayList<>();
-        toReturn.add(idBank);
-        toReturn.add(idPeriod);
+        toReturn.add(bank);
+        toReturn.add(period);
         return toReturn;
     }
 
@@ -68,7 +72,7 @@ public class Statement extends MoneyContainer implements CurrencyBound {
     @Override
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public Currency getCurrency() {
-        return idBank.getCurrency();
+        return bank.getCurrency();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -80,7 +84,7 @@ public class Statement extends MoneyContainer implements CurrencyBound {
      *
      * @return The real spend based on the difference between the starting and ending balance
      */
-    @DisplayProperties(dataType = CURRENCY, order = 5)
+    @DisplayProperties(dataType = CURRENCY, order = 7)
     public Double getExpectedSpend() {
         return -(end - start - getNetTransfer());
     }
@@ -90,8 +94,8 @@ public class Statement extends MoneyContainer implements CurrencyBound {
      *
      * @return The net transfer in and out of the account
      */
-    @DisplayProperties(dataType = CURRENCY)
     @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
+    @DisplayProperties(dataType = CURRENCY, order = 10)
     public Double getNetTransfer() {
         return transferIn - transferOut;
     }
@@ -105,7 +109,7 @@ public class Statement extends MoneyContainer implements CurrencyBound {
      *
      * @return The amount that differs between the Total Spend and the Expected spend
      */
-    @DisplayProperties(dataType = CURRENCY, dataContext = ZERO_TARGET, order = 7)
+    @DisplayProperties(dataType = CURRENCY, dataContext = ZERO_TARGET, order = 9)
     public Double getMissingSpend() {
         double val = getExpectedSpend() - getTotalSpend();
         if (Math.abs(val) < 0.001) {
@@ -119,7 +123,7 @@ public class Statement extends MoneyContainer implements CurrencyBound {
      *
      * @return The sum of all transactions for this statement
      */
-    @DisplayProperties(dataType = CURRENCY, order = 6)
+    @DisplayProperties(dataType = CURRENCY, order = 8)
     public Double getTotalSpend() {
         double sum = 0.0;
         for (Transaction t : this.<Transaction>getChildren(Transaction.class)) {
@@ -132,32 +136,33 @@ public class Statement extends MoneyContainer implements CurrencyBound {
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @DisplayProperties(order = 0)
-    public Bank getIdBank() {
-        return idBank;
+    @DisplayProperties(order = 2)
+    public Bank getBank() {
+        return bank;
     }
 
     @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
-    public Period getIdPeriod() {
-        return idPeriod;
+    @DisplayProperties(order = 11)
+    public Period getPeriod() {
+        return period;
     }
 
-    @DisplayProperties(dataType = CURRENCY, order = 1)
+    @DisplayProperties(dataType = CURRENCY, order = 3)
     public Double getStart() {
         return start;
     }
 
-    @DisplayProperties(dataType = CURRENCY, order = 2)
+    @DisplayProperties(dataType = CURRENCY, order = 4)
     public Double getEnd() {
         return end;
     }
 
-    @DisplayProperties(dataType = CURRENCY, order = 4)
+    @DisplayProperties(dataType = CURRENCY, order = 6)
     public Double getTransferIn() {
         return transferIn;
     }
 
-    @DisplayProperties(dataType = CURRENCY, order = 3)
+    @DisplayProperties(dataType = CURRENCY, order = 5)
     public Double getTransferOut() {
         return transferOut;
     }
@@ -182,18 +187,3 @@ public class Statement extends MoneyContainer implements CurrencyBound {
         this.transferOut = transferOut;
     }
 }
-//    /**
-//     * Get all values for a given category
-//     *
-//     * @param category The category to check
-//     * @return The total values
-//     */
-//    public double getCategoryTotal(Category category) {
-//        double total = 0;
-//        for (Transaction t : this.<Transaction>getChildren(Transaction.class)) {
-//            if (t.getDestinationCategory().equals(category)) {
-//                total += t.getValue();
-//            }
-//        }
-//        return total;
-//    }

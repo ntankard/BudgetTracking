@@ -1,49 +1,88 @@
 package com.ntankard.Tracking.DataBase.Core.MoneyContainers;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
+import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.DataObject;
+import com.ntankard.Tracking.DataBase.Core.NamedDataObject;
+import com.ntankard.Tracking.DataBase.Core.SpecialValues;
+import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
+import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-public class Fund extends MoneyContainer {
+public class Fund extends NamedDataObject implements SpecialValues {
+
+    public static Integer TAX = 1;
+    public static Integer SAVINGS = 2;
 
     // My values
-    private String id;
+    private boolean isSavings;
+    private boolean isTax;
 
     /**
      * Constructor
      */
-    public Fund(String id) {
-        this.id = id;
+    @ParameterMap(parameterGetters = {"getId", "getName", "isSavings", "isTax"})
+    public Fund(String id, String name, boolean isSavings, boolean isTax) {
+        super(id, name);
+        this.isSavings = isSavings;
+        this.isTax = isTax;
     }
 
     /**
      * {@inheritDoc
      */
     @Override
-    public String getId() {
-        return id;
+    public boolean isValue(Integer key) {
+        if (key.equals(TAX)) {
+            return isTax();
+        }
+        if (key.equals(SAVINGS)) {
+            return isSavings();
+        }
+        throw new IllegalStateException("Unexpected value: " + key);
     }
 
     /**
      * {@inheritDoc
      */
     @Override
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
+    @DisplayProperties(order = 23)
+    public List<Integer> getKeys() {
+        List<Integer> keys = new ArrayList<>();
+        keys.add(TAX);
+        keys.add(SAVINGS);
+        return keys;
+    }
+
+    /**
+     * {@inheritDoc
+     */
+    @Override
+    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
+    @DisplayProperties(order = 21)
     public List<DataObject> getParents() {
         return new ArrayList<>();
     }
 
     //------------------------------------------------------------------------------------------------------------------
-    //#################################################### Setters #####################################################
+    //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    public void setId(String id) {
-        this.id = id;
+    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
+    @DisplayProperties(order = 3)
+    public boolean isSavings() {
+        return isSavings;
+    }
+
+    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
+    @DisplayProperties(order = 4)
+    public boolean isTax() {
+        return isTax;
     }
 }

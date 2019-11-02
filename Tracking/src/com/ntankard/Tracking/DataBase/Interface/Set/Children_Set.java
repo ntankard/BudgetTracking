@@ -1,4 +1,4 @@
-package com.ntankard.Tracking.Dispaly.Util.Set;
+package com.ntankard.Tracking.DataBase.Interface.Set;
 
 import com.ntankard.Tracking.DataBase.Core.DataObject;
 

@@ -3,8 +3,8 @@ package com.ntankard.Tracking.DataBase.Interface.Summary;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
-import com.ntankard.Tracking.Dispaly.Util.Set.MoneyEvent_Sets.ContainerCategory_Set;
-import com.ntankard.Tracking.DataBase.TrackingDatabase;
+import com.ntankard.Tracking.DataBase.Interface.Set.MoneyEvent_Sets.ContainerCategory_Set;
+import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY_YEN;
 
@@ -28,8 +28,8 @@ public class PeriodTransaction_Summary {
      * @return The hex debut that needs to be paid for the income made
      */
     @DisplayProperties(dataType = CURRENCY_YEN)
-    public Double getHex() {
-        return new ContainerCategory_Set(core, TrackingDatabase.get().get(Category.class, "Income")).getTotal() * -0.06;
+    public Double getTax() {
+        return new ContainerCategory_Set(core, TrackingDatabase.get().getSpecialValue(Category.class, Category.INCOME)).getTotal() * -TrackingDatabase.get().getTaxRate();
     }
 
     /**
@@ -41,7 +41,7 @@ public class PeriodTransaction_Summary {
     public Double getSavings() {
         Double sum = 0.0;
         sum += getNonCategory();
-        sum -= getHex();
+        sum -= getTax();
         return sum;
     }
 

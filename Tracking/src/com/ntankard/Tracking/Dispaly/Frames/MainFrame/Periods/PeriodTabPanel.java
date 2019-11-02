@@ -3,7 +3,7 @@ package com.ntankard.Tracking.Dispaly.Frames.MainFrame.Periods;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
-import com.ntankard.Tracking.DataBase.TrackingDatabase;
+import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.Dispaly.Frames.MainFrame.Periods.IndividualPeriod.IndividualPeriodPanel;
 
 import javax.swing.*;
@@ -86,7 +86,7 @@ public class PeriodTabPanel extends UpdatableJPanel {
             for (Period period : periods) {
                 IndividualPeriodPanel panel = new IndividualPeriodPanel(period, this);
                 periodsPanels.add(panel);
-                master_tPanel.addTab(period.getId(), panel);
+                master_tPanel.addTab(period.toString(), panel);
             }
         }
     }

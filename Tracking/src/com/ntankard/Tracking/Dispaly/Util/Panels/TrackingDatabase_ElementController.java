@@ -3,7 +3,7 @@ package com.ntankard.Tracking.Dispaly.Util.Panels;
 import com.ntankard.DynamicGUI.Containers.DynamicGUI_DisplayList.ElementController;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.Tracking.DataBase.Core.DataObject;
-import com.ntankard.Tracking.DataBase.TrackingDatabase;
+import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 
 public abstract class TrackingDatabase_ElementController<T extends DataObject> implements ElementController<T> {
 

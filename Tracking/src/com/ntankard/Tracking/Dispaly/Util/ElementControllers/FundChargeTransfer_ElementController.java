@@ -6,9 +6,8 @@ import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.FundChargeTransfer.FundChargeTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
-import com.ntankard.Tracking.DataBase.TrackingDatabase;
+import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.Dispaly.Util.Panels.TrackingDatabase_ElementController;
-
 
 public class FundChargeTransfer_ElementController extends TrackingDatabase_ElementController<FundChargeTransfer> {
 
@@ -30,13 +29,11 @@ public class FundChargeTransfer_ElementController extends TrackingDatabase_Eleme
      */
     @Override
     public FundChargeTransfer newElement() {
-        String idCode = TrackingDatabase.get().getNextId(PeriodFundTransfer.class);
-        return new FundChargeTransfer(
-                idCode,
+        return new FundChargeTransfer(TrackingDatabase.get().getNextId(PeriodFundTransfer.class),
+                "",
+                0.0,
                 period,
                 TrackingDatabase.get().get(Fund.class).get(0),
-                TrackingDatabase.get().get(Currency.class, "YEN"),
-                "",
-                0.0);
+                TrackingDatabase.get().getDefault(Currency.class));
     }
 }

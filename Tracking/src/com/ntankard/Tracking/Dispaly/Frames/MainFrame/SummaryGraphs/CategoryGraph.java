@@ -4,8 +4,8 @@ import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
-import com.ntankard.Tracking.DataBase.TrackingDatabase;
-import com.ntankard.Tracking.Dispaly.Util.Set.MoneyEvent_Sets.ContainerCategory_Set;
+import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
+import com.ntankard.Tracking.DataBase.Interface.Set.MoneyEvent_Sets.ContainerCategory_Set;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -61,7 +61,7 @@ public class CategoryGraph extends UpdatableJPanel {
         String[] axisLabel = new String[TrackingDatabase.get().get(Period.class).size()];
         int i = 0;
         for (Period period : TrackingDatabase.get().<Period>get(Period.class)) {
-            axisLabel[i] = period.getId();
+            axisLabel[i] = period.toString();
             i++;
         }
         SymbolAxis sa = new SymbolAxis("Period", axisLabel);
@@ -80,7 +80,7 @@ public class CategoryGraph extends UpdatableJPanel {
         Map<Category,XYSeries> categories = new HashMap<>();
 
         for(Category category : TrackingDatabase.get().get(Category.class)){
-            categories.put(category,new XYSeries(category.getId()));
+            categories.put(category,new XYSeries(category.toString()));
         }
 
         int i = 0;

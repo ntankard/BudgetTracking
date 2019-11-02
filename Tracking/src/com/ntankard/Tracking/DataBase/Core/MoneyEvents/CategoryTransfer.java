@@ -7,6 +7,7 @@ import com.ntankard.ClassExtension.SetterProperties;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
+import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
 @ClassExtensionProperties(includeParent = true)
 public class CategoryTransfer extends MoneyEvent<Period, Category, Period, Category> {
@@ -14,28 +15,30 @@ public class CategoryTransfer extends MoneyEvent<Period, Category, Period, Categ
     /**
      * Constructor
      */
-    public CategoryTransfer(Period idPeriod, String id, Category source, Category destination, Currency currency, String description, Double value) {
-        super(id, description, value, idPeriod, source, idPeriod, destination, currency);
+    @ParameterMap(parameterGetters = {"getId", "getDescription", "getValue", "getSourceContainer", "getSourceCategory", "getDestinationCategory", "getCurrency"})
+    public CategoryTransfer(String id, String description, Double value, Period sourceContainer, Category sourceCategory, Category destinationCategory, Currency currency) {
+        super(id, description, value, sourceContainer, sourceCategory, sourceContainer, destinationCategory, currency);
     }
 
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
-    @DisplayProperties(order = 2)
     @Override
+    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
+    @DisplayProperties(order = 5)
     public Period getSourceContainer() {
         return super.getSourceContainer();
     }
 
     @Override
+    @DisplayProperties(order = 6)
     public Category getSourceCategory() {
         return super.getSourceCategory();
     }
 
-    @DisplayProperties(order = 3)
     @Override
+    @DisplayProperties(order = 8)
     public Category getDestinationCategory() {
         return super.getDestinationCategory();
     }

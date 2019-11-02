@@ -5,10 +5,10 @@ import com.ntankard.DynamicGUI.Containers.DynamicGUI_DisplayList;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.Tracking.DataBase.Core.CurrencyBound;
 import com.ntankard.Tracking.DataBase.Core.DataObject;
-import com.ntankard.Tracking.DataBase.TrackingDatabase;
+import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.Dispaly.Util.LocaleInspectors.CurrencyBound_LocaleSource;
-import com.ntankard.Tracking.Dispaly.Util.Set.DataObjectSet;
-import com.ntankard.Tracking.Dispaly.Util.Set.Full_Set;
+import com.ntankard.Tracking.DataBase.Interface.Set.DataObjectSet;
+import com.ntankard.Tracking.DataBase.Interface.Set.Full_Set;
 
 import java.util.ArrayList;
 

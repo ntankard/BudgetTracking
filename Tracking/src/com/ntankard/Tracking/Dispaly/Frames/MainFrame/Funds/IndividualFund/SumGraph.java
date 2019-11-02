@@ -6,9 +6,8 @@ import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Fund;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.FundChargeTransfer.FundChargeTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodFundTransfer;
-import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
-import com.ntankard.Tracking.DataBase.TrackingDatabase;
-import com.ntankard.Tracking.Dispaly.Util.Set.MoneyEvent_Sets.ContainerContainerType_Set;
+import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
+import com.ntankard.Tracking.DataBase.Interface.Set.MoneyEvent_Sets.ContainerContainerType_Set;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -65,7 +64,7 @@ public class SumGraph extends UpdatableJPanel {
         String[] axisLabel = new String[TrackingDatabase.get().get(Period.class).size()];
         int i = 0;
         for (Period period : TrackingDatabase.get().get(Period.class)) {
-            axisLabel[i] = period.getId();
+            axisLabel[i] = period.toString();
             i++;
         }
         SymbolAxis sa = new SymbolAxis("Period", axisLabel);

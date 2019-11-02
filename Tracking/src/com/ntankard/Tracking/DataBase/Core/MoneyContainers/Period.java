@@ -5,132 +5,68 @@ import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.DataObject;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
-import com.ntankard.Tracking.DataBase.TrackingDatabase;
+import com.ntankard.Tracking.DataBase.Database.ParameterMap;
+import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataContext.ZERO_BELOW_BAD;
-import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY_AUD;
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY_YEN;
-import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
+import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-public class Period extends MoneyContainer {
+public class Period extends DataObject {
 
-    /**
-     * Build a period over an entire month
-     *
-     * @param month The month (1-12)
-     * @param year  The year
-     * @return The Period for the month
-     */
-    public static Period Month(int month, int year) {
-        Calendar start = Calendar.getInstance();
-        start.clear();
-        start.set(Calendar.YEAR, year);
-        start.set(Calendar.MONTH, month - 1);
-        start.set(Calendar.DAY_OF_MONTH, 1);
-
-        Calendar end = Calendar.getInstance();
-        end.clear();
-        end.set(Calendar.YEAR, year);
-        end.set(Calendar.MONTH, month);
-        end.set(Calendar.DAY_OF_MONTH, 1);
-        end.add(Calendar.SECOND, -1);
-
-        if (start.get(Calendar.YEAR) != end.get(Calendar.YEAR)) {
-            throw new RuntimeException("Year mismatch");
-        }
-
-        if (start.get(Calendar.MONTH) != end.get(Calendar.MONTH)) {
-            throw new RuntimeException("Month mismatch");
-        }
-
-        SimpleDateFormat monthFormat = new SimpleDateFormat("yyyy-MM");
-        return new Period(monthFormat.format(start.getTime()), start, end);
-    }
-
-    //------------------------------------------------------------------------------------------------------------------
-    //################################################## Core Object ###################################################
-    //------------------------------------------------------------------------------------------------------------------
+    // My parents
+    private Period last;
 
     // My values
-    private String id;
-    private Calendar start;
-    private Calendar end;
+    private int month;
+    private int year;
 
     /**
-     * Private constructor
+     * Constructor
      */
-    private Period(String id, Calendar start, Calendar end) {
-        this.id = id;
-        this.start = start;
-        this.end = end;
+    @ParameterMap(parameterGetters = {"getId", "getMonth", "getYear", "getLast"})
+    public Period(String id, int month, int year, Period last) {
+        super(id);
+        this.month = month;
+        this.year = year;
+        this.last = last;
     }
 
     /**
-     * Get the start time of the next period
+     * Generate a new period that comes after this one
      *
-     * @return The next period
+     * @return A new period that comes after this one
      */
-    public Calendar getNextPeriodTime() {
-        Calendar toReturn = (Calendar) end.clone();
-        toReturn.add(Calendar.SECOND, 1);
-        return toReturn;
-    }
-
-    /**
-     * Find the Period before this one
-     *
-     * @return The last period or null
-     */
-    public Period getPreviousPeriod() {
-        for (Period p : TrackingDatabase.get().get(Period.class)) {
-            Calendar lastEnd = p.getEnd();
-            Calendar nextStart = getStart();
-
-            lastEnd.add(Calendar.SECOND, +1);
-            if (lastEnd.get(Calendar.YEAR) == nextStart.get(Calendar.YEAR)) {
-                if (lastEnd.get(Calendar.MONTH) == nextStart.get(Calendar.MONTH)) {
-                    return p;
-                }
-            }
-            lastEnd.add(Calendar.SECOND, -1);
+    public Period generateNext() {
+        int nextMonth = month;
+        int nextYear = year;
+        nextMonth++;
+        if (nextMonth > 12) {
+            nextMonth -= 12;
+            nextYear++;
         }
 
-        return null;
-    }
-
-    /**
-     * Get the expected ID for the previous period
-     *
-     * @return The expected ID for the previous period
-     */
-    public String getLastId() {
-        Calendar toReturn = (Calendar) start.clone();
-        toReturn.add(Calendar.SECOND, -1);
-        SimpleDateFormat monthFormat = new SimpleDateFormat("yyyy-MM");
-        return monthFormat.format(toReturn.getTime());
+        return new Period(TrackingDatabase.get().getNextId(Period.class), nextMonth, nextYear, this);
     }
 
     /**
      * {@inheritDoc
      */
     @Override
-    @DisplayProperties(order = 1, name = "Period")
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    public String getId() {
-        return id;
+    public String toString() {
+        return year + "-" + month;
     }
 
     /**
      * {@inheritDoc
      */
     @Override
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
+    @DisplayProperties(order = 21)
     public List<DataObject> getParents() {
         return new ArrayList<>();
     }
@@ -141,123 +77,92 @@ public class Period extends MoneyContainer {
 
     // Inter currency transfers ----------------------------------------------------------------------------------------
 
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    public Double getAUDMissingTransfer() {
+    public Double getMissingTransfer(Currency currency) {
         Double value = 0.0;
         for (Statement t : this.getChildren(Statement.class)) {
-            if (t.getIdBank().getCurrency().getId().equals("AUD")) {
+            if (t.getBank().getCurrency().equals(currency)) {
                 value += t.getNetTransfer();
             }
         }
 
-        if (value > 0 && value < 0.0001) {
-            value = 0.0;
-        }
-        if (value < 0 && value > -0.0001) {
-            value = 0.0;
-        }
-
-        return value;
+        return Currency.round(value);
     }
 
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    public Double getYENMissingTransfer() {
-        Double value = 0.0;
-        for (Statement t : this.getChildren(Statement.class)) {
-            if (t.getIdBank().getCurrency().getId().equals("YEN")) {
-                value += t.getNetTransfer();
-            }
-        }
-
-        if (value > 0 && value < 0.0001) {
-            value = 0.0;
-        }
-        if (value < 0 && value > -0.0001) {
-            value = 0.0;
-        }
-
-        return value;
-    }
-
+    @DisplayProperties(order = 7)
     public Double getTransferRate() {
-        Double aud = getAUDMissingTransfer();
-        Double yen = getYENMissingTransfer();
-        if (aud != 0.0 && yen != 0.0) {
-            return -yen / aud;
+        int size = TrackingDatabase.get().get(Currency.class).size();
+        if (size == 1) {
+            return 0.0;
+        } else if (size == 2) {
+            double primarySum = 0.0;
+            double otherSum = 0.0;
+            for (Currency currency : TrackingDatabase.get().get(Currency.class)) {
+                if (currency.isDefault()) {
+                    primarySum = getMissingTransfer(currency);
+                } else {
+                    otherSum = getMissingTransfer(currency);
+                }
+            }
+            double value = primarySum / otherSum;
+
+            return -Currency.round(value);
+        } else {
+            throw new RuntimeException("3+ currencies not supported");
         }
-        return 0.0;
     }
 
     // Period totals ---------------------------------------------------------------------------------------------------
 
-    @DisplayProperties(name = "Balance", order = 0, dataType = CURRENCY_YEN)
+    @DisplayProperties(order = 4, dataType = CURRENCY_YEN)
     public Double getStartBalance() {
-        Double value = 0.0;
+        double value = 0.0;
         for (Statement t : this.getChildren(Statement.class)) {
-            value += (t.getStart() * t.getIdBank().getCurrency().getToPrimary());
+            value += (t.getStart() * t.getBank().getCurrency().getToPrimary());
         }
         return value;
     }
 
-    @DisplayProperties(name = "Balance", order = 2, dataType = CURRENCY_YEN)
+    @DisplayProperties(order = 5, dataType = CURRENCY_YEN)
     public Double getEndBalance() {
-        Double value = 0.0;
-        for (Statement t : this.getChildren(Statement.class)) {
-            value += (t.getEnd() * t.getIdBank().getCurrency().getToPrimary());
-        }
-        return value;
-    }
-
-    @DisplayProperties(name = "Balance", order = 1, dataType = CURRENCY_AUD)
-    public Double getStartBalanceSecondary() {
         double value = 0.0;
         for (Statement t : this.getChildren(Statement.class)) {
-            value += (t.getStart() * t.getIdBank().getCurrency().getToSecondary());
+            value += (t.getEnd() * t.getBank().getCurrency().getToPrimary());
         }
         return value;
     }
 
-    @DisplayProperties(name = "Balance", order = 3, dataType = CURRENCY_AUD)
-    public Double getEndBalanceSecondary() {
-        double value = 0.0;
-        for (Statement t : this.getChildren(Statement.class)) {
-            value += (t.getEnd() * t.getIdBank().getCurrency().getToSecondary());
-        }
-        return value;
-    }
-
-    @DisplayProperties(order = 4, dataType = CURRENCY_YEN, dataContext = ZERO_BELOW_BAD)
+    @DisplayProperties(order = 6, dataType = CURRENCY_YEN, dataContext = ZERO_BELOW_BAD)
     public Double getProfit() {
         return getEndBalance() - getStartBalance();
     }
 
-    @DisplayProperties(name = "Balance", order = 2, dataType = CURRENCY_YEN)
     public Double getEndBalance(Currency currency) {
-        Double value = 0.0;
+        double value = 0.0;
         for (Statement t : this.getChildren(Statement.class)) {
-            if (t.getIdBank().getCurrency().equals(currency)) {
-                value += (t.getEnd() * t.getIdBank().getCurrency().getToPrimary());
+            if (t.getBank().getCurrency().equals(currency)) {
+                value += (t.getEnd() * t.getBank().getCurrency().getToPrimary());
             }
         }
         return value;
-    }
-
-    @DisplayProperties(name = "Profit", order = 5, dataType = CURRENCY_AUD, dataContext = ZERO_BELOW_BAD)
-    public Double getProfitSecondary() {
-        return getEndBalanceSecondary() - getStartBalanceSecondary();
     }
 
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    public Calendar getStart() {
-        return start;
+    @DisplayProperties(order = 2)
+    public int getMonth() {
+        return month;
     }
 
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    public Calendar getEnd() {
-        return end;
+    @DisplayProperties(order = 3)
+    public int getYear() {
+        return year;
+    }
+
+    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
+    @DisplayProperties(order = 8)
+    public Period getLast() {
+        return last;
     }
 }

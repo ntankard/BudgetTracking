@@ -111,7 +111,7 @@ public class PeriodSummary_Model extends AbstractTableModel implements Updatable
         } else if (sectionIndex == 0) { // Category name
 
             if (columns.isCenter(columnIndex)) {
-                value.coreObject = columns.getCategory(columnIndex).getId();
+                value.coreObject = columns.getCategory(columnIndex).toString();
             }
             value.bottom = STANDARD_LINE;
 
@@ -130,7 +130,7 @@ public class PeriodSummary_Model extends AbstractTableModel implements Updatable
         } else if (sectionIndex == 2) { // Currency name
 
             if (columns.getCurrency(columnIndex) != null) {
-                value.coreObject = columns.getCurrency(columnIndex).getId();
+                value.coreObject = columns.getCurrency(columnIndex).toString();
                 value.bottom = STANDARD_LINE;
             }
             value.right = STANDARD_LINE;

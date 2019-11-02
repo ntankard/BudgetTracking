@@ -5,10 +5,10 @@ import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
-import com.ntankard.Tracking.DataBase.TrackingDatabase;
+import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.Dispaly.Util.ElementControllers.Transaction_ElementController;
 import com.ntankard.Tracking.Dispaly.Util.Panels.DataObject_DisplayList;
-import com.ntankard.Tracking.Dispaly.Util.Set.Children_Set;
+import com.ntankard.Tracking.DataBase.Interface.Set.Children_Set;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

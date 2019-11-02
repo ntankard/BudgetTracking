@@ -3,7 +3,7 @@ package com.ntankard.Tracking.Dispaly.Frames.MainFrame.Funds;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Fund;
-import com.ntankard.Tracking.DataBase.TrackingDatabase;
+import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.Dispaly.Frames.MainFrame.Funds.IndividualFund.IndividualFundPanel;
 
 import javax.swing.*;
@@ -85,7 +85,7 @@ public class FundTabPanel extends UpdatableJPanel {
             for (Fund fund : funds) {
                 IndividualFundPanel panel = new IndividualFundPanel(fund, this);
                 fundPanels.add(panel);
-                master_tPanel.addTab(fund.getId(), panel);
+                master_tPanel.addTab(fund.toString(), panel);
             }
         }
     }

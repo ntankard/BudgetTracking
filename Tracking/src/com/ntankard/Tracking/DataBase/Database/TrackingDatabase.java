@@ -1,32 +1,33 @@
-package com.ntankard.Tracking.DataBase;
+package com.ntankard.Tracking.DataBase.Database;
 
 import com.ntankard.Tracking.DataBase.Core.DataObject;
-import com.ntankard.Tracking.DataBase.Core.IdDataObject;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Fund;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.*;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.FundChargeTransfer.FundChargeTransfer;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.FundChargeTransfer.HexChargeTransfer;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.FundChargeTransfer.TaxChargeTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.FundChargeTransfer.SavingsChargeTransfer;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Bank;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.FundEvent;
+import com.ntankard.Tracking.DataBase.Database.SubContainers.*;
 
 import java.util.*;
 
 public class TrackingDatabase {
 
-    /**
-     * Core data objects
-     */
-    private Map<Class, List<DataObject>> dataObjects = new HashMap<>();
-    private Map<Class, Map<String, DataObject>> dataObjectsMap = new HashMap<>();
-    private Map<String, Class> classMap = new HashMap<>();
+    // Core data objects
+    private List<Container> containers = new ArrayList<>();
+    private TypeMap typeMap = new TypeMap();
+    private TypeIDMap typeIDMap = new TypeIDMap();
+    private DefaultObjectMap defaultObjectMap = new DefaultObjectMap();
+    private ClassMap classMap = new ClassMap();
+    private SpecialValuesMap specialValuesMap = new SpecialValuesMap();
 
-    // Flag for database construction
-    private boolean isFinalized = false;
+    // Special values
+    private static Double taxRate = 0.06;
 
     //------------------------------------------------------------------------------------------------------------------
     //############################################### Constructor ######################################################
@@ -48,45 +49,36 @@ public class TrackingDatabase {
     /**
      * Private Constructor
      */
-    private TrackingDatabase() {
-        addType(Currency.class);
-        addType(Category.class);
-        addType(Bank.class);
-        addType(Period.class);
-        addType(Statement.class);
-        addType(Transaction.class);
-        addType(CategoryTransfer.class);
-        addType(PeriodTransfer.class);
-        addType(Fund.class);
-        addType(PeriodFundTransfer.class);
-        addType(FundEvent.class);
-        addType(FundChargeTransfer.class);
+    TrackingDatabase() {
+        containers.add(typeIDMap);
+        containers.add(typeMap);
+        containers.add(defaultObjectMap);
+        containers.add(classMap);
+        containers.add(specialValuesMap);
+
+        containers.forEach(container -> container.addType(Currency.class));
+        containers.forEach(container -> container.addType(Category.class));
+        containers.forEach(container -> container.addType(Bank.class));
+        containers.forEach(container -> container.addType(Period.class));
+        containers.forEach(container -> container.addType(Statement.class));
+        containers.forEach(container -> container.addType(Transaction.class));
+        containers.forEach(container -> container.addType(CategoryTransfer.class));
+        containers.forEach(container -> container.addType(PeriodTransfer.class));
+        containers.forEach(container -> container.addType(Fund.class));
+        containers.forEach(container -> container.addType(PeriodFundTransfer.class));
+        containers.forEach(container -> container.addType(FundEvent.class));
+        containers.forEach(container -> container.addType(FundChargeTransfer.class));
     }
 
     /**
-     * Generate a container for a new object type
+     * Get the tax rate to use
      *
-     * @param aClass The type to add
-     * @param <T>    Same as type
+     * @return The tax rate to use
      */
-    private <T extends DataObject> void addType(Class<T> aClass) {
-        dataObjects.put(aClass, new ArrayList<>());
-        dataObjectsMap.put(aClass, new HashMap<>());
-        classMap.put(aClass.getSimpleName(), aClass);
+    public Double getTaxRate() {
+        return taxRate;
     }
-
-    /**
-     * Repair any missing data
-     */
-    public void finalizeData() {
-        for (Class aClass : dataObjects.keySet()) {
-            for (DataObject dataObject : dataObjects.get(aClass)) {
-                fix(dataObject);
-            }
-        }
-        isFinalized = true;
-    }
-
+    
     //------------------------------------------------------------------------------------------------------------------
     //################################################ Data IO #########################################################
     //------------------------------------------------------------------------------------------------------------------
@@ -98,14 +90,14 @@ public class TrackingDatabase {
      * @param <T>   Method restriction to limit data objects to ones with a individual integer ID
      * @return The next free ID
      */
-    public <T extends IdDataObject> String getNextId(Class<T> toGet) {
+    public <T extends DataObject> String getNextId(Class<T> toGet) {
         int max = 0;
 
-        if (!dataObjects.containsKey(toGet)) {
+        if (!typeMap.containsKey(toGet)) {
             throw new RuntimeException("Impossible type");
         }
 
-        for (DataObject t : dataObjects.get(toGet)) {
+        for (DataObject t : typeMap.get(toGet)) {
             int value = Integer.parseInt(t.getId());
             if (value > max) {
                 max = value;
@@ -130,20 +122,13 @@ public class TrackingDatabase {
      * @param dataObject The type to store it under
      */
     public void add(Class tClass, DataObject dataObject) {
-        if (!dataObjects.containsKey(tClass) || !dataObjectsMap.containsKey(tClass)) {
-            throw new RuntimeException("Impossible type");
-        }
-
-        this.dataObjects.get(tClass).add(dataObject);
-        this.dataObjectsMap.get(tClass).put(dataObject.getId(), dataObject);
-        if (isFinalized) {
-            fix(dataObject);
-        }
+        fix(dataObject);
+        containers.forEach(container -> container.add(tClass, dataObject));
         dataObject.notifyParentLink();
+    }
 
-        if (dataObjects.get(tClass).size() != dataObjectsMap.get(tClass).size()) {
-            throw new RuntimeException("Duplicate ID");
-        }
+    public void remove(DataObject dataObject) {
+        remove(dataObject.getTypeClass(), dataObject);
     }
 
     /**
@@ -151,21 +136,9 @@ public class TrackingDatabase {
      *
      * @param dataObject The object to remove
      */
-    public void remove(DataObject dataObject) {
-        if (!dataObjects.containsKey(dataObject.getTypeClass()) || !dataObjectsMap.containsKey(dataObject.getTypeClass())) {
-            throw new RuntimeException("Impossible type");
-        }
-        if (dataObject.getChildren().size() != 0) {
-            throw new RuntimeException("Deleting an object with dependencies");
-        }
-
+    public void remove(Class tClass, DataObject dataObject) {
         dataObject.notifyParentUnLink();
-        this.dataObjects.get(dataObject.getTypeClass()).remove(dataObject);
-        this.dataObjectsMap.get(dataObject.getTypeClass()).remove(dataObject.getId());
-
-        if (dataObjects.get(dataObject.getTypeClass()).size() != dataObjectsMap.get(dataObject.getTypeClass()).size()) {
-            throw new RuntimeException("Error remove");
-        }
+        containers.forEach(container -> container.remove(tClass, dataObject));
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -180,27 +153,7 @@ public class TrackingDatabase {
     private void fix(DataObject dataObject) {
         if (dataObject instanceof Period) {
             fixPeriod((Period) dataObject);
-        } else if (dataObject instanceof Fund) {
-            fixFund((Fund) dataObject);
         }
-    }
-
-    /**
-     * Ensure the fund has required defaults
-     *
-     * @param funds The fund to fix
-     */
-    private void fixFund(Fund funds) {
-        /*boolean found = false;
-        for (FundEvent fundEvent : funds.getChildren(FundEvent.class)) {
-            if (fundEvent.getIdCode().equals("NONE")) {
-                found = true;
-                break;
-            }
-        }
-        if (!found) {
-            add(new FundEvent(funds, "NONE"));
-        }*/
     }
 
     /**
@@ -209,28 +162,32 @@ public class TrackingDatabase {
      * @param period The period to fix
      */
     private void fixPeriod(Period period) {
-        Period last = period.getPreviousPeriod();
+
         for (Bank b : get(Bank.class)) {
-
-            // Dose this period have a statement for this bank?
-            Statement match = get(Statement.class, b.getId() + " " + period.getId());
-            if (match == null) {
-
-                // Find the statement from the previous month if it exists
-                double end = 0.0;
-                if (last != null) {
-                    Statement lastStatement = get(Statement.class, b.getId() + " " + last.getId());
-                    end = lastStatement.getEnd();
+            boolean found = false;
+            for (Statement statement : period.getChildren(Statement.class)) {
+                if (statement.getBank().equals(b)) {
+                    found = true;
+                    break;
                 }
+            }
 
-                add(new Statement(b, period, end, 0.0, 0.0, 0.0));
+            if (!found) {
+                Double lastEnd = 0.0;
+                for (Statement statement : period.getLast().getChildren(Statement.class)) {
+                    if (statement.getBank().equals(b)) {
+                        lastEnd = statement.getEnd();
+                        break;
+                    }
+                }
+                add(new Statement(TrackingDatabase.get().getNextId(Statement.class), b, period, lastEnd, 0.0, 0.0, 0.0));
             }
         }
 
         boolean hexFound = false;
         boolean saveFound = false;
         for (FundChargeTransfer fundChargeTransfer : period.getChildren(FundChargeTransfer.class)) {
-            if (fundChargeTransfer instanceof HexChargeTransfer) {
+            if (fundChargeTransfer instanceof TaxChargeTransfer) {
                 hexFound = true;
             }
             if (fundChargeTransfer instanceof SavingsChargeTransfer) {
@@ -238,7 +195,7 @@ public class TrackingDatabase {
             }
         }
         if (!hexFound) {
-            add(FundChargeTransfer.class, new HexChargeTransfer(period));
+            add(FundChargeTransfer.class, new TaxChargeTransfer(period));
         }
         if (!saveFound) {
             add(FundChargeTransfer.class, new SavingsChargeTransfer(period));
@@ -259,7 +216,7 @@ public class TrackingDatabase {
      */
     @SuppressWarnings("unchecked")
     public <T extends DataObject> T get(Class<T> type, String id) {
-        return (T) dataObjectsMap.get(type).get(id);
+        return (T) typeIDMap.get(type).get(id);
     }
 
     /**
@@ -271,7 +228,7 @@ public class TrackingDatabase {
      */
     @SuppressWarnings("unchecked")
     public <T extends DataObject> List<T> get(Class<T> type) {
-        return Collections.unmodifiableList((List<T>) dataObjects.get(type));
+        return Collections.unmodifiableList((List<T>) typeMap.get(type));
     }
 
     /**
@@ -284,5 +241,36 @@ public class TrackingDatabase {
     @SuppressWarnings("unchecked")
     public <T extends DataObject> List<T> getData(String type) {
         return get(classMap.get(type));
+    }
+
+    /**
+     * Get the default object of a type (specified or the 0th element)
+     *
+     * @param aClass The class to get
+     * @param <T>    The data type to return (same as aClass)
+     * @return The default object
+     */
+    public <T extends DataObject> T getDefault(Class<T> aClass) {
+        return defaultObjectMap.getDefault(aClass);
+    }
+
+    /**
+     * Get the object that is the special value
+     *
+     * @param aClass The type of object to search
+     * @param key    The key to search
+     * @return The value of type aClass that is the special value for the key
+     */
+    public <T extends DataObject> T getSpecialValue(Class<T> aClass, Integer key) {
+        return specialValuesMap.get(aClass, key);
+    }
+
+    /**
+     * Get all the DataObject types added to this database
+     *
+     * @return All the DataObject types added to this database
+     */
+    public Set<Class> getDataObjectTypes() {
+        return typeMap.keySet();
     }
 }

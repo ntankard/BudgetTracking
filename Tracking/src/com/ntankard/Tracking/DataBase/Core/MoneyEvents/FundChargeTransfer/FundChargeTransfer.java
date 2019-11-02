@@ -2,37 +2,35 @@ package com.ntankard.Tracking.DataBase.Core.MoneyEvents.FundChargeTransfer;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
-import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.ClassExtension.SetterProperties;
+import com.ntankard.Tracking.DataBase.Core.DataObject;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Fund;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.MoneyEvent;
-import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
-import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
-import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.FundEvent;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.MoneyEvent;
+import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
 
 @ClassExtensionProperties(includeParent = true)
-public class FundChargeTransfer extends MoneyEvent<Period, Category, Fund, FundEvent> {
+public class FundChargeTransfer extends MoneyEvent<Period, DataObject, Fund, DataObject> {
 
     /**
      * Constructor
      */
-    public FundChargeTransfer(String id, Period source, Fund destination, Currency currency, String description, Double value) {
-        super(id, description, value, source, null, destination, null, currency);
+    public FundChargeTransfer(String id, String description, Double value, Period sourceContainer, Fund destinationContainer, Currency currency) {
+        super(id, description, value, sourceContainer, null, destinationContainer, null, currency);
     }
 
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @DisplayProperties(order = 2)
     @Override
+    @DisplayProperties(order = 5)
     public Period getSourceContainer() {
         return super.getSourceContainer();
     }
 
-    @DisplayProperties(order = 4)
     @Override
+    @DisplayProperties(order = 7)
     public Fund getDestinationContainer() {
         return super.getDestinationContainer();
     }

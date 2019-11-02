@@ -11,25 +11,24 @@ import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Bank;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.FundEvent;
-import com.ntankard.Tracking.DataBase.TrackingDatabase;
-import com.ntankard.Tracking.DataBase.TrackingDatabase_Reader;
+import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
+import com.ntankard.Tracking.DataBase.Database.TrackingDatabase_Reader;
 import com.ntankard.Tracking.Dispaly.Frames.MainFrame.Funds.FundTabPanel;
 import com.ntankard.Tracking.Dispaly.Frames.MainFrame.Periods.PeriodTabPanel;
 import com.ntankard.Tracking.Dispaly.Frames.MainFrame.SummaryGraphs.SummaryGraphPanel;
-import com.ntankard.Tracking.Dispaly.Util.Panels.DataObject_TabDisplayList;
+import com.ntankard.Tracking.Dispaly.Util.Panels.DataObject_VerbosityTabDisplayList;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Calendar;
 
 public class Master_Frame extends JPanel implements Updatable {
 
     // The GUI components
     private PeriodTabPanel periodPanel;
     private FundTabPanel fundTabPanel;
-    private DataObject_TabDisplayList transferPanel;
-    private DataObject_TabDisplayList baseTypePanel;
-    private DataObject_TabDisplayList moneyContainerPanel;
+    private DataObject_VerbosityTabDisplayList transferPanel;
+    private DataObject_VerbosityTabDisplayList baseTypePanel;
+    private DataObject_VerbosityTabDisplayList moneyContainerPanel;
     private SummaryGraphPanel summaryGraphPanel;
 
     private String savePath;
@@ -75,7 +74,7 @@ public class Master_Frame extends JPanel implements Updatable {
         JButton addPeriod_btn = new JButton("Add Period");
         addPeriod_btn.addActionListener(e -> {
             Period last = TrackingDatabase.get().get(Period.class).get(TrackingDatabase.get().get(Period.class).size() - 1);
-            Period period = Period.Month(last.getNextPeriodTime().get(Calendar.MONTH) + 1, last.getNextPeriodTime().get(Calendar.YEAR));
+            Period period = last.generateNext();
             TrackingDatabase.get().add(period);
             notifyUpdate();
         });
@@ -90,20 +89,20 @@ public class Master_Frame extends JPanel implements Updatable {
         periodPanel = new PeriodTabPanel(this);
         fundTabPanel = new FundTabPanel(this);
 
-        transferPanel = new DataObject_TabDisplayList(this);
+        transferPanel = new DataObject_VerbosityTabDisplayList(this);
         transferPanel.add("Transaction", Transaction.class);
         transferPanel.add("Category Transfer", CategoryTransfer.class);
         transferPanel.add("Period Transfer", PeriodTransfer.class);
-        transferPanel.add("Non Period Fund Transfer", PeriodFundTransfer.class);
-        transferPanel.add("Non Period Fund Charge Transfer", FundChargeTransfer.class);
+        transferPanel.add("Period Fund Transfer", PeriodFundTransfer.class);
+        transferPanel.add("Fund Charge Transfer", FundChargeTransfer.class);
 
-        baseTypePanel = new DataObject_TabDisplayList(this);
+        baseTypePanel = new DataObject_VerbosityTabDisplayList(this);
         baseTypePanel.add("Category", Category.class);
         baseTypePanel.add("Currency", Currency.class);
         baseTypePanel.add("Bank", Bank.class);
-        baseTypePanel.add("Non Period Fund Event", FundEvent.class);
+        baseTypePanel.add("Fund Event", FundEvent.class);
 
-        moneyContainerPanel = new DataObject_TabDisplayList(this);
+        moneyContainerPanel = new DataObject_VerbosityTabDisplayList(this);
         moneyContainerPanel.add("Fund", Fund.class);
         moneyContainerPanel.add("Periods", Period.class);
         moneyContainerPanel.add("Statement", Statement.class);

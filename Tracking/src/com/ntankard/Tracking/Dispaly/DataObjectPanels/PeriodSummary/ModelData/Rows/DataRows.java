@@ -3,7 +3,7 @@ package com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.ModelData.R
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
-import com.ntankard.Tracking.DataBase.TrackingDatabase;
+import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.ModelData.ModelData_Columns;
 
 import java.util.HashMap;
@@ -38,7 +38,7 @@ public abstract class DataRows<T> {
      * @return The formatted total
      */
     public Object getTotal(Category category) {
-        return TrackingDatabase.get().get(Currency.class,"YEN").getNumberFormat().format(getTotal_impl(category));
+        return TrackingDatabase.get().getDefault(Currency.class).getNumberFormat().format(getTotal_impl(category));
     }
 
     /**
