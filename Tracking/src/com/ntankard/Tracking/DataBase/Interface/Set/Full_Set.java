@@ -5,7 +5,7 @@ import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 
 import java.util.List;
 
-public class Full_Set<T extends DataObject> implements DataObjectSet<T> {
+public class Full_Set<T extends DataObject> implements ObjectSet<T> {
 
     /**
      * The DataObject to get from the database

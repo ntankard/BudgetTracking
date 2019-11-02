@@ -2,22 +2,22 @@ package com.ntankard.Tracking.Dispaly.DataObjectPanels;
 
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
-import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
+import com.ntankard.Tracking.DataBase.Interface.ClassExtension.ExtendedStatement;
+import com.ntankard.Tracking.DataBase.Interface.Set.ExtendedSets.ExtendedStatement_Set;
 import com.ntankard.Tracking.Dispaly.Frames.Statement_Frame;
-import com.ntankard.Tracking.Dispaly.Util.Panels.DataObject_DisplayList;
-import com.ntankard.Tracking.DataBase.Interface.Set.Children_Set;
+import com.ntankard.Tracking.Dispaly.Util.Panels.Object_DisplayList;
 
 import java.util.List;
 
 import static com.ntankard.DynamicGUI.Containers.DynamicGUI_DisplayList.ListControl_Button.EnableCondition.SINGLE;
 
-public class StatementPanel extends DataObject_DisplayList<Statement> {
+public class ExtendedStatementPanel extends Object_DisplayList<ExtendedStatement> {
 
     /**
      * Constructor
      */
-    public StatementPanel(Period core, Updatable master) {
-        super(Statement.class, new Children_Set<>(Statement.class, core), false, master);
+    public ExtendedStatementPanel(Period core, Updatable master) {
+        super(ExtendedStatement.class, new ExtendedStatement_Set(core), false, master);
         createUIComponents();
     }
 
@@ -28,7 +28,7 @@ public class StatementPanel extends DataObject_DisplayList<Statement> {
         ListControl_Button manageStatementBtn = new ListControl_Button<>("Manage Statement", this, SINGLE, false);
         manageStatementBtn.addActionListener(e -> {
             List selected = this.getMainPanel().getSelectedItems();
-            Statement_Frame.open((Statement) selected.get(0), this);
+            Statement_Frame.open(((ExtendedStatement) selected.get(0)).getStatement(), this);
         });
         this.addButton(manageStatementBtn);
     }

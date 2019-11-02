@@ -115,8 +115,8 @@ public class Master_Frame extends JPanel implements Updatable {
         summaryGraphPanel = new SummaryGraphPanel(this);
 
         JTabbedPane master_tPanel = new JTabbedPane();
-        master_tPanel.addTab("Fund", fundTabPanel);
         master_tPanel.addTab("Periods", periodPanel);
+        master_tPanel.addTab("Fund", fundTabPanel);
         master_tPanel.addTab("Database", databasePanel);
         master_tPanel.addTab("Summary", summaryGraphPanel);
 

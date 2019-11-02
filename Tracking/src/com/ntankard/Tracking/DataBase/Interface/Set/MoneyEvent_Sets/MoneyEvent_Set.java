@@ -2,12 +2,12 @@ package com.ntankard.Tracking.DataBase.Interface.Set.MoneyEvent_Sets;
 
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.MoneyEvent;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
-import com.ntankard.Tracking.DataBase.Interface.Set.DataObjectSet;
+import com.ntankard.Tracking.DataBase.Interface.Set.ObjectSet;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class MoneyEvent_Set<M extends MoneyEvent> implements DataObjectSet<M> {
+public abstract class MoneyEvent_Set<M extends MoneyEvent> implements ObjectSet<M> {
 
     /**
      * Get all the events in this set

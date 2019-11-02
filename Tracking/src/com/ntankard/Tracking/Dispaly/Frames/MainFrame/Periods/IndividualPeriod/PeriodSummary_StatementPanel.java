@@ -6,9 +6,10 @@ import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
+import com.ntankard.Tracking.DataBase.Interface.ClassExtension.ExtendedStatement;
 import com.ntankard.Tracking.DataBase.Interface.Summary.PeriodTransaction_Summary;
+import com.ntankard.Tracking.Dispaly.DataObjectPanels.ExtendedStatementPanel;
 import com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.PeriodSummary;
-import com.ntankard.Tracking.Dispaly.DataObjectPanels.StatementPanel;
 import com.ntankard.Tracking.Dispaly.Util.ElementControllers.Transaction_ElementController;
 import com.ntankard.Tracking.Dispaly.Util.Panels.DataObject_DisplayList;
 import com.ntankard.Tracking.DataBase.Interface.Set.Children_Set;
@@ -24,12 +25,12 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
 
     // The GUI components
     private PeriodSummary periodSummary_panel;
-    private StatementPanel statement_panel;
+    private ExtendedStatementPanel statement_panel;
     private DataObject_DisplayList<Transaction> transaction_panel;
     private DynamicGUI_IntractableObject period_panel;
     private DynamicGUI_IntractableObject periodTotal_panel;
 
-    // StatementPanel Controllers stored to update the core objects
+    // ExtendedStatementPanel Controllers stored to update the core objects
     private Children_Set<Transaction, Statement> transaction_panel_set;
     private Transaction_ElementController transaction_panel_controller;
 
@@ -61,7 +62,7 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
             }
         });
 
-        statement_panel = new StatementPanel(core, this);
+        statement_panel = new ExtendedStatementPanel(core, this);
         statement_panel.setComparator((o1, o2) -> {
             if (o1.getBank().getOrder() == o2.getBank().getOrder()) {
                 return 0;
@@ -124,9 +125,9 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
      */
     private void updateTransactions() {
         // Find out if a statement has been selected
-        List<Statement> selected = statement_panel.getMainPanel().getSelectedItems();
+        List selected = statement_panel.getMainPanel().getSelectedItems();
         if (selected.size() == 1) {
-            selectedStatement = selected.get(0);
+            selectedStatement = ((ExtendedStatement) selected.get(0)).getStatement();
         } else {
             selectedStatement = null;
         }

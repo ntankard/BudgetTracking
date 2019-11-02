@@ -5,6 +5,7 @@ import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
+import com.ntankard.Tracking.DataBase.Interface.ClassExtension.ExtendedStatement;
 import com.ntankard.Tracking.DataBase.Interface.Summary.PeriodTransaction_Summary;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 
@@ -118,7 +119,7 @@ public class SummaryPanel extends UpdatableJPanel {
         // Check that all spends are accounted for
         boolean missing = false;
         for (Statement statement : core.<Statement>getChildren(Statement.class)) {
-            if (statement.getMissingSpend() != 0) {
+            if (new ExtendedStatement(statement).getMissingSpend() != 0) {
                 missing = true;
             }
         }
@@ -166,7 +167,7 @@ public class SummaryPanel extends UpdatableJPanel {
                     error = true;
                 }
             }
-            if(!error){
+            if (!error) {
                 transferStatus_lbl.setText(" Valid transfer rate ");
                 transferStatus_lbl.setForeground(Color.GREEN);
             }

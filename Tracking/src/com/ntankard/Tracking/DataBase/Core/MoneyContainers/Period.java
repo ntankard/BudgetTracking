@@ -7,6 +7,7 @@ import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
+import com.ntankard.Tracking.DataBase.Interface.ClassExtension.ExtendedStatement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,7 +82,7 @@ public class Period extends DataObject {
         Double value = 0.0;
         for (Statement t : this.getChildren(Statement.class)) {
             if (t.getBank().getCurrency().equals(currency)) {
-                value += t.getNetTransfer();
+                value += new ExtendedStatement(t).getNetTransfer();
             }
         }
 

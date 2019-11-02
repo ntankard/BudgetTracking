@@ -5,7 +5,7 @@ import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Children_Set<T extends DataObject, CoreType extends DataObject> implements DataObjectSet<T> {
+public class Children_Set<T extends DataObject, CoreType extends DataObject> implements ObjectSet<T> {
 
     /**
      * The DataObject to get from the core
