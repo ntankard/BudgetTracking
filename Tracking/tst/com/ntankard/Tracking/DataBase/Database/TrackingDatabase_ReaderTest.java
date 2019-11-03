@@ -13,6 +13,7 @@ class TrackingDatabase_ReaderTest {
 
     @BeforeAll
     static void setUp() {
+        TrackingDatabase.reset();
         String savePath = "C:\\Users\\Nicholas\\Google Drive\\BudgetTrackingData";
         TrackingDatabase_Reader.read(TrackingDatabase.get(), savePath);
     }

@@ -68,6 +68,8 @@ public class TrackingDatabase_Reader {
         readDataObjectSet(csvFile, Transaction.class, data);
         readDataObjectSet(csvFile, PeriodFundTransfer.class, data);
         //readDataObjectSet(csvFile, FundChargeTransfer.class, data);
+
+        TrackingDatabase.get().finalizeCore();
     }
 
 
@@ -101,7 +103,7 @@ public class TrackingDatabase_Reader {
     static List<String> dataObjectToString(DataObject dataObject) {
 
         // Find the constructors parameters
-        Class aClass = dataObject.getTypeClass();
+        Class<?> aClass = dataObject.getClass();
         Constructor[] constructors = aClass.getConstructors();
         if (constructors.length != 1) {
             throw new RuntimeException("More than one constructor detected");
@@ -119,7 +121,7 @@ public class TrackingDatabase_Reader {
         }
 
         List<String> paramStrings = new ArrayList<>();
-        paramStrings.add(dataObject.getClass().getName());
+        paramStrings.add(aClass.getName());
         for (int i = 0; i < paramGetters.length; i++) {
             String paramGetter = paramGetters[i];
             Class paramType = paramTypes[i];
@@ -127,7 +129,7 @@ public class TrackingDatabase_Reader {
             // Find the method
             Method getter;
             try {
-                getter = dataObject.getTypeClass().getMethod(paramGetter);
+                getter = aClass.getMethod(paramGetter);
             } catch (NoSuchMethodException e) {
                 throw new RuntimeException(e);
             }

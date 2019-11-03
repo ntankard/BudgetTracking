@@ -5,7 +5,7 @@ import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TypeMap extends Container<Class, List<DataObject>> {
+public class TypeMap extends Container<Class<? extends DataObject>, List<DataObject>> {
 
     /**
      * {@inheritDoc

@@ -1,20 +1,24 @@
 package com.ntankard.Tracking.DataBase.Database;
 
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
+import com.ntankard.Tracking.DataBase.Core.MoneyCategory.Category;
+import com.ntankard.Tracking.DataBase.Core.MoneyCategory.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Fund;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.*;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.CategoryTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.FundChargeTransfer.FundChargeTransfer;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.FundChargeTransfer.TaxChargeTransfer;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.FundChargeTransfer.SavingsChargeTransfer;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodFundTransfer;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodTransfer;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
 import com.ntankard.Tracking.DataBase.Core.SupportObjects.Bank;
-import com.ntankard.Tracking.DataBase.Core.MoneyCategory.Category;
 import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
-import com.ntankard.Tracking.DataBase.Core.MoneyCategory.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Database.SubContainers.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 public class TrackingDatabase {
 
@@ -28,6 +32,9 @@ public class TrackingDatabase {
 
     // Special values
     private static Double taxRate = 0.06;
+
+    // Is the database complete?
+    private boolean isFinalized = false;
 
     //------------------------------------------------------------------------------------------------------------------
     //############################################### Constructor ######################################################
@@ -44,6 +51,13 @@ public class TrackingDatabase {
             master = new TrackingDatabase();
         }
         return master;
+    }
+
+    /**
+     * Reset the singleton and delete all data
+     */
+    public static void reset() {
+        master = null;
     }
 
     /**
@@ -68,6 +82,17 @@ public class TrackingDatabase {
         containers.forEach(container -> container.addType(PeriodFundTransfer.class));
         containers.forEach(container -> container.addType(FundEvent.class));
         containers.forEach(container -> container.addType(FundChargeTransfer.class));
+    }
+
+    /**
+     * Finalise the database. From this point on the integrate of the database can be guaranteed and call generated values will exist
+     */
+    public void finalizeCore() {
+        TrackingDatabase_Integrity.validateCore();
+        isFinalized = true;
+        for (DataObject dataObject : typeMap.getAll()) {
+            TrackingDatabase_Repair.repair(dataObject);
+        }
     }
 
     /**
@@ -118,17 +143,15 @@ public class TrackingDatabase {
     /**
      * Add a new element to the database. New elements are repaired if needed and all relevant parents are notified
      *
-     * @param tClass     The object to add
-     * @param dataObject The type to store it under
+     * @param tClass     The type to store it under
+     * @param dataObject The object to add
      */
     public void add(Class tClass, DataObject dataObject) {
-        fix(dataObject);
         containers.forEach(container -> container.add(tClass, dataObject));
         dataObject.notifyParentLink();
-    }
-
-    public void remove(DataObject dataObject) {
-        remove(dataObject.getTypeClass(), dataObject);
+        if (isFinalized) {
+            TrackingDatabase_Repair.repair(dataObject);
+        }
     }
 
     /**
@@ -136,70 +159,19 @@ public class TrackingDatabase {
      *
      * @param dataObject The object to remove
      */
+    public void remove(DataObject dataObject) {
+        remove(dataObject.getTypeClass(), dataObject);
+    }
+
+    /**
+     * Remove an element from the database as long as it has no children linking to it. All relevant parents are notified
+     *
+     * @param tClass     The type to store it under
+     * @param dataObject The object to remove
+     */
     public void remove(Class tClass, DataObject dataObject) {
         dataObject.notifyParentUnLink();
         containers.forEach(container -> container.remove(tClass, dataObject));
-    }
-
-    //------------------------------------------------------------------------------------------------------------------
-    //############################################ Data Integrity ######################################################
-    //------------------------------------------------------------------------------------------------------------------
-
-    /**
-     * So whatever fixes are needed for the data object
-     *
-     * @param dataObject The object to fix
-     */
-    private void fix(DataObject dataObject) {
-        if (dataObject instanceof Period) {
-            fixPeriod((Period) dataObject);
-        }
-    }
-
-    /**
-     * Ensure that a period has all the data it should
-     *
-     * @param period The period to fix
-     */
-    private void fixPeriod(Period period) {
-
-        for (Bank b : get(Bank.class)) {
-            boolean found = false;
-            for (Statement statement : period.getChildren(Statement.class)) {
-                if (statement.getBank().equals(b)) {
-                    found = true;
-                    break;
-                }
-            }
-
-            if (!found) {
-                Double lastEnd = 0.0;
-                for (Statement statement : period.getLast().getChildren(Statement.class)) {
-                    if (statement.getBank().equals(b)) {
-                        lastEnd = statement.getEnd();
-                        break;
-                    }
-                }
-                add(new Statement(TrackingDatabase.get().getNextId(Statement.class), b, period, lastEnd, 0.0, 0.0, 0.0));
-            }
-        }
-
-        boolean hexFound = false;
-        boolean saveFound = false;
-        for (FundChargeTransfer fundChargeTransfer : period.getChildren(FundChargeTransfer.class)) {
-            if (fundChargeTransfer instanceof TaxChargeTransfer) {
-                hexFound = true;
-            }
-            if (fundChargeTransfer instanceof SavingsChargeTransfer) {
-                saveFound = true;
-            }
-        }
-        if (!hexFound) {
-            add(FundChargeTransfer.class, new TaxChargeTransfer(period));
-        }
-        if (!saveFound) {
-            add(FundChargeTransfer.class, new SavingsChargeTransfer(period));
-        }
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -270,7 +242,16 @@ public class TrackingDatabase {
      *
      * @return All the DataObject types added to this database
      */
-    public Set<Class> getDataObjectTypes() {
+    public Set<Class<? extends DataObject>> getDataObjectTypes() {
         return typeMap.keySet();
+    }
+
+    /**
+     * Combine all values into one master list
+     *
+     * @return The list of all values
+     */
+    public List<DataObject> getAll() {
+        return typeMap.getAll();
     }
 }
