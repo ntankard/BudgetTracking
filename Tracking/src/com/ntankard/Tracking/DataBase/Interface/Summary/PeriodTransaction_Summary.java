@@ -65,6 +65,11 @@ public class PeriodTransaction_Summary {
         return -sum;
     }
 
+    /**
+     * For all Statements in the period, do all there transactions match then balance change
+     *
+     * @return True if all the balance is accounted for
+     */
     public boolean isValidSpend() {
         boolean missing = false;
         for (Statement statement : core.getChildren(Statement.class)) {
@@ -75,10 +80,20 @@ public class PeriodTransaction_Summary {
         return !missing;
     }
 
+    /**
+     * If this the first statement for this bank?
+     *
+     * @return True if this the first statement for this bank?
+     */
     public boolean isFirst() {
         return core.getLast() == null;
     }
 
+    /**
+     * Do the start and end values for the statement match up
+     *
+     * @return True if the start and end values for the statement match up
+     */
     public boolean isValidStatementBalance() {
         if (isFirst()) {
             return true;
@@ -103,6 +118,11 @@ public class PeriodTransaction_Summary {
         return true;
     }
 
+    /**
+     * Are all transfer accounted for
+     *
+     * @return True is all transfers are accounted for
+     */
     public boolean isValidTransfer() {
         if (new ExtendedPeriod(core).getTransferRate() == 0.0) {
             for (Currency currency : TrackingDatabase.get().get(Currency.class)) {
