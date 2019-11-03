@@ -7,7 +7,7 @@ import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Fund;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.MoneyEvent;
-import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
+import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
 
 @ClassExtensionProperties(includeParent = true)
 public class FundChargeTransfer extends MoneyEvent<Period, DataObject, Fund, DataObject> {

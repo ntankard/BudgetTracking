@@ -7,7 +7,7 @@ import com.ntankard.ClassExtension.SetterProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
-import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
+import com.ntankard.Tracking.DataBase.Core.MoneyCategory.Category;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;

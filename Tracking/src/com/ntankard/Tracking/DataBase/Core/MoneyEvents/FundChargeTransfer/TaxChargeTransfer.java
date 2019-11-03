@@ -5,7 +5,7 @@ import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Fund;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
-import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
+import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
 import com.ntankard.Tracking.DataBase.Interface.Summary.PeriodTransaction_Summary;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 

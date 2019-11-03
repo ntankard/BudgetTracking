@@ -3,7 +3,7 @@ package com.ntankard.Tracking.Dispaly.Frames.MainFrame.SummaryGraphs;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
-import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
+import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.ClassExtension.ExtendedPeriod;
 import org.jfree.chart.ChartFactory;

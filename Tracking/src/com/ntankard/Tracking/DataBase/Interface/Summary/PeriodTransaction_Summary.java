@@ -2,9 +2,15 @@ package com.ntankard.Tracking.DataBase.Interface.Summary;
 
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
-import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
+import com.ntankard.Tracking.DataBase.Core.MoneyCategory.Category;
+import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
+import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
+import com.ntankard.Tracking.DataBase.Interface.ClassExtension.ExtendedPeriod;
+import com.ntankard.Tracking.DataBase.Interface.ClassExtension.ExtendedStatement;
 import com.ntankard.Tracking.DataBase.Interface.Set.MoneyEvent_Sets.ContainerCategory_Set;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
+
+import java.awt.*;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY_YEN;
 
@@ -52,10 +58,63 @@ public class PeriodTransaction_Summary {
      */
     @DisplayProperties(dataType = CURRENCY_YEN)
     public Double getNonCategory() {
-        Double sum = 0.0;
+        double sum = 0.0;
         for (Category category : TrackingDatabase.get().get(Category.class)) {
             sum += new ContainerCategory_Set(core, category).getTotal();
         }
         return -sum;
+    }
+
+    public boolean isValidSpend() {
+        boolean missing = false;
+        for (Statement statement : core.getChildren(Statement.class)) {
+            if (new ExtendedStatement(statement).getMissingSpend() != 0) {
+                missing = true;
+            }
+        }
+        return !missing;
+    }
+
+    public boolean isFirst() {
+        return core.getLast() == null;
+    }
+
+    public boolean isValidStatementBalance() {
+        if (isFirst()) {
+            return true;
+        }
+
+        for (Statement statement : core.getChildren(Statement.class)) {
+            boolean found = false;
+            for (Statement lastStatement : core.getLast().getChildren(Statement.class)) {
+                if (statement.getBank().equals(lastStatement.getBank())) {
+                    if (!statement.getStart().equals(lastStatement.getEnd())) {
+                        return false;
+                    }
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                throw new RuntimeException("Could not find the last statement");
+            }
+        }
+        return true;
+    }
+
+    public boolean isValidTransfer() {
+        if (new ExtendedPeriod(core).getTransferRate() == 0.0) {
+            for (Currency currency : TrackingDatabase.get().get(Currency.class)) {
+                if (new ExtendedPeriod(core).getMissingTransfer(currency) != 0.0) {
+                    return false;
+                }
+            }
+        } else {
+            if (new ExtendedPeriod(core).getTransferRate() != 0.0 && (new ExtendedPeriod(core).getTransferRate() < 60 || new ExtendedPeriod(core).getTransferRate() > 80)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

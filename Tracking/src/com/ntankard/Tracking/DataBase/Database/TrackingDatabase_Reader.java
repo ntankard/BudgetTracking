@@ -8,10 +8,10 @@ import com.ntankard.Tracking.DataBase.Core.MoneyEvents.CategoryTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
-import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Bank;
-import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
-import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
-import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.FundEvent;
+import com.ntankard.Tracking.DataBase.Core.SupportObjects.Bank;
+import com.ntankard.Tracking.DataBase.Core.MoneyCategory.Category;
+import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
+import com.ntankard.Tracking.DataBase.Core.MoneyCategory.FundEvent;
 
 import java.io.*;
 import java.lang.reflect.Constructor;

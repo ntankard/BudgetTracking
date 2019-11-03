@@ -4,8 +4,8 @@ import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.ClassExtension.SetterProperties;
-import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
-import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
+import com.ntankard.Tracking.DataBase.Core.MoneyCategory.Category;
+import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 

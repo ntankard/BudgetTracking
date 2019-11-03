@@ -3,7 +3,7 @@ package com.ntankard.Tracking.Dispaly.Frames.MainFrame.SummaryGraphs;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
-import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Category;
+import com.ntankard.Tracking.DataBase.Core.MoneyCategory.Category;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.MoneyEvent_Sets.ContainerCategory_Set;
 import org.jfree.chart.ChartFactory;

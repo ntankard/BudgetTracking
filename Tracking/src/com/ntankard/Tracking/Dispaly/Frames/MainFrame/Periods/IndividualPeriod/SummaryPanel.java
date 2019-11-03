@@ -1,14 +1,12 @@
 package com.ntankard.Tracking.Dispaly.Frames.MainFrame.Periods.IndividualPeriod;
 
-import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
+import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
-import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
-import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
-import com.ntankard.Tracking.DataBase.Interface.ClassExtension.ExtendedPeriod;
-import com.ntankard.Tracking.DataBase.Interface.ClassExtension.ExtendedStatement;
-import com.ntankard.Tracking.DataBase.Interface.Summary.PeriodTransaction_Summary;
+import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
+import com.ntankard.Tracking.DataBase.Interface.ClassExtension.ExtendedPeriod;
+import com.ntankard.Tracking.DataBase.Interface.Summary.PeriodTransaction_Summary;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -118,38 +116,20 @@ public class SummaryPanel extends UpdatableJPanel {
         }
 
         // Check that all spends are accounted for
-        boolean missing = false;
-        for (Statement statement : core.<Statement>getChildren(Statement.class)) {
-            if (new ExtendedStatement(statement).getMissingSpend() != 0) {
-                missing = true;
-            }
-        }
-        if (missing) {
-            missingSpend_lbl.setText(" Spend Missing ");
-            missingSpend_lbl.setForeground(Color.RED);
-        } else {
+        if (new PeriodTransaction_Summary(core).isValidSpend()) {
             missingSpend_lbl.setText(" Spend ");
             missingSpend_lbl.setForeground(Color.GREEN);
+        } else {
+            missingSpend_lbl.setText(" Spend Missing ");
+            missingSpend_lbl.setForeground(Color.RED);
         }
 
         // Check the this periods start balances all match the previous ones end
-        Period last = core.getLast();
-        if (last == null) {
+        if (new PeriodTransaction_Summary(core).isFirst()) {
             periodLink_lbl.setText(" First ");
             periodLink_lbl.setForeground(Color.GREEN);
         } else {
-            boolean match = true;
-            for (Statement statement : core.<Statement>getChildren(Statement.class)) {
-                //String lastStatementId = statement.getBank().getId() + " " + last.getId();
-                //Statement lastStatement = last.getChildren(Statement.class, lastStatementId);
-
-                // if (!(lastStatement.getEnd().equals(statement.getStart()))) {
-                //   match = false;
-                // }
-                System.out.println("Fix this! cant find the last statment");
-
-            }
-            if (match) {
+            if (new PeriodTransaction_Summary(core).isValidStatementBalance()) {
                 periodLink_lbl.setText(" Start matches last End ");
                 periodLink_lbl.setForeground(Color.GREEN);
             } else {
@@ -159,28 +139,12 @@ public class SummaryPanel extends UpdatableJPanel {
         }
 
         // Check that all transfers in and out are accounted for
-        if (new ExtendedPeriod(core).getTransferRate() == 0.0) {
-            boolean error = false;
-            for (Currency currency : TrackingDatabase.get().get(Currency.class)) {
-                if (new ExtendedPeriod(core).getMissingTransfer(currency) != 0.0) {
-                    transferStatus_lbl.setText(" Unresolved transfer " + currency.toString() + " " + new ExtendedPeriod(core).getMissingTransfer(currency) + " ");
-                    transferStatus_lbl.setForeground(Color.RED);
-                    error = true;
-                }
-            }
-            if (!error) {
-                transferStatus_lbl.setText(" Valid transfer rate ");
-                transferStatus_lbl.setForeground(Color.GREEN);
-            }
+        if (new PeriodTransaction_Summary(core).isValidTransfer()) {
+            transferStatus_lbl.setText(" Valid transfer rate ");
+            transferStatus_lbl.setForeground(Color.GREEN);
         } else {
-            if (new ExtendedPeriod(core).getTransferRate() != 0.0 && (new ExtendedPeriod(core).getTransferRate() < 60 || new ExtendedPeriod(core).getTransferRate() > 80)) {
-                //System.out.println(core.getTransferRate());
-                transferStatus_lbl.setText(" Imposable transfer rate ");
-                transferStatus_lbl.setForeground(Color.RED);
-            } else {
-                transferStatus_lbl.setText(" Valid transfer rate ");
-                transferStatus_lbl.setForeground(Color.GREEN);
-            }
+            transferStatus_lbl.setText(" Imposable transfer rate, or missing transfer ");
+            transferStatus_lbl.setForeground(Color.RED);
         }
     }
 
