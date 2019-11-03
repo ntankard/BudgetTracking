@@ -5,6 +5,7 @@ import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
+import com.ntankard.Tracking.DataBase.Interface.ClassExtension.ExtendedPeriod;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -78,7 +79,7 @@ public class SavingsGraph extends UpdatableJPanel {
             final XYSeries cur = new XYSeries(currency.getName());
             int i = 0;
             for (Period period : TrackingDatabase.get().get(Period.class)) {
-                cur.add(i, period.getEndBalance(currency));
+                cur.add(i, new ExtendedPeriod(period).getEndBalance(currency));
                 i++;
             }
             dataset.addSeries(cur);
@@ -87,7 +88,7 @@ public class SavingsGraph extends UpdatableJPanel {
         final XYSeries total = new XYSeries("Total");
         int i = 0;
         for (Period period : TrackingDatabase.get().get(Period.class)) {
-            total.add(i, period.getEndBalance());
+            total.add(i, new ExtendedPeriod(period).getEndBalance());
             i++;
         }
         dataset.addSeries(total);

@@ -5,6 +5,7 @@ import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
 import com.ntankard.Tracking.DataBase.Core.ReferenceTypes.Currency;
+import com.ntankard.Tracking.DataBase.Interface.ClassExtension.ExtendedPeriod;
 import com.ntankard.Tracking.DataBase.Interface.ClassExtension.ExtendedStatement;
 import com.ntankard.Tracking.DataBase.Interface.Summary.PeriodTransaction_Summary;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
@@ -87,7 +88,7 @@ public class SummaryPanel extends UpdatableJPanel {
             if (saving < savingMin) {
                 savingMin = saving;
             }
-            double profit = period.getProfit();
+            double profit = new ExtendedPeriod(period).getProfit();
             if (profit > netMax) {
                 netMax = profit;
             }
@@ -96,7 +97,7 @@ public class SummaryPanel extends UpdatableJPanel {
             }
         }
 
-        double profit = core.getProfit();
+        double profit = new ExtendedPeriod(core).getProfit();
         netMoney_txt.setText(formatter.format(profit * YEN.getToPrimary()));
         if (profit > 0.0) {
             int scale = getScale(profit, netMax);
@@ -158,11 +159,11 @@ public class SummaryPanel extends UpdatableJPanel {
         }
 
         // Check that all transfers in and out are accounted for
-        if (core.getTransferRate() == 0.0) {
+        if (new ExtendedPeriod(core).getTransferRate() == 0.0) {
             boolean error = false;
             for (Currency currency : TrackingDatabase.get().get(Currency.class)) {
-                if (core.getMissingTransfer(currency) != 0.0) {
-                    transferStatus_lbl.setText(" Unresolved transfer " + currency.toString() + " " + core.getMissingTransfer(currency) + " ");
+                if (new ExtendedPeriod(core).getMissingTransfer(currency) != 0.0) {
+                    transferStatus_lbl.setText(" Unresolved transfer " + currency.toString() + " " + new ExtendedPeriod(core).getMissingTransfer(currency) + " ");
                     transferStatus_lbl.setForeground(Color.RED);
                     error = true;
                 }
@@ -172,7 +173,7 @@ public class SummaryPanel extends UpdatableJPanel {
                 transferStatus_lbl.setForeground(Color.GREEN);
             }
         } else {
-            if (core.getTransferRate() != 0.0 && (core.getTransferRate() < 60 || core.getTransferRate() > 80)) {
+            if (new ExtendedPeriod(core).getTransferRate() != 0.0 && (new ExtendedPeriod(core).getTransferRate() < 60 || new ExtendedPeriod(core).getTransferRate() > 80)) {
                 //System.out.println(core.getTransferRate());
                 transferStatus_lbl.setText(" Imposable transfer rate ");
                 transferStatus_lbl.setForeground(Color.RED);

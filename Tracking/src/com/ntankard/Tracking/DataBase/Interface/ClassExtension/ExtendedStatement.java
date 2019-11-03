@@ -25,7 +25,7 @@ public class ExtendedStatement {
     }
 
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    @DisplayProperties(order = 2)
+    @DisplayProperties(order = 1)
     public Statement getStatement() {
         return statement;
     }
