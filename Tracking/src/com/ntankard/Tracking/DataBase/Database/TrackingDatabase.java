@@ -11,7 +11,7 @@ import com.ntankard.Tracking.DataBase.Core.MoneyEvents.FundChargeTransfer.Saving
 import com.ntankard.Tracking.DataBase.Core.SupportObjects.Bank;
 import com.ntankard.Tracking.DataBase.Core.MoneyCategory.Category;
 import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
-import com.ntankard.Tracking.DataBase.Core.MoneyCategory.FundEvent;
+import com.ntankard.Tracking.DataBase.Core.MoneyCategory.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Database.SubContainers.*;
 
 import java.util.*;

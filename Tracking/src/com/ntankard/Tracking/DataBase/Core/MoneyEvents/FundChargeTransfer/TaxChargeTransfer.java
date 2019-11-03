@@ -3,9 +3,11 @@ package com.ntankard.Tracking.DataBase.Core.MoneyEvents.FundChargeTransfer;
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
+import com.ntankard.Tracking.DataBase.Core.MoneyCategory.Category;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Fund;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
+import com.ntankard.Tracking.DataBase.Interface.Set.MoneyEvent_Sets.ContainerCategory_Set;
 import com.ntankard.Tracking.DataBase.Interface.Summary.PeriodTransaction_Summary;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 
@@ -40,6 +42,12 @@ public class TaxChargeTransfer extends FundChargeTransfer {
     @Override
     @DisplayProperties(order = 4, dataType = CURRENCY)
     public Double getValue() {
-        return new PeriodTransaction_Summary(getSourceContainer()).getTax();
+        Period period = getSourceContainer();
+        Category incomeCategory = TrackingDatabase.get().getSpecialValue(Category.class, Category.INCOME);
+
+        double taxRate = TrackingDatabase.get().getTaxRate();
+        double income = new ContainerCategory_Set(period, incomeCategory).getTotal();
+
+        return -income * taxRate;
     }
 }

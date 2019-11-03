@@ -6,7 +6,7 @@ import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyCategory.Category;
 import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
-import com.ntankard.Tracking.DataBase.Core.MoneyCategory.FundEvent;
+import com.ntankard.Tracking.DataBase.Core.MoneyCategory.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.Dispaly.Util.Panels.TrackingDatabase_ElementController;
 

@@ -10,7 +10,7 @@ import com.ntankard.Tracking.DataBase.Core.MoneyEvents.FundChargeTransfer.FundCh
 import com.ntankard.Tracking.DataBase.Core.SupportObjects.Bank;
 import com.ntankard.Tracking.DataBase.Core.MoneyCategory.Category;
 import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
-import com.ntankard.Tracking.DataBase.Core.MoneyCategory.FundEvent;
+import com.ntankard.Tracking.DataBase.Core.MoneyCategory.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase_Reader;
 import com.ntankard.Tracking.Dispaly.Frames.MainFrame.Funds.FundTabPanel;

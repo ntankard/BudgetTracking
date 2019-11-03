@@ -1,4 +1,4 @@
-package com.ntankard.Tracking.DataBase.Core.MoneyCategory;
+package com.ntankard.Tracking.DataBase.Core.MoneyCategory.FundEvent;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;

@@ -11,7 +11,7 @@ import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
 import com.ntankard.Tracking.DataBase.Core.SupportObjects.Bank;
 import com.ntankard.Tracking.DataBase.Core.MoneyCategory.Category;
 import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
-import com.ntankard.Tracking.DataBase.Core.MoneyCategory.FundEvent;
+import com.ntankard.Tracking.DataBase.Core.MoneyCategory.FundEvent.FundEvent;
 
 import java.io.*;
 import java.lang.reflect.Constructor;
@@ -119,6 +119,7 @@ public class TrackingDatabase_Reader {
         }
 
         List<String> paramStrings = new ArrayList<>();
+        paramStrings.add(dataObject.getClass().getName());
         for (int i = 0; i < paramGetters.length; i++) {
             String paramGetter = paramGetters[i];
             Class paramType = paramTypes[i];
@@ -170,7 +171,7 @@ public class TrackingDatabase_Reader {
         ArrayList<String[]> allLines = readLines(saveDir + aClass.getSimpleName() + ".csv");
 
         for (String[] lines : allLines) {
-            DataObject built = dataObjectFromString(lines, aClass, trackingDatabase);
+            DataObject built = dataObjectFromString(lines, trackingDatabase);
             trackingDatabase.add(built);
         }
     }
@@ -179,27 +180,35 @@ public class TrackingDatabase_Reader {
      * Create a DataObject from a list of constructor parts
      *
      * @param paramStrings     The string of constructor parts
-     * @param target           The type of object to create
      * @param trackingDatabase The database used to get reference objects
      * @return THe newly constructed (but not added) DataObject
      */
     @SuppressWarnings("unchecked")
-    static DataObject dataObjectFromString(String[] paramStrings, Class<?> target, TrackingDatabase trackingDatabase) {
+    static DataObject dataObjectFromString(String[] paramStrings, TrackingDatabase trackingDatabase) {
+
+        // Find the class type
+        String className = paramStrings[0];
+        Class toBuild;
+        try {
+            toBuild = Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
 
         // Find the constructors parameters
-        Constructor[] constructors = target.getConstructors();
+        Constructor[] constructors = toBuild.getConstructors();
         if (constructors.length != 1) {
             throw new RuntimeException("More than one constructor detected");
         }
         Class<?>[] paramTypes = constructors[0].getParameterTypes();
-        if (paramTypes.length != paramStrings.length) {
+        if (paramTypes.length != paramStrings.length - 1) {
             throw new RuntimeException("Line parts dose not match the available params");
         }
 
         // Build up the parameters from the strings
         List<Object> params = new ArrayList<>();
         for (int i = 0; i < paramTypes.length; i++) {
-            String paramString = paramStrings[i];
+            String paramString = paramStrings[i + 1];
             Class paramType = paramTypes[i];
 
             if (DataObject.class.isAssignableFrom(paramType)) {

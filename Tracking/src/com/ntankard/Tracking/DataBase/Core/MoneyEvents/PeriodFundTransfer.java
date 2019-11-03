@@ -8,7 +8,7 @@ import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Fund;
 import com.ntankard.Tracking.DataBase.Core.MoneyCategory.Category;
 import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
-import com.ntankard.Tracking.DataBase.Core.MoneyCategory.FundEvent;
+import com.ntankard.Tracking.DataBase.Core.MoneyCategory.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
 @ClassExtensionProperties(includeParent = true)
