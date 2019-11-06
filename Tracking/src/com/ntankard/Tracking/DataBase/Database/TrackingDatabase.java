@@ -8,11 +8,12 @@ import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.CategoryTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.FundChargeTransfer.FundChargeTransfer;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodFundTransfer;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodFundTransfer.PeriodFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
 import com.ntankard.Tracking.DataBase.Core.SupportObjects.Bank;
 import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
+import com.ntankard.Tracking.DataBase.Core.SupportObjects.FundController;
 import com.ntankard.Tracking.DataBase.Database.SubContainers.*;
 
 import java.util.ArrayList;
@@ -74,6 +75,7 @@ public class TrackingDatabase {
         containers.forEach(container -> container.addType(Category.class));
         containers.forEach(container -> container.addType(Bank.class));
         containers.forEach(container -> container.addType(Period.class));
+        containers.forEach(container -> container.addType(FundController.class));
         containers.forEach(container -> container.addType(Statement.class));
         containers.forEach(container -> container.addType(Transaction.class));
         containers.forEach(container -> container.addType(CategoryTransfer.class));
@@ -93,6 +95,8 @@ public class TrackingDatabase {
         for (DataObject dataObject : typeMap.getAll()) {
             TrackingDatabase_Repair.repair(dataObject);
         }
+        TrackingDatabase_Integrity.validateCore();
+        TrackingDatabase_Integrity.validateRepaired();
     }
 
     /**

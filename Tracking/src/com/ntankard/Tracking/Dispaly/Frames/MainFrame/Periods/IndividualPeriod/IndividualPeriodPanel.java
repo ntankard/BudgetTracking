@@ -40,11 +40,11 @@ public class IndividualPeriodPanel extends UpdatableJPanel {
 
         JTabbedPane master_tPanel = new JTabbedPane();
 
-        periodSummary_statementPanel = new PeriodSummary_StatementPanel(core, this);
-        master_tPanel.addTab("Statement", periodSummary_statementPanel);
-
         periodSummary_transferPanel = new PeriodSummary_TransferPanel(core, this);
         master_tPanel.addTab("Transaction", periodSummary_transferPanel);
+
+        periodSummary_statementPanel = new PeriodSummary_StatementPanel(core, this);
+        master_tPanel.addTab("Statement", periodSummary_statementPanel);
 
         extendedStatementPanel = new ExtendedStatementPanel(core, this);
         master_tPanel.addTab("Statements", extendedStatementPanel);

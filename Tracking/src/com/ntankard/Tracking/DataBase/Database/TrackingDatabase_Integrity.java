@@ -3,6 +3,10 @@ package com.ntankard.Tracking.DataBase.Database;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.HasDefault;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.SpecialValues;
+import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TrackingDatabase_Integrity {
 
@@ -10,12 +14,47 @@ public class TrackingDatabase_Integrity {
      * Validate the core of the database. All things involved with central data, not calculated values.
      */
     public static void validateCore() {
+        // Are individual objects ok?
+        validateId();
+
+        // Are objects linked correctly?
         validateParent();
+        validateChild();
+
+        // Is the database exposing the correct special objects?
         validateDefault();
         validateSpecial();
-        validateChild();
-        validateId();
     }
+
+    public static void validateRepaired() {
+        validatePeriodSequence();
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    //########################################## Individual object Integrity ###########################################
+    //------------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Confirm the ID of all object. Check they are unique
+     */
+    static void validateId() {
+        for (Class<? extends DataObject> aClass : TrackingDatabase.get().getDataObjectTypes()) {
+            for (DataObject dataObject : TrackingDatabase.get().get(aClass)) {
+                for (DataObject compare : TrackingDatabase.get().get(aClass)) {
+                    if (!dataObject.equals(compare)) {
+                        if (dataObject.getId().equals(compare.getId())) {
+                            throw new RuntimeException("Core Database error. Duplicate ID found");
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    //------------------------------------------------------------------------------------------------------------------
+    //########################################## Object interlink Integrity ############################################
+    //------------------------------------------------------------------------------------------------------------------
 
     /**
      * Confirm that all parent objects are present and have been linked
@@ -48,6 +87,10 @@ public class TrackingDatabase_Integrity {
             }
         }
     }
+
+    //------------------------------------------------------------------------------------------------------------------
+    //########################################### Database content Integrity ###########################################
+    //------------------------------------------------------------------------------------------------------------------
 
     /**
      * Confirm that all default values are set and correct
@@ -83,19 +126,39 @@ public class TrackingDatabase_Integrity {
     }
 
     /**
-     * Confirm the ID of all object. Check they are unique
+     * Validate that all periods are in a row with none missing. Also validate that they are connected properly
      */
-    static void validateId(){
-        for (Class<? extends DataObject> aClass : TrackingDatabase.get().getDataObjectTypes()) {
-            for(DataObject dataObject : TrackingDatabase.get().get(aClass)){
-                for(DataObject compare : TrackingDatabase.get().get(aClass)){
-                    if(!dataObject.equals(compare)){
-                        if(dataObject.getId().equals(compare.getId())){
-                            throw new RuntimeException("Core Database error. Duplicate ID found");
-                        }
-                    }
+    static void validatePeriodSequence() {
+        List<Period> periods = new ArrayList<>(TrackingDatabase.get().get(Period.class));
+
+        // Find the first period
+        Period start = periods.get(0);
+        while (start.getLast() != null) {
+            start = start.getLast();
+        }
+
+        // Iterate through all periods
+        periods.remove(start);
+        while (start.getNext() != null) {
+            if (!start.getNext().getLast().equals(start)) {
+                throw new RuntimeException("Core Database error. Periods are not sequential");
+            }
+            if (start.getMonth() == 12) {
+                if (start.getNext().getMonth() != 1 || start.getYear() != start.getNext().getYear() - 1) {
+                    throw new RuntimeException("Core Database error. Periods dates did not roll over");
+                }
+            } else {
+                if (start.getMonth() + 1 != start.getNext().getMonth()) {
+                    throw new RuntimeException("Core Database error. Months out of over");
                 }
             }
+
+            start = start.getNext();
+            periods.remove(start);
+        }
+
+        if (periods.size() != 0) {
+            throw new RuntimeException("Core Database error. Not all periods are in order");
         }
     }
 }

@@ -6,5 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ParameterMap {
 
+    boolean shouldSave() default true;
+
     String[] parameterGetters() default {""};
 }

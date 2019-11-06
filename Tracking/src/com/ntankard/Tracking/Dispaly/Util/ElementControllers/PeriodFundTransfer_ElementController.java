@@ -3,7 +3,7 @@ package com.ntankard.Tracking.Dispaly.Util.ElementControllers;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Fund;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodFundTransfer;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodFundTransfer.PeriodFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyCategory.Category;
 import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
 import com.ntankard.Tracking.DataBase.Core.MoneyCategory.FundEvent.FundEvent;
@@ -30,13 +30,21 @@ public class PeriodFundTransfer_ElementController extends TrackingDatabase_Eleme
      */
     @Override
     public PeriodFundTransfer newElement() {
+        Fund toUse = TrackingDatabase.get().getDefault(Fund.class);
+        for (Fund fund : TrackingDatabase.get().get(Fund.class)) {
+            if (fund.getChildren(FundEvent.class).size() != 0) {
+                toUse = fund;
+                break;
+            }
+        }
+
         return new PeriodFundTransfer(TrackingDatabase.get().getNextId(PeriodFundTransfer.class),
                 "",
                 0.0,
                 period,
                 TrackingDatabase.get().getDefault(Category.class),
-                TrackingDatabase.get().getDefault(Fund.class),
-                TrackingDatabase.get().getDefault(Fund.class).getChildren(FundEvent.class).get(0),
+                toUse,
+                toUse.getChildren(FundEvent.class).get(0),
                 TrackingDatabase.get().getDefault(Currency.class));
     }
 }

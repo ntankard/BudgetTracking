@@ -18,13 +18,23 @@ class TrackingDatabase_IntegrityTest {
     }
 
     @Test
-    void validateChild() {
-        TrackingDatabase_Integrity.validateChild();
+    void validateRepaired() {
+        TrackingDatabase_Integrity.validateRepaired();
+    }
+
+    @Test
+    void validateId() {
+        TrackingDatabase_Integrity.validateId();
     }
 
     @Test
     void validateParent() {
         TrackingDatabase_Integrity.validateParent();
+    }
+
+    @Test
+    void validateChild() {
+        TrackingDatabase_Integrity.validateChild();
     }
 
     @Test
@@ -38,7 +48,7 @@ class TrackingDatabase_IntegrityTest {
     }
 
     @Test
-    void validateId() {
-        TrackingDatabase_Integrity.validateId();
+    void validatePeriodSequence() {
+        TrackingDatabase_Integrity.validatePeriodSequence();
     }
 }

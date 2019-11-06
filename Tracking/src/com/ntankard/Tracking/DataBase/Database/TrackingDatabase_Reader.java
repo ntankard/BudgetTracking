@@ -5,13 +5,14 @@ import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Fund;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.CategoryTransfer;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodFundTransfer;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodFundTransfer.PeriodFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
 import com.ntankard.Tracking.DataBase.Core.SupportObjects.Bank;
 import com.ntankard.Tracking.DataBase.Core.MoneyCategory.Category;
 import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
 import com.ntankard.Tracking.DataBase.Core.MoneyCategory.FundEvent.FundEvent;
+import com.ntankard.Tracking.DataBase.Core.SupportObjects.FundController;
 
 import java.io.*;
 import java.lang.reflect.Constructor;
@@ -36,6 +37,7 @@ public class TrackingDatabase_Reader {
         saveDataObjectSet(csvFile, Category.class, data);
         saveDataObjectSet(csvFile, Bank.class, data);
         saveDataObjectSet(csvFile, Period.class, data);
+        saveDataObjectSet(csvFile, FundController.class, data);
         saveDataObjectSet(csvFile, Statement.class, data);
         saveDataObjectSet(csvFile, Transaction.class, data);
         saveDataObjectSet(csvFile, CategoryTransfer.class, data);
@@ -60,6 +62,7 @@ public class TrackingDatabase_Reader {
         readDataObjectSet(csvFile, Category.class, data);
         readDataObjectSet(csvFile, Fund.class, data);
         readDataObjectSet(csvFile, Period.class, data);
+        readDataObjectSet(csvFile, FundController.class, data);
         readDataObjectSet(csvFile, Bank.class, data);
         readDataObjectSet(csvFile, Statement.class, data);
         readDataObjectSet(csvFile, FundEvent.class, data);
@@ -88,7 +91,10 @@ public class TrackingDatabase_Reader {
     private static <T extends DataObject> void saveDataObjectSet(String saveDir, Class<T> aClass, TrackingDatabase trackingDatabase) {
         ArrayList<List<String>> lines = new ArrayList<>();
         for (DataObject t : trackingDatabase.get(aClass)) {
-            lines.add(dataObjectToString(t));
+            List<String> paramStrings = dataObjectToString(t);
+            if (paramStrings != null) {
+                lines.add(paramStrings);
+            }
         }
 
         writeLines(saveDir + aClass.getSimpleName() + ".csv", lines);
@@ -114,6 +120,9 @@ public class TrackingDatabase_Reader {
         ParameterMap parameterMap = (ParameterMap) constructors[0].getAnnotation(ParameterMap.class);
         if (parameterMap == null) {
             throw new RuntimeException("dataObject dose not have ParameterMap on its constructor");
+        }
+        if (!parameterMap.shouldSave()) {
+            return null;
         }
         String[] paramGetters = parameterMap.parameterGetters();
         if (paramGetters.length != paramTypes.length) {

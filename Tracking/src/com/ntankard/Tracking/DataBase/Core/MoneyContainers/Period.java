@@ -17,6 +17,7 @@ public class Period extends DataObject {
 
     // My parents
     private Period last;
+    private Period next;
 
     // My values
     private int month;
@@ -25,12 +26,13 @@ public class Period extends DataObject {
     /**
      * Constructor
      */
-    @ParameterMap(parameterGetters = {"getId", "getMonth", "getYear", "getLast"})
-    public Period(String id, int month, int year, Period last) {
+    @ParameterMap(parameterGetters = {"getId", "getMonth", "getYear", "getLast", "getNext"})
+    public Period(String id, int month, int year, Period last, Period next) {
         super(id);
         this.month = month;
         this.year = year;
         this.last = last;
+        this.next = next;
     }
 
     /**
@@ -47,7 +49,7 @@ public class Period extends DataObject {
             nextYear++;
         }
 
-        return new Period(TrackingDatabase.get().getNextId(Period.class), nextMonth, nextYear, this);
+        return new Period(TrackingDatabase.get().getNextId(Period.class), nextMonth, nextYear, this, null);
     }
 
     /**
@@ -86,5 +88,19 @@ public class Period extends DataObject {
     @DisplayProperties(order = 8)
     public Period getLast() {
         return last;
+    }
+
+    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
+    @DisplayProperties(order = 9)
+    public Period getNext() {
+        return next;
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    //##################################################### Setter #####################################################
+    //------------------------------------------------------------------------------------------------------------------
+
+    public void setNext(Period next) {
+        this.next = next;
     }
 }
