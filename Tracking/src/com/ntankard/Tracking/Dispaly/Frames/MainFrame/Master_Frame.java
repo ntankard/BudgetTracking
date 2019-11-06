@@ -92,7 +92,6 @@ public class Master_Frame extends JPanel implements Updatable {
 
         transferPanel = new DataObject_VerbosityTabDisplayList(this);
         transferPanel.add("Transaction", Transaction.class);
-        transferPanel.add("Category Transfer", CategoryTransfer.class);
         transferPanel.add("Period Transfer", PeriodTransfer.class);
         transferPanel.add("Period Fund Transfer", PeriodFundTransfer.class);
         transferPanel.add("Fund Charge Transfer", FundChargeTransfer.class);

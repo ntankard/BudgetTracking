@@ -6,7 +6,6 @@ import com.ntankard.Tracking.DataBase.Core.MoneyCategory.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Fund;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.CategoryTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.FundChargeTransfer.FundChargeTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodFundTransfer.PeriodFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodTransfer;
@@ -78,7 +77,6 @@ public class TrackingDatabase {
         containers.forEach(container -> container.addType(FundController.class));
         containers.forEach(container -> container.addType(Statement.class));
         containers.forEach(container -> container.addType(Transaction.class));
-        containers.forEach(container -> container.addType(CategoryTransfer.class));
         containers.forEach(container -> container.addType(PeriodTransfer.class));
         containers.forEach(container -> container.addType(Fund.class));
         containers.forEach(container -> container.addType(PeriodFundTransfer.class));

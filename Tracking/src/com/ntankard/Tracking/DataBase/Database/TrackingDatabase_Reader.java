@@ -4,7 +4,6 @@ import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Fund;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.CategoryTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodFundTransfer.PeriodFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
@@ -40,7 +39,6 @@ public class TrackingDatabase_Reader {
         saveDataObjectSet(csvFile, FundController.class, data);
         saveDataObjectSet(csvFile, Statement.class, data);
         saveDataObjectSet(csvFile, Transaction.class, data);
-        saveDataObjectSet(csvFile, CategoryTransfer.class, data);
         saveDataObjectSet(csvFile, PeriodTransfer.class, data);
         saveDataObjectSet(csvFile, Fund.class, data);
         saveDataObjectSet(csvFile, FundEvent.class, data);
@@ -66,7 +64,6 @@ public class TrackingDatabase_Reader {
         readDataObjectSet(csvFile, Bank.class, data);
         readDataObjectSet(csvFile, Statement.class, data);
         readDataObjectSet(csvFile, FundEvent.class, data);
-        readDataObjectSet(csvFile, CategoryTransfer.class, data);
         readDataObjectSet(csvFile, PeriodTransfer.class, data);
         readDataObjectSet(csvFile, Transaction.class, data);
         readDataObjectSet(csvFile, PeriodFundTransfer.class, data);

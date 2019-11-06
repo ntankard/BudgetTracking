@@ -7,10 +7,8 @@ import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
 import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
 import com.ntankard.Tracking.DataBase.Interface.ClassExtension.ExtendedPeriod;
 import com.ntankard.Tracking.DataBase.Interface.ClassExtension.ExtendedStatement;
-import com.ntankard.Tracking.DataBase.Interface.Set.MoneyEvent_Sets.ContainerCategory_Set;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
-
-import java.awt.*;
+import com.ntankard.Tracking.DataBase.Interface.Set.MoneyEvent_Sets.ContainerCategory_Set;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY_YEN;
 
