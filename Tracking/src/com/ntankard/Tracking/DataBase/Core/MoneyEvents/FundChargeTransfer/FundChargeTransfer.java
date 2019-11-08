@@ -4,7 +4,7 @@ import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.SetterProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Fund;
+import com.ntankard.Tracking.DataBase.Core.Pool.Fund;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.MoneyEvent;
 import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
@@ -16,7 +16,7 @@ public class FundChargeTransfer extends MoneyEvent<Period, DataObject, Fund, Dat
      * Constructor
      */
     public FundChargeTransfer(String id, String description, Double value, Period sourceContainer, Fund destinationContainer, Currency currency) {
-        super(id, description, value, sourceContainer, null, destinationContainer, null, currency);
+        super(id, description, value, sourceContainer, sourceContainer, null, destinationContainer, null, currency);
     }
 
     //------------------------------------------------------------------------------------------------------------------

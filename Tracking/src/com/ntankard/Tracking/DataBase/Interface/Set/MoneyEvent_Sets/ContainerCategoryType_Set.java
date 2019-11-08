@@ -49,9 +49,9 @@ public class ContainerCategoryType_Set<T extends MoneyEvent> extends MoneyEvent_
             toReturn.sort((o1, o2) -> {
                 Transaction t1 = (Transaction) o1;
                 Transaction t2 = (Transaction) o2;
-                if (t1.getSourceContainer().getBank().getOrder() == t2.getSourceContainer().getBank().getOrder()) {
+                if (t1.getSourceCategory().getOrder() == t2.getSourceCategory().getOrder()) {
                     return 0;
-                } else if (t1.getSourceContainer().getBank().getOrder() > t2.getSourceContainer().getBank().getOrder()) {
+                } else if (t1.getSourceCategory().getOrder() > t2.getSourceCategory().getOrder()) {
                     return 1;
                 }
                 return -1;

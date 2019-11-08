@@ -2,7 +2,7 @@ package com.ntankard.Tracking.DataBase.Core.MoneyEvents.FundChargeTransfer;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.MemberProperties;
-import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Fund;
+import com.ntankard.Tracking.DataBase.Core.Pool.Fund;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
 import com.ntankard.Tracking.DataBase.Interface.Summary.PeriodTransaction_Summary;

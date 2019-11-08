@@ -1,10 +1,9 @@
-package com.ntankard.Tracking.DataBase.Core.MoneyCategory;
+package com.ntankard.Tracking.DataBase.Core.Pool;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.HasDefault;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.NamedDataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.SpecialValues;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
@@ -13,27 +12,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
-import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-public class Category extends NamedDataObject implements HasDefault, SpecialValues {
+public class Fund extends NamedDataObject implements SpecialValues {
 
-    public static Integer INCOME = 1;
+    public static Integer TAX = 1;
+    public static Integer SAVINGS = 2;
 
     // My values
-    private int order;
-    private boolean isDefault;
-    private boolean isIncome;
+    private boolean isSavings;
+    private boolean isTax;
 
     /**
      * Constructor
      */
-    @ParameterMap(parameterGetters = {"getId", "getName", "getOrder", "isDefault", "isIncome"})
-    public Category(String id, String name, int order, boolean isDefault, boolean isIncome) {
+    @ParameterMap(parameterGetters = {"getId", "getName", "isSavings", "isTax"})
+    public Fund(String id, String name, boolean isSavings, boolean isTax) {
         super(id, name);
-        this.order = order;
-        this.isDefault = isDefault;
-        this.isIncome = isIncome;
+        this.isSavings = isSavings;
+        this.isTax = isTax;
     }
 
     /**
@@ -41,8 +38,11 @@ public class Category extends NamedDataObject implements HasDefault, SpecialValu
      */
     @Override
     public boolean isValue(Integer key) {
-        if (key.equals(INCOME)) {
-            return isIncome();
+        if (key.equals(TAX)) {
+            return isTax();
+        }
+        if (key.equals(SAVINGS)) {
+            return isSavings();
         }
         throw new IllegalStateException("Unexpected value: " + key);
     }
@@ -55,7 +55,8 @@ public class Category extends NamedDataObject implements HasDefault, SpecialValu
     @DisplayProperties(order = 23)
     public List<Integer> getKeys() {
         List<Integer> keys = new ArrayList<>();
-        keys.add(INCOME);
+        keys.add(TAX);
+        keys.add(SAVINGS);
         return keys;
     }
 
@@ -73,21 +74,15 @@ public class Category extends NamedDataObject implements HasDefault, SpecialValu
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
     @DisplayProperties(order = 3)
-    public int getOrder() {
-        return order;
+    public boolean isSavings() {
+        return isSavings;
     }
 
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
     @DisplayProperties(order = 4)
-    public boolean isDefault() {
-        return isDefault;
-    }
-
-    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 5)
-    public boolean isIncome() {
-        return isIncome;
+    public boolean isTax() {
+        return isTax;
     }
 }

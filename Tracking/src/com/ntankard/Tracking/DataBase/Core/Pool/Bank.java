@@ -1,10 +1,12 @@
-package com.ntankard.Tracking.DataBase.Core.SupportObjects;
+package com.ntankard.Tracking.DataBase.Core.Pool;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.NamedDataObject;
+import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
 import java.util.ArrayList;
@@ -14,34 +16,22 @@ import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-public class Bank extends DataObject implements CurrencyBound {
+public class Bank extends NamedDataObject implements CurrencyBound {
 
     // My parents
     private Currency currency;
 
     // My values
-    private String bank;
-    private String account;
     private int order;
 
     /**
      * Constructor
      */
-    @ParameterMap(parameterGetters = {"getId", "getBank", "getAccount", "getCurrency", "getOrder"})
-    public Bank(String id, String bank, String account, Currency currency, int order) {
-        super(id);
-        this.bank = bank;
-        this.account = account;
+    @ParameterMap(parameterGetters = {"getId", "getName", "getCurrency", "getOrder"})
+    public Bank(String id, String name, Currency currency, int order) {
+        super(id, name);
         this.currency = currency;
         this.order = order;
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public String toString() {
-        return getBank() + "-" + getAccount();
     }
 
     /**
@@ -59,16 +49,6 @@ public class Bank extends DataObject implements CurrencyBound {
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
-
-    @DisplayProperties(order = 3)
-    public String getBank() {
-        return bank;
-    }
-
-    @DisplayProperties(order = 4)
-    public String getAccount() {
-        return account;
-    }
 
     @DisplayProperties(order = 5)
     public Currency getCurrency() {

@@ -2,7 +2,7 @@ package com.ntankard.Tracking.Dispaly.Frames.MainFrame.Funds.IndividualFund;
 
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
-import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Fund;
+import com.ntankard.Tracking.DataBase.Core.Pool.Fund;
 
 import javax.swing.*;
 import java.awt.*;

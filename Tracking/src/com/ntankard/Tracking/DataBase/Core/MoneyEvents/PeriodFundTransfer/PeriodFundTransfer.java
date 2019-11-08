@@ -4,8 +4,8 @@ import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.ClassExtension.SetterProperties;
-import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Fund;
-import com.ntankard.Tracking.DataBase.Core.MoneyCategory.Category;
+import com.ntankard.Tracking.DataBase.Core.Pool.Fund;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.MoneyEvent;
 import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
@@ -20,7 +20,7 @@ public class PeriodFundTransfer extends MoneyEvent<Period, Category, Fund, FundE
      */
     @ParameterMap(parameterGetters = {"getId", "getDescription", "getValue", "getSourceContainer", "getSourceCategory", "getDestinationContainer", "getDestinationCategory", "getCurrency"})
     public PeriodFundTransfer(String id, String description, Double value, Period sourceContainer, Category sourceCategory, Fund destinationContainer, FundEvent destinationCategory, Currency currency) {
-        super(id, description, value, sourceContainer, sourceCategory, destinationContainer, destinationCategory, currency);
+        super(id, description, value, sourceContainer, sourceContainer, sourceCategory, destinationContainer, destinationCategory, currency);
     }
 
     //------------------------------------------------------------------------------------------------------------------

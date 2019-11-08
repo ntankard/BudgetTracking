@@ -55,7 +55,7 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
             if (dataObject instanceof Transaction) {
                 Transaction transaction = (Transaction) dataObject;
                 if (selectedStatement != null) {
-                    if (transaction.getSourceContainer().equals(selectedStatement)) {
+                    if (transaction.getSourceCategory().equals(selectedStatement.getBank())) {
                         rendererObject.background = Color.YELLOW;
                     }
                 }

@@ -6,6 +6,7 @@ import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.ClassExtension.SetterProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
+import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
@@ -17,6 +18,8 @@ import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
 public abstract class MoneyEvent<SourceType extends DataObject, SourceCategory extends DataObject, DestinationType extends DataObject, DestinationCategory extends DataObject> extends DataObject implements CurrencyBound {
+
+    private Period period;
 
     // My parents
     private SourceType sourceContainer;
@@ -32,16 +35,21 @@ public abstract class MoneyEvent<SourceType extends DataObject, SourceCategory e
     /**
      * Constructor
      */
-    @ParameterMap(parameterGetters = {"getId", "getDescription", "getValue", "getSourceContainer", "getSourceCategory", "getDestinationContainer", "getDestinationCategory", "getCurrency"})
-    public MoneyEvent(String id, String description, Double value, SourceType sourceContainer, SourceCategory sourceCategory, DestinationType destinationContainer, DestinationCategory destinationCategory, Currency currency) {
+    //@ParameterMap(parameterGetters = {"getId", "getDescription", "getValue", "getSourceContainer", "getSourceCategory", "getDestinationContainer", "getDestinationCategory", "getCurrency"})
+    public MoneyEvent(String id, String description, Double value,Period period, SourceType sourceContainer, SourceCategory sourceCategory, DestinationType destinationContainer, DestinationCategory destinationCategory, Currency currency) {
         super(id);
         this.description = description;
         this.value = value;
+        this.period = period;
         this.sourceContainer = sourceContainer;
         this.sourceCategory = sourceCategory;
         this.destinationContainer = destinationContainer;
         this.destinationCategory = destinationCategory;
         this.currency = currency;
+    }
+
+    public Period getPeriod() {
+        return period;
     }
 
     /**

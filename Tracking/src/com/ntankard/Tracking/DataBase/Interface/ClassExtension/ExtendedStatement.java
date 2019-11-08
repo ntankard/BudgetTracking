@@ -4,7 +4,7 @@ import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
-import com.ntankard.Tracking.DataBase.Core.SupportObjects.Bank;
+import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataContext.ZERO_TARGET;
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
