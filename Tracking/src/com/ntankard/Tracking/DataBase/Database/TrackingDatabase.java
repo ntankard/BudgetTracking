@@ -12,7 +12,6 @@ import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
-import com.ntankard.Tracking.DataBase.Core.SupportObjects.FundController;
 import com.ntankard.Tracking.DataBase.Database.SubContainers.*;
 
 import java.util.ArrayList;
@@ -74,7 +73,6 @@ public class TrackingDatabase {
         containers.forEach(container -> container.addType(Category.class));
         containers.forEach(container -> container.addType(Bank.class));
         containers.forEach(container -> container.addType(Period.class));
-        containers.forEach(container -> container.addType(FundController.class));
         containers.forEach(container -> container.addType(Statement.class));
         containers.forEach(container -> container.addType(Transaction.class));
         containers.forEach(container -> container.addType(PeriodTransfer.class));

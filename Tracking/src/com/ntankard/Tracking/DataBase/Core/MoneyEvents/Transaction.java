@@ -29,6 +29,12 @@ public class Transaction extends MoneyEvent<Statement, Bank, Period, Category> {
     //------------------------------------------------------------------------------------------------------------------
 
     @Override
+    @DisplayProperties(order = 5)
+    public Statement getSourceContainer() {
+        return super.getSourceContainer();
+    }
+
+    @Override
     @DisplayProperties(order = 6)
     public Bank getSourceCategory() {
         return super.getSourceCategory();

@@ -11,7 +11,6 @@ import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
 import com.ntankard.Tracking.DataBase.Core.MoneyCategory.FundEvent.FundEvent;
-import com.ntankard.Tracking.DataBase.Core.SupportObjects.FundController;
 
 import java.io.*;
 import java.lang.reflect.Constructor;
@@ -36,7 +35,6 @@ public class TrackingDatabase_Reader {
         saveDataObjectSet(csvFile, Category.class, data);
         saveDataObjectSet(csvFile, Bank.class, data);
         saveDataObjectSet(csvFile, Period.class, data);
-        saveDataObjectSet(csvFile, FundController.class, data);
         saveDataObjectSet(csvFile, Statement.class, data);
         saveDataObjectSet(csvFile, Transaction.class, data);
         saveDataObjectSet(csvFile, PeriodTransfer.class, data);
@@ -60,7 +58,6 @@ public class TrackingDatabase_Reader {
         readDataObjectSet(csvFile, Category.class, data);
         readDataObjectSet(csvFile, Fund.class, data);
         readDataObjectSet(csvFile, Period.class, data);
-        readDataObjectSet(csvFile, FundController.class, data);
         readDataObjectSet(csvFile, Bank.class, data);
         readDataObjectSet(csvFile, Statement.class, data);
         readDataObjectSet(csvFile, FundEvent.class, data);
