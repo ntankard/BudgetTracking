@@ -20,7 +20,7 @@ public class Transaction extends MoneyEvent<Statement, Bank, Period, Category> {
      * Constructor
      */
     @ParameterMap(parameterGetters = {"getId", "getDescription", "getValue", "getSourceContainer", "getDestinationCategory"})
-    public Transaction(String id, String description, Double value, Statement sourceContainer, Category destinationCategory) {
+    public Transaction(Integer id, String description, Double value, Statement sourceContainer, Category destinationCategory) {
         super(id, description, value, sourceContainer.getPeriod(), sourceContainer, sourceContainer.getBank(), sourceContainer.getPeriod(), destinationCategory, sourceContainer.getBank().getCurrency());
     }
 

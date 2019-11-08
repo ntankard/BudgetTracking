@@ -28,7 +28,7 @@ public class Bank extends NamedDataObject implements CurrencyBound {
      * Constructor
      */
     @ParameterMap(parameterGetters = {"getId", "getName", "getCurrency", "getOrder"})
-    public Bank(String id, String name, Currency currency, int order) {
+    public Bank(Integer id, String name, Currency currency, int order) {
         super(id, name);
         this.currency = currency;
         this.order = order;

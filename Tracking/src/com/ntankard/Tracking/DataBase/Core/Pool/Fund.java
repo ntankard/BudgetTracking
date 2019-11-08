@@ -27,7 +27,7 @@ public class Fund extends NamedDataObject implements SpecialValues {
      * Constructor
      */
     @ParameterMap(parameterGetters = {"getId", "getName", "isSavings", "isTax"})
-    public Fund(String id, String name, boolean isSavings, boolean isTax) {
+    public Fund(Integer id, String name, boolean isSavings, boolean isTax) {
         super(id, name);
         this.isSavings = isSavings;
         this.isTax = isTax;

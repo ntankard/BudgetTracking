@@ -12,7 +12,7 @@ public abstract class NamedDataObject extends DataObject {
     /**
      * Constructor
      */
-    public NamedDataObject(String id, String name) {
+    public NamedDataObject(Integer id, String name) {
         super(id);
         this.name = name;
     }

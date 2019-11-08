@@ -152,7 +152,7 @@ public class TrackingDatabase_Reader {
             if (getterValue == null) {
                 paramStrings.add(" ");
             } else if (getterValue instanceof DataObject) {
-                paramStrings.add(((DataObject) getterValue).getId());
+                paramStrings.add(((DataObject) getterValue).getId().toString());
             } else {
                 paramStrings.add(getterValue.toString());
             }
@@ -217,7 +217,11 @@ public class TrackingDatabase_Reader {
             Class paramType = paramTypes[i];
 
             if (DataObject.class.isAssignableFrom(paramType)) {
-                params.add(trackingDatabase.get(paramType, paramString));
+                if(paramString.equals(" ")){
+                    params.add(null);
+                }else {
+                    params.add(trackingDatabase.get(paramType, Integer.parseInt(paramString)));
+                }
             } else if (String.class.isAssignableFrom(paramType)) {
                 params.add(paramString);
             } else if (Boolean.class.isAssignableFrom(paramType) || boolean.class.isAssignableFrom(paramType)) {

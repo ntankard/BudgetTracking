@@ -5,7 +5,7 @@ import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TypeIDMap extends Container<Class, Map<String, DataObject>> {
+public class TypeIDMap extends Container<Class, Map<Integer, DataObject>> {
 
     /**
      * {@inheritDoc

@@ -15,7 +15,7 @@ public class FundChargeTransfer extends MoneyEvent<Period, DataObject, Fund, Dat
     /**
      * Constructor
      */
-    public FundChargeTransfer(String id, String description, Double value, Period sourceContainer, Fund destinationContainer, Currency currency) {
+    public FundChargeTransfer(Integer id, String description, Double value, Period sourceContainer, Fund destinationContainer, Currency currency) {
         super(id, description, value, sourceContainer, sourceContainer, null, destinationContainer, null, currency);
     }
 

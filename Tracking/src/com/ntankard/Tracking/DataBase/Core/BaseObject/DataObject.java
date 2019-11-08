@@ -10,7 +10,7 @@ import static com.ntankard.ClassExtension.MemberProperties.*;
 public abstract class DataObject {
 
     // My values
-    private String id;
+    private Integer id;
 
     /**
      * All my children sorted by class
@@ -20,12 +20,12 @@ public abstract class DataObject {
     /**
      * All my children sorted by class, and mapped to there data object ID
      */
-    private Map<Class, Map<String, DataObject>> childrenMap = new HashMap<>();
+    private Map<Class, Map<Integer, DataObject>> childrenMap = new HashMap<>();
 
     /**
      * Constructor
      */
-    public DataObject(String id) {
+    public DataObject(Integer id) {
         this.id = id;
     }
 
@@ -36,7 +36,7 @@ public abstract class DataObject {
      */
     @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
     @DisplayProperties(order = 1)
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -56,7 +56,7 @@ public abstract class DataObject {
      */
     @Override
     public String toString() {
-        return getId();
+        return getId().toString();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -67,8 +67,14 @@ public abstract class DataObject {
      * Notify all the objects parents that this object has linked to them
      */
     public void notifyParentLink() {
-        for (DataObject dataObject : getParents()) {
-            dataObject.notifyChildLink(this);
+        try {
+
+
+            for (DataObject dataObject : getParents()) {
+                dataObject.notifyChildLink(this);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 
@@ -108,7 +114,7 @@ public abstract class DataObject {
             classChildren.add(linkObject);
         }
 
-        Map<String, DataObject> classChildrenMap = childrenMap.get(classType);
+        Map<Integer, DataObject> classChildrenMap = childrenMap.get(classType);
         if (!classChildrenMap.containsKey(linkObject.getId())) {
             classChildrenMap.put(linkObject.getId(), linkObject);
         }
@@ -155,7 +161,7 @@ public abstract class DataObject {
      * @return The list of children for a a specific class type
      */
     @SuppressWarnings("unchecked")
-    public <T extends DataObject> T getChildren(Class<T> type, String key) {
+    public <T extends DataObject> T getChildren(Class<T> type, Integer key) {
         if (!childrenMap.containsKey(type)) {
             children.put(type, new ArrayList<>());
             childrenMap.put(type, new HashMap<>());

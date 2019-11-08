@@ -29,7 +29,7 @@ public class Category extends NamedDataObject implements HasDefault, SpecialValu
      * Constructor
      */
     @ParameterMap(parameterGetters = {"getId", "getName", "getOrder", "isDefault", "isIncome"})
-    public Category(String id, String name, int order, boolean isDefault, boolean isIncome) {
+    public Category(Integer id, String name, int order, boolean isDefault, boolean isIncome) {
         super(id, name);
         this.order = order;
         this.isDefault = isDefault;

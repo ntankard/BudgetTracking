@@ -41,7 +41,7 @@ public class Currency extends NamedDataObject implements HasDefault {
      * Constructor
      */
     @ParameterMap(parameterGetters = {"getId", "getName", "isDefault", "getToPrimary", "getLanguage", "getCountry"})
-    public Currency(String id, String name, boolean isDefault, double toPrimary, String language, String country) {
+    public Currency(Integer id, String name, boolean isDefault, double toPrimary, String language, String country) {
         super(id, name);
         this.isDefault = isDefault;
         this.toPrimary = toPrimary;

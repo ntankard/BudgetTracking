@@ -27,7 +27,7 @@ public class Period extends DataObject {
      * Constructor
      */
     @ParameterMap(parameterGetters = {"getId", "getMonth", "getYear", "getLast", "getNext"})
-    public Period(String id, int month, int year, Period last, Period next) {
+    public Period(Integer id, int month, int year, Period last, Period next) {
         super(id);
         this.month = month;
         this.year = year;

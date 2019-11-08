@@ -19,7 +19,7 @@ public class PeriodFundTransfer extends MoneyEvent<Period, Category, Fund, FundE
      * Constructor
      */
     @ParameterMap(parameterGetters = {"getId", "getDescription", "getValue", "getSourceContainer", "getSourceCategory", "getDestinationContainer", "getDestinationCategory", "getCurrency"})
-    public PeriodFundTransfer(String id, String description, Double value, Period sourceContainer, Category sourceCategory, Fund destinationContainer, FundEvent destinationCategory, Currency currency) {
+    public PeriodFundTransfer(Integer id, String description, Double value, Period sourceContainer, Category sourceCategory, Fund destinationContainer, FundEvent destinationCategory, Currency currency) {
         super(id, description, value, sourceContainer, sourceContainer, sourceCategory, destinationContainer, destinationCategory, currency);
     }
 

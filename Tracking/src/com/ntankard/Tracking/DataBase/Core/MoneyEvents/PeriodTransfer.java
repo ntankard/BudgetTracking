@@ -17,7 +17,7 @@ public class PeriodTransfer extends MoneyEvent<Period, Category, Period, Categor
      * Constructor
      */
     @ParameterMap(parameterGetters = {"getId", "getDescription", "getValue", "getSourceContainer", "getSourceCategory", "getDestinationContainer", "getCurrency"})
-    public PeriodTransfer(String id, String description, Double value, Period sourceContainer, Category sourceCategory, Period destinationContainer, Currency currency) {
+    public PeriodTransfer(Integer id, String description, Double value, Period sourceContainer, Category sourceCategory, Period destinationContainer, Currency currency) {
         super(id, description, value, sourceContainer, sourceContainer, sourceCategory, destinationContainer, sourceCategory, currency);
     }
 

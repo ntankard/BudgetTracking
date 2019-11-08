@@ -115,7 +115,7 @@ public class TrackingDatabase {
      * @param <T>   Method restriction to limit data objects to ones with a individual integer ID
      * @return The next free ID
      */
-    public <T extends DataObject> String getNextId(Class<T> toGet) {
+    public <T extends DataObject> Integer getNextId(Class<T> toGet) {
         int max = 0;
 
         if (!typeMap.containsKey(toGet)) {
@@ -123,12 +123,12 @@ public class TrackingDatabase {
         }
 
         for (DataObject t : typeMap.get(toGet)) {
-            int value = Integer.parseInt(t.getId());
+            int value = t.getId();
             if (value > max) {
                 max = value;
             }
         }
-        return (max + 1) + "";
+        return (max + 1);
     }
 
     /**
@@ -187,7 +187,7 @@ public class TrackingDatabase {
      * @return The element of the Database
      */
     @SuppressWarnings("unchecked")
-    public <T extends DataObject> T get(Class<T> type, String id) {
+    public <T extends DataObject> T get(Class<T> type, Integer id) {
         return (T) typeIDMap.get(type).get(id);
     }
 

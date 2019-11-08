@@ -36,7 +36,7 @@ public abstract class MoneyEvent<SourceType extends DataObject, SourceCategory e
      * Constructor
      */
     //@ParameterMap(parameterGetters = {"getId", "getDescription", "getValue", "getSourceContainer", "getSourceCategory", "getDestinationContainer", "getDestinationCategory", "getCurrency"})
-    public MoneyEvent(String id, String description, Double value,Period period, SourceType sourceContainer, SourceCategory sourceCategory, DestinationType destinationContainer, DestinationCategory destinationCategory, Currency currency) {
+    public MoneyEvent(Integer id, String description, Double value,Period period, SourceType sourceContainer, SourceCategory sourceCategory, DestinationType destinationContainer, DestinationCategory destinationCategory, Currency currency) {
         super(id);
         this.description = description;
         this.value = value;

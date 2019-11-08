@@ -30,7 +30,7 @@ public class PeriodBoundFundEvent extends FundEvent {
      * Constructor
      */
     @ParameterMap(parameterGetters = {"getId", "getName", "getFund", "getStart", "getDuration", "getSource"})
-    public PeriodBoundFundEvent(String id, String name, Fund fund, Period start, int duration, Category source) {
+    public PeriodBoundFundEvent(Integer id, String name, Fund fund, Period start, int duration, Category source) {
         super(id, name, fund);
         this.start = start;
         this.duration = duration;

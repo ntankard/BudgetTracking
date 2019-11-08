@@ -23,7 +23,7 @@ public class FundEvent extends NamedDataObject {
      * Constructor
      */
     @ParameterMap(parameterGetters = {"getId", "getName", "getFund"})
-    public FundEvent(String id, String name, Fund fund) {
+    public FundEvent(Integer id, String name, Fund fund) {
         super(id, name);
         this.fund = fund;
     }

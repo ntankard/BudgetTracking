@@ -19,7 +19,7 @@ public class PeriodBoundFundEvent_Transfer extends PeriodFundTransfer {
      * Constructor
      */
     @ParameterMap(shouldSave = false)
-    public PeriodBoundFundEvent_Transfer(String id, String description, Period sourceContainer, Category sourceCategory, Fund destinationContainer, PeriodBoundFundEvent destinationCategory, Currency currency) {
+    public PeriodBoundFundEvent_Transfer(Integer id, String description, Period sourceContainer, Category sourceCategory, Fund destinationContainer, PeriodBoundFundEvent destinationCategory, Currency currency) {
         super(id, description, -1.0, sourceContainer, sourceCategory, destinationContainer, destinationCategory, currency);
     }
 

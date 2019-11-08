@@ -33,7 +33,7 @@ public class Statement extends DataObject implements CurrencyBound {
      * Constructor
      */
     @ParameterMap(parameterGetters = {"getId", "getBank", "getPeriod", "getStart", "getEnd", "getTransferIn", "getTransferOut"})
-    public Statement(String id, Bank bank, Period period, Double start, Double end, Double transferIn, Double transferOut) {
+    public Statement(Integer id, Bank bank, Period period, Double start, Double end, Double transferIn, Double transferOut) {
         super(id);
         this.bank = bank;
         this.period = period;
