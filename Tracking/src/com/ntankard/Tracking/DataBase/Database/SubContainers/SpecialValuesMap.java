@@ -12,21 +12,17 @@ public class SpecialValuesMap extends Container<Class, Map<Integer, DataObject>>
      * {@inheritDoc
      */
     @Override
-    public <T extends DataObject> void addType(Class<T> aClass) {
-        if (SpecialValues.class.isAssignableFrom(aClass)) {
-            container.put(aClass, new HashMap<>());
+    public void add(DataObject dataObject) {
+        if (SpecialValues.class.isAssignableFrom(dataObject.getTypeClass())) {
+            if (!container.containsKey(dataObject.getTypeClass())) {
+                container.put(dataObject.getTypeClass(), new HashMap<>());
+            }
         }
-    }
 
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public <T extends DataObject> void add(Class<T> tClass, DataObject dataObject) {
         if (dataObject instanceof SpecialValues) {
             for (Integer key : ((SpecialValues) dataObject).getKeys()) {
                 if (((SpecialValues) dataObject).isValue(key)) {
-                    Map<Integer, DataObject> keyMap = container.get(tClass);
+                    Map<Integer, DataObject> keyMap = container.get(dataObject.getTypeClass());
                     if (keyMap.containsKey(key)) {
                         throw new RuntimeException("Double add");
                     }
@@ -40,11 +36,13 @@ public class SpecialValuesMap extends Container<Class, Map<Integer, DataObject>>
      * {@inheritDoc
      */
     @Override
-    public <T extends DataObject> void remove(Class<T> tClass, DataObject dataObject) {
+    public void remove(DataObject dataObject) {
+        checkCanDelete(dataObject);
+
         if (dataObject instanceof SpecialValues) {
             for (Integer key : ((SpecialValues) dataObject).getKeys()) {
                 if (((SpecialValues) dataObject).isValue(key)) {
-                    Map<Integer, DataObject> keyMap = container.get(tClass);
+                    Map<Integer, DataObject> keyMap = container.get(dataObject.getTypeClass());
                     if (!keyMap.containsKey(key)) {
                         throw new RuntimeException("Removing a value that dose not exist");
                     }

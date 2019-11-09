@@ -28,7 +28,7 @@ public class PeriodTransfer_ElementController extends TrackingDatabase_ElementCo
      */
     @Override
     public PeriodTransfer newElement() {
-        return new PeriodTransfer(TrackingDatabase.get().getNextId(PeriodTransfer.class),
+        return new PeriodTransfer(TrackingDatabase.get().getNextId(),
                 "",
                 0.0,
                 period,

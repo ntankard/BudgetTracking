@@ -49,7 +49,7 @@ public class Period extends DataObject {
             nextYear++;
         }
 
-        return new Period(TrackingDatabase.get().getNextId(Period.class), nextMonth, nextYear, this, null);
+        return new Period(TrackingDatabase.get().getNextId(), nextMonth, nextYear, this, null);
     }
 
     /**
@@ -68,6 +68,23 @@ public class Period extends DataObject {
     @DisplayProperties(order = 21)
     public List<DataObject> getParents() {
         return new ArrayList<>();
+    }
+
+    /**
+     * Get the first Period know about
+     *
+     * @return The first Period know about
+     */
+    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
+    @DisplayProperties(order = 10)
+    public Period getFirst() {
+        Period first = this;
+        while (true) {
+            if (first.getLast() == null) {
+                return first;
+            }
+            first = first.getLast();
+        }
     }
 
     //------------------------------------------------------------------------------------------------------------------

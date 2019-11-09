@@ -18,7 +18,7 @@ public class PeriodTransfer extends MoneyEvent<Period, Category, Period, Categor
      */
     @ParameterMap(parameterGetters = {"getId", "getDescription", "getValue", "getSourceContainer", "getSourceCategory", "getDestinationContainer", "getCurrency"})
     public PeriodTransfer(Integer id, String description, Double value, Period sourceContainer, Category sourceCategory, Period destinationContainer, Currency currency) {
-        super(id, description, value, sourceContainer, sourceContainer, sourceCategory, destinationContainer, sourceCategory, currency);
+        super(id, description, value, sourceContainer, sourceContainer, sourceCategory, destinationContainer, null, currency);
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -42,13 +42,6 @@ public class PeriodTransfer extends MoneyEvent<Period, Category, Period, Categor
     @DisplayProperties(order = 7)
     public Period getDestinationContainer() {
         return super.getDestinationContainer();
-    }
-
-    @Override
-    @MemberProperties(verbosityLevel = MemberProperties.DEBUG_DISPLAY)
-    @DisplayProperties(order = 8)
-    public Category getDestinationCategory() {
-        return super.getDestinationCategory();
     }
 
     //------------------------------------------------------------------------------------------------------------------

@@ -79,7 +79,7 @@ public class TrackingDatabase_Repair {
             }
 
             if (!found) {
-                TrackingDatabase.get().add(new PeriodBoundFundEvent_Transfer(TrackingDatabase.get().getNextId(PeriodFundTransfer.class),
+                TrackingDatabase.get().add(new PeriodBoundFundEvent_Transfer(TrackingDatabase.get().getNextId(),
                         periodBoundFundEvent.getName() + " payment",
                         toAdd,
                         periodBoundFundEvent.getSource(),
@@ -122,7 +122,7 @@ public class TrackingDatabase_Repair {
                         }
                     }
                 }
-                TrackingDatabase.get().add(new Statement(TrackingDatabase.get().getNextId(Statement.class), b, period, lastEnd, 0.0, 0.0, 0.0));
+                TrackingDatabase.get().add(new Statement(TrackingDatabase.get().getNextId(), b, period, lastEnd, 0.0, 0.0, 0.0));
             }
         }
     }

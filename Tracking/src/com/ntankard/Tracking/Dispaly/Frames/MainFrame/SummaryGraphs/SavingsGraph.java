@@ -56,11 +56,12 @@ public class SavingsGraph extends UpdatableJPanel {
         plot.setRenderer(renderer);
 
         String[] axisLabel = new String[TrackingDatabase.get().get(Period.class).size()];
-        int i = 0;
-        for (Period period : TrackingDatabase.get().<Period>get(Period.class)) {
+        Period period = TrackingDatabase.get().get(Period.class).get(0).getFirst();
+        for (int i = 0; i < TrackingDatabase.get().get(Period.class).size(); i++) {
             axisLabel[i] = period.toString();
-            i++;
+            period = period.getNext();
         }
+
         SymbolAxis sa = new SymbolAxis("Period", axisLabel);
         plot.setDomainAxis(sa);
 
@@ -75,21 +76,21 @@ public class SavingsGraph extends UpdatableJPanel {
     private XYDataset createDataset() {
         final XYSeriesCollection dataset = new XYSeriesCollection();
 
-        for(Currency currency : TrackingDatabase.get().get(Currency.class)){
+        for (Currency currency : TrackingDatabase.get().get(Currency.class)) {
             final XYSeries cur = new XYSeries(currency.getName());
-            int i = 0;
-            for (Period period : TrackingDatabase.get().get(Period.class)) {
+            Period period = TrackingDatabase.get().get(Period.class).get(0).getFirst();
+            for (int i = 0; i < TrackingDatabase.get().get(Period.class).size(); i++) {
                 cur.add(i, new ExtendedPeriod(period).getEndBalance(currency));
-                i++;
+                period = period.getNext();
             }
             dataset.addSeries(cur);
         }
 
         final XYSeries total = new XYSeries("Total");
-        int i = 0;
-        for (Period period : TrackingDatabase.get().get(Period.class)) {
+        Period period = TrackingDatabase.get().get(Period.class).get(0).getFirst();
+        for (int i = 0; i < TrackingDatabase.get().get(Period.class).size(); i++) {
             total.add(i, new ExtendedPeriod(period).getEndBalance());
-            i++;
+            period = period.getNext();
         }
         dataset.addSeries(total);
 

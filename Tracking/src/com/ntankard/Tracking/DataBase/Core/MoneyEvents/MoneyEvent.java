@@ -36,7 +36,7 @@ public abstract class MoneyEvent<SourceType extends DataObject, SourceCategory e
      * Constructor
      */
     //@ParameterMap(parameterGetters = {"getId", "getDescription", "getValue", "getSourceContainer", "getSourceCategory", "getDestinationContainer", "getDestinationCategory", "getCurrency"})
-    public MoneyEvent(Integer id, String description, Double value,Period period, SourceType sourceContainer, SourceCategory sourceCategory, DestinationType destinationContainer, DestinationCategory destinationCategory, Currency currency) {
+    public MoneyEvent(Integer id, String description, Double value, Period period, SourceType sourceContainer, SourceCategory sourceCategory, DestinationType destinationContainer, DestinationCategory destinationCategory, Currency currency) {
         super(id);
         this.description = description;
         this.value = value;
@@ -105,6 +105,9 @@ public abstract class MoneyEvent<SourceType extends DataObject, SourceCategory e
      * @return True if the params represent this transfers destination
      */
     public boolean isThisDestination(DataObject destinationContainer, DataObject category) {
+        if (category == null || this.destinationCategory == null) {
+            return isThisDestination(destinationContainer);
+        }
         return this.destinationContainer.equals(destinationContainer) && this.destinationCategory.equals(category);
     }
 

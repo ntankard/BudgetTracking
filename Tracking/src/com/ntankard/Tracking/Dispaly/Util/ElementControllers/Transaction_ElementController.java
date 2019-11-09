@@ -27,7 +27,7 @@ public class Transaction_ElementController extends TrackingDatabase_ElementContr
      */
     @Override
     public Transaction newElement() {
-        return new Transaction(TrackingDatabase.get().getNextId(Transaction.class),
+        return new Transaction(TrackingDatabase.get().getNextId(),
                 "",
                 0.0,
                 statement,

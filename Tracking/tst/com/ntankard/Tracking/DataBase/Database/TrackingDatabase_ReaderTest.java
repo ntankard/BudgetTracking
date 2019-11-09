@@ -27,6 +27,9 @@ class TrackingDatabase_ReaderTest {
             for (Object dataObject : TrackingDatabase.get().get(aClass)) {
 
                 List<String> first = TrackingDatabase_Reader.dataObjectToString((DataObject) dataObject);
+                if(first == null){
+                    continue;
+                }
 
                 DataObject newObj = TrackingDatabase_Reader.dataObjectFromString(first.toArray(new String[0]), TrackingDatabase.get());
 

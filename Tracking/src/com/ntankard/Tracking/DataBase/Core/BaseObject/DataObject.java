@@ -2,6 +2,7 @@ package com.ntankard.Tracking.DataBase.Core.BaseObject;
 
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
+import com.ntankard.Tracking.DataBase.Database.SubContainers.DataObjectContainer;
 
 import java.util.*;
 
@@ -13,14 +14,9 @@ public abstract class DataObject {
     private Integer id;
 
     /**
-     * All my children sorted by class
+     * All my children
      */
-    private Map<Class, List<DataObject>> children = new HashMap<>();
-
-    /**
-     * All my children sorted by class, and mapped to there data object ID
-     */
-    private Map<Class, Map<Integer, DataObject>> childrenMap = new HashMap<>();
+    private DataObjectContainer container = new DataObjectContainer();
 
     /**
      * Constructor
@@ -68,8 +64,6 @@ public abstract class DataObject {
      */
     public void notifyParentLink() {
         try {
-
-
             for (DataObject dataObject : getParents()) {
                 dataObject.notifyChildLink(this);
             }
@@ -102,22 +96,7 @@ public abstract class DataObject {
      * @param linkObject The child
      */
     public void notifyChildLink(DataObject linkObject) {
-        Class classType = linkObject.getTypeClass();
-        if (!children.containsKey(classType)) {
-            children.put(classType, new ArrayList<>());
-            childrenMap.put(classType, new HashMap<>());
-        }
-
-        List<DataObject> classChildren = children.get(classType);
-
-        if (!classChildren.contains(linkObject)) {
-            classChildren.add(linkObject);
-        }
-
-        Map<Integer, DataObject> classChildrenMap = childrenMap.get(classType);
-        if (!classChildrenMap.containsKey(linkObject.getId())) {
-            classChildrenMap.put(linkObject.getId(), linkObject);
-        }
+        container.add(linkObject);
     }
 
     /**
@@ -126,13 +105,7 @@ public abstract class DataObject {
      * @param linkObject The child
      */
     public void notifyChildUnLink(DataObject linkObject) {
-        Class classType = linkObject.getTypeClass();
-        if (!children.containsKey(classType)) {
-            return;
-        }
-
-        childrenMap.get(classType).remove(linkObject.getId());
-        children.get(classType).remove(linkObject);
+        container.remove(linkObject);
     }
 
     /**
@@ -144,12 +117,7 @@ public abstract class DataObject {
      */
     @SuppressWarnings("unchecked")
     public <T extends DataObject> List<T> getChildren(Class<T> type) {
-        if (!children.containsKey(type)) {
-            children.put(type, new ArrayList<>());
-            childrenMap.put(type, new HashMap<>());
-        }
-
-        return (List<T>) children.get(type);
+        return container.get(type);
     }
 
     /**
@@ -162,12 +130,7 @@ public abstract class DataObject {
      */
     @SuppressWarnings("unchecked")
     public <T extends DataObject> T getChildren(Class<T> type, Integer key) {
-        if (!childrenMap.containsKey(type)) {
-            children.put(type, new ArrayList<>());
-            childrenMap.put(type, new HashMap<>());
-        }
-
-        return (T) childrenMap.get(type).get(key);
+        return container.get(type,key);
     }
 
     /**
@@ -178,10 +141,6 @@ public abstract class DataObject {
     @MemberProperties(verbosityLevel = TRACE_DISPLAY)
     @DisplayProperties(order = 22)
     public List<DataObject> getChildren() {
-        List<DataObject> toReturn = new ArrayList<>();
-        for (Class aClass : children.keySet()) {
-            toReturn.addAll(children.get(aClass));
-        }
-        return toReturn;
+        return container.get();
     }
 }

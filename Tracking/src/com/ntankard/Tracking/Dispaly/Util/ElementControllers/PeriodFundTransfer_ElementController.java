@@ -38,7 +38,7 @@ public class PeriodFundTransfer_ElementController extends TrackingDatabase_Eleme
             }
         }
 
-        return new PeriodFundTransfer(TrackingDatabase.get().getNextId(PeriodFundTransfer.class),
+        return new PeriodFundTransfer(TrackingDatabase.get().getNextId(),
                 "",
                 0.0,
                 period,

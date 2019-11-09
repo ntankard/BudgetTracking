@@ -29,7 +29,7 @@ public class FundChargeTransfer_ElementController extends TrackingDatabase_Eleme
      */
     @Override
     public FundChargeTransfer newElement() {
-        return new FundChargeTransfer(TrackingDatabase.get().getNextId(PeriodFundTransfer.class),
+        return new FundChargeTransfer(TrackingDatabase.get().getNextId(),
                 "",
                 0.0,
                 period,

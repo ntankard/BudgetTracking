@@ -8,21 +8,27 @@ public class ClassMap extends Container<String, Class> {
      * {@inheritDoc
      */
     @Override
-    public <T extends DataObject> void addType(Class<T> aClass) {
-        container.put(aClass.getSimpleName(), aClass);
+    public void add(DataObject dataObject) {
+        if (!container.containsKey(dataObject.getTypeClass().getSimpleName())) {
+            container.put(dataObject.getTypeClass().getSimpleName(), dataObject.getTypeClass());
+        }
     }
 
     /**
      * {@inheritDoc
      */
     @Override
-    public <T extends DataObject> void add(Class<T> tClass, DataObject dataObject) {
+    public void remove(DataObject dataObject) {
+        checkCanDelete(dataObject);
     }
 
     /**
-     * {@inheritDoc
+     * Get a value from the container
+     *
+     * @param key The top level key
+     * @return The value
      */
-    @Override
-    public <T extends DataObject> void remove(Class<T> tClass, DataObject dataObject) {
+    public Class get(String key) {
+        return container.get(key);
     }
 }

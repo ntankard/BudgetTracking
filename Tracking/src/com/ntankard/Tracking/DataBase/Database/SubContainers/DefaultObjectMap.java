@@ -6,24 +6,18 @@ import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 
 public class DefaultObjectMap extends Container<Class, DataObject> {
 
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public <T extends DataObject> void addType(Class<T> aClass) {
-    }
 
     /**
      * {@inheritDoc
      */
     @Override
-    public <T extends DataObject> void add(Class<T> tClass, DataObject dataObject) {
-        if (HasDefault.class.isAssignableFrom(tClass)) {
+    public void add(DataObject dataObject) {
+        if (HasDefault.class.isAssignableFrom(dataObject.getTypeClass())) {
             if (((HasDefault) dataObject).isDefault()) {
-                if (container.containsKey(tClass)) {
+                if (container.containsKey(dataObject.getTypeClass())) {
                     throw new RuntimeException("Default already set");
                 }
-                container.put(tClass, dataObject);
+                container.put(dataObject.getTypeClass(), dataObject);
             }
         }
     }
@@ -32,7 +26,7 @@ public class DefaultObjectMap extends Container<Class, DataObject> {
      * {@inheritDoc
      */
     @Override
-    public <T extends DataObject> void remove(Class<T> tClass, DataObject dataObject) {
+    public void remove(DataObject dataObject) {
         checkCanDelete(dataObject);
 
         if (container.containsKey(dataObject.getTypeClass())) {

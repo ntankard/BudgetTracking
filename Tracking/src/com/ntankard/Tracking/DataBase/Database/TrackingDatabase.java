@@ -1,17 +1,7 @@
 package com.ntankard.Tracking.DataBase.Database;
 
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Core.Pool.Category;
-import com.ntankard.Tracking.DataBase.Core.MoneyCategory.FundEvent.FundEvent;
-import com.ntankard.Tracking.DataBase.Core.Pool.Fund;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
-import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.FundChargeTransfer.FundChargeTransfer;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodFundTransfer.PeriodFundTransfer;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodTransfer;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
-import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
-import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
 import com.ntankard.Tracking.DataBase.Database.SubContainers.*;
 
 import java.util.ArrayList;
@@ -23,11 +13,10 @@ public class TrackingDatabase {
 
     // Core data objects
     private List<Container> containers = new ArrayList<>();
-    private TypeMap typeMap = new TypeMap();
-    private TypeIDMap typeIDMap = new TypeIDMap();
+    private DataObjectContainer masterMap = new DataObjectContainer();
     private DefaultObjectMap defaultObjectMap = new DefaultObjectMap();
-    private ClassMap classMap = new ClassMap();
     private SpecialValuesMap specialValuesMap = new SpecialValuesMap();
+    private ClassMap classMap = new ClassMap();
 
     // Special values
     private static Double taxRate = 0.06;
@@ -63,23 +52,20 @@ public class TrackingDatabase {
      * Private Constructor
      */
     TrackingDatabase() {
-        containers.add(typeIDMap);
-        containers.add(typeMap);
+        containers.add(masterMap);
         containers.add(defaultObjectMap);
-        containers.add(classMap);
         containers.add(specialValuesMap);
+        containers.add(classMap);
 
-        containers.forEach(container -> container.addType(Currency.class));
-        containers.forEach(container -> container.addType(Category.class));
-        containers.forEach(container -> container.addType(Bank.class));
-        containers.forEach(container -> container.addType(Period.class));
-        containers.forEach(container -> container.addType(Statement.class));
-        containers.forEach(container -> container.addType(Transaction.class));
-        containers.forEach(container -> container.addType(PeriodTransfer.class));
-        containers.forEach(container -> container.addType(Fund.class));
-        containers.forEach(container -> container.addType(PeriodFundTransfer.class));
-        containers.forEach(container -> container.addType(FundEvent.class));
-        containers.forEach(container -> container.addType(FundChargeTransfer.class));
+        masterMap.addComparator(Period.class, (o1, o2) -> {
+            if (o1.getYear() > o2.getYear()) {
+                return 1;
+            }
+            if (o1.getYear() < o2.getYear()) {
+                return -1;
+            }
+            return Integer.compare(o1.getMonth(), o2.getMonth());
+        });
     }
 
     /**
@@ -88,7 +74,8 @@ public class TrackingDatabase {
     public void finalizeCore() {
         TrackingDatabase_Integrity.validateCore();
         isFinalized = true;
-        for (DataObject dataObject : typeMap.getAll()) {
+
+        for (DataObject dataObject : getAll()) {
             TrackingDatabase_Repair.repair(dataObject);
         }
         TrackingDatabase_Integrity.validateCore();
@@ -109,26 +96,12 @@ public class TrackingDatabase {
     //------------------------------------------------------------------------------------------------------------------
 
     /**
-     * Get the next free ID for the data type
+     * Get the next free ID
      *
-     * @param toGet The data type to search
-     * @param <T>   Method restriction to limit data objects to ones with a individual integer ID
      * @return The next free ID
      */
-    public <T extends DataObject> Integer getNextId(Class<T> toGet) {
-        int max = 0;
-
-        if (!typeMap.containsKey(toGet)) {
-            throw new RuntimeException("Impossible type");
-        }
-
-        for (DataObject t : typeMap.get(toGet)) {
-            int value = t.getId();
-            if (value > max) {
-                max = value;
-            }
-        }
-        return (max + 1);
+    public Integer getNextId() {
+        return masterMap.getNextId();
     }
 
     /**
@@ -137,17 +110,7 @@ public class TrackingDatabase {
      * @param dataObject The object to add
      */
     public void add(DataObject dataObject) {
-        add(dataObject.getTypeClass(), dataObject);
-    }
-
-    /**
-     * Add a new element to the database. New elements are repaired if needed and all relevant parents are notified
-     *
-     * @param tClass     The type to store it under
-     * @param dataObject The object to add
-     */
-    public void add(Class tClass, DataObject dataObject) {
-        containers.forEach(container -> container.add(tClass, dataObject));
+        containers.forEach(container -> container.add(dataObject));
         dataObject.notifyParentLink();
         if (isFinalized) {
             TrackingDatabase_Repair.repair(dataObject);
@@ -160,18 +123,8 @@ public class TrackingDatabase {
      * @param dataObject The object to remove
      */
     public void remove(DataObject dataObject) {
-        remove(dataObject.getTypeClass(), dataObject);
-    }
-
-    /**
-     * Remove an element from the database as long as it has no children linking to it. All relevant parents are notified
-     *
-     * @param tClass     The type to store it under
-     * @param dataObject The object to remove
-     */
-    public void remove(Class tClass, DataObject dataObject) {
         dataObject.notifyParentUnLink();
-        containers.forEach(container -> container.remove(tClass, dataObject));
+        containers.forEach(container -> container.remove(dataObject));
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -188,7 +141,7 @@ public class TrackingDatabase {
      */
     @SuppressWarnings("unchecked")
     public <T extends DataObject> T get(Class<T> type, Integer id) {
-        return (T) typeIDMap.get(type).get(id);
+        return masterMap.get(type, id);
     }
 
     /**
@@ -200,7 +153,25 @@ public class TrackingDatabase {
      */
     @SuppressWarnings("unchecked")
     public <T extends DataObject> List<T> get(Class<T> type) {
-        return Collections.unmodifiableList((List<T>) typeMap.get(type));
+        return Collections.unmodifiableList(masterMap.get(type));
+    }
+
+    /**
+     * Get all the DataObject types added to this database
+     *
+     * @return All the DataObject types added to this database
+     */
+    public Set<Class<? extends DataObject>> getDataObjectTypes() {
+        return masterMap.keySet();
+    }
+
+    /**
+     * Combine all values into one master list
+     *
+     * @return The list of all values
+     */
+    public List<DataObject> getAll() {
+        return Collections.unmodifiableList(masterMap.get());
     }
 
     /**
@@ -235,23 +206,5 @@ public class TrackingDatabase {
      */
     public <T extends DataObject> T getSpecialValue(Class<T> aClass, Integer key) {
         return specialValuesMap.get(aClass, key);
-    }
-
-    /**
-     * Get all the DataObject types added to this database
-     *
-     * @return All the DataObject types added to this database
-     */
-    public Set<Class<? extends DataObject>> getDataObjectTypes() {
-        return typeMap.keySet();
-    }
-
-    /**
-     * Combine all values into one master list
-     *
-     * @return The list of all values
-     */
-    public List<DataObject> getAll() {
-        return typeMap.getAll();
     }
 }
