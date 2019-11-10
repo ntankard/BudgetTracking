@@ -39,7 +39,8 @@ public class DataObjectContainer extends Container<Class<? extends DataObject>, 
 
             // Check for duplicate IDs across the entire container
             if (container.get(aClass).containsKey(toAdd.getId())) {
-                throw new RuntimeException("Duplicate key found");
+                //throw new RuntimeException("Duplicate key found");
+                System.out.println("Duplicate key found, TODO create error");
             }
 
             // Add the object at this layer
@@ -64,7 +65,8 @@ public class DataObjectContainer extends Container<Class<? extends DataObject>, 
         do {
             // Check that we have seen this object before
             if (!container.containsKey(aClass) || !container.get(aClass).containsKey(toRemove.getId())) {
-                throw new RuntimeException("Removing an object that was never added");
+                System.out.println("Removing an object that was never added, TODO create error");
+                //throw new RuntimeException("Removing an object that was never added");
             }
 
             // Remove the object

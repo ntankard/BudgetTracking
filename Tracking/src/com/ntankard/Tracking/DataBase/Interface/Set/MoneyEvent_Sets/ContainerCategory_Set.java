@@ -34,7 +34,6 @@ public class ContainerCategory_Set extends MoneyEvent_Set<MoneyEvent> {
     public List<MoneyEvent> get() {
         List<MoneyEvent> toReturn = new ArrayList<>();
         toReturn.addAll(new ContainerCategoryType_Set<>(period, category, Transaction.class).get());
-        toReturn.addAll(new ContainerCategoryType_Set<>(period, category, PeriodTransfer.class).get());
         toReturn.addAll(new ContainerCategoryType_Set<>(period, category, PeriodFundTransfer.class).get());
         return toReturn;
     }

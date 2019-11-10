@@ -5,7 +5,6 @@ import com.ntankard.Tracking.DataBase.Core.Pool.Fund;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodFundTransfer.PeriodFundTransfer;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
@@ -37,7 +36,6 @@ public class TrackingDatabase_Reader {
         saveDataObjectSet(csvFile, Period.class, data);
         saveDataObjectSet(csvFile, Statement.class, data);
         saveDataObjectSet(csvFile, Transaction.class, data);
-        saveDataObjectSet(csvFile, PeriodTransfer.class, data);
         saveDataObjectSet(csvFile, Fund.class, data);
         saveDataObjectSet(csvFile, FundEvent.class, data);
         saveDataObjectSet(csvFile, PeriodFundTransfer.class, data);
@@ -61,7 +59,6 @@ public class TrackingDatabase_Reader {
         readDataObjectSet(csvFile, Bank.class, data);
         readDataObjectSet(csvFile, Statement.class, data);
         readDataObjectSet(csvFile, FundEvent.class, data);
-        readDataObjectSet(csvFile, PeriodTransfer.class, data);
         readDataObjectSet(csvFile, Transaction.class, data);
         readDataObjectSet(csvFile, PeriodFundTransfer.class, data);
         //readDataObjectSet(csvFile, FundChargeTransfer.class, data);
@@ -217,9 +214,9 @@ public class TrackingDatabase_Reader {
             Class paramType = paramTypes[i];
 
             if (DataObject.class.isAssignableFrom(paramType)) {
-                if(paramString.equals(" ")){
+                if (paramString.equals(" ")) {
                     params.add(null);
-                }else {
+                } else {
                     params.add(trackingDatabase.get(paramType, Integer.parseInt(paramString)));
                 }
             } else if (String.class.isAssignableFrom(paramType)) {
