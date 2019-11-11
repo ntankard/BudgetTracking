@@ -10,6 +10,7 @@ import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodFundTransfer.Period
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodFundTransfer.PeriodFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
+import com.ntankard.Tracking.DataBase.Interface.ClassExtension.ExtendedStatement;
 
 public class TrackingDatabase_Repair {
 
@@ -117,12 +118,12 @@ public class TrackingDatabase_Repair {
                 if (period.getLast() != null) {
                     for (Statement statement : period.getLast().getChildren(Statement.class)) {
                         if (statement.getBank().equals(b)) {
-                            lastEnd = statement.getEnd();
+                            lastEnd = new ExtendedStatement(statement.getPeriod(), statement.getBank(), statement).getEnd();
                             break;
                         }
                     }
                 }
-                TrackingDatabase.get().add(new Statement(TrackingDatabase.get().getNextId(), b, period, lastEnd, 0.0, 0.0, 0.0));
+                TrackingDatabase.get().add(new Statement(TrackingDatabase.get().getNextId(), b, period, 0.0, 0.0));
             }
         }
     }

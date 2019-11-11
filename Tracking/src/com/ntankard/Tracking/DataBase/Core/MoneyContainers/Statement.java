@@ -24,21 +24,17 @@ public class Statement extends DataObject implements CurrencyBound {
     private Period period;
 
     // My values
-    private Double start;
-    private Double end;
     private Double transferIn;
     private Double transferOut;
 
     /**
      * Constructor
      */
-    @ParameterMap(parameterGetters = {"getId", "getBank", "getPeriod", "getStart", "getEnd", "getTransferIn", "getTransferOut"})
-    public Statement(Integer id, Bank bank, Period period, Double start, Double end, Double transferIn, Double transferOut) {
+    @ParameterMap(parameterGetters = {"getId", "getBank", "getPeriod", "getTransferIn", "getTransferOut"})
+    public Statement(Integer id, Bank bank, Period period, Double transferIn, Double transferOut) {
         super(id);
         this.bank = bank;
         this.period = period;
-        this.start = start;
-        this.end = end;
         this.transferIn = transferIn;
         this.transferOut = transferOut;
     }
@@ -88,16 +84,6 @@ public class Statement extends DataObject implements CurrencyBound {
         return period;
     }
 
-    @DisplayProperties(dataType = CURRENCY, order = 3)
-    public Double getStart() {
-        return start;
-    }
-
-    @DisplayProperties(dataType = CURRENCY, order = 4)
-    public Double getEnd() {
-        return end;
-    }
-
     @DisplayProperties(dataType = CURRENCY, order = 6)
     public Double getTransferIn() {
         return transferIn;
@@ -111,14 +97,6 @@ public class Statement extends DataObject implements CurrencyBound {
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Setters #####################################################
     //------------------------------------------------------------------------------------------------------------------
-
-    public void setStart(Double start) {
-        this.start = start;
-    }
-
-    public void setEnd(Double end) {
-        this.end = end;
-    }
 
     public void setTransferIn(Double transferIn) {
         this.transferIn = transferIn;

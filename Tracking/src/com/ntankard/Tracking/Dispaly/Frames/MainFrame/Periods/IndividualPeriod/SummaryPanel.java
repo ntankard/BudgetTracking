@@ -22,7 +22,6 @@ public class SummaryPanel extends UpdatableJPanel {
     private JTextField netMoney_txt;
     private JTextField savings_txt;
     private JLabel transferStatus_lbl;
-    private JLabel periodLink_lbl;
     private JLabel missingSpend_lbl;
 
     /**
@@ -51,9 +50,6 @@ public class SummaryPanel extends UpdatableJPanel {
         transferStatus_lbl = new JLabel();
         transferStatus_lbl.setBorder(new LineBorder(Color.BLACK));
 
-        periodLink_lbl = new JLabel();
-        periodLink_lbl.setBorder(new LineBorder(Color.BLACK));
-
         missingSpend_lbl = new JLabel();
         missingSpend_lbl.setBorder(new LineBorder(Color.BLACK));
 
@@ -61,7 +57,6 @@ public class SummaryPanel extends UpdatableJPanel {
         this.add(netMoney_txt);
         this.add(new JLabel("Savings"));
         this.add(savings_txt);
-        this.add(periodLink_lbl);
         this.add(transferStatus_lbl);
         this.add(missingSpend_lbl);
     }
@@ -122,20 +117,6 @@ public class SummaryPanel extends UpdatableJPanel {
         } else {
             missingSpend_lbl.setText(" Spend Missing ");
             missingSpend_lbl.setForeground(Color.RED);
-        }
-
-        // Check the this periods start balances all match the previous ones end
-        if (new PeriodTransaction_Summary(core).isFirst()) {
-            periodLink_lbl.setText(" First ");
-            periodLink_lbl.setForeground(Color.GREEN);
-        } else {
-            if (new PeriodTransaction_Summary(core).isValidStatementBalance()) {
-                periodLink_lbl.setText(" Start matches last End ");
-                periodLink_lbl.setForeground(Color.GREEN);
-            } else {
-                periodLink_lbl.setText(" Start ,last End mismatch ");
-                periodLink_lbl.setForeground(Color.RED);
-            }
         }
 
         // Check that all transfers in and out are accounted for

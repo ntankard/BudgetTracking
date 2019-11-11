@@ -2,25 +2,34 @@ package com.ntankard.Tracking.DataBase.Interface.ClassExtension;
 
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
+import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
+import com.ntankard.Tracking.DataBase.Core.StatementEnd;
+import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataContext.ZERO_TARGET;
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
-public class ExtendedStatement {
+public class ExtendedStatement implements CurrencyBound {
 
     /**
      * The core statement object used for this ones calculations
      */
     private Statement statement;
 
+    private Period period;
+    private Bank bank;
+
     /**
      * Constructor
      */
-    public ExtendedStatement(Statement statement) {
+    public ExtendedStatement(Period period, Bank bank, Statement statement) {
+        this.period = period;
+        this.bank = bank;
         this.statement = statement;
     }
 
@@ -41,12 +50,25 @@ public class ExtendedStatement {
 
     @DisplayProperties(dataType = CURRENCY, order = 3)
     public Double getStart() {
-        return statement.getStart();
+        if (period.getLast() == null) {
+            return bank.getStart();
+        }
+        for (StatementEnd statementEnd : period.getLast().getChildren(StatementEnd.class)) {
+            if (statementEnd.getBank().equals(bank)) {
+                return statementEnd.getEnd();
+            }
+        }
+        return -1.0;
     }
 
     @DisplayProperties(dataType = CURRENCY, order = 4)
     public Double getEnd() {
-        return statement.getEnd();
+        for (StatementEnd statementEnd : period.getChildren(StatementEnd.class)) {
+            if (statementEnd.getBank().equals(bank)) {
+                return statementEnd.getEnd();
+            }
+        }
+        return -1.0;
     }
 
     @DisplayProperties(dataType = CURRENCY, order = 6)
@@ -57,6 +79,12 @@ public class ExtendedStatement {
     @DisplayProperties(dataType = CURRENCY, order = 5)
     public Double getTransferOut() {
         return statement.getTransferOut();
+    }
+
+    @Override
+    @DisplayProperties(order = 7)
+    public Currency getCurrency() {
+        return bank.getCurrency();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -70,7 +98,7 @@ public class ExtendedStatement {
      */
     @DisplayProperties(dataType = CURRENCY, order = 7)
     public Double getExpectedSpend() {
-        return -(statement.getEnd() - statement.getStart() - getNetTransfer());
+        return -(getEnd() - getStart() - getNetTransfer());
     }
 
     /**

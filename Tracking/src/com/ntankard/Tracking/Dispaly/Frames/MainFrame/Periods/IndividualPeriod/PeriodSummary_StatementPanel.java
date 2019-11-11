@@ -6,14 +6,16 @@ import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
+import com.ntankard.Tracking.DataBase.Core.StatementEnd;
 import com.ntankard.Tracking.DataBase.Interface.ClassExtension.ExtendedStatement;
+import com.ntankard.Tracking.DataBase.Interface.Set.Children_Set;
 import com.ntankard.Tracking.DataBase.Interface.Summary.PeriodTransaction_Summary;
 import com.ntankard.Tracking.Dispaly.DataObjectPanels.ExtendedStatementPanel;
 import com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.PeriodSummary;
 import com.ntankard.Tracking.Dispaly.Util.ElementControllers.Transaction_ElementController;
 import com.ntankard.Tracking.Dispaly.Util.Panels.DataObject_DisplayList;
-import com.ntankard.Tracking.DataBase.Interface.Set.Children_Set;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
@@ -29,6 +31,7 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
     private DataObject_DisplayList<Transaction> transaction_panel;
     private DynamicGUI_IntractableObject period_panel;
     private DynamicGUI_IntractableObject periodTotal_panel;
+    private DataObject_DisplayList<StatementEnd> statementEnd_panel;
 
     // ExtendedStatementPanel Controllers stored to update the core objects
     private Children_Set<Transaction, Statement> transaction_panel_set;
@@ -76,8 +79,24 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
         transaction_panel_set = new Children_Set<>(Transaction.class, null);
         transaction_panel_controller = new Transaction_ElementController(selectedStatement, this);
 
+        JTabbedPane statementControl_panel = new JTabbedPane();
+
         transaction_panel = new DataObject_DisplayList<>(Transaction.class, transaction_panel_set, false, this);
         transaction_panel.addControlButtons(transaction_panel_controller);
+        statementControl_panel.add("Transactions", transaction_panel);
+
+        statementEnd_panel = new DataObject_DisplayList<>(StatementEnd.class, new Children_Set<>(StatementEnd.class, core), false, this);
+        statementEnd_panel.setComparator((o1, o2) -> {
+            if (o1.getBank().getOrder() == o2.getBank().getOrder()) {
+                return 0;
+            } else if (o1.getBank().getOrder() > o2.getBank().getOrder()) {
+                return 1;
+            }
+            return -1;
+        });
+        statementControl_panel.add("End Values", statementEnd_panel);
+
+        statementControl_panel.add("Transfers", new JPanel());
 
         period_panel = new DynamicGUI_IntractableObject<>(core, this);
         periodTotal_panel = new DynamicGUI_IntractableObject<>(new PeriodTransaction_Summary(core), this);
@@ -98,7 +117,7 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
         this.add(statement_panel, summaryContainer_C);
         summaryContainer_C.gridx = 1;
         summaryContainer_C.weightx = 6;
-        this.add(transaction_panel, summaryContainer_C);
+        this.add(statementControl_panel, summaryContainer_C);
         summaryContainer_C.gridx = 2;
         summaryContainer_C.weightx = 1;
         this.add(period_panel, summaryContainer_C);
@@ -141,5 +160,6 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
         periodSummary_panel.update();
         period_panel.update();
         periodTotal_panel.update();
+        statementEnd_panel.update();
     }
 }

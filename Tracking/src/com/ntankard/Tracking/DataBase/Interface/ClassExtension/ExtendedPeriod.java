@@ -41,7 +41,7 @@ public class ExtendedPeriod {
         Double value = 0.0;
         for (Statement t : period.getChildren(Statement.class)) {
             if (t.getBank().getCurrency().equals(currency)) {
-                value += new ExtendedStatement(t).getNetTransfer();
+                value += new ExtendedStatement(t.getPeriod(), t.getBank(), t).getNetTransfer();
             }
         }
 
@@ -77,7 +77,7 @@ public class ExtendedPeriod {
     public Double getStartBalance() {
         double value = 0.0;
         for (Statement t : period.getChildren(Statement.class)) {
-            value += (t.getStart() * t.getBank().getCurrency().getToPrimary());
+            value += (new ExtendedStatement(t.getPeriod(), t.getBank(), t).getStart() * t.getBank().getCurrency().getToPrimary());
         }
         return value;
     }
@@ -86,7 +86,7 @@ public class ExtendedPeriod {
     public Double getEndBalance() {
         double value = 0.0;
         for (Statement t : period.getChildren(Statement.class)) {
-            value += (t.getEnd() * t.getBank().getCurrency().getToPrimary());
+            value += (new ExtendedStatement(t.getPeriod(), t.getBank(), t).getEnd() * t.getBank().getCurrency().getToPrimary());
         }
         return value;
     }
@@ -100,7 +100,7 @@ public class ExtendedPeriod {
         double value = 0.0;
         for (Statement t : period.getChildren(Statement.class)) {
             if (t.getBank().getCurrency().equals(currency)) {
-                value += (t.getEnd() * t.getBank().getCurrency().getToPrimary());
+                value += (new ExtendedStatement(t.getPeriod(), t.getBank(), t).getEnd() * t.getBank().getCurrency().getToPrimary());
             }
         }
         return value;

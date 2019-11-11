@@ -10,6 +10,7 @@ import com.ntankard.Tracking.DataBase.Core.MoneyEvents.FundChargeTransfer.FundCh
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodFundTransfer.PeriodFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
+import com.ntankard.Tracking.DataBase.Core.StatementEnd;
 import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
 import com.ntankard.Tracking.DataBase.Core.MoneyCategory.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
@@ -94,6 +95,7 @@ public class Master_Frame extends JPanel implements Updatable {
         transferPanel.add("Transaction", Transaction.class);
         transferPanel.add("Period Fund Transfer", PeriodFundTransfer.class);
         transferPanel.add("Fund Charge Transfer", FundChargeTransfer.class);
+        transferPanel.add("StatementEnd", StatementEnd.class);
 
         baseTypePanel = new DataObject_VerbosityTabDisplayList(this);
         baseTypePanel.add("Category", Category.class);

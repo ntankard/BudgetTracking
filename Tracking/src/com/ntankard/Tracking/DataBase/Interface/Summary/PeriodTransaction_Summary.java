@@ -71,7 +71,7 @@ public class PeriodTransaction_Summary {
     public boolean isValidSpend() {
         boolean missing = false;
         for (Statement statement : core.getChildren(Statement.class)) {
-            if (new ExtendedStatement(statement).getMissingSpend() != 0) {
+            if (new ExtendedStatement(statement.getPeriod(), statement.getBank(), statement).getMissingSpend() != 0) {
                 missing = true;
             }
         }
@@ -85,35 +85,6 @@ public class PeriodTransaction_Summary {
      */
     public boolean isFirst() {
         return core.getLast() == null;
-    }
-
-    /**
-     * Do the start and end values for the statement match up
-     *
-     * @return True if the start and end values for the statement match up
-     */
-    public boolean isValidStatementBalance() {
-        if (isFirst()) {
-            return true;
-        }
-
-        for (Statement statement : core.getChildren(Statement.class)) {
-            boolean found = false;
-            for (Statement lastStatement : core.getLast().getChildren(Statement.class)) {
-                if (statement.getBank().equals(lastStatement.getBank())) {
-                    if (!statement.getStart().equals(lastStatement.getEnd())) {
-                        return false;
-                    }
-                    found = true;
-                    break;
-                }
-            }
-
-            if (!found) {
-                throw new RuntimeException("Could not find the last statement");
-            }
-        }
-        return true;
     }
 
     /**

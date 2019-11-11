@@ -29,7 +29,7 @@ public class ExtendedStatement_Set implements ObjectSet<ExtendedStatement> {
         List<ExtendedStatement> extendedStatements = new ArrayList<>();
 
         for (Statement statement : coreSet.get()) {
-            extendedStatements.add(new ExtendedStatement(statement));
+            extendedStatements.add(new ExtendedStatement(statement.getPeriod(), statement.getBank(), statement));
         }
 
         return extendedStatements;
