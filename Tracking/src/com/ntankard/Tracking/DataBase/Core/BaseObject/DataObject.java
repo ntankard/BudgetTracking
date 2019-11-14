@@ -2,6 +2,7 @@ package com.ntankard.Tracking.DataBase.Core.BaseObject;
 
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
+import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Database.SubContainers.DataObjectContainer;
 
 import java.util.*;
@@ -21,6 +22,7 @@ public abstract class DataObject {
     /**
      * Constructor
      */
+    @ParameterMap(shouldSave = false)
     public DataObject(Integer id) {
         this.id = id;
     }
@@ -67,7 +69,7 @@ public abstract class DataObject {
             for (DataObject dataObject : getParents()) {
                 dataObject.notifyChildLink(this);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -130,7 +132,7 @@ public abstract class DataObject {
      */
     @SuppressWarnings("unchecked")
     public <T extends DataObject> T getChildren(Class<T> type, Integer key) {
-        return container.get(type,key);
+        return container.get(type, key);
     }
 
     /**

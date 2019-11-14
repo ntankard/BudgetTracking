@@ -20,24 +20,24 @@ class TrackingDatabase_ReaderTest {
 
     @Test
     void testReadWrite() {
-        for (Class aClass : TrackingDatabase.get().getDataObjectTypes()) {
+        for (Class<? extends DataObject> aClass : TrackingDatabase.get().getDataObjectTypes()) {
             if (FundChargeTransfer.class.isAssignableFrom(aClass)) {
                 continue;
             }
             for (Object dataObject : TrackingDatabase.get().get(aClass)) {
 
-                List<String> first = TrackingDatabase_Reader.dataObjectToString((DataObject) dataObject);
-                if(first == null){
-                    continue;
-                }
+                TrackingDatabase_Reader.DataObjectSaver dataObjectSaver = TrackingDatabase_Reader.generateConstructorMap(dataObject.getClass());
+                if (dataObjectSaver.shouldSave) {
+                    List<String> first = TrackingDatabase_Reader.dataObjectToString((DataObject) dataObject, dataObjectSaver);
 
-                DataObject newObj = TrackingDatabase_Reader.dataObjectFromString(first.toArray(new String[0]), TrackingDatabase.get());
+                    DataObject newObj = TrackingDatabase_Reader.dataObjectFromString(first.toArray(new String[0]), dataObjectSaver, dataObjectSaver, TrackingDatabase.get());
 
-                List<String> second = TrackingDatabase_Reader.dataObjectToString(newObj);
+                    List<String> second = TrackingDatabase_Reader.dataObjectToString(newObj, dataObjectSaver);
 
-                assertEquals(first.size(), second.size());
-                for (int i = 0; i < second.size(); i++) {
-                    assertEquals(first.get(i), second.get(i));
+                    assertEquals(first.size(), second.size());
+                    for (int i = 0; i < second.size(); i++) {
+                        assertEquals(first.get(i), second.get(i));
+                    }
                 }
             }
         }

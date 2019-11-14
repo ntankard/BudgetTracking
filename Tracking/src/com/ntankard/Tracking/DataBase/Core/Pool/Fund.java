@@ -4,7 +4,6 @@ import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.NamedDataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.SpecialValues;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
@@ -14,20 +13,20 @@ import java.util.List;
 import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-public class Fund extends NamedDataObject implements SpecialValues {
+public class Fund extends Pool implements SpecialValues {
 
     public static Integer TAX = 1;
     public static Integer SAVINGS = 2;
 
     // My values
-    private boolean isSavings;
-    private boolean isTax;
+    private Boolean isSavings;
+    private Boolean isTax;
 
     /**
      * Constructor
      */
     @ParameterMap(parameterGetters = {"getId", "getName", "isSavings", "isTax"})
-    public Fund(Integer id, String name, boolean isSavings, boolean isTax) {
+    public Fund(Integer id, String name, Boolean isSavings, Boolean isTax) {
         super(id, name);
         this.isSavings = isSavings;
         this.isTax = isTax;
@@ -37,7 +36,7 @@ public class Fund extends NamedDataObject implements SpecialValues {
      * {@inheritDoc
      */
     @Override
-    public boolean isValue(Integer key) {
+    public Boolean isValue(Integer key) {
         if (key.equals(TAX)) {
             return isTax();
         }
@@ -76,13 +75,13 @@ public class Fund extends NamedDataObject implements SpecialValues {
 
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
     @DisplayProperties(order = 3)
-    public boolean isSavings() {
+    public Boolean isSavings() {
         return isSavings;
     }
 
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
     @DisplayProperties(order = 4)
-    public boolean isTax() {
+    public Boolean isTax() {
         return isTax;
     }
 }

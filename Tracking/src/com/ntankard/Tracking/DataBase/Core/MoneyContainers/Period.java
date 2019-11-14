@@ -20,14 +20,14 @@ public class Period extends DataObject {
     private Period next;
 
     // My values
-    private int month;
-    private int year;
+    private Integer month;
+    private Integer year;
 
     /**
      * Constructor
      */
     @ParameterMap(parameterGetters = {"getId", "getMonth", "getYear", "getLast", "getNext"})
-    public Period(Integer id, int month, int year, Period last, Period next) {
+    public Period(Integer id, Integer month, Integer year, Period last, Period next) {
         super(id);
         this.month = month;
         this.year = year;
@@ -92,12 +92,12 @@ public class Period extends DataObject {
     //------------------------------------------------------------------------------------------------------------------
 
     @DisplayProperties(order = 2)
-    public int getMonth() {
+    public Integer getMonth() {
         return month;
     }
 
     @DisplayProperties(order = 3)
-    public int getYear() {
+    public Integer getYear() {
         return year;
     }
 

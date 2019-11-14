@@ -10,5 +10,5 @@ public interface HasDefault {
      *
      * @return True if this is this the default object for this data object set
      */
-    boolean isDefault();
+    Boolean isDefault();
 }

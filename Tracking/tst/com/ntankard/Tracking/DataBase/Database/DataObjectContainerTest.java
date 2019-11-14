@@ -136,6 +136,8 @@ class DataObjectContainerTest {
             }
         }
 
+        assertEquals(all.size(), dataObjectContainer.get().size());
+
         // Check that remove works
         for (int i = 0; i < testSize; i++) {
             DataObject toTest = all.get(i);

@@ -24,13 +24,13 @@ public class PeriodBoundFundEvent extends FundEvent {
     private Category source;
 
     // My values
-    private int duration;
+    private Integer duration;
 
     /**
      * Constructor
      */
     @ParameterMap(parameterGetters = {"getId", "getName", "getFund", "getStart", "getDuration", "getSource"})
-    public PeriodBoundFundEvent(Integer id, String name, Fund fund, Period start, int duration, Category source) {
+    public PeriodBoundFundEvent(Integer id, String name, Fund fund, Period start, Integer duration, Category source) {
         super(id, name, fund);
         this.start = start;
         this.duration = duration;
@@ -79,7 +79,7 @@ public class PeriodBoundFundEvent extends FundEvent {
         return start;
     }
 
-    public int getDuration() {
+    public Integer getDuration() {
         return duration;
     }
 

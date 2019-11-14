@@ -3,6 +3,7 @@ package com.ntankard.Tracking.DataBase.Database;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Database.SubContainers.*;
+import com.ntankard.Tracking.Util.TreeNode;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,6 +18,7 @@ public class TrackingDatabase {
     private DefaultObjectMap defaultObjectMap = new DefaultObjectMap();
     private SpecialValuesMap specialValuesMap = new SpecialValuesMap();
     private ClassMap classMap = new ClassMap();
+    private DataObjectClassTree dataObjectClassTree = new DataObjectClassTree();
 
     // Special values
     private static Double taxRate = 0.06;
@@ -56,6 +58,7 @@ public class TrackingDatabase {
         containers.add(defaultObjectMap);
         containers.add(specialValuesMap);
         containers.add(classMap);
+        containers.add(dataObjectClassTree);
 
         masterMap.addComparator(Period.class, (o1, o2) -> {
             if (o1.getYear() > o2.getYear()) {
@@ -206,5 +209,14 @@ public class TrackingDatabase {
      */
     public <T extends DataObject> T getSpecialValue(Class<T> aClass, Integer key) {
         return specialValuesMap.get(aClass, key);
+    }
+
+    /**
+     * Get the root node to the object inheritance tree
+     *
+     * @return The root node to the object inheritance tree
+     */
+    public TreeNode<Class<? extends DataObject>> getClassTreeRoot() {
+        return dataObjectClassTree.getClassTreeRoot();
     }
 }

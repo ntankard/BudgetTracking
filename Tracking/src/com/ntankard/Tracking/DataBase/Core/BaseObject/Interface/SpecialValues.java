@@ -17,7 +17,7 @@ public interface SpecialValues {
      * @param key The special object type
      * @return True is this is object the special value?
      */
-    boolean isValue(Integer key);
+    Boolean isValue(Integer key);
 
     /**
      * Get all the special values for this object type

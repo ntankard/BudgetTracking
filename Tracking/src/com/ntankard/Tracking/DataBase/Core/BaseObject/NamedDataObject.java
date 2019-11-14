@@ -2,6 +2,7 @@ package com.ntankard.Tracking.DataBase.Core.BaseObject;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
+import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
 @ClassExtensionProperties(includeParent = true)
 public abstract class NamedDataObject extends DataObject {
@@ -12,6 +13,7 @@ public abstract class NamedDataObject extends DataObject {
     /**
      * Constructor
      */
+    @ParameterMap(shouldSave = false)
     public NamedDataObject(Integer id, String name) {
         super(id);
         this.name = name;

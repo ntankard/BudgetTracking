@@ -29,8 +29,8 @@ public class Currency extends NamedDataObject implements HasDefault {
     }
 
     // My values
-    private boolean isDefault;
-    private double toPrimary;
+    private Boolean isDefault;
+    private Double toPrimary;
     private String language;
     private String country;
 
@@ -41,7 +41,7 @@ public class Currency extends NamedDataObject implements HasDefault {
      * Constructor
      */
     @ParameterMap(parameterGetters = {"getId", "getName", "isDefault", "getToPrimary", "getLanguage", "getCountry"})
-    public Currency(Integer id, String name, boolean isDefault, double toPrimary, String language, String country) {
+    public Currency(Integer id, String name, Boolean isDefault, Double toPrimary, String language, String country) {
         super(id, name);
         this.isDefault = isDefault;
         this.toPrimary = toPrimary;
@@ -78,12 +78,12 @@ public class Currency extends NamedDataObject implements HasDefault {
 
     @Override
     @DisplayProperties(order = 3)
-    public boolean isDefault() {
+    public Boolean isDefault() {
         return isDefault;
     }
 
     @DisplayProperties(order = 4)
-    public double getToPrimary() {
+    public Double getToPrimary() {
         return toPrimary;
     }
 

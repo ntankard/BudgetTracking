@@ -5,7 +5,6 @@ import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.HasDefault;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.NamedDataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.SpecialValues;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
@@ -16,20 +15,20 @@ import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-public class Category extends NamedDataObject implements HasDefault, SpecialValues {
+public class Category extends Pool implements HasDefault, SpecialValues {
 
     public static Integer INCOME = 1;
 
     // My values
-    private int order;
-    private boolean isDefault;
-    private boolean isIncome;
+    private Integer order;
+    private Boolean isDefault;
+    private Boolean isIncome;
 
     /**
      * Constructor
      */
     @ParameterMap(parameterGetters = {"getId", "getName", "getOrder", "isDefault", "isIncome"})
-    public Category(Integer id, String name, int order, boolean isDefault, boolean isIncome) {
+    public Category(Integer id, String name, Integer order, Boolean isDefault, Boolean isIncome) {
         super(id, name);
         this.order = order;
         this.isDefault = isDefault;
@@ -40,7 +39,7 @@ public class Category extends NamedDataObject implements HasDefault, SpecialValu
      * {@inheritDoc
      */
     @Override
-    public boolean isValue(Integer key) {
+    public Boolean isValue(Integer key) {
         if (key.equals(INCOME)) {
             return isIncome();
         }
@@ -75,19 +74,19 @@ public class Category extends NamedDataObject implements HasDefault, SpecialValu
 
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     @DisplayProperties(order = 3)
-    public int getOrder() {
+    public Integer getOrder() {
         return order;
     }
 
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
     @DisplayProperties(order = 4)
-    public boolean isDefault() {
+    public Boolean isDefault() {
         return isDefault;
     }
 
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
     @DisplayProperties(order = 5)
-    public boolean isIncome() {
+    public Boolean isIncome() {
         return isIncome;
     }
 }

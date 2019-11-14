@@ -1,48 +1,14 @@
 package com.ntankard.Tracking.DataBase.Database;
 
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Core.Pool.Fund;
-import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
-import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodFundTransfer.PeriodFundTransfer;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
-import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
-import com.ntankard.Tracking.DataBase.Core.Pool.Category;
-import com.ntankard.Tracking.DataBase.Core.StatementEnd;
-import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
-import com.ntankard.Tracking.DataBase.Core.MoneyCategory.FundEvent.FundEvent;
+import com.ntankard.Tracking.Util.FileUtil;
 
-import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class TrackingDatabase_Reader {
-
-    /**
-     * Save the database to a new directory
-     *
-     * @param data     The data to save
-     * @param corePath The directory to put the folder
-     */
-    public static void save(TrackingDatabase data, String corePath) {
-        String csvFile = newSaveDirectory(corePath);
-
-        // Save the data
-        saveDataObjectSet(csvFile, Currency.class, data);
-        saveDataObjectSet(csvFile, Category.class, data);
-        saveDataObjectSet(csvFile, Bank.class, data);
-        saveDataObjectSet(csvFile, Period.class, data);
-        saveDataObjectSet(csvFile, StatementEnd.class, data);
-        saveDataObjectSet(csvFile, Statement.class, data);
-        saveDataObjectSet(csvFile, Transaction.class, data);
-        saveDataObjectSet(csvFile, Fund.class, data);
-        saveDataObjectSet(csvFile, FundEvent.class, data);
-        saveDataObjectSet(csvFile, PeriodFundTransfer.class, data);
-        //saveDataObjectSet(csvFile, FundChargeTransfer.class);
-    }
 
     /**
      * Read all files for the database from the latest save folder
@@ -51,94 +17,271 @@ public class TrackingDatabase_Reader {
      * @param corePath The path that files are located in
      */
     public static void read(TrackingDatabase data, String corePath) {
-        String csvFile = getLatestSaveDirectory(corePath);
+        String csvFile = FileUtil.getLatestSaveDirectory(corePath);
+        List<String> files = FileUtil.findFilesInDirectory(csvFile);
 
-        // Read the data
-        readDataObjectSet(csvFile, Currency.class, data);
-        readDataObjectSet(csvFile, Category.class, data);
-        readDataObjectSet(csvFile, Fund.class, data);
-        readDataObjectSet(csvFile, Period.class, data);
-        readDataObjectSet(csvFile, Bank.class, data);
-        readDataObjectSet(csvFile, StatementEnd.class, data);
-        readDataObjectSet(csvFile, Statement.class, data);
-        readDataObjectSet(csvFile, FundEvent.class, data);
-        readDataObjectSet(csvFile, Transaction.class, data);
-        readDataObjectSet(csvFile, PeriodFundTransfer.class, data);
-        //readDataObjectSet(csvFile, FundChargeTransfer.class, data);
+        Map<DataObjectSaver, List<String[]>> readLines = new HashMap<>();
+        List<DataObjectSaver> pastDataObjectSavers = new ArrayList<>();
 
-        TrackingDatabase.get().finalizeCore();
-    }
+        // Find all saved files
+        for (String file : files) {
 
+            // Read the lines
+            List<String[]> allLines = FileUtil.readLines(csvFile + file);
+            if (allLines.size() < 2 || allLines.get(0).length != 1 || allLines.get(1).length % 2 != 0) {
+                throw new RuntimeException("File is in the wrong format");
+            }
 
-    //------------------------------------------------------------------------------------------------------------------
-    //################################################## Save ##########################################################
-    //------------------------------------------------------------------------------------------------------------------
+            // Parse the object
+            DataObjectSaver dataObjectSaver = extractConstructorMap(allLines);
 
-    /**
-     * Save all objects of certain type from the database
-     *
-     * @param saveDir          The location to save the file
-     * @param aClass           The object type to save
-     * @param trackingDatabase The database save the files to
-     * @param <T>              Type, same as aClass
-     */
-    private static <T extends DataObject> void saveDataObjectSet(String saveDir, Class<T> aClass, TrackingDatabase trackingDatabase) {
-        ArrayList<List<String>> lines = new ArrayList<>();
-        for (DataObject t : trackingDatabase.get(aClass)) {
-            List<String> paramStrings = dataObjectToString(t);
-            if (paramStrings != null) {
-                lines.add(paramStrings);
+            readLines.put(dataObjectSaver, allLines);
+            pastDataObjectSavers.add(dataObjectSaver);
+        }
+
+        // Sort the objects so they load correctly
+        sortByDependency(pastDataObjectSavers);
+
+        // Load each object type
+        for (DataObjectSaver pastDataObjectSaver : pastDataObjectSavers) {
+            DataObjectSaver currentObjectMap = generateConstructorMap(pastDataObjectSaver.aClass);
+            List<String[]> allLines = readLines.get(pastDataObjectSaver);
+
+            // Load each object
+            for (int i = 2; i < allLines.size(); i++) {
+                if (currentObjectMap.nameTypePairs.size() != allLines.get(i).length)
+                    throw new RuntimeException("Line parts dose not match the available params");
+
+                DataObject toAdd = dataObjectFromString(allLines.get(i), currentObjectMap, pastDataObjectSaver, data);
+                data.add(toAdd);
             }
         }
 
-        writeLines(saveDir + aClass.getSimpleName() + ".csv", lines);
+        data.finalizeCore();
+    }
+
+    /**
+     * Save the database to a new directory
+     *
+     * @param data     The data to save
+     * @param corePath The directory to put the folder
+     */
+    public static void save(TrackingDatabase data, String corePath) {
+        Map<Class, List<List<String>>> linesToSave = new HashMap<>();
+        Map<Class, DataObjectSaver> dataObjectSavers = new HashMap<>();
+
+        // Generate the headers
+        for (Class aClass : data.getDataObjectTypes()) {
+            DataObjectSaver dataObjectSaver = generateConstructorMap(aClass);
+            if (dataObjectSaver.shouldSave) {
+
+                // Create entry
+                dataObjectSavers.put(aClass, dataObjectSaver);
+                linesToSave.put(aClass, new ArrayList<>());
+
+                // Write the object type
+                linesToSave.get(aClass).add(new ArrayList<>(Collections.singletonList(aClass.getName())));
+
+                // Write the object parameters to the header of the file
+                List<String> types = new ArrayList<>();
+                for (NameTypePair nameTypePair : dataObjectSaver.nameTypePairs) {
+                    types.add(nameTypePair.name);
+                    types.add(nameTypePair.type.getName());
+                }
+                linesToSave.get(aClass).add(types);
+            }
+        }
+
+        // Add each individual object
+        for (DataObject dataObject : data.getAll()) {
+            List<List<String>> lines = linesToSave.get(dataObject.getClass());
+            DataObjectSaver dataObjectSaver = dataObjectSavers.get(dataObject.getClass());
+
+            if (lines == null || dataObjectSaver == null) {
+                throw new RuntimeException("Trying to save and object that is not setup for saving");
+            }
+
+            if (dataObjectSaver.shouldSave) {
+                lines.add(dataObjectToString(dataObject, dataObjectSaver));
+            }
+        }
+
+        // Write to file
+        String csvFile = FileUtil.newSaveDirectory(corePath);
+        for (Map.Entry<Class, List<List<String>>> entry : linesToSave.entrySet()) {
+            if (dataObjectSavers.get(entry.getKey()).shouldSave) {
+                FileUtil.writeLines(csvFile + entry.getKey().getSimpleName() + ".csv", entry.getValue());
+            }
+        }
+    }
+
+    /**
+     * Sort a list of Data Objects based on other objects they depends on. Is objects are loaded in this order all dependencies can be guaranteed
+     *
+     * @param pastDataObjectSavers The list to sort
+     */
+    private static void sortByDependency(List<DataObjectSaver> pastDataObjectSavers) {
+        Map<DataObjectSaver, List<Class>> dependencyMap = new HashMap<>();
+        List<Class> allObjects = new ArrayList<>();
+
+        // Generate the dependencies
+        for (DataObjectSaver dataObjectSaver : pastDataObjectSavers) {
+            List<Class> dependency = new ArrayList<>();
+            for (NameTypePair nameTypePair : dataObjectSaver.nameTypePairs) {
+                if (DataObject.class.isAssignableFrom(nameTypePair.type)) {
+                    if (!nameTypePair.type.equals(dataObjectSaver.aClass)) {
+                        dependency.add(nameTypePair.type);
+                    }
+                }
+            }
+
+            dependencyMap.put(dataObjectSaver, dependency);
+            allObjects.add(dataObjectSaver.aClass);
+        }
+
+        // Check that all dependencies are possible
+        for (DataObjectSaver dataObjectSaver : pastDataObjectSavers) {
+            for (Class aClass : dependencyMap.get(dataObjectSaver)) {
+                if (!allObjects.contains(aClass)) {
+                    throw new RuntimeException("Dependency detected on an object that dose not exist");
+                }
+            }
+        }
+
+        // Sort the list
+        boolean sorted;
+        int attempts = 0;
+        do {
+
+            // Infinite loop catch
+            if (attempts++ > pastDataObjectSavers.size() * pastDataObjectSavers.size()) {
+                throw new RuntimeException("Failed to sort dependencies, infinite loop detected");
+            }
+
+            sorted = true;
+            for (int i = 0; i < pastDataObjectSavers.size(); i++) {
+                DataObjectSaver dataObjectSaver = pastDataObjectSavers.get(i);
+                List<Class> dependency = dependencyMap.get(dataObjectSaver);
+
+                // Check that all dependencies are earlier in the list
+                boolean allFound = true;
+                for (Class aClass : dependency) {
+
+                    // Look for a dependency earlier in the list
+                    boolean found = false;
+                    for (int j = 0; j < i; j++) {
+                        if (pastDataObjectSavers.get(j).aClass.equals(aClass)) {
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (!found) {
+                        allFound = false;
+                        break;
+                    }
+                }
+
+                // If one of more dependencies is not before the test object more it to the end of the list
+                if (!allFound) {
+                    pastDataObjectSavers.remove(dataObjectSaver);
+                    pastDataObjectSavers.add(dataObjectSaver);
+                    sorted = false;
+                    break;
+                }
+            }
+        } while (!sorted);
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    //################################################ Object to String ################################################
+    //------------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Create a DataObject from a list of constructor parts
+     *
+     * @param paramStrings     The string of constructor parts
+     * @param trackingDatabase The database used to get reference objects
+     * @return THe newly constructed (but not added) DataObject
+     */
+    @SuppressWarnings("unchecked")
+    static DataObject dataObjectFromString(String[] paramStrings, DataObjectSaver currentObjectMap, DataObjectSaver pastObjectMap, TrackingDatabase trackingDatabase) {
+
+        // Build up the parameters from the strings
+        List<Object> params = new ArrayList<>();
+        for (int i = 0; i < currentObjectMap.nameTypePairs.size(); i++) {
+            NameTypePair current = currentObjectMap.nameTypePairs.get(i);
+
+            // Find the past entry that matches the constructor parameter
+            int order = 0;
+            boolean found = false;
+            for (NameTypePair savedMethodPair : pastObjectMap.nameTypePairs) {
+                if (current.name.equals(savedMethodPair.name)) {
+                    if (!current.type.equals(savedMethodPair.type))
+                        throw new RuntimeException("Name matched, type did not");
+                    found = true;
+                    break;
+                }
+                order++;
+            }
+
+            // Parse the object type
+            if (!found) {
+                params.add(null);
+                System.out.println("Warning, the object " + currentObjectMap.aClass.getSimpleName() + ". Has a new parameter that was not saved before. Setting to null");
+            } else {
+                String paramString = paramStrings[order];
+                Class paramType = currentObjectMap.nameTypePairs.get(i).type;
+
+                if (DataObject.class.isAssignableFrom(paramType)) {
+                    if (paramString.equals(" ")) {
+                        params.add(null);
+                    } else {
+                        params.add(trackingDatabase.get(paramType, Integer.parseInt(paramString)));
+                    }
+                } else if (String.class.isAssignableFrom(paramType)) {
+                    params.add(paramString);
+                } else if (Boolean.class.isAssignableFrom(paramType) || boolean.class.isAssignableFrom(paramType)) {
+                    params.add(Boolean.parseBoolean(paramString));
+                } else if (Double.class.isAssignableFrom(paramType) || double.class.isAssignableFrom(paramType)) {
+                    params.add(Double.parseDouble(paramString));
+                } else if (Integer.class.isAssignableFrom(paramType) || int.class.isAssignableFrom(paramType)) {
+                    params.add(Integer.parseInt(paramString));
+                } else {
+                    throw new RuntimeException("Unknown data type");
+                }
+            }
+        }
+
+        // Construct the object
+        try {
+            return (DataObject) currentObjectMap.constructor.newInstance(params.toArray());
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
      * Create a list of constructor parameters from a DataObject
      *
-     * @param dataObject the DataObject to convert
+     * @param dataObject      the DataObject to convert
+     * @param dataObjectSaver The description of the object to save
      * @return The list of parameters that can be used to recreate this object
      */
-    static List<String> dataObjectToString(DataObject dataObject) {
-
-        // Find the constructors parameters
-        Class<?> aClass = dataObject.getClass();
-        Constructor[] constructors = aClass.getConstructors();
-        if (constructors.length != 1) {
-            throw new RuntimeException("More than one constructor detected");
-        }
-        Class<?>[] paramTypes = constructors[0].getParameterTypes();
-
-        // Find the getters that map to the each constructor parameter
-        ParameterMap parameterMap = (ParameterMap) constructors[0].getAnnotation(ParameterMap.class);
-        if (parameterMap == null) {
-            throw new RuntimeException("dataObject dose not have ParameterMap on its constructor");
-        }
-        if (!parameterMap.shouldSave()) {
-            return null;
-        }
-        String[] paramGetters = parameterMap.parameterGetters();
-        if (paramGetters.length != paramTypes.length) {
-            throw new RuntimeException("dataObjects ParameterMap annotation dose not match is constructor. Could save but would not be able to load. Aborting save");
-        }
-
+    static List<String> dataObjectToString(DataObject dataObject, DataObjectSaver dataObjectSaver) {
         List<String> paramStrings = new ArrayList<>();
-        paramStrings.add(aClass.getName());
-        for (int i = 0; i < paramGetters.length; i++) {
-            String paramGetter = paramGetters[i];
-            Class paramType = paramTypes[i];
+
+        for (NameTypePair nameTypePair : dataObjectSaver.nameTypePairs) {
 
             // Find the method
             Method getter;
             try {
-                getter = aClass.getMethod(paramGetter);
+                getter = dataObjectSaver.aClass.getMethod(nameTypePair.name);
             } catch (NoSuchMethodException e) {
                 throw new RuntimeException(e);
             }
-            if (!getter.getReturnType().equals(paramType)) {
+            if (!getter.getReturnType().equals(nameTypePair.type))
                 throw new RuntimeException("Getter provided by ParameterMap dose not match the parameter in the constructor. Could save but would not be able to load. Aborting save");
-            }
 
             // Execute the getter
             Object getterValue;
@@ -162,205 +305,119 @@ public class TrackingDatabase_Reader {
     }
 
     //------------------------------------------------------------------------------------------------------------------
-    //################################################## Read ##########################################################
+    //################################################ Class extraction ################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    /**
-     * Read all objects of a certain type into the database
-     *
-     * @param saveDir          The directory where the same file can be found
-     * @param aClass           The object type to read
-     * @param trackingDatabase The database save the files to
-     */
-    private static void readDataObjectSet(String saveDir, Class<?> aClass, TrackingDatabase trackingDatabase) {
-        ArrayList<String[]> allLines = readLines(saveDir + aClass.getSimpleName() + ".csv");
-
-        for (String[] lines : allLines) {
-            DataObject built = dataObjectFromString(lines, trackingDatabase);
-            trackingDatabase.add(built);
-        }
-    }
-
-    /**
-     * Create a DataObject from a list of constructor parts
-     *
-     * @param paramStrings     The string of constructor parts
-     * @param trackingDatabase The database used to get reference objects
-     * @return THe newly constructed (but not added) DataObject
-     */
-    @SuppressWarnings("unchecked")
-    static DataObject dataObjectFromString(String[] paramStrings, TrackingDatabase trackingDatabase) {
-
-        // Find the class type
-        String className = paramStrings[0];
-        Class toBuild;
+    private static DataObjectSaver extractConstructorMap(List<String[]> allLines) {
+        Class aClass;
         try {
-            toBuild = Class.forName(className);
+            aClass = Class.forName(allLines.get(0)[0]);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
 
-        // Find the constructors parameters
-        Constructor[] constructors = toBuild.getConstructors();
-        if (constructors.length != 1) {
-            throw new RuntimeException("More than one constructor detected");
+        return generateConstructorMap(aClass, allLines.get(1));
+    }
+
+    /**
+     * Create a ConstructorMap object for its save line
+     *
+     * @param aClass The class to generate
+     * @param lines  The lines to generate from
+     * @return A ConstructorMap
+     */
+    private static DataObjectSaver generateConstructorMap(Class aClass, String[] lines) {
+        DataObjectSaver dataObjectSaver = new DataObjectSaver(aClass);
+
+        // Find the constructor
+        Constructor[] constructors = aClass.getConstructors();
+        if (constructors.length != 1) throw new RuntimeException("More than one constructor detected");
+        dataObjectSaver.constructor = constructors[0];
+
+        for (int i = 0; i < lines.length / 2; i++) {
+            try {
+                dataObjectSaver.nameTypePairs.add(new NameTypePair(lines[i * 2], Class.forName(lines[i * 2 + 1])));
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
         }
+
+        return dataObjectSaver;
+    }
+
+    /**
+     * Create a ConstructorMap object for a specific class
+     *
+     * @param aClass The class to generate from
+     * @return its ConstructorMap or null if its not supported
+     */
+    static DataObjectSaver generateConstructorMap(Class aClass) {
+        // Build the base object
+        if (aClass.isPrimitive()) throw new RuntimeException("Primate object type detected");
+        DataObjectSaver dataObjectSaver = new DataObjectSaver(aClass);
+
+        // Find the constructor
+        Constructor[] constructors = aClass.getConstructors();
+        if (constructors.length != 1) throw new RuntimeException("More than one constructor detected");
+        dataObjectSaver.constructor = constructors[0];
+
+        // Find the save settings
+        ParameterMap parameterMap = (ParameterMap) constructors[0].getAnnotation(ParameterMap.class);
+        if (parameterMap == null)
+            throw new RuntimeException("This class dose not support saving");
+
+        // Should this object be ignored?
+        String[] paramGetters = parameterMap.parameterGetters();
+        if (!parameterMap.shouldSave()) {
+            dataObjectSaver.shouldSave = false;
+            return dataObjectSaver;
+        }
+
+        // Find the getters that map to the each constructor parameter
         Class<?>[] paramTypes = constructors[0].getParameterTypes();
-        if (paramTypes.length != paramStrings.length - 1) {
-            throw new RuntimeException("Line parts dose not match the available params");
-        }
+        if (paramGetters.length != paramTypes.length)
+            throw new RuntimeException("dataObjects ParameterMap annotation dose not match is constructor. Could save but would not be able to load. Aborting save");
 
-        // Build up the parameters from the strings
-        List<Object> params = new ArrayList<>();
-        for (int i = 0; i < paramTypes.length; i++) {
-            String paramString = paramStrings[i + 1];
-            Class paramType = paramTypes[i];
-
-            if (DataObject.class.isAssignableFrom(paramType)) {
-                if (paramString.equals(" ")) {
-                    params.add(null);
-                } else {
-                    params.add(trackingDatabase.get(paramType, Integer.parseInt(paramString)));
-                }
-            } else if (String.class.isAssignableFrom(paramType)) {
-                params.add(paramString);
-            } else if (Boolean.class.isAssignableFrom(paramType) || boolean.class.isAssignableFrom(paramType)) {
-                params.add(Boolean.parseBoolean(paramString));
-            } else if (Double.class.isAssignableFrom(paramType) || double.class.isAssignableFrom(paramType)) {
-                params.add(Double.parseDouble(paramString));
-            } else if (Integer.class.isAssignableFrom(paramType) || int.class.isAssignableFrom(paramType)) {
-                params.add(Integer.parseInt(paramString));
-            } else {
-                throw new RuntimeException("Unknown data type");
-            }
+        // Build the rest of the object
+        for (int i = 0; i < paramGetters.length; i++) {
+            dataObjectSaver.nameTypePairs.add(new NameTypePair(paramGetters[i], paramTypes[i]));
         }
-
-        // Construct the object
-        try {
-            return (DataObject) constructors[0].newInstance(params.toArray());
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException(e);
-        }
+        return dataObjectSaver;
     }
 
     //------------------------------------------------------------------------------------------------------------------
-    //################################################## Util ##########################################################
+    //################################################ Class containers ################################################
     //------------------------------------------------------------------------------------------------------------------
 
     /**
-     * Read lines from a csv file
-     *
-     * @param csvFile The path to the file to read
-     * @return ALl lines read from the file
+     * Description of the object needed to construct an object
      */
-    private static ArrayList<String[]> readLines(String csvFile) {
-        BufferedReader br = null;
-        String line;
-        String cvsSplitBy = ",";
-        ArrayList<String[]> allLines = new ArrayList<>();
+    static class DataObjectSaver {
+        Class<?> aClass;
+        List<NameTypePair> nameTypePairs = new ArrayList<>();
+        Boolean shouldSave = true;
+        Constructor constructor;
 
-        try {
-            br = new BufferedReader(new FileReader(csvFile));
-            while ((line = br.readLine()) != null) {
-                String[] lines = line.split(cvsSplitBy);
-                allLines.add(lines);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } finally {
-            if (br != null) {
-                try {
-                    br.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+        DataObjectSaver(Class aClass) {
+            this.aClass = aClass;
         }
-        return allLines;
-    }
 
-    /**
-     * Write lines to a csv file
-     *
-     * @param path  The path to write the files to
-     * @param lines The lines to write
-     */
-    private static void writeLines(String path, List<List<String>> lines) {
-        try {
-            FileWriter fw = new FileWriter(path);
-            for (List<String> line : lines) {
-                for (String s : line) {
-                    fw.write(s);
-                    fw.write(",");
-                }
-                fw.write('\n');
-            }
-            fw.close();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        @Override
+        public String toString() {
+            return aClass.toString();
         }
     }
 
     /**
-     * Find the latest save directory
-     *
-     * @param corePath The core directory
-     * @return The path of the latest save directory
+     * Each field (getter) and its type
      */
-    private static String getLatestSaveDirectory(String corePath) {
-        int max = 0;
-        List<String> folders = findFoldersInDirectory(corePath);
-        for (String s : folders) {
-            int value = Integer.parseInt(s);
-            if (value > max) {
-                max = value;
-            }
+    private static class NameTypePair {
+        Class type;
+        String name;
+
+        NameTypePair(String name, Class type) {
+            this.type = type;
+            this.name = name;
         }
-        return corePath + "\\" + max + "\\";
-    }
-
-    /**
-     * Create an empty save directory in the core directory
-     *
-     * @param corePath The core directory
-     * @return The new save path
-     */
-    private static String newSaveDirectory(String corePath) {
-        // Find the next save dir
-        int max = 0;
-        List<String> folders = findFoldersInDirectory(corePath);
-        for (String s : folders) {
-            int value = Integer.parseInt(s);
-            if (value > max) {
-                max = value;
-            }
-        }
-        String csvFile = corePath + "\\" + (max + 1) + "\\";
-
-        // Make the folder
-        new File(csvFile).mkdir();
-
-        return csvFile;
-    }
-
-    /**
-     * Find the folders in a directory
-     *
-     * @param directoryPath The path to search
-     * @return A list of folders in the directory
-     */
-    private static List<String> findFoldersInDirectory(String directoryPath) {
-        File directory = new File(directoryPath);
-
-        FileFilter directoryFileFilter = File::isDirectory;
-
-        File[] directoryListAsFile = directory.listFiles(directoryFileFilter);
-        assert directoryListAsFile != null;
-        List<String> foldersInDirectory = new ArrayList<>(directoryListAsFile.length);
-        for (File directoryAsFile : directoryListAsFile) {
-            foldersInDirectory.add(directoryAsFile.getName());
-        }
-
-        return foldersInDirectory;
     }
 }

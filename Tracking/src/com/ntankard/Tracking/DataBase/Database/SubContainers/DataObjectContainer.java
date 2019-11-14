@@ -39,8 +39,7 @@ public class DataObjectContainer extends Container<Class<? extends DataObject>, 
 
             // Check for duplicate IDs across the entire container
             if (container.get(aClass).containsKey(toAdd.getId())) {
-                //throw new RuntimeException("Duplicate key found");
-                System.out.println("Duplicate key found, TODO create error");
+                throw new RuntimeException("Duplicate key found");
             }
 
             // Add the object at this layer

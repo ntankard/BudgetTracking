@@ -35,7 +35,7 @@ public abstract class MoneyEvent<SourceType extends DataObject, SourceCategory e
     /**
      * Constructor
      */
-    //@ParameterMap(parameterGetters = {"getId", "getDescription", "getValue", "getSourceContainer", "getSourceCategory", "getDestinationContainer", "getDestinationCategory", "getCurrency"})
+    @ParameterMap(shouldSave = false)
     public MoneyEvent(Integer id, String description, Double value, Period period, SourceType sourceContainer, SourceCategory sourceCategory, DestinationType destinationContainer, DestinationCategory destinationCategory, Currency currency) {
         super(id);
         this.description = description;
@@ -83,7 +83,7 @@ public abstract class MoneyEvent<SourceType extends DataObject, SourceCategory e
      * @param category        The category to check
      * @return True if the params represent this transfers source
      */
-    public boolean isThisSource(DataObject sourceContainer, DataObject category) {
+    public Boolean isThisSource(DataObject sourceContainer, DataObject category) {
         return this.sourceContainer.equals(sourceContainer) && this.sourceCategory.equals(category);
     }
 
@@ -93,7 +93,7 @@ public abstract class MoneyEvent<SourceType extends DataObject, SourceCategory e
      * @param sourceContainer The container to check
      * @return True if the params represent this transfers source
      */
-    public boolean isThisSource(DataObject sourceContainer) {
+    public Boolean isThisSource(DataObject sourceContainer) {
         return this.sourceContainer.equals(sourceContainer);
     }
 
@@ -104,7 +104,7 @@ public abstract class MoneyEvent<SourceType extends DataObject, SourceCategory e
      * @param category             The category to check
      * @return True if the params represent this transfers destination
      */
-    public boolean isThisDestination(DataObject destinationContainer, DataObject category) {
+    public Boolean isThisDestination(DataObject destinationContainer, DataObject category) {
         if (category == null || this.destinationCategory == null) {
             return isThisDestination(destinationContainer);
         }
@@ -117,7 +117,7 @@ public abstract class MoneyEvent<SourceType extends DataObject, SourceCategory e
      * @param destinationContainer The container to check
      * @return True if the params represent this transfers destination
      */
-    public boolean isThisDestination(DataObject destinationContainer) {
+    public Boolean isThisDestination(DataObject destinationContainer) {
         return this.destinationContainer.equals(destinationContainer);
     }
 
