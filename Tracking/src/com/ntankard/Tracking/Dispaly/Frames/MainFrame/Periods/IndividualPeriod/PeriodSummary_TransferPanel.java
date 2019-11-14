@@ -3,11 +3,9 @@ package com.ntankard.Tracking.Dispaly.Frames.MainFrame.Periods.IndividualPeriod;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.FundChargeTransfer.FundChargeTransfer;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodFundTransfer.PeriodFundTransfer;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodFundTransfer;
 import com.ntankard.Tracking.DataBase.Interface.Set.MoneyEvent_Sets.ContainerType_Set;
 import com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.PeriodSummary;
-import com.ntankard.Tracking.Dispaly.Util.ElementControllers.FundChargeTransfer_ElementController;
 import com.ntankard.Tracking.Dispaly.Util.ElementControllers.PeriodFundTransfer_ElementController;
 import com.ntankard.Tracking.Dispaly.Util.Panels.DataObject_DisplayList;
 
@@ -20,7 +18,6 @@ public class PeriodSummary_TransferPanel extends UpdatableJPanel {
     // The GUI components
     private PeriodSummary periodSummary_panel;
     private DataObject_DisplayList<PeriodFundTransfer> periodFundTransfer_panel;
-    private DataObject_DisplayList<FundChargeTransfer> fundChargeTransfer_panel;
 
     /**
      * Constructor
@@ -43,9 +40,6 @@ public class PeriodSummary_TransferPanel extends UpdatableJPanel {
         periodFundTransfer_panel = new DataObject_DisplayList<>(PeriodFundTransfer.class, new ContainerType_Set<>(core, PeriodFundTransfer.class), false, this);
         periodFundTransfer_panel.addControlButtons(new PeriodFundTransfer_ElementController(core, this));
 
-        fundChargeTransfer_panel = new DataObject_DisplayList<>(FundChargeTransfer.class, new ContainerType_Set<>(core, FundChargeTransfer.class), false, this);
-        fundChargeTransfer_panel.addControlButtons(new FundChargeTransfer_ElementController(core, this));
-
         periodFundTransfer_panel.setTitle("Other Transfer");
 
         GridBagConstraints summaryContainer_C = new GridBagConstraints();
@@ -63,7 +57,6 @@ public class PeriodSummary_TransferPanel extends UpdatableJPanel {
 
         this.add(periodFundTransfer_panel, summaryContainer_C);
         summaryContainer_C.gridx = 1;
-        this.add(fundChargeTransfer_panel, summaryContainer_C);
     }
 
     /**
@@ -72,7 +65,6 @@ public class PeriodSummary_TransferPanel extends UpdatableJPanel {
     @Override
     public void update() {
         periodFundTransfer_panel.update();
-        fundChargeTransfer_panel.update();
 
         periodSummary_panel.update();
     }

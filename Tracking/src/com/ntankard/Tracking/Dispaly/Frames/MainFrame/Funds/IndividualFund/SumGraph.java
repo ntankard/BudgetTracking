@@ -4,8 +4,7 @@ import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.Pool.Fund;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.FundChargeTransfer.FundChargeTransfer;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodFundTransfer.PeriodFundTransfer;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodFundTransfer;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.MoneyEvent_Sets.ContainerContainerType_Set;
 import org.jfree.chart.ChartFactory;
@@ -80,25 +79,20 @@ public class SumGraph extends UpdatableJPanel {
      */
     private XYDataset createDataset() {
         final XYSeries total = new XYSeries("Total");
-        final XYSeries charge = new XYSeries("Charge");
         final XYSeries use = new XYSeries("Use");
 
         int i = 0;
-        double chargeTotal = 0.0;
         double useTotal = 0.0;
         for (Period period : TrackingDatabase.get().get(Period.class)) {
-            chargeTotal -= new ContainerContainerType_Set<>(period, core, FundChargeTransfer.class).getTotal();
             useTotal += new ContainerContainerType_Set<>(period, core, PeriodFundTransfer.class).getTotal();
 
-            charge.add(i, -new ContainerContainerType_Set<>(period, core, FundChargeTransfer.class).getTotal());
             use.add(i, new ContainerContainerType_Set<>(period, core, PeriodFundTransfer.class).getTotal());
-            total.add(i, chargeTotal + useTotal);
+            total.add(i, useTotal);
 
             i++;
         }
 
         final XYSeriesCollection dataset = new XYSeriesCollection();
-        dataset.addSeries(charge);
         dataset.addSeries(use);
         dataset.addSeries(total);
         return dataset;

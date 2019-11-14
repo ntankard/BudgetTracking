@@ -1,7 +1,6 @@
 package com.ntankard.Tracking.DataBase.Database;
 
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.FundChargeTransfer.FundChargeTransfer;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -21,9 +20,6 @@ class TrackingDatabase_ReaderTest {
     @Test
     void testReadWrite() {
         for (Class<? extends DataObject> aClass : TrackingDatabase.get().getDataObjectTypes()) {
-            if (FundChargeTransfer.class.isAssignableFrom(aClass)) {
-                continue;
-            }
             for (Object dataObject : TrackingDatabase.get().get(aClass)) {
 
                 TrackingDatabase_Reader.DataObjectSaver dataObjectSaver = TrackingDatabase_Reader.generateConstructorMap(dataObject.getClass());

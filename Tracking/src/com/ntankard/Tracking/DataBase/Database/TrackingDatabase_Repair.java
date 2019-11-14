@@ -1,15 +1,10 @@
 package com.ntankard.Tracking.DataBase.Database;
 
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Core.MoneyCategory.FundEvent.FundEvent;
-import com.ntankard.Tracking.DataBase.Core.MoneyCategory.FundEvent.PeriodBoundFundEvent;
 import com.ntankard.Tracking.DataBase.Core.Pool.Fund;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodFundTransfer.PeriodBoundFundEvent_Transfer;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodFundTransfer.PeriodFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
-import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
 import com.ntankard.Tracking.DataBase.Interface.ClassExtension.ExtendedStatement;
 
 public class TrackingDatabase_Repair {
@@ -24,8 +19,7 @@ public class TrackingDatabase_Repair {
             repairPeriod((Period) dataObject);
         } else if (dataObject instanceof Bank) {
             repairBank((Bank) dataObject);
-        } else if (dataObject instanceof PeriodBoundFundEvent) {
-            repairPeriodBoundFundEvent((PeriodBoundFundEvent) dataObject);
+
         } else if (dataObject instanceof Fund) {
             System.out.println("Implement repair for Fund (generateManagersChargeTransfer)");
         }
@@ -41,11 +35,6 @@ public class TrackingDatabase_Repair {
             period.getLast().setNext(period);
         }
         generateStatements(period);
-        for (FundEvent fundEvent : TrackingDatabase.get().get(FundEvent.class)) {
-            if (fundEvent instanceof PeriodBoundFundEvent) {
-                repairPeriodBoundFundEvent((PeriodBoundFundEvent) fundEvent);
-            }
-        }
     }
 
     /**
@@ -56,44 +45,6 @@ public class TrackingDatabase_Repair {
     private static void repairBank(Bank added) {
         for (Period period : TrackingDatabase.get().get(Period.class)) {
             generateStatements(period);
-        }
-    }
-
-    /**
-     * Repair a PeriodBoundFundEvent type object
-     *
-     * @param periodBoundFundEvent The PeriodBoundFundEvent to repair
-     */
-    private static void repairPeriodBoundFundEvent(PeriodBoundFundEvent periodBoundFundEvent) {
-        Period toAdd = periodBoundFundEvent.getStart();
-
-        int addedCount = 0;
-        while (addedCount < periodBoundFundEvent.getDuration()) {
-            boolean found = false;
-            for (PeriodFundTransfer periodFundTransfer : periodBoundFundEvent.getChildren(PeriodFundTransfer.class)) {
-                if (periodFundTransfer instanceof PeriodBoundFundEvent_Transfer) {
-                    if (periodFundTransfer.getSourceContainer().equals(toAdd)) {
-                        found = true;
-                        break;
-                    }
-                }
-            }
-
-            if (!found) {
-                TrackingDatabase.get().add(new PeriodBoundFundEvent_Transfer(TrackingDatabase.get().getNextId(),
-                        periodBoundFundEvent.getName() + " payment",
-                        toAdd,
-                        periodBoundFundEvent.getSource(),
-                        periodBoundFundEvent.getFund(),
-                        periodBoundFundEvent,
-                        TrackingDatabase.get().getDefault(Currency.class)));
-            }
-
-            if (toAdd.getNext() == null) {
-                break;
-            }
-            toAdd = toAdd.getNext();
-            addedCount++;
         }
     }
 
