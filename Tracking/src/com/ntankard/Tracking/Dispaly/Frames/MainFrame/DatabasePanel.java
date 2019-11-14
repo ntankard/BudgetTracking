@@ -10,6 +10,7 @@ import com.ntankard.Tracking.Util.TreeNode;
 
 import javax.swing.*;
 import java.awt.*;
+import java.lang.reflect.Modifier;
 
 public class DatabasePanel extends UpdatableJPanel {
 
@@ -63,6 +64,14 @@ public class DatabasePanel extends UpdatableJPanel {
                 // Build a new layer
                 JTabbedPane container = new JTabbedPane();
                 parent.add(rootNode.data.getSimpleName(), container);
+
+                // If this is a solid object display it as well
+                if (!Modifier.isAbstract(rootNode.data.getModifiers())) {
+                    DataObject_VerbosityDisplayList list = new DataObject_VerbosityDisplayList<>(rootNode.data, this);
+                    container.add(rootNode.data.getSimpleName(), list);
+                    list.update();
+                }
+
                 for (TreeNode<Class<? extends DataObject>> node : rootNode.children) {
                     createBach(container, node);
                 }

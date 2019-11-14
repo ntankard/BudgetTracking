@@ -5,10 +5,12 @@ import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.BankTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Core.StatementEnd;
 import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
+import com.ntankard.Tracking.DataBase.Interface.Set.MoneyEvent_Sets.PeriodPoolType_Set;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataContext.ZERO_TARGET;
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
@@ -73,12 +75,24 @@ public class ExtendedStatement implements CurrencyBound {
 
     @DisplayProperties(dataType = CURRENCY, order = 6)
     public Double getTransferIn() {
-        return statement.getTransferIn();
+        Double total = 0.00;
+        for (BankTransfer bankTransfer : new PeriodPoolType_Set<>(period, bank, BankTransfer.class).get()) {
+            if (bankTransfer.getDestination().equals(bank)) {
+                total += bankTransfer.getDestinationValue();
+            }
+        }
+        return total;
     }
 
     @DisplayProperties(dataType = CURRENCY, order = 5)
     public Double getTransferOut() {
-        return statement.getTransferOut();
+        Double total = 0.00;
+        for (BankTransfer bankTransfer : new PeriodPoolType_Set<>(period, bank, BankTransfer.class).get()) {
+            if (bankTransfer.getSource().equals(bank)) {
+                total -= bankTransfer.getSourceValue();
+            }
+        }
+        return total;
     }
 
     @Override
@@ -109,7 +123,7 @@ public class ExtendedStatement implements CurrencyBound {
     @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
     @DisplayProperties(dataType = CURRENCY, order = 10)
     public Double getNetTransfer() {
-        return statement.getTransferIn() - statement.getTransferOut();
+        return getTransferIn() - getTransferOut();
     }
 
     //------------------------------------------------------------------------------------------------------------------

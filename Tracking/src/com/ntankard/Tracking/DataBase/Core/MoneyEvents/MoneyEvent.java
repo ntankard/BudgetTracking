@@ -15,6 +15,7 @@ import java.util.List;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
 import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
+import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
 public abstract class MoneyEvent<SourceType extends DataObject, SourceCategory extends DataObject, DestinationType extends DataObject, DestinationCategory extends DataObject> extends DataObject implements CurrencyBound {
@@ -30,7 +31,7 @@ public abstract class MoneyEvent<SourceType extends DataObject, SourceCategory e
 
     // My values
     private String description;
-    private double value;
+    private Double value;
 
     /**
      * Constructor
@@ -46,10 +47,6 @@ public abstract class MoneyEvent<SourceType extends DataObject, SourceCategory e
         this.destinationContainer = destinationContainer;
         this.destinationCategory = destinationCategory;
         this.currency = currency;
-    }
-
-    public Period getPeriod() {
-        return period;
     }
 
     /**
@@ -72,7 +69,12 @@ public abstract class MoneyEvent<SourceType extends DataObject, SourceCategory e
         if (destinationCategory != null) {
             toReturn.add(destinationCategory);
         }
-        toReturn.add(currency);
+        if (currency != null) {
+            toReturn.add(currency);
+        }
+        if(!toReturn.contains(period)){
+            toReturn.add(period);
+        }
         return toReturn;
     }
 
@@ -125,6 +127,12 @@ public abstract class MoneyEvent<SourceType extends DataObject, SourceCategory e
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    @DisplayProperties(order = 2)
+    public Period getPeriod() {
+        return period;
+    }
+
     @DisplayProperties(order = 3)
     public String getDescription() {
         return description;
@@ -135,28 +143,40 @@ public abstract class MoneyEvent<SourceType extends DataObject, SourceCategory e
         return value;
     }
 
-    @DisplayProperties(order = 5)
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    @DisplayProperties(order = 5, dataType = CURRENCY)
+    public Double getSourceValue() {
+        return -value;
+    }
+
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    @DisplayProperties(order = 6, dataType = CURRENCY)
+    public Double getDestinationValue() {
+        return value;
+    }
+
+    @DisplayProperties(order = 7)
     protected SourceType getSourceContainer() {
         return sourceContainer;
     }
 
-    @DisplayProperties(order = 6)
+    @DisplayProperties(order = 8)
     protected SourceCategory getSourceCategory() {
         return sourceCategory;
     }
 
-    @DisplayProperties(order = 7)
+    @DisplayProperties(order = 9)
     protected DestinationType getDestinationContainer() {
         return destinationContainer;
     }
 
-    @DisplayProperties(order = 8)
+    @DisplayProperties(order = 10)
     protected DestinationCategory getDestinationCategory() {
         return destinationCategory;
     }
 
     @Override
-    @DisplayProperties(order = 9)
+    @DisplayProperties(order = 11)
     public Currency getCurrency() {
         return currency;
     }
