@@ -3,10 +3,10 @@ package com.ntankard.Tracking.Dispaly.Frames.MainFrame.Periods.IndividualPeriod;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodFundTransfer;
-import com.ntankard.Tracking.DataBase.Interface.Set.MoneyEvent_Sets.ContainerType_Set;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.CategoryFundTransfer;
+import com.ntankard.Tracking.DataBase.Interface.Set.Children_Set;
 import com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.PeriodSummary;
-import com.ntankard.Tracking.Dispaly.Util.ElementControllers.PeriodFundTransfer_ElementController;
+import com.ntankard.Tracking.Dispaly.Util.ElementControllers.CategoryFundTransfer_ElementController;
 import com.ntankard.Tracking.Dispaly.Util.Panels.DataObject_DisplayList;
 
 import java.awt.*;
@@ -17,7 +17,7 @@ public class PeriodSummary_TransferPanel extends UpdatableJPanel {
 
     // The GUI components
     private PeriodSummary periodSummary_panel;
-    private DataObject_DisplayList<PeriodFundTransfer> periodFundTransfer_panel;
+    private DataObject_DisplayList<CategoryFundTransfer> periodFundTransfer_panel;
 
     /**
      * Constructor
@@ -37,8 +37,8 @@ public class PeriodSummary_TransferPanel extends UpdatableJPanel {
 
         periodSummary_panel = new PeriodSummary(core, true, this);
 
-        periodFundTransfer_panel = new DataObject_DisplayList<>(PeriodFundTransfer.class, new ContainerType_Set<>(core, PeriodFundTransfer.class), false, this);
-        periodFundTransfer_panel.addControlButtons(new PeriodFundTransfer_ElementController(core, this));
+        periodFundTransfer_panel = new DataObject_DisplayList<>(CategoryFundTransfer.class, new Children_Set<>(CategoryFundTransfer.class, core), false, this);
+        periodFundTransfer_panel.addControlButtons(new CategoryFundTransfer_ElementController(core, this));
 
         periodFundTransfer_panel.setTitle("Other Transfer");
 

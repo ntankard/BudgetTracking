@@ -1,8 +1,8 @@
 package com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.ModelData;
 
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodFundTransfer;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.BankCategoryTransfer;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.CategoryFundTransfer;
 import com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.ModelData.Rows.DataRows;
 import com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.ModelData.Rows.DividerRow;
 import com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.ModelData.Rows.SummaryRows;
@@ -39,10 +39,10 @@ public class ModelData_Rows {
 
         addSection(new SummaryRows(core, columns));
         addSection(new DividerRow("Transaction", core, columns));
-        addSection(new TransferRow<>(core, columns, Transaction.class));
+        addSection(new TransferRow<>(core, columns, BankCategoryTransfer.class));
         if (addTransfers) {
             addSection(new DividerRow("External", core, columns));
-            addSection(new TransferRow<>(core, columns, PeriodFundTransfer.class));
+            addSection(new TransferRow<>(core, columns, CategoryFundTransfer.class));
         }
     }
 

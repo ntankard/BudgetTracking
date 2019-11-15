@@ -40,7 +40,7 @@ public class IntraCurrencyBankTransfer extends BankTransfer {
     @Override
     @DisplayProperties(order = 5, dataType = CURRENCY)
     public Double getSourceValue() {
-        return -sourceValue;
+        return sourceValue;
     }
 
     @Override

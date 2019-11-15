@@ -72,21 +72,10 @@ public abstract class MoneyEvent<SourceType extends DataObject, SourceCategory e
         if (currency != null) {
             toReturn.add(currency);
         }
-        if(!toReturn.contains(period)){
+        if (!toReturn.contains(period)) {
             toReturn.add(period);
         }
         return toReturn;
-    }
-
-    /**
-     * Is this combination of container and category the source of this transaction?
-     *
-     * @param sourceContainer The container to check
-     * @param category        The category to check
-     * @return True if the params represent this transfers source
-     */
-    public Boolean isThisSource(DataObject sourceContainer, DataObject category) {
-        return this.sourceContainer.equals(sourceContainer) && this.sourceCategory.equals(category);
     }
 
     /**
@@ -97,20 +86,6 @@ public abstract class MoneyEvent<SourceType extends DataObject, SourceCategory e
      */
     public Boolean isThisSource(DataObject sourceContainer) {
         return this.sourceContainer.equals(sourceContainer);
-    }
-
-    /**
-     * Is this combination of container and category the destination of this transaction?
-     *
-     * @param destinationContainer The container to check
-     * @param category             The category to check
-     * @return True if the params represent this transfers destination
-     */
-    public Boolean isThisDestination(DataObject destinationContainer, DataObject category) {
-        if (category == null || this.destinationCategory == null) {
-            return isThisDestination(destinationContainer);
-        }
-        return this.destinationContainer.equals(destinationContainer) && this.destinationCategory.equals(category);
     }
 
     /**

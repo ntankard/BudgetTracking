@@ -1,16 +1,16 @@
 package com.ntankard.Tracking.Dispaly.Util.ElementControllers;
 
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
-import com.ntankard.Tracking.DataBase.Core.Pool.Fund;
-import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.PeriodFundTransfer;
-import com.ntankard.Tracking.DataBase.Core.Pool.Category;
-import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
 import com.ntankard.Tracking.DataBase.Core.MoneyCategory.FundEvent.FundEvent;
+import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.CategoryFundTransfer;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category;
+import com.ntankard.Tracking.DataBase.Core.Pool.Fund;
+import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.Dispaly.Util.Panels.TrackingDatabase_ElementController;
 
-public class PeriodFundTransfer_ElementController extends TrackingDatabase_ElementController<PeriodFundTransfer> {
+public class CategoryFundTransfer_ElementController extends TrackingDatabase_ElementController<CategoryFundTransfer> {
 
     /**
      * Data to use when creating a new object
@@ -20,7 +20,7 @@ public class PeriodFundTransfer_ElementController extends TrackingDatabase_Eleme
     /**
      * Constructor
      */
-    public PeriodFundTransfer_ElementController(Period period, Updatable master) {
+    public CategoryFundTransfer_ElementController(Period period, Updatable master) {
         super(master);
         this.period = period;
     }
@@ -29,7 +29,7 @@ public class PeriodFundTransfer_ElementController extends TrackingDatabase_Eleme
      * {@inheritDoc
      */
     @Override
-    public PeriodFundTransfer newElement() {
+    public CategoryFundTransfer newElement() {
         Fund toUse = TrackingDatabase.get().getDefault(Fund.class);
         for (Fund fund : TrackingDatabase.get().get(Fund.class)) {
             if (fund.getChildren(FundEvent.class).size() != 0) {
@@ -38,7 +38,7 @@ public class PeriodFundTransfer_ElementController extends TrackingDatabase_Eleme
             }
         }
 
-        return new PeriodFundTransfer(TrackingDatabase.get().getNextId(),
+        return new CategoryFundTransfer(TrackingDatabase.get().getNextId(),
                 "",
                 0.0,
                 period,

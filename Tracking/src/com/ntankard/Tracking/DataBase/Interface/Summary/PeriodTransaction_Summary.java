@@ -2,13 +2,14 @@ package com.ntankard.Tracking.DataBase.Interface.Summary;
 
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
-import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.MoneyEvent;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
+import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.ClassExtension.ExtendedPeriod;
 import com.ntankard.Tracking.DataBase.Interface.ClassExtension.ExtendedStatement;
-import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
-import com.ntankard.Tracking.DataBase.Interface.Set.MoneyEvent_Sets.ContainerCategory_Set;
+import com.ntankard.Tracking.DataBase.Interface.Set.MoneyEvent_Sets.PeriodPoolType_Set;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY_YEN;
 
@@ -33,7 +34,7 @@ public class PeriodTransaction_Summary {
      */
     @DisplayProperties(dataType = CURRENCY_YEN)
     public Double getTax() {
-        return new ContainerCategory_Set(core, TrackingDatabase.get().getSpecialValue(Category.class, Category.INCOME)).getTotal() * -TrackingDatabase.get().getTaxRate();
+        return new PeriodPoolType_Set<>(core, TrackingDatabase.get().getSpecialValue(Category.class, Category.INCOME), MoneyEvent.class).getTotal() * -TrackingDatabase.get().getTaxRate();
     }
 
     /**
@@ -58,7 +59,7 @@ public class PeriodTransaction_Summary {
     public Double getNonCategory() {
         double sum = 0.0;
         for (Category category : TrackingDatabase.get().get(Category.class)) {
-            sum += new ContainerCategory_Set(core, category).getTotal();
+            sum += new PeriodPoolType_Set<>(core, category, MoneyEvent.class).getTotal();
         }
         return -sum;
     }

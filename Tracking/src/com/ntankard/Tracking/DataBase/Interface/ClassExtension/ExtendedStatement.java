@@ -5,8 +5,8 @@ import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.BankCategoryTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.BankTransfer;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Core.StatementEnd;
 import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
@@ -152,7 +152,7 @@ public class ExtendedStatement implements CurrencyBound {
     @DisplayProperties(dataType = CURRENCY, order = 8)
     public Double getTotalSpend() {
         double sum = 0.0;
-        for (Transaction t : statement.getChildren(Transaction.class)) {
+        for (BankCategoryTransfer t : new PeriodPoolType_Set<>(period, bank, BankCategoryTransfer.class).get()) {
             sum += t.getValue();
         }
         return sum;

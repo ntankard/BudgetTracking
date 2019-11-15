@@ -5,8 +5,8 @@ import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.MoneyEvent;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
+import com.ntankard.Tracking.DataBase.Interface.Set.MoneyEvent_Sets.PeriodPoolType_Set;
 import com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.ModelData.ModelData_Columns;
-import com.ntankard.Tracking.DataBase.Interface.Set.MoneyEvent_Sets.ContainerCategoryType_Set;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +34,7 @@ public class TransferRow<T extends MoneyEvent> extends DataRows<T> {
      */
     @Override
     public double getTotal_impl(Category category) {
-        return new ContainerCategoryType_Set(core, category, typeParameterClass).getTotal();
+        return new PeriodPoolType_Set<>(core, category, typeParameterClass).getTotal();
     }
 
     /**
@@ -126,10 +126,10 @@ public class TransferRow<T extends MoneyEvent> extends DataRows<T> {
      * @return The Value
      */
     private double getValue(T rowData, Category category) {
-        if (rowData.isThisSource(core, category)) {
+        if (rowData.isThisSource(category)) {
             return -rowData.getValue();
         }
-        if (rowData.isThisDestination(core, category)) {
+        if (rowData.isThisDestination(category)) {
             return rowData.getValue();
         }
         throw new RuntimeException("Bad row");
@@ -143,7 +143,7 @@ public class TransferRow<T extends MoneyEvent> extends DataRows<T> {
      * @return The formatted total
      */
     private double getCurrencyTotal_impl(Category category, Currency currency) {
-        return new ContainerCategoryType_Set(core, category, typeParameterClass).getTotal(currency);
+        return new PeriodPoolType_Set<>(core, category, typeParameterClass).getTotal(currency);
     }
 
     /**
@@ -153,7 +153,7 @@ public class TransferRow<T extends MoneyEvent> extends DataRows<T> {
      * @return All the rows for a specified category
      */
     private List<T> getRows(Category category) {
-        return new ArrayList<T>(new ContainerCategoryType_Set(core, category, typeParameterClass).get());
+        return new ArrayList<T>(new PeriodPoolType_Set<>(core, category, typeParameterClass).get());
     }
 
     /**

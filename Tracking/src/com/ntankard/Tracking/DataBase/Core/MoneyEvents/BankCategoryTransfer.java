@@ -6,22 +6,22 @@ import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.ClassExtension.SetterProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
-import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
+import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-public class Transaction extends MoneyEvent<Statement, Bank, Period, Category> {
+public class BankCategoryTransfer extends MoneyEvent<Bank, DataObject, Category, DataObject> {
 
     /**
      * Constructor
      */
-    @ParameterMap(parameterGetters = {"getId", "getDescription", "getValue", "getSourceContainer", "getDestinationCategory"})
-    public Transaction(Integer id, String description, Double value, Statement sourceContainer, Category destinationCategory) {
-        super(id, description, value, sourceContainer.getPeriod(), sourceContainer, sourceContainer.getBank(), sourceContainer.getPeriod(), destinationCategory, sourceContainer.getBank().getCurrency());
+    @ParameterMap(parameterGetters = {"getId", "getDescription", "getValue", "getPeriod", "getSource", "getDestination"})
+    public BankCategoryTransfer(Integer id, String description, Double value, Period period, Bank source, Category destination) {
+        super(id, description, value, period, source, null, destination, null, null);
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -29,28 +29,27 @@ public class Transaction extends MoneyEvent<Statement, Bank, Period, Category> {
     //------------------------------------------------------------------------------------------------------------------
 
     @Override
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    @DisplayProperties(order = 3)
+    public String getDescription() {
+        return super.getDescription();
+    }
+
     @DisplayProperties(order = 5)
-    public Statement getSourceContainer() {
+    public Bank getSource() {
         return super.getSourceContainer();
     }
 
-    @Override
-    @DisplayProperties(order = 6)
-    public Bank getSourceCategory() {
-        return super.getSourceCategory();
-    }
-
-    @Override
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
     @DisplayProperties(order = 7)
-    public Period getDestinationContainer() {
+    public Category getDestination() {
         return super.getDestinationContainer();
     }
 
     @Override
-    @DisplayProperties(order = 8)
-    public Category getDestinationCategory() {
-        return super.getDestinationCategory();
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    @DisplayProperties(order = 11)
+    public Currency getCurrency() {
+        return getSource().getCurrency();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -58,7 +57,12 @@ public class Transaction extends MoneyEvent<Statement, Bank, Period, Category> {
     //------------------------------------------------------------------------------------------------------------------
 
     @SetterProperties(sourceMethod = "getData")
-    public void setDestinationCategory(Category category) {
-        super.setDestinationCategory(category);
+    public void setSource(Bank sourceContainer) {
+        super.setSourceContainer(sourceContainer);
+    }
+
+    @SetterProperties(sourceMethod = "getData")
+    public void setDestination(Category destinationContainer) {
+        super.setDestinationContainer(destinationContainer);
     }
 }

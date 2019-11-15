@@ -3,9 +3,10 @@ package com.ntankard.Tracking.Dispaly.Frames.MainFrame.SummaryGraphs;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.MoneyEvent;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
-import com.ntankard.Tracking.DataBase.Interface.Set.MoneyEvent_Sets.ContainerCategory_Set;
+import com.ntankard.Tracking.DataBase.Interface.Set.MoneyEvent_Sets.PeriodPoolType_Set;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -77,24 +78,24 @@ public class CategoryGraph extends UpdatableJPanel {
      * @return The generated data
      */
     private XYDataset createDataset() {
-        Map<Category,XYSeries> categories = new HashMap<>();
+        Map<Category, XYSeries> categories = new HashMap<>();
 
-        for(Category category : TrackingDatabase.get().get(Category.class)){
-            categories.put(category,new XYSeries(category.toString()));
+        for (Category category : TrackingDatabase.get().get(Category.class)) {
+            categories.put(category, new XYSeries(category.toString()));
         }
 
         int i = 0;
         for (Period period : TrackingDatabase.get().get(Period.class)) {
-            for(Category category : TrackingDatabase.get().get(Category.class)){
-                if(!category.getId().equals("Income")) {
-                    categories.get(category).add(i, new ContainerCategory_Set(period, category).getTotal());
+            for (Category category : TrackingDatabase.get().get(Category.class)) {
+                if (!category.equals(TrackingDatabase.get().getSpecialValue(Category.class, Category.INCOME))) {
+                    categories.get(category).add(i, new PeriodPoolType_Set<>(period, category, MoneyEvent.class).getTotal());
                 }
             }
             i++;
         }
 
         final XYSeriesCollection dataset = new XYSeriesCollection();
-        for(Category category : TrackingDatabase.get().get(Category.class)){
+        for (Category category : TrackingDatabase.get().get(Category.class)) {
             dataset.addSeries(categories.get(category));
         }
 

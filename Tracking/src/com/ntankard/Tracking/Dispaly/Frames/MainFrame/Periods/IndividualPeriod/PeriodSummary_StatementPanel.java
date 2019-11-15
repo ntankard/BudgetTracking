@@ -5,18 +5,18 @@ import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.BankCategoryTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.BankTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.IntraCurrencyBankTransfer;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
 import com.ntankard.Tracking.DataBase.Core.StatementEnd;
 import com.ntankard.Tracking.DataBase.Interface.ClassExtension.ExtendedStatement;
 import com.ntankard.Tracking.DataBase.Interface.Set.Children_Set;
 import com.ntankard.Tracking.DataBase.Interface.Summary.PeriodTransaction_Summary;
 import com.ntankard.Tracking.Dispaly.DataObjectPanels.ExtendedStatementPanel;
 import com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.PeriodSummary;
+import com.ntankard.Tracking.Dispaly.Util.ElementControllers.BankCategoryTransfer_ElementController;
 import com.ntankard.Tracking.Dispaly.Util.ElementControllers.BankTransfer_ElementController;
 import com.ntankard.Tracking.Dispaly.Util.ElementControllers.IntraCurrencyBankTransfer_ElementController;
-import com.ntankard.Tracking.Dispaly.Util.ElementControllers.Transaction_ElementController;
 import com.ntankard.Tracking.Dispaly.Util.Panels.DataObject_DisplayList;
 
 import javax.swing.*;
@@ -32,7 +32,7 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
     // The GUI components
     private PeriodSummary periodSummary_panel;
     private ExtendedStatementPanel statement_panel;
-    private DataObject_DisplayList<Transaction> transaction_panel;
+    private DataObject_DisplayList<BankCategoryTransfer> transaction_panel;
     private DynamicGUI_IntractableObject period_panel;
     private DynamicGUI_IntractableObject periodTotal_panel;
     private DataObject_DisplayList<StatementEnd> statementEnd_panel;
@@ -40,8 +40,8 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
     private DataObject_DisplayList<IntraCurrencyBankTransfer> intraCurrencyBankTransferDataObject_panel;
 
     // ExtendedStatementPanel Controllers stored to update the core objects
-    private Children_Set<Transaction, Statement> transaction_panel_set;
-    private Transaction_ElementController transaction_panel_controller;
+    private Children_Set<BankCategoryTransfer, Statement> transaction_panel_set;
+    private BankCategoryTransfer_ElementController transaction_panel_controller;
 
     /**
      * Constructor
@@ -61,10 +61,10 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
 
         periodSummary_panel = new PeriodSummary(core, false, this);
         periodSummary_panel.getModel().addCustomFormatter((dataObject, rendererObject) -> {
-            if (dataObject instanceof Transaction) {
-                Transaction transaction = (Transaction) dataObject;
+            if (dataObject instanceof BankCategoryTransfer) {
+                BankCategoryTransfer transaction = (BankCategoryTransfer) dataObject;
                 if (selectedStatement != null) {
-                    if (transaction.getSourceCategory().equals(selectedStatement.getBank())) {
+                    if (transaction.getSource().equals(selectedStatement.getBank())) {
                         rendererObject.background = Color.YELLOW;
                     }
                 }
@@ -82,8 +82,8 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
         });
         statement_panel.getMainPanel().getListSelectionModel().addListSelectionListener(e -> updateTransactions());
 
-        transaction_panel_set = new Children_Set<>(Transaction.class, null);
-        transaction_panel_controller = new Transaction_ElementController(selectedStatement, this);
+        transaction_panel_set = new Children_Set<>(BankCategoryTransfer.class, null);
+        transaction_panel_controller = new BankCategoryTransfer_ElementController(core, this);
 
         JTabbedPane statementControl_panel = new JTabbedPane();
 
@@ -95,7 +95,7 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
         intraCurrencyBankTransferDataObject_panel.addControlButtons(new IntraCurrencyBankTransfer_ElementController(core, this));
         statementControl_panel.add("Currency Transfers", intraCurrencyBankTransferDataObject_panel);
 
-        transaction_panel = new DataObject_DisplayList<>(Transaction.class, transaction_panel_set, false, this);
+        transaction_panel = new DataObject_DisplayList<>(BankCategoryTransfer.class, transaction_panel_set, false, this);
         transaction_panel.addControlButtons(transaction_panel_controller);
         statementControl_panel.add("Transactions", transaction_panel);
 
@@ -159,13 +159,14 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
         List selected = statement_panel.getMainPanel().getSelectedItems();
         if (selected.size() == 1) {
             selectedStatement = ((ExtendedStatement) selected.get(0)).getStatement();
+            transaction_panel_controller.setBank(selectedStatement.getBank());
         } else {
             selectedStatement = null;
+            transaction_panel_controller.setBank(null);
         }
 
         // Update the core object of children
         transaction_panel_set.setCore(selectedStatement);
-        transaction_panel_controller.setStatement(selectedStatement);
 
         // Update the UI
         periodSummary_panel.update();

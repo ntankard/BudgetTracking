@@ -42,9 +42,9 @@ public abstract class MoneyEvent_Set<M extends MoneyEvent> implements ObjectSet<
         double sum = 0;
         for (M moneyEvent : get(toSum)) {
             if (isSource(moneyEvent)) {
-                sum -= moneyEvent.getValue();
+                sum += moneyEvent.getSourceValue();
             } else if (isDestination(moneyEvent)) {
-                sum += moneyEvent.getValue();
+                sum += moneyEvent.getDestinationValue();
             }
 
         }
@@ -60,9 +60,9 @@ public abstract class MoneyEvent_Set<M extends MoneyEvent> implements ObjectSet<
         double sum = 0;
         for (M moneyEvent : get()) {
             if (isSource(moneyEvent)) {
-                sum -= moneyEvent.getValue() * moneyEvent.getCurrency().getToPrimary();
+                sum += moneyEvent.getSourceValue() * moneyEvent.getCurrency().getToPrimary();
             } else if (isDestination(moneyEvent)) {
-                sum += moneyEvent.getValue() * moneyEvent.getCurrency().getToPrimary();
+                sum += moneyEvent.getDestinationValue() * moneyEvent.getCurrency().getToPrimary();
             }
 
         }

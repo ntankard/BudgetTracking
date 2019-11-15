@@ -4,11 +4,11 @@ import com.ntankard.DynamicGUI.Containers.DynamicGUI_IntractableObject;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.Transaction;
+import com.ntankard.Tracking.DataBase.Core.MoneyEvents.BankCategoryTransfer;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
-import com.ntankard.Tracking.Dispaly.Util.ElementControllers.Transaction_ElementController;
-import com.ntankard.Tracking.Dispaly.Util.Panels.DataObject_DisplayList;
 import com.ntankard.Tracking.DataBase.Interface.Set.Children_Set;
+import com.ntankard.Tracking.Dispaly.Util.ElementControllers.BankCategoryTransfer_ElementController;
+import com.ntankard.Tracking.Dispaly.Util.Panels.DataObject_DisplayList;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -22,7 +22,7 @@ public class Statement_Frame extends UpdatableJPanel {
     private Statement core;
 
     // The GUI components
-    private DataObject_DisplayList<Transaction> transaction_panel;
+    private DataObject_DisplayList<BankCategoryTransfer> transaction_panel;
     private DynamicGUI_IntractableObject statement_panel;
 
     /**
@@ -64,8 +64,8 @@ public class Statement_Frame extends UpdatableJPanel {
         this.setBorder(new EmptyBorder(12, 12, 12, 12));
         this.setLayout(new BorderLayout());
 
-        transaction_panel = new DataObject_DisplayList<>(Transaction.class, new Children_Set<>(Transaction.class, core), this);
-        transaction_panel.addControlButtons(new Transaction_ElementController(core, this));
+        transaction_panel = new DataObject_DisplayList<>(BankCategoryTransfer.class, new Children_Set<>(BankCategoryTransfer.class, core), this);
+        transaction_panel.addControlButtons(new BankCategoryTransfer_ElementController(core.getPeriod(), core.getBank(), this));
 
         JTabbedPane data_tPanel = new JTabbedPane();
         data_tPanel.addTab("Transactions", transaction_panel);
