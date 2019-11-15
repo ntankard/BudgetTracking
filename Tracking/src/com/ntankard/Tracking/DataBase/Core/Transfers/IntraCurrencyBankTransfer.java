@@ -1,4 +1,4 @@
-package com.ntankard.Tracking.DataBase.Core.MoneyEvents;
+package com.ntankard.Tracking.DataBase.Core.Transfers;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
@@ -13,6 +13,7 @@ import static com.ntankard.ClassExtension.MemberProperties.TRACE_DISPLAY;
 @ClassExtensionProperties(includeParent = true)
 public class IntraCurrencyBankTransfer extends BankTransfer {
 
+    // My values
     private Double sourceValue;
     private Double destinationValue;
 

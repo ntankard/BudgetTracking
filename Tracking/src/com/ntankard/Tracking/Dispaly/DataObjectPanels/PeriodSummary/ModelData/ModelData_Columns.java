@@ -1,11 +1,11 @@
 package com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.ModelData;
 
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.MoneyEvent;
+import com.ntankard.Tracking.DataBase.Core.Transfers.Transfer;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
-import com.ntankard.Tracking.DataBase.Interface.Set.MoneyEvent_Sets.PeriodPoolType_Set;
+import com.ntankard.Tracking.DataBase.Interface.Set.PeriodPoolType_Set;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -65,7 +65,7 @@ public class ModelData_Columns {
      * @return All currencies that transaction are in for a specific category
      */
     private List<Currency> getCurrencies(Category category) {
-        return new PeriodPoolType_Set<>(core, category, MoneyEvent.class).getCurrencies();
+        return new PeriodPoolType_Set<>(core, category, Transfer.class).getCurrencies();
     }
 
     /**

@@ -1,4 +1,4 @@
-package com.ntankard.Tracking.DataBase.Core.MoneyEvents;
+package com.ntankard.Tracking.DataBase.Core.Transfers;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
@@ -18,15 +18,13 @@ import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-public abstract class MoneyEvent<SourceType extends DataObject, SourceCategory extends DataObject, DestinationType extends DataObject, DestinationCategory extends DataObject> extends DataObject implements CurrencyBound {
+public abstract class Transfer<SourceType extends DataObject, DestinationType extends DataObject> extends DataObject implements CurrencyBound {
 
     private Period period;
 
     // My parents
-    private SourceType sourceContainer;
-    private SourceCategory sourceCategory;
-    private DestinationType destinationContainer;
-    private DestinationCategory destinationCategory;
+    private SourceType source;
+    private DestinationType destination;
     private Currency currency;
 
     // My values
@@ -37,15 +35,13 @@ public abstract class MoneyEvent<SourceType extends DataObject, SourceCategory e
      * Constructor
      */
     @ParameterMap(shouldSave = false)
-    public MoneyEvent(Integer id, String description, Double value, Period period, SourceType sourceContainer, SourceCategory sourceCategory, DestinationType destinationContainer, DestinationCategory destinationCategory, Currency currency) {
+    public Transfer(Integer id, String description, Double value, Period period, SourceType source, DestinationType destination, Currency currency) {
         super(id);
         this.description = description;
         this.value = value;
         this.period = period;
-        this.sourceContainer = sourceContainer;
-        this.sourceCategory = sourceCategory;
-        this.destinationContainer = destinationContainer;
-        this.destinationCategory = destinationCategory;
+        this.source = source;
+        this.destination = destination;
         this.currency = currency;
     }
 
@@ -57,23 +53,11 @@ public abstract class MoneyEvent<SourceType extends DataObject, SourceCategory e
     @DisplayProperties(order = 21)
     public List<DataObject> getParents() {
         List<DataObject> toReturn = new ArrayList<>();
-        if (sourceContainer != null) {
-            toReturn.add(sourceContainer);
-        }
-        if (sourceCategory != null) {
-            toReturn.add(sourceCategory);
-        }
-        if (destinationContainer != null) {
-            toReturn.add(destinationContainer);
-        }
-        if (destinationCategory != null) {
-            toReturn.add(destinationCategory);
-        }
+        toReturn.add(source);
+        toReturn.add(destination);
+        toReturn.add(period);
         if (currency != null) {
             toReturn.add(currency);
-        }
-        if (!toReturn.contains(period)) {
-            toReturn.add(period);
         }
         return toReturn;
     }
@@ -85,7 +69,7 @@ public abstract class MoneyEvent<SourceType extends DataObject, SourceCategory e
      * @return True if the params represent this transfers source
      */
     public Boolean isThisSource(DataObject sourceContainer) {
-        return this.sourceContainer.equals(sourceContainer);
+        return this.source.equals(sourceContainer);
     }
 
     /**
@@ -95,7 +79,7 @@ public abstract class MoneyEvent<SourceType extends DataObject, SourceCategory e
      * @return True if the params represent this transfers destination
      */
     public Boolean isThisDestination(DataObject destinationContainer) {
-        return this.destinationContainer.equals(destinationContainer);
+        return this.destination.equals(destinationContainer);
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -131,27 +115,17 @@ public abstract class MoneyEvent<SourceType extends DataObject, SourceCategory e
     }
 
     @DisplayProperties(order = 7)
-    protected SourceType getSourceContainer() {
-        return sourceContainer;
+    public SourceType getSource() {
+        return source;
     }
 
     @DisplayProperties(order = 8)
-    protected SourceCategory getSourceCategory() {
-        return sourceCategory;
-    }
-
-    @DisplayProperties(order = 9)
-    protected DestinationType getDestinationContainer() {
-        return destinationContainer;
-    }
-
-    @DisplayProperties(order = 10)
-    protected DestinationCategory getDestinationCategory() {
-        return destinationCategory;
+    public DestinationType getDestination() {
+        return destination;
     }
 
     @Override
-    @DisplayProperties(order = 11)
+    @DisplayProperties(order = 9)
     public Currency getCurrency() {
         return currency;
     }
@@ -168,28 +142,18 @@ public abstract class MoneyEvent<SourceType extends DataObject, SourceCategory e
         this.value = value;
     }
 
-    protected void setSourceCategory(SourceCategory source) {
-        this.sourceCategory.notifyChildUnLink(this);
-        this.sourceCategory = source;
-        this.sourceCategory.notifyChildLink(this);
+    @SetterProperties(sourceMethod = "getData")
+    public void setSource(SourceType source) {
+        this.source.notifyChildUnLink(this);
+        this.source = source;
+        this.source.notifyChildLink(this);
     }
 
-    protected void setSourceContainer(SourceType sourceContainer) {
-        this.sourceContainer.notifyChildUnLink(this);
-        this.sourceContainer = sourceContainer;
-        this.sourceContainer.notifyChildLink(this);
-    }
-
-    protected void setDestinationCategory(DestinationCategory destination) {
-        this.destinationCategory.notifyChildUnLink(this);
-        this.destinationCategory = destination;
-        this.destinationCategory.notifyChildLink(this);
-    }
-
-    protected void setDestinationContainer(DestinationType destinationContainer) {
-        this.destinationContainer.notifyChildUnLink(this);
-        this.destinationContainer = destinationContainer;
-        this.destinationContainer.notifyChildLink(this);
+    @SetterProperties(sourceMethod = "getData")
+    public void setDestination(DestinationType destination) {
+        this.destination.notifyChildUnLink(this);
+        this.destination = destination;
+        this.destination.notifyChildLink(this);
     }
 
     @SetterProperties(sourceMethod = "getData")

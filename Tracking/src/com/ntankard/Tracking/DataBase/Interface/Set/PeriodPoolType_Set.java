@@ -1,20 +1,46 @@
-package com.ntankard.Tracking.DataBase.Interface.Set.MoneyEvent_Sets;
+package com.ntankard.Tracking.DataBase.Interface.Set;
 
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.MoneyEvent;
+import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
+import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
-import com.ntankard.Tracking.DataBase.Interface.Set.ObjectSet;
+import com.ntankard.Tracking.DataBase.Core.Transfers.Transfer;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class MoneyEvent_Set<M extends MoneyEvent> implements ObjectSet<M> {
+public class PeriodPoolType_Set<T extends Transfer>  implements ObjectSet<T> {
+
+    // The objects to filter on
+    private Period period;
+    private Pool pool;
 
     /**
-     * Get all the events in this set
-     *
-     * @return All the events in this set
+     * The type of object to group
      */
-    public abstract List<M> get();
+    private Class<T> toGet;
+
+    /**
+     * Constructor
+     */
+    public PeriodPoolType_Set(Period period, Pool pool, Class<T> toGet) {
+        this.period = period;
+        this.pool = pool;
+        this.toGet = toGet;
+    }
+
+    /**
+     * {@inheritDoc
+     */
+    @Override
+    public List<T> get() {
+        List<T> toReturn = new ArrayList<>();
+        for (T transaction : period.getChildren(toGet)) {
+            if (isSource(transaction) || isDestination(transaction)) {
+                toReturn.add(transaction);
+            }
+        }
+        return toReturn;
+    }
 
     /**
      * Get all the events in this set for a currency
@@ -22,9 +48,9 @@ public abstract class MoneyEvent_Set<M extends MoneyEvent> implements ObjectSet<
      * @param currency The currency to get
      * @return All the events in this set for a currency
      */
-    public List<M> get(Currency currency) {
-        List<M> toReturn = new ArrayList<>();
-        for (M moneyEvent : get()) {
+    public List<T> get(Currency currency) {
+        List<T> toReturn = new ArrayList<>();
+        for (T moneyEvent : get()) {
             if (moneyEvent.getCurrency().equals(currency)) {
                 toReturn.add(moneyEvent);
             }
@@ -40,7 +66,7 @@ public abstract class MoneyEvent_Set<M extends MoneyEvent> implements ObjectSet<
      */
     public double getTotal(Currency toSum) {
         double sum = 0;
-        for (M moneyEvent : get(toSum)) {
+        for (T moneyEvent : get(toSum)) {
             if (isSource(moneyEvent)) {
                 sum += moneyEvent.getSourceValue();
             } else if (isDestination(moneyEvent)) {
@@ -58,7 +84,7 @@ public abstract class MoneyEvent_Set<M extends MoneyEvent> implements ObjectSet<
      */
     public double getTotal() {
         double sum = 0;
-        for (M moneyEvent : get()) {
+        for (T moneyEvent : get()) {
             if (isSource(moneyEvent)) {
                 sum += moneyEvent.getSourceValue() * moneyEvent.getCurrency().getToPrimary();
             } else if (isDestination(moneyEvent)) {
@@ -76,7 +102,7 @@ public abstract class MoneyEvent_Set<M extends MoneyEvent> implements ObjectSet<
      */
     public List<Currency> getCurrencies() {
         List<Currency> toReturn = new ArrayList<>();
-        for (M moneyEvent : get()) {
+        for (T moneyEvent : get()) {
             Currency currency = moneyEvent.getCurrency();
             if (!toReturn.contains(currency)) {
                 toReturn.add(currency);
@@ -91,7 +117,9 @@ public abstract class MoneyEvent_Set<M extends MoneyEvent> implements ObjectSet<
      * @param moneyEvent The event to check
      * @return True if this set treat the money event as a source
      */
-    protected abstract boolean isSource(M moneyEvent);
+    protected boolean isSource(T moneyEvent) {
+        return moneyEvent.isThisSource(pool);
+    }
 
     /**
      * Dose this set treat the money event as a destination?
@@ -99,5 +127,16 @@ public abstract class MoneyEvent_Set<M extends MoneyEvent> implements ObjectSet<
      * @param moneyEvent The event to check
      * @return True if this set treat the money event as a destination
      */
-    protected abstract boolean isDestination(M moneyEvent);
+    protected boolean isDestination(T moneyEvent) {
+        return moneyEvent.isThisDestination(pool);
+    }
+
+    /**
+     * Set the pool object to filter on
+     *
+     * @param pool The pool object to filter on
+     */
+    public void setPool(Pool pool) {
+        this.pool = pool;
+    }
 }

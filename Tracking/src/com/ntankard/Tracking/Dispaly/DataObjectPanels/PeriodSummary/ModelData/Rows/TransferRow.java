@@ -2,16 +2,16 @@ package com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.ModelData.R
 
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
-import com.ntankard.Tracking.DataBase.Core.MoneyEvents.MoneyEvent;
+import com.ntankard.Tracking.DataBase.Core.Transfers.Transfer;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
-import com.ntankard.Tracking.DataBase.Interface.Set.MoneyEvent_Sets.PeriodPoolType_Set;
+import com.ntankard.Tracking.DataBase.Interface.Set.PeriodPoolType_Set;
 import com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.ModelData.ModelData_Columns;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TransferRow<T extends MoneyEvent> extends DataRows<T> {
+public class TransferRow<T extends Transfer> extends DataRows<T> {
 
     /**
      * The class type of T
