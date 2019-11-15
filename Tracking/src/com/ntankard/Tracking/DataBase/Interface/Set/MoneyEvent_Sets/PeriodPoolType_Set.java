@@ -56,4 +56,13 @@ public class PeriodPoolType_Set<T extends MoneyEvent> extends MoneyEvent_Set<T> 
     protected boolean isDestination(T moneyEvent) {
         return moneyEvent.isThisDestination(pool);
     }
+
+    /**
+     * Set the pool object to filter on
+     *
+     * @param pool The pool object to filter on
+     */
+    public void setPool(Pool pool) {
+        this.pool = pool;
+    }
 }

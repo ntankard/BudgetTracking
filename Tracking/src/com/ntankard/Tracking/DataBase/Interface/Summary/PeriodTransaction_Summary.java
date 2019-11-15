@@ -2,8 +2,8 @@ package com.ntankard.Tracking.DataBase.Interface.Summary;
 
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
-import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.MoneyEvent;
+import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
@@ -71,8 +71,8 @@ public class PeriodTransaction_Summary {
      */
     public boolean isValidSpend() {
         boolean missing = false;
-        for (Statement statement : core.getChildren(Statement.class)) {
-            if (new ExtendedStatement(statement.getPeriod(), statement.getBank(), statement).getMissingSpend() != 0) {
+        for (Bank bank : TrackingDatabase.get().get(Bank.class)) {
+            if (new ExtendedStatement(core, bank).getMissingSpend() != 0) {
                 missing = true;
             }
         }

@@ -28,7 +28,7 @@ public class ExtendedStatementPanel extends Object_DisplayList<ExtendedStatement
         ListControl_Button manageStatementBtn = new ListControl_Button<>("Manage Statement", this, SINGLE, false);
         manageStatementBtn.addActionListener(e -> {
             List selected = this.getMainPanel().getSelectedItems();
-            Statement_Frame.open(((ExtendedStatement) selected.get(0)).getStatement(), this);
+            Statement_Frame.open(((ExtendedStatement) selected.get(0)).getPeriod(), ((ExtendedStatement) selected.get(0)).getBank(), this);
         });
         this.addButton(manageStatementBtn);
     }

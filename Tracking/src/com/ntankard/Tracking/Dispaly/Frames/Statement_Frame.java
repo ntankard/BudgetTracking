@@ -3,10 +3,12 @@ package com.ntankard.Tracking.Dispaly.Frames;
 import com.ntankard.DynamicGUI.Containers.DynamicGUI_IntractableObject;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
-import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
+import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.BankCategoryTransfer;
+import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
-import com.ntankard.Tracking.DataBase.Interface.Set.Children_Set;
+import com.ntankard.Tracking.DataBase.Interface.Set.ExtendedSets.ExtendedStatement_Set;
+import com.ntankard.Tracking.DataBase.Interface.Set.MoneyEvent_Sets.PeriodPoolType_Set;
 import com.ntankard.Tracking.Dispaly.Util.ElementControllers.BankCategoryTransfer_ElementController;
 import com.ntankard.Tracking.Dispaly.Util.Panels.DataObject_DisplayList;
 
@@ -19,7 +21,8 @@ import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 public class Statement_Frame extends UpdatableJPanel {
 
     // Core Data
-    private Statement core;
+    private Period period;
+    private Bank bank;
 
     // The GUI components
     private DataObject_DisplayList<BankCategoryTransfer> transaction_panel;
@@ -27,13 +30,10 @@ public class Statement_Frame extends UpdatableJPanel {
 
     /**
      * Create and open the period frame
-     *
-     * @param core   The Statement this panel is built around
-     * @param master The parent of this frame
      */
-    public static void open(Statement core, Updatable master) {
+    public static void open(Period period, Bank bank, Updatable master) {
         JFrame _frame = new JFrame("Statement");
-        _frame.setContentPane(new Statement_Frame(core, master));
+        _frame.setContentPane(new Statement_Frame(period, bank, master));
         _frame.pack();
         _frame.setVisible(true);
 
@@ -44,13 +44,11 @@ public class Statement_Frame extends UpdatableJPanel {
 
     /**
      * Constructor
-     *
-     * @param core   The Statement this panel is built around
-     * @param master The parent of this frame
      */
-    private Statement_Frame(Statement core, Updatable master) {
+    private Statement_Frame(Period period, Bank bank, Updatable master) {
         super(master);
-        this.core = core;
+        this.period = period;
+        this.bank = bank;
         createUIComponents();
         update();
     }
@@ -64,14 +62,14 @@ public class Statement_Frame extends UpdatableJPanel {
         this.setBorder(new EmptyBorder(12, 12, 12, 12));
         this.setLayout(new BorderLayout());
 
-        transaction_panel = new DataObject_DisplayList<>(BankCategoryTransfer.class, new Children_Set<>(BankCategoryTransfer.class, core), this);
-        transaction_panel.addControlButtons(new BankCategoryTransfer_ElementController(core.getPeriod(), core.getBank(), this));
+        transaction_panel = new DataObject_DisplayList<>(BankCategoryTransfer.class, new PeriodPoolType_Set<>(period, bank, BankCategoryTransfer.class), this);
+        transaction_panel.addControlButtons(new BankCategoryTransfer_ElementController(period, bank, this));
 
         JTabbedPane data_tPanel = new JTabbedPane();
         data_tPanel.addTab("Transactions", transaction_panel);
         this.add(data_tPanel, BorderLayout.CENTER);
 
-        statement_panel = new DynamicGUI_IntractableObject<>(core, this).setVerbosity(INFO_DISPLAY).setSources(TrackingDatabase.get());
+        statement_panel = new DynamicGUI_IntractableObject<>(new ExtendedStatement_Set(period), this).setVerbosity(INFO_DISPLAY).setSources(TrackingDatabase.get());
         this.add(statement_panel, BorderLayout.EAST);
     }
 

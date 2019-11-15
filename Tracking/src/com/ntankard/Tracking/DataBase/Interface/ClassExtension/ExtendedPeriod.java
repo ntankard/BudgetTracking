@@ -3,7 +3,7 @@ package com.ntankard.Tracking.DataBase.Interface.ClassExtension;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
-import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
+import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 
@@ -39,9 +39,9 @@ public class ExtendedPeriod {
 
     public Double getMissingTransfer(Currency currency) {
         Double value = 0.0;
-        for (Statement t : period.getChildren(Statement.class)) {
-            if (t.getBank().getCurrency().equals(currency)) {
-                value += new ExtendedStatement(t.getPeriod(), t.getBank(), t).getNetTransfer();
+        for (Bank bank : period.getChildren(Bank.class)) {
+            if (bank.getCurrency().equals(currency)) {
+                value += new ExtendedStatement(period, bank).getNetTransfer();
             }
         }
 
@@ -76,8 +76,8 @@ public class ExtendedPeriod {
     @DisplayProperties(order = 4, dataType = CURRENCY_YEN)
     public Double getStartBalance() {
         double value = 0.0;
-        for (Statement t : period.getChildren(Statement.class)) {
-            value += (new ExtendedStatement(t.getPeriod(), t.getBank(), t).getStart() * t.getBank().getCurrency().getToPrimary());
+        for (Bank bank : TrackingDatabase.get().get(Bank.class)) {
+            value += (new ExtendedStatement(period, bank).getStart() * bank.getCurrency().getToPrimary());
         }
         return value;
     }
@@ -85,8 +85,8 @@ public class ExtendedPeriod {
     @DisplayProperties(order = 5, dataType = CURRENCY_YEN)
     public Double getEndBalance() {
         double value = 0.0;
-        for (Statement t : period.getChildren(Statement.class)) {
-            value += (new ExtendedStatement(t.getPeriod(), t.getBank(), t).getEnd() * t.getBank().getCurrency().getToPrimary());
+        for (Bank bank : TrackingDatabase.get().get(Bank.class)) {
+            value += (new ExtendedStatement(period, bank).getEnd() * bank.getCurrency().getToPrimary());
         }
         return value;
     }
@@ -98,9 +98,9 @@ public class ExtendedPeriod {
 
     public Double getEndBalance(Currency currency) {
         double value = 0.0;
-        for (Statement t : period.getChildren(Statement.class)) {
-            if (t.getBank().getCurrency().equals(currency)) {
-                value += (new ExtendedStatement(t.getPeriod(), t.getBank(), t).getEnd() * t.getBank().getCurrency().getToPrimary());
+        for (Bank bank : TrackingDatabase.get().get(Bank.class)) {
+            if (bank.getCurrency().equals(currency)) {
+                value += (new ExtendedStatement(period, bank).getEnd() * bank.getCurrency().getToPrimary());
             }
         }
         return value;

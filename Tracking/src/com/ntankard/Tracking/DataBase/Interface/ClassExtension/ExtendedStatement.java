@@ -4,7 +4,6 @@ import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
-import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.BankCategoryTransfer;
 import com.ntankard.Tracking.DataBase.Core.MoneyEvents.BankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
@@ -14,40 +13,36 @@ import com.ntankard.Tracking.DataBase.Interface.Set.MoneyEvent_Sets.PeriodPoolTy
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataContext.ZERO_TARGET;
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
-import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
 public class ExtendedStatement implements CurrencyBound {
 
     /**
      * The core statement object used for this ones calculations
      */
-    private Statement statement;
-
     private Period period;
     private Bank bank;
 
     /**
      * Constructor
      */
-    public ExtendedStatement(Period period, Bank bank, Statement statement) {
+    public ExtendedStatement(Period period, Bank bank) {
         this.period = period;
         this.bank = bank;
-        this.statement = statement;
-    }
-
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    @DisplayProperties(order = 1)
-    public Statement getStatement() {
-        return statement;
     }
 
     //------------------------------------------------------------------------------------------------------------------
     //############################################### Direct Access ####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @DisplayProperties(order = 2)
+    @DisplayProperties(order = 1)
     public Bank getBank() {
-        return statement.getBank();
+        return bank;
+    }
+
+    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
+    @DisplayProperties(order = 2)
+    public Period getPeriod() {
+        return period;
     }
 
     @DisplayProperties(dataType = CURRENCY, order = 3)

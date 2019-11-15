@@ -1,11 +1,7 @@
 package com.ntankard.Tracking.DataBase.Database;
 
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Core.Pool.Fund;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
-import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Statement;
-import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
-import com.ntankard.Tracking.DataBase.Interface.ClassExtension.ExtendedStatement;
 
 public class TrackingDatabase_Repair {
 
@@ -17,11 +13,6 @@ public class TrackingDatabase_Repair {
     public static void repair(DataObject dataObject) {
         if (dataObject instanceof Period) {
             repairPeriod((Period) dataObject);
-        } else if (dataObject instanceof Bank) {
-            repairBank((Bank) dataObject);
-
-        } else if (dataObject instanceof Fund) {
-            System.out.println("Implement repair for Fund (generateManagersChargeTransfer)");
         }
     }
 
@@ -33,49 +24,6 @@ public class TrackingDatabase_Repair {
     private static void repairPeriod(Period period) {
         if (period.getLast() != null) {
             period.getLast().setNext(period);
-        }
-        generateStatements(period);
-    }
-
-    /**
-     * Repair a Bank type object
-     *
-     * @param added The bank object to repair
-     */
-    private static void repairBank(Bank added) {
-        for (Period period : TrackingDatabase.get().get(Period.class)) {
-            generateStatements(period);
-        }
-    }
-
-    /**
-     * Ensure that statements are generated for all pairs of Bank accounts and Periods
-     *
-     * @param period The Period to check and generated if needed
-     */
-    private static void generateStatements(Period period) {
-
-        for (Bank b : TrackingDatabase.get().get(Bank.class)) {
-            boolean found = false;
-            for (Statement statement : period.getChildren(Statement.class)) {
-                if (statement.getBank().equals(b)) {
-                    found = true;
-                    break;
-                }
-            }
-
-            if (!found) {
-                Double lastEnd = 0.0;
-                if (period.getLast() != null) {
-                    for (Statement statement : period.getLast().getChildren(Statement.class)) {
-                        if (statement.getBank().equals(b)) {
-                            lastEnd = new ExtendedStatement(statement.getPeriod(), statement.getBank(), statement).getEnd();
-                            break;
-                        }
-                    }
-                }
-                TrackingDatabase.get().add(new Statement(TrackingDatabase.get().getNextId(), b, period, 0.0, 0.0));
-            }
         }
     }
 }
