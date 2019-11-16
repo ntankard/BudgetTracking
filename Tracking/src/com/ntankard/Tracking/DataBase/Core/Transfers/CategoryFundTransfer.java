@@ -49,6 +49,18 @@ public class CategoryFundTransfer extends Transfer<Category, Fund> {
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
+    @Override
+    @DisplayProperties(order = 7)
+    public Category getSource() {
+        return super.getSource();
+    }
+
+    @Override
+    @DisplayProperties(order = 8)
+    public Fund getDestination() {
+        return super.getDestination();
+    }
+
     @DisplayProperties(order = 10)
     public FundEvent getFundEvent() {
         return fundEvent;
@@ -61,5 +73,17 @@ public class CategoryFundTransfer extends Transfer<Category, Fund> {
     @SetterProperties(sourceMethod = "getData")
     public void setFundEvent(FundEvent fundEvent) {
         this.fundEvent = fundEvent;
+    }
+
+    @Override
+    @SetterProperties(sourceMethod = "getData")
+    public void setSource(Category source) {
+        super.setSource(source);
+    }
+
+    @Override
+    @SetterProperties(sourceMethod = "getData")
+    public void setDestination(Fund destination) {
+        super.setDestination(destination);
     }
 }

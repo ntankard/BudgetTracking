@@ -186,7 +186,11 @@ public class TrackingDatabase {
      */
     @SuppressWarnings("unchecked")
     public <T extends DataObject> List<T> getData(String type) {
-        return get(classMap.get(type));
+        Class toGet = classMap.get(type);
+        if (toGet == null) {
+            throw new RuntimeException("Attempting to get a item that dose not exist");
+        }
+        return get(toGet);
     }
 
     /**

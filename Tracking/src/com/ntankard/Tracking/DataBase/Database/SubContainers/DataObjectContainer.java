@@ -95,6 +95,9 @@ public class DataObjectContainer extends Container<Class<? extends DataObject>, 
     @SuppressWarnings("unchecked")
     public <T extends DataObject> List<T> get(Class<T> tClass) {
         if (!container.containsKey(tClass)) {
+            if (tClass == null) {
+                throw new RuntimeException("Trying to get a null item");
+            }
             container.put(tClass, new HashMap<>());
         }
         List toReturn = new ArrayList(container.get(tClass).values());
@@ -115,6 +118,9 @@ public class DataObjectContainer extends Container<Class<? extends DataObject>, 
     @SuppressWarnings("unchecked")
     public <T extends DataObject> T get(Class<T> tClass, Integer id) {
         if (!container.containsKey(tClass)) {
+            if (tClass == null) {
+                throw new RuntimeException("Trying to get a null item");
+            }
             container.put(tClass, new HashMap<>());
         }
         return (T) container.get(tClass).get(id);
