@@ -1,10 +1,9 @@
-package com.ntankard.Tracking.DataBase.Core.MoneyCategory.FundEvent;
+package com.ntankard.Tracking.DataBase.Core.Pool.Fund;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Core.Pool.Fund;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.NamedDataObject;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 

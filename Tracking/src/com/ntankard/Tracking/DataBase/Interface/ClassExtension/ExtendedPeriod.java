@@ -2,9 +2,9 @@ package com.ntankard.Tracking.DataBase.Interface.ClassExtension;
 
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
-import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
+import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
-import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
+import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataContext.ZERO_BELOW_BAD;

@@ -1,4 +1,4 @@
-package com.ntankard.Tracking.DataBase.Core.SupportObjects;
+package com.ntankard.Tracking.DataBase.Core;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;

@@ -1,6 +1,6 @@
 package com.ntankard.Tracking.DataBase.Interface.Set.ExtendedSets;
 
-import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
+import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.ClassExtension.ExtendedStatement;

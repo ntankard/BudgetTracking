@@ -3,12 +3,12 @@ package com.ntankard.Tracking.DataBase.Interface.ClassExtension;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
-import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
+import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer;
-import com.ntankard.Tracking.DataBase.Core.Transfers.BankTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfers.BankTransfer.BankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
-import com.ntankard.Tracking.DataBase.Core.StatementEnd;
-import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
+import com.ntankard.Tracking.DataBase.Core.Pool.Bank.StatementEnd;
+import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Interface.Set.PeriodPoolType_Set;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataContext.ZERO_TARGET;

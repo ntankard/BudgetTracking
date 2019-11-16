@@ -1,7 +1,7 @@
 package com.ntankard.Tracking.DataBase.Core.BaseObject.Interface;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
-import com.ntankard.Tracking.DataBase.Core.SupportObjects.Currency;
+import com.ntankard.Tracking.DataBase.Core.Currency;
 
 @ClassExtensionProperties(includeParent = true)
 public interface CurrencyBound {

@@ -1,7 +1,7 @@
 package com.ntankard.Tracking.Dispaly.DataObjectPanels;
 
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
-import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
+import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Interface.ClassExtension.ExtendedStatement;
 import com.ntankard.Tracking.DataBase.Interface.Set.ExtendedSets.ExtendedStatement_Set;
 import com.ntankard.Tracking.Dispaly.Frames.Statement_Frame;
