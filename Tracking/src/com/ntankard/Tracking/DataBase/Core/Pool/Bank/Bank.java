@@ -52,18 +52,18 @@ public class Bank extends Pool implements CurrencyBound {
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @DisplayProperties(order = 5)
+    @DisplayProperties(order = 3)
     public Currency getCurrency() {
         return currency;
     }
 
-    @DisplayProperties(order = 6)
+    @DisplayProperties(order = 4)
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public Integer getOrder() {
         return order;
     }
 
-    @DisplayProperties(order = 7)
+    @DisplayProperties(order = 5)
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public Double getStart() {
         return start;

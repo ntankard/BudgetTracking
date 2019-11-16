@@ -343,7 +343,7 @@ public class TrackingDatabase_Reader {
      * @param aClass The class to generate from
      * @return its ConstructorMap or null if its not supported
      */
-    static DataObjectSaver generateConstructorMap(Class aClass) {
+    public static DataObjectSaver generateConstructorMap(Class aClass) {
         // Build the base object
         if (aClass.isPrimitive()) throw new RuntimeException("Primate object type detected");
         DataObjectSaver dataObjectSaver = new DataObjectSaver(aClass);
@@ -384,11 +384,11 @@ public class TrackingDatabase_Reader {
     /**
      * Description of the object needed to construct an object
      */
-    static class DataObjectSaver {
-        Class<?> aClass;
-        List<NameTypePair> nameTypePairs = new ArrayList<>();
-        Boolean shouldSave = true;
-        Constructor constructor;
+    public static class DataObjectSaver {
+        public Class<?> aClass;
+        public List<NameTypePair> nameTypePairs = new ArrayList<>();
+        public Boolean shouldSave = true;
+        public Constructor constructor;
 
         DataObjectSaver(Class aClass) {
             this.aClass = aClass;

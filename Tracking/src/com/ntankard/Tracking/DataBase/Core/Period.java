@@ -76,7 +76,7 @@ public class Period extends DataObject {
      * @return The first Period know about
      */
     @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
-    @DisplayProperties(order = 10)
+    @DisplayProperties(order = 6)
     public Period getFirst() {
         Period first = this;
         while (true) {
@@ -102,13 +102,13 @@ public class Period extends DataObject {
     }
 
     @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
-    @DisplayProperties(order = 8)
+    @DisplayProperties(order = 4)
     public Period getLast() {
         return last;
     }
 
     @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
-    @DisplayProperties(order = 9)
+    @DisplayProperties(order = 5)
     public Period getNext() {
         return next;
     }
