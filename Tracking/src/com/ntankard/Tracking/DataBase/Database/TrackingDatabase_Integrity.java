@@ -38,13 +38,11 @@ public class TrackingDatabase_Integrity {
      * Confirm the ID of all object. Check they are unique
      */
     static void validateId() {
-        for (Class<? extends DataObject> aClass : TrackingDatabase.get().getDataObjectTypes()) {
-            for (DataObject dataObject : TrackingDatabase.get().get(aClass)) {
-                for (DataObject compare : TrackingDatabase.get().get(aClass)) {
-                    if (!dataObject.equals(compare)) {
-                        if (dataObject.getId().equals(compare.getId())) {
-                            throw new RuntimeException("Core Database error. Duplicate ID found");
-                        }
+        for(DataObject dataObject : TrackingDatabase.get().getAll()){
+            for(DataObject toTest : TrackingDatabase.get().getAll()){
+                if(!dataObject.equals(toTest)){
+                    if (dataObject.getId().equals(toTest.getId())) {
+                        throw new RuntimeException("Core Database error. Duplicate ID found");
                     }
                 }
             }

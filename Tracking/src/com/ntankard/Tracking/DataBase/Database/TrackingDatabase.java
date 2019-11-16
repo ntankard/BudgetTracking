@@ -14,10 +14,10 @@ public class TrackingDatabase {
 
     // Core data objects
     private List<Container> containers = new ArrayList<>();
-    private DataObjectContainer masterMap = new DataObjectContainer();
+    private ClassMap classMap = new ClassMap();
     private DefaultObjectMap defaultObjectMap = new DefaultObjectMap();
     private SpecialValuesMap specialValuesMap = new SpecialValuesMap();
-    private ClassMap classMap = new ClassMap();
+    private DataObjectContainer masterMap = new DataObjectContainer();
     private DataObjectClassTree dataObjectClassTree = new DataObjectClassTree();
 
     // Special values
@@ -53,7 +53,7 @@ public class TrackingDatabase {
     /**
      * Private Constructor
      */
-    TrackingDatabase() {
+    private TrackingDatabase() {
         containers.add(masterMap);
         containers.add(defaultObjectMap);
         containers.add(specialValuesMap);
