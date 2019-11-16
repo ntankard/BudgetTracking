@@ -5,7 +5,7 @@ import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.MoneyContainers.Period;
 import com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer;
-import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
+import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.ExtendedSets.ExtendedStatement_Set;
 import com.ntankard.Tracking.DataBase.Interface.Set.PeriodPoolType_Set;

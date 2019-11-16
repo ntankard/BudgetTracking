@@ -8,6 +8,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 
+import static com.ntankard.ClassExtension.Util.classForName;
+
 public class TrackingDatabase_Reader {
 
     /**
@@ -309,13 +311,7 @@ public class TrackingDatabase_Reader {
     //------------------------------------------------------------------------------------------------------------------
 
     private static DataObjectSaver extractConstructorMap(List<String[]> allLines) {
-        Class aClass;
-        try {
-            aClass = Class.forName(allLines.get(0)[0]);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
+        Class aClass = classForName(allLines.get(0)[0], "com.ntankard.Tracking.DataBase.Core");
         return generateConstructorMap(aClass, allLines.get(1));
     }
 
@@ -335,11 +331,7 @@ public class TrackingDatabase_Reader {
         dataObjectSaver.constructor = constructors[0];
 
         for (int i = 0; i < lines.length / 2; i++) {
-            try {
-                dataObjectSaver.nameTypePairs.add(new NameTypePair(lines[i * 2], Class.forName(lines[i * 2 + 1])));
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
-            }
+            dataObjectSaver.nameTypePairs.add(new NameTypePair(lines[i * 2], classForName(lines[i * 2 + 1], "com.ntankard.Tracking.DataBase.Core")));
         }
 
         return dataObjectSaver;
