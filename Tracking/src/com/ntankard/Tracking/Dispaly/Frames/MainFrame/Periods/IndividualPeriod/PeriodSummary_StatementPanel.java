@@ -10,6 +10,7 @@ import com.ntankard.Tracking.DataBase.Core.Transfers.BankTransfer.IntraCurrencyB
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.StatementEnd;
 import com.ntankard.Tracking.DataBase.Interface.ClassExtension.ExtendedStatement;
 import com.ntankard.Tracking.DataBase.Interface.Set.Children_Set;
+import com.ntankard.Tracking.DataBase.Interface.Set.ExactChildren_Set;
 import com.ntankard.Tracking.DataBase.Interface.Set.PeriodPoolType_Set;
 import com.ntankard.Tracking.DataBase.Interface.Summary.PeriodTransaction_Summary;
 import com.ntankard.Tracking.Dispaly.DataObjectPanels.ExtendedStatementPanel;
@@ -86,11 +87,11 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
 
         JTabbedPane statementControl_panel = new JTabbedPane();
 
-        bankTransfer_panel = new DataObject_DisplayList<>(BankTransfer.class, new Children_Set<>(BankTransfer.class, core), false, this);
+        bankTransfer_panel = new DataObject_DisplayList<>(BankTransfer.class, new ExactChildren_Set<>(BankTransfer.class, core), false, this);
         bankTransfer_panel.addControlButtons(new BankTransfer_ElementController(core, this));
         statementControl_panel.add("Transfers", bankTransfer_panel);
 
-        intraCurrencyBankTransferDataObject_panel = new DataObject_DisplayList<>(IntraCurrencyBankTransfer.class, new Children_Set<>(IntraCurrencyBankTransfer.class, core), false, this);
+        intraCurrencyBankTransferDataObject_panel = new DataObject_DisplayList<>(IntraCurrencyBankTransfer.class, new ExactChildren_Set<>(IntraCurrencyBankTransfer.class, core), false, this);
         intraCurrencyBankTransferDataObject_panel.addControlButtons(new IntraCurrencyBankTransfer_ElementController(core, this));
         statementControl_panel.add("Currency Transfers", intraCurrencyBankTransferDataObject_panel);
 

@@ -80,7 +80,7 @@ public class DataObjectDefinitionTest {
     void checkDisplayProperties() {
         for (Class<? extends DataObject> aClass : solidClasses) {
             MemberClass mClass = new MemberClass(aClass);
-            List<Member> members = mClass.getVerbosityMembers(Integer.MAX_VALUE);
+            List<Member> members = mClass.getVerbosityMembers(Integer.MAX_VALUE, false);
 
             List<Integer> baseOrder = new ArrayList<>();
             List<Integer> secondOrder = new ArrayList<>();
@@ -111,5 +111,11 @@ public class DataObjectDefinitionTest {
                 assertEquals(last++ + 1, integer);
             }
         }
+    }
+
+    @Test
+    void inheritOrder() {
+        assertTrue(false);
+        // Test that the order is the same at all layers when objects are overridden
     }
 }

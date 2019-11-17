@@ -4,10 +4,10 @@ import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.ClassExtension.SetterProperties;
+import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
-import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
@@ -28,22 +28,22 @@ public class BankCategoryTransfer extends Transfer<Bank, Category> {
     //------------------------------------------------------------------------------------------------------------------
 
     @Override
-    @DisplayProperties(order = 7)
+    @DisplayProperties(order = 5)
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    public Currency getCurrency() {
+        return getSource().getCurrency();
+    }
+
+    @Override
+    @DisplayProperties(order = 6)
     public Bank getSource() {
         return super.getSource();
     }
 
     @Override
-    @DisplayProperties(order = 8)
+    @DisplayProperties(order = 9)
     public Category getDestination() {
         return super.getDestination();
-    }
-
-    @Override
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    @DisplayProperties(order = 9)
-    public Currency getCurrency() {
-        return getSource().getCurrency();
     }
 
     //------------------------------------------------------------------------------------------------------------------

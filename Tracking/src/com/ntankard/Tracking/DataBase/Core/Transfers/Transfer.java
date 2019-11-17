@@ -4,25 +4,22 @@ import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.ClassExtension.SetterProperties;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Currency;
+import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
-import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
-import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
+import static com.ntankard.ClassExtension.MemberProperties.*;
 
 @ClassExtensionProperties(includeParent = true)
-public abstract class Transfer<SourceType extends DataObject, DestinationType extends DataObject> extends DataObject implements CurrencyBound {
-
-    private Period period;
+public abstract class Transfer<SourceType extends DataObject, DestinationType extends DataObject> extends DataObject {
 
     // My parents
+    private Period period;
     private SourceType source;
     private DestinationType destination;
     private Currency currency;
@@ -102,32 +99,44 @@ public abstract class Transfer<SourceType extends DataObject, DestinationType ex
         return value;
     }
 
+    @DisplayProperties(order = 5)
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    @DisplayProperties(order = 5, dataType = CURRENCY)
-    public Double getSourceValue() {
-        return -value;
+    public Currency getCurrency() {
+        return currency;
     }
 
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    @DisplayProperties(order = 6, dataType = CURRENCY)
-    public Double getDestinationValue() {
-        return value;
-    }
-
-    @DisplayProperties(order = 7)
+    @DisplayProperties(order = 6)
     public SourceType getSource() {
         return source;
     }
 
+    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
+    @DisplayProperties(order = 7, dataType = CURRENCY)
+    public Double getSourceValue() {
+        return -getValue();
+    }
+
+    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
     @DisplayProperties(order = 8)
+    public Currency getSourceCurrency() {
+        return getCurrency();
+    }
+
+    @DisplayProperties(order = 9)
     public DestinationType getDestination() {
         return destination;
     }
 
-    @Override
-    @DisplayProperties(order = 9)
-    public Currency getCurrency() {
-        return currency;
+    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
+    @DisplayProperties(order = 10, dataType = CURRENCY)
+    public Double getDestinationValue() {
+        return getValue();
+    }
+
+    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
+    @DisplayProperties(order = 11)
+    public Currency getDestinationCurrency() {
+        return getCurrency();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -143,6 +152,13 @@ public abstract class Transfer<SourceType extends DataObject, DestinationType ex
     }
 
     @SetterProperties(sourceMethod = "getData")
+    public void setCurrency(Currency currency) {
+        this.currency.notifyChildUnLink(this);
+        this.currency = currency;
+        this.currency.notifyChildLink(this);
+    }
+
+    @SetterProperties(sourceMethod = "getData")
     public void setSource(SourceType source) {
         this.source.notifyChildUnLink(this);
         this.source = source;
@@ -154,12 +170,5 @@ public abstract class Transfer<SourceType extends DataObject, DestinationType ex
         this.destination.notifyChildUnLink(this);
         this.destination = destination;
         this.destination.notifyChildLink(this);
-    }
-
-    @SetterProperties(sourceMethod = "getData")
-    public void setCurrency(Currency currency) {
-        this.currency.notifyChildUnLink(this);
-        this.currency = currency;
-        this.currency.notifyChildLink(this);
     }
 }

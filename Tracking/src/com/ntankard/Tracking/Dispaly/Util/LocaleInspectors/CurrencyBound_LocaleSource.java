@@ -11,7 +11,7 @@ public class CurrencyBound_LocaleSource implements CurrencyDecoder_NumberFormatS
      * {@inheritDoc
      */
     @Override
-    public NumberFormat getNumberFormat(Object rowObject) {
+    public NumberFormat getNumberFormat(Object rowObject, String contextName) {
         CurrencyBound moneyEvent = (CurrencyBound) rowObject;
         return moneyEvent.getCurrency().getNumberFormat();
     }

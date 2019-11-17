@@ -3,12 +3,12 @@ package com.ntankard.Tracking.DataBase.Core.Transfers.BankTransfer;
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
+import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
-import static com.ntankard.ClassExtension.MemberProperties.TRACE_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
 public class IntraCurrencyBankTransfer extends BankTransfer {
@@ -32,20 +32,27 @@ public class IntraCurrencyBankTransfer extends BankTransfer {
     //------------------------------------------------------------------------------------------------------------------
 
     @Override
-    @MemberProperties(verbosityLevel = TRACE_DISPLAY)
+    @MemberProperties(shouldDisplay = false)
     @DisplayProperties(order = 4, dataType = CURRENCY)
     public Double getValue() {
-        return super.getValue();
+        throw new RuntimeException("Direct value access not supported");
     }
 
     @Override
-    @DisplayProperties(order = 5, dataType = CURRENCY)
+    @MemberProperties(shouldDisplay = false)
+    @DisplayProperties(order = 5)
+    public Currency getCurrency() {
+        throw new RuntimeException("Direct value access not supported");
+    }
+
+    @Override
+    @DisplayProperties(order = 7, dataType = CURRENCY)
     public Double getSourceValue() {
         return sourceValue;
     }
 
     @Override
-    @DisplayProperties(order = 6, dataType = CURRENCY)
+    @DisplayProperties(order = 10, dataType = CURRENCY)
     public Double getDestinationValue() {
         return destinationValue;
     }

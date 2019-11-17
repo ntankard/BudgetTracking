@@ -50,18 +50,18 @@ public class CategoryFundTransfer extends Transfer<Category, Fund> {
     //------------------------------------------------------------------------------------------------------------------
 
     @Override
-    @DisplayProperties(order = 7)
+    @DisplayProperties(order = 6)
     public Category getSource() {
         return super.getSource();
     }
 
     @Override
-    @DisplayProperties(order = 8)
+    @DisplayProperties(order = 9)
     public Fund getDestination() {
         return super.getDestination();
     }
 
-    @DisplayProperties(order = 10)
+    @DisplayProperties(order = 12)
     public FundEvent getFundEvent() {
         return fundEvent;
     }

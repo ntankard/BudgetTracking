@@ -100,7 +100,12 @@ public class TrackingDatabase_Reader {
             DataObjectSaver dataObjectSaver = dataObjectSavers.get(dataObject.getClass());
 
             if (lines == null || dataObjectSaver == null) {
-                throw new RuntimeException("Trying to save and object that is not setup for saving");
+                DataObjectSaver generated = generateConstructorMap(dataObject.getClass());
+                if (generated.shouldSave) {
+                    throw new RuntimeException("Trying to save and object that is not setup for saving");
+                } else {
+                    continue;
+                }
             }
 
             if (dataObjectSaver.shouldSave) {
