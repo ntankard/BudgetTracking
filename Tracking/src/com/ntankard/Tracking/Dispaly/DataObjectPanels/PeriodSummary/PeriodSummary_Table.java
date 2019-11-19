@@ -8,7 +8,7 @@ import com.ntankard.Tracking.DataBase.Core.Period;
 import javax.swing.*;
 import java.awt.*;
 
-public class PeriodSummary extends UpdatableJScrollPane {
+public class PeriodSummary_Table extends UpdatableJScrollPane {
 
     // Core Data
     private Period core;
@@ -27,7 +27,7 @@ public class PeriodSummary extends UpdatableJScrollPane {
     /**
      * Constructor
      */
-    public PeriodSummary(Period core, boolean addTransfers, Updatable master) {
+    public PeriodSummary_Table(Period core, boolean addTransfers, Updatable master) {
         super(master);
         this.core = core;
         this.addTransfers = addTransfers;

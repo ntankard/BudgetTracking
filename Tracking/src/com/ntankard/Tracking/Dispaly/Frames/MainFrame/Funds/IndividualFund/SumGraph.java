@@ -6,7 +6,7 @@ import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Fund.Fund;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
-import com.ntankard.Tracking.DataBase.Interface.Set.PeriodPoolType_Set;
+import com.ntankard.Tracking.DataBase.Interface.Summary.PeriodPoolSet_Summary;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -84,9 +84,9 @@ public class SumGraph extends UpdatableJPanel {
         int i = 0;
         double useTotal = 0.0;
         for (Period period : TrackingDatabase.get().get(Period.class)) {
-            useTotal += new PeriodPoolType_Set<>(period, core, CategoryFundTransfer.class).getTotal();
+            useTotal += new PeriodPoolSet_Summary<>(period, core, CategoryFundTransfer.class).getTotal();
 
-            use.add(i, new PeriodPoolType_Set<>(period, core, CategoryFundTransfer.class).getTotal());
+            use.add(i, new PeriodPoolSet_Summary<>(period, core, CategoryFundTransfer.class).getTotal());
             total.add(i, useTotal);
 
             i++;

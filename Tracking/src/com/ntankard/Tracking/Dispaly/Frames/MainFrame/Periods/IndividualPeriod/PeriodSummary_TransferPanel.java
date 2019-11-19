@@ -5,7 +5,7 @@ import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer;
 import com.ntankard.Tracking.DataBase.Interface.Set.Children_Set;
-import com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.PeriodSummary;
+import com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.PeriodSummary_Table;
 import com.ntankard.Tracking.Dispaly.Util.ElementControllers.CategoryFundTransfer_ElementController;
 import com.ntankard.Tracking.Dispaly.Util.Panels.DataObject_DisplayList;
 
@@ -16,7 +16,7 @@ public class PeriodSummary_TransferPanel extends UpdatableJPanel {
     private Period core;
 
     // The GUI components
-    private PeriodSummary periodSummary_panel;
+    private PeriodSummary_Table periodSummary_Table_panel;
     private DataObject_DisplayList<CategoryFundTransfer> periodFundTransfer_panel;
 
     /**
@@ -35,7 +35,7 @@ public class PeriodSummary_TransferPanel extends UpdatableJPanel {
         this.removeAll();
         this.setLayout(new GridBagLayout());
 
-        periodSummary_panel = new PeriodSummary(core, true, this);
+        periodSummary_Table_panel = new PeriodSummary_Table(core, true, this);
 
         periodFundTransfer_panel = new DataObject_DisplayList<>(CategoryFundTransfer.class, new Children_Set<>(CategoryFundTransfer.class, core), false, this);
         periodFundTransfer_panel.addControlButtons(new CategoryFundTransfer_ElementController(core, this));
@@ -49,7 +49,7 @@ public class PeriodSummary_TransferPanel extends UpdatableJPanel {
 
         summaryContainer_C.weighty = 6;
         summaryContainer_C.gridwidth = 2;
-        this.add(periodSummary_panel, summaryContainer_C);
+        this.add(periodSummary_Table_panel, summaryContainer_C);
 
         summaryContainer_C.weighty = 1;
         summaryContainer_C.gridwidth = 1;
@@ -66,6 +66,6 @@ public class PeriodSummary_TransferPanel extends UpdatableJPanel {
     public void update() {
         periodFundTransfer_panel.update();
 
-        periodSummary_panel.update();
+        periodSummary_Table_panel.update();
     }
 }

@@ -5,7 +5,7 @@ import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Transfers.Transfer;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Core.Currency;
-import com.ntankard.Tracking.DataBase.Interface.Set.PeriodPoolType_Set;
+import com.ntankard.Tracking.DataBase.Interface.Summary.PeriodPoolSet_Summary;
 import com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.ModelData.ModelData_Columns;
 
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ public class TransferRow<T extends Transfer> extends DataRows<T> {
      */
     @Override
     public double getTotal_impl(Category category) {
-        return new PeriodPoolType_Set<>(core, category, typeParameterClass).getTotal();
+        return new PeriodPoolSet_Summary<>(core, category, typeParameterClass).getTotal();
     }
 
     /**
@@ -143,7 +143,7 @@ public class TransferRow<T extends Transfer> extends DataRows<T> {
      * @return The formatted total
      */
     private double getCurrencyTotal_impl(Category category, Currency currency) {
-        return new PeriodPoolType_Set<>(core, category, typeParameterClass).getTotal(currency);
+        return new PeriodPoolSet_Summary<>(core, category, typeParameterClass).getTotal(currency);
     }
 
     /**
@@ -153,7 +153,7 @@ public class TransferRow<T extends Transfer> extends DataRows<T> {
      * @return All the rows for a specified category
      */
     private List<T> getRows(Category category) {
-        return new ArrayList<T>(new PeriodPoolType_Set<>(core, category, typeParameterClass).get());
+        return new ArrayList<T>(new PeriodPoolSet_Summary<>(core, category, typeParameterClass).get());
     }
 
     /**

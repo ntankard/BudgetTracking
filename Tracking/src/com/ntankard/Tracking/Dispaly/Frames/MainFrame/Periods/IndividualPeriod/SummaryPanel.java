@@ -2,11 +2,10 @@ package com.ntankard.Tracking.Dispaly.Frames.MainFrame.Periods.IndividualPeriod;
 
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
-import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Currency;
+import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
-import com.ntankard.Tracking.DataBase.Interface.ClassExtension.ExtendedPeriod;
-import com.ntankard.Tracking.DataBase.Interface.Summary.PeriodTransaction_Summary;
+import com.ntankard.Tracking.DataBase.Interface.Summary.Period_Summary;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -21,8 +20,7 @@ public class SummaryPanel extends UpdatableJPanel {
     // The GUI components
     private JTextField netMoney_txt;
     private JTextField savings_txt;
-    private JLabel transferStatus_lbl;
-    private JLabel missingSpend_lbl;
+    private JLabel isValid_lbl;
 
     /**
      * Constructor
@@ -47,18 +45,14 @@ public class SummaryPanel extends UpdatableJPanel {
         savings_txt = new JTextField("0");
         savings_txt.setEditable(false);
 
-        transferStatus_lbl = new JLabel();
-        transferStatus_lbl.setBorder(new LineBorder(Color.BLACK));
-
-        missingSpend_lbl = new JLabel();
-        missingSpend_lbl.setBorder(new LineBorder(Color.BLACK));
+        isValid_lbl = new JLabel();
+        isValid_lbl.setBorder(new LineBorder(Color.BLACK));
 
         this.add(new JLabel("Net Money"));
         this.add(netMoney_txt);
         this.add(new JLabel("Savings"));
         this.add(savings_txt);
-        this.add(transferStatus_lbl);
-        this.add(missingSpend_lbl);
+        this.add(isValid_lbl);
     }
 
     /**
@@ -74,14 +68,14 @@ public class SummaryPanel extends UpdatableJPanel {
         double netMin = Double.MAX_VALUE;
         double netMax = Double.MIN_VALUE;
         for (Period period : TrackingDatabase.get().get(Period.class)) {
-            double saving = new PeriodTransaction_Summary(period).getSavings();
+            double saving = period.getChildren(Period_Summary.class).get(0).getSavings();
             if (saving > savingMax) {
                 savingMax = saving;
             }
             if (saving < savingMin) {
                 savingMin = saving;
             }
-            double profit = new ExtendedPeriod(period).getProfit();
+            double profit = period.getChildren(Period_Summary.class).get(0).getProfit();
             if (profit > netMax) {
                 netMax = profit;
             }
@@ -90,7 +84,9 @@ public class SummaryPanel extends UpdatableJPanel {
             }
         }
 
-        double profit = new ExtendedPeriod(core).getProfit();
+        Period_Summary period_summary = core.getChildren(Period_Summary.class).get(0);
+
+        double profit = period_summary.getProfit();
         netMoney_txt.setText(formatter.format(profit * YEN.getToPrimary()));
         if (profit > 0.0) {
             int scale = getScale(profit, netMax);
@@ -100,7 +96,7 @@ public class SummaryPanel extends UpdatableJPanel {
             netMoney_txt.setBackground(new Color(255, scale, scale));
         }
 
-        double saving = new PeriodTransaction_Summary(core).getSavings();
+        double saving = period_summary.getSavings();
         savings_txt.setText(formatter.format(saving * YEN.getToPrimary()));
         if (saving > 0.0) {
             int scale = getScale(saving, savingMax);
@@ -111,21 +107,12 @@ public class SummaryPanel extends UpdatableJPanel {
         }
 
         // Check that all spends are accounted for
-        if (new PeriodTransaction_Summary(core).isValidSpend()) {
-            missingSpend_lbl.setText(" Spend ");
-            missingSpend_lbl.setForeground(Color.GREEN);
+        if (period_summary.isValid()) {
+            isValid_lbl.setText(" All Valid ");
+            isValid_lbl.setForeground(Color.GREEN);
         } else {
-            missingSpend_lbl.setText(" Spend Missing ");
-            missingSpend_lbl.setForeground(Color.RED);
-        }
-
-        // Check that all transfers in and out are accounted for
-        if (new PeriodTransaction_Summary(core).isValidTransfer()) {
-            transferStatus_lbl.setText(" Valid transfer rate ");
-            transferStatus_lbl.setForeground(Color.GREEN);
-        } else {
-            transferStatus_lbl.setText(" Imposable transfer rate, or missing transfer ");
-            transferStatus_lbl.setForeground(Color.RED);
+            isValid_lbl.setText(" Invalid ");
+            isValid_lbl.setForeground(Color.RED);
         }
     }
 

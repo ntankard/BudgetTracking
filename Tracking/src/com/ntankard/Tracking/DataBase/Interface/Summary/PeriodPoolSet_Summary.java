@@ -1,31 +1,29 @@
-package com.ntankard.Tracking.DataBase.Interface.Set;
+package com.ntankard.Tracking.DataBase.Interface.Summary;
 
+import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
-import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Transfers.Transfer;
+import com.ntankard.Tracking.DataBase.Interface.Set.MultiParent_Set;
+import com.ntankard.Tracking.DataBase.Interface.Set.ObjectSet;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PeriodPoolType_Set<T extends Transfer>  implements ObjectSet<T> {
+public class PeriodPoolSet_Summary<T extends Transfer> implements ObjectSet<T> {
 
-    // The objects to filter on
-    private Period period;
+    // The source of data
+    private MultiParent_Set<T, Period, Pool> coreSet;
+
+    // What side of the transaction is this for calculations
     private Pool pool;
-
-    /**
-     * The type of object to group
-     */
-    private Class<T> toGet;
 
     /**
      * Constructor
      */
-    public PeriodPoolType_Set(Period period, Pool pool, Class<T> toGet) {
-        this.period = period;
+    public PeriodPoolSet_Summary(Period period, Pool pool, Class<T> toGet) {
+        this.coreSet = new MultiParent_Set<>(toGet, period, pool);
         this.pool = pool;
-        this.toGet = toGet;
     }
 
     /**
@@ -34,7 +32,7 @@ public class PeriodPoolType_Set<T extends Transfer>  implements ObjectSet<T> {
     @Override
     public List<T> get() {
         List<T> toReturn = new ArrayList<>();
-        for (T transaction : period.getChildren(toGet)) {
+        for (T transaction : coreSet.get()) {
             if (isSource(transaction) || isDestination(transaction)) {
                 toReturn.add(transaction);
             }
@@ -51,7 +49,10 @@ public class PeriodPoolType_Set<T extends Transfer>  implements ObjectSet<T> {
     public List<T> get(Currency currency) {
         List<T> toReturn = new ArrayList<>();
         for (T moneyEvent : get()) {
-            if (moneyEvent.getCurrency().equals(currency)) {
+            if (!moneyEvent.getSourceCurrency().equals(moneyEvent.getDestinationCurrency())) {
+                throw new RuntimeException("Not supported");
+            }
+            if (moneyEvent.getSourceCurrency().equals(currency)) {
                 toReturn.add(moneyEvent);
             }
         }
@@ -86,9 +87,9 @@ public class PeriodPoolType_Set<T extends Transfer>  implements ObjectSet<T> {
         double sum = 0;
         for (T moneyEvent : get()) {
             if (isSource(moneyEvent)) {
-                sum += moneyEvent.getSourceValue() * moneyEvent.getCurrency().getToPrimary();
+                sum += moneyEvent.getSourceValue() * moneyEvent.getSourceCurrency().getToPrimary();
             } else if (isDestination(moneyEvent)) {
-                sum += moneyEvent.getDestinationValue() * moneyEvent.getCurrency().getToPrimary();
+                sum += moneyEvent.getDestinationValue() * moneyEvent.getDestinationCurrency().getToPrimary();
             }
 
         }
@@ -103,7 +104,10 @@ public class PeriodPoolType_Set<T extends Transfer>  implements ObjectSet<T> {
     public List<Currency> getCurrencies() {
         List<Currency> toReturn = new ArrayList<>();
         for (T moneyEvent : get()) {
-            Currency currency = moneyEvent.getCurrency();
+            if (!moneyEvent.getSourceCurrency().equals(moneyEvent.getDestinationCurrency())) {
+                throw new RuntimeException("Not supported");
+            }
+            Currency currency = moneyEvent.getSourceCurrency();
             if (!toReturn.contains(currency)) {
                 toReturn.add(currency);
             }
@@ -117,7 +121,7 @@ public class PeriodPoolType_Set<T extends Transfer>  implements ObjectSet<T> {
      * @param moneyEvent The event to check
      * @return True if this set treat the money event as a source
      */
-    protected boolean isSource(T moneyEvent) {
+    private boolean isSource(T moneyEvent) {
         return moneyEvent.isThisSource(pool);
     }
 
@@ -127,7 +131,7 @@ public class PeriodPoolType_Set<T extends Transfer>  implements ObjectSet<T> {
      * @param moneyEvent The event to check
      * @return True if this set treat the money event as a destination
      */
-    protected boolean isDestination(T moneyEvent) {
+    private boolean isDestination(T moneyEvent) {
         return moneyEvent.isThisDestination(pool);
     }
 
@@ -137,6 +141,7 @@ public class PeriodPoolType_Set<T extends Transfer>  implements ObjectSet<T> {
      * @param pool The pool object to filter on
      */
     public void setPool(Pool pool) {
+        this.coreSet.setSecondaryParent(pool);
         this.pool = pool;
     }
 }

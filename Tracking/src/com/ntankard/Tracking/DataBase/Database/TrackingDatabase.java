@@ -3,6 +3,11 @@ package com.ntankard.Tracking.DataBase.Database;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Database.SubContainers.*;
+import com.ntankard.Tracking.DataBase.Interface.Summary.Period_Summary;
+import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Bank_Summary;
+import com.ntankard.Tracking.Dispaly.Util.Comparators.BankSummary_Comparator;
+import com.ntankard.Tracking.Dispaly.Util.Comparators.PeriodSummary_Comparator;
+import com.ntankard.Tracking.Dispaly.Util.Comparators.Period_Comparator;
 import com.ntankard.Tracking.Util.TreeNode;
 
 import java.util.ArrayList;
@@ -60,15 +65,9 @@ public class TrackingDatabase {
         containers.add(classMap);
         containers.add(dataObjectClassTree);
 
-        masterMap.addComparator(Period.class, (o1, o2) -> {
-            if (o1.getYear() > o2.getYear()) {
-                return 1;
-            }
-            if (o1.getYear() < o2.getYear()) {
-                return -1;
-            }
-            return Integer.compare(o1.getMonth(), o2.getMonth());
-        });
+        masterMap.addComparator(Period.class, new Period_Comparator());
+        masterMap.addComparator(Bank_Summary.class, new BankSummary_Comparator());
+        masterMap.addComparator(Period_Summary.class, new PeriodSummary_Comparator());
     }
 
     /**
@@ -126,6 +125,7 @@ public class TrackingDatabase {
      * @param dataObject The object to remove
      */
     public void remove(DataObject dataObject) {
+        TrackingDatabase_Repair.prepareForRemove(dataObject);
         dataObject.notifyParentUnLink();
         containers.forEach(container -> container.remove(dataObject));
     }

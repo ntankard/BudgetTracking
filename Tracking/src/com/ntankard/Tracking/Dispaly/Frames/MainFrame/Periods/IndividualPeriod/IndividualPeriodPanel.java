@@ -1,9 +1,8 @@
 package com.ntankard.Tracking.Dispaly.Frames.MainFrame.Periods.IndividualPeriod;
 
-import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
+import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.Period;
-import com.ntankard.Tracking.Dispaly.DataObjectPanels.ExtendedStatementPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,7 +15,6 @@ public class IndividualPeriodPanel extends UpdatableJPanel {
     // The GUI components
     private PeriodSummary_StatementPanel periodSummary_statementPanel;
     private PeriodSummary_TransferPanel periodSummary_transferPanel;
-    private ExtendedStatementPanel extendedStatementPanel;
     private SummaryPanel summaryPanel;
 
     /**
@@ -46,9 +44,6 @@ public class IndividualPeriodPanel extends UpdatableJPanel {
         periodSummary_transferPanel = new PeriodSummary_TransferPanel(core, this);
         master_tPanel.addTab("Transaction", periodSummary_transferPanel);
 
-        extendedStatementPanel = new ExtendedStatementPanel(core, this);
-        master_tPanel.addTab("Statements", extendedStatementPanel);
-
         this.add(master_tPanel, BorderLayout.CENTER);
     }
 
@@ -59,7 +54,6 @@ public class IndividualPeriodPanel extends UpdatableJPanel {
     public void update() {
         periodSummary_statementPanel.update();
         periodSummary_transferPanel.update();
-        extendedStatementPanel.update();
         summaryPanel.update();
     }
 }

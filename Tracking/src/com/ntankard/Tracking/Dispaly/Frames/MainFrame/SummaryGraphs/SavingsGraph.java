@@ -1,11 +1,11 @@
 package com.ntankard.Tracking.Dispaly.Frames.MainFrame.SummaryGraphs;
 
-import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
-import com.ntankard.Tracking.DataBase.Core.Period;
+import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.Currency;
+import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
-import com.ntankard.Tracking.DataBase.Interface.ClassExtension.ExtendedPeriod;
+import com.ntankard.Tracking.DataBase.Interface.Summary.Period_Summary;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -80,7 +80,7 @@ public class SavingsGraph extends UpdatableJPanel {
             final XYSeries cur = new XYSeries(currency.getName());
             Period period = TrackingDatabase.get().get(Period.class).get(0).getFirst();
             for (int i = 0; i < TrackingDatabase.get().get(Period.class).size(); i++) {
-                cur.add(i, new ExtendedPeriod(period).getEndBalance(currency));
+                cur.add(i, period.getChildren(Period_Summary.class).get(0).getEndBalance(currency));
                 period = period.getNext();
             }
             dataset.addSeries(cur);
@@ -89,7 +89,7 @@ public class SavingsGraph extends UpdatableJPanel {
         final XYSeries total = new XYSeries("Total");
         Period period = TrackingDatabase.get().get(Period.class).get(0).getFirst();
         for (int i = 0; i < TrackingDatabase.get().get(Period.class).size(); i++) {
-            total.add(i, new ExtendedPeriod(period).getEndBalance());
+            total.add(i, period.getChildren(Period_Summary.class).get(0).getEndBalance());
             period = period.getNext();
         }
         dataset.addSeries(total);

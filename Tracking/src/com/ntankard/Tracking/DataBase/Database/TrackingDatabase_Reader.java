@@ -6,6 +6,7 @@ import com.ntankard.Tracking.Util.FileUtil;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.*;
 
 import static com.ntankard.ClassExtension.Util.classForName;
@@ -74,6 +75,10 @@ public class TrackingDatabase_Reader {
 
         // Generate the headers
         for (Class aClass : data.getDataObjectTypes()) {
+            if (Modifier.isAbstract(aClass.getModifiers())) {
+                continue;
+            }
+
             DataObjectSaver dataObjectSaver = generateConstructorMap(aClass);
             if (dataObjectSaver.shouldSave) {
 

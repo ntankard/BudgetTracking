@@ -10,7 +10,7 @@ public class Full_Set<T extends DataObject> implements ObjectSet<T> {
     /**
      * The DataObject to get from the database
      */
-    private Class<T> tClass;
+    protected Class<T> tClass;
 
     /**
      * Constructor

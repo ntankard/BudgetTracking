@@ -6,7 +6,7 @@ import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Transfers.Transfer;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
-import com.ntankard.Tracking.DataBase.Interface.Set.PeriodPoolType_Set;
+import com.ntankard.Tracking.DataBase.Interface.Summary.PeriodPoolSet_Summary;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -88,7 +88,7 @@ public class CategoryGraph extends UpdatableJPanel {
         for (Period period : TrackingDatabase.get().get(Period.class)) {
             for (Category category : TrackingDatabase.get().get(Category.class)) {
                 if (!category.equals(TrackingDatabase.get().getSpecialValue(Category.class, Category.INCOME))) {
-                    categories.get(category).add(i, new PeriodPoolType_Set<>(period, category, Transfer.class).getTotal());
+                    categories.get(category).add(i, new PeriodPoolSet_Summary<>(period, category, Transfer.class).getTotal());
                 }
             }
             i++;
