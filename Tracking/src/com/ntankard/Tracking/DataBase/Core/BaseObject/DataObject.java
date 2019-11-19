@@ -4,10 +4,12 @@ import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Database.SubContainers.DataObjectContainer;
+import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 
-import java.util.*;
+import java.util.List;
 
-import static com.ntankard.ClassExtension.MemberProperties.*;
+import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
+import static com.ntankard.ClassExtension.MemberProperties.TRACE_DISPLAY;
 
 public abstract class DataObject {
 
@@ -117,7 +119,6 @@ public abstract class DataObject {
      * @param <T>  The Object type
      * @return The list of children for a a specific class type
      */
-    @SuppressWarnings("unchecked")
     public <T extends DataObject> List<T> getChildren(Class<T> type) {
         return container.get(type);
     }
@@ -130,7 +131,6 @@ public abstract class DataObject {
      * @param <T>  The Object type
      * @return The list of children for a a specific class type
      */
-    @SuppressWarnings("unchecked")
     public <T extends DataObject> T getChildren(Class<T> type, Integer key) {
         return container.get(type, key);
     }
@@ -144,5 +144,16 @@ public abstract class DataObject {
     @DisplayProperties(order = 22)
     public List<DataObject> getChildren() {
         return container.get();
+    }
+
+    /**
+     * Get possible options that a field will accept
+     *
+     * @param type      The type of object expected
+     * @param fieldName The field name
+     * @return A list of objects the the field will accept
+     */
+    public <T extends DataObject> List<T> sourceOptions(Class<T> type, String fieldName) {
+        return TrackingDatabase.get().get(type);
     }
 }

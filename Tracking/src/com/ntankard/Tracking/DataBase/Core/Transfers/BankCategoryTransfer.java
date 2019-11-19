@@ -51,13 +51,13 @@ public class BankCategoryTransfer extends Transfer<Bank, Category> {
     //------------------------------------------------------------------------------------------------------------------
 
     @Override
-    @SetterProperties(sourceMethod = "getData")
+    @SetterProperties(localSourceMethod = "sourceOptions")
     public void setSource(Bank source) {
         super.setSource(source);
     }
 
     @Override
-    @SetterProperties(sourceMethod = "getData")
+    @SetterProperties(localSourceMethod = "sourceOptions")
     public void setDestination(Category destination) {
         super.setDestination(destination);
     }

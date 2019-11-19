@@ -70,19 +70,19 @@ public class CategoryFundTransfer extends Transfer<Category, Fund> {
     //#################################################### Setters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @SetterProperties(sourceMethod = "getData")
+    @SetterProperties(localSourceMethod = "sourceOptions")
     public void setFundEvent(FundEvent fundEvent) {
         this.fundEvent = fundEvent;
     }
 
     @Override
-    @SetterProperties(sourceMethod = "getData")
+    @SetterProperties(localSourceMethod = "sourceOptions")
     public void setSource(Category source) {
         super.setSource(source);
     }
 
     @Override
-    @SetterProperties(sourceMethod = "getData")
+    @SetterProperties(localSourceMethod = "sourceOptions")
     public void setDestination(Fund destination) {
         super.setDestination(destination);
     }

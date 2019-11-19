@@ -20,7 +20,7 @@ public abstract class Transfer<SourceType extends DataObject, DestinationType ex
 
     // My parents
     private Period period;
-    private SourceType source;
+    protected SourceType source;
     private DestinationType destination;
     private Currency currency;
 
@@ -151,21 +151,21 @@ public abstract class Transfer<SourceType extends DataObject, DestinationType ex
         this.value = value;
     }
 
-    @SetterProperties(sourceMethod = "getData")
+    @SetterProperties(localSourceMethod = "sourceOptions")
     public void setCurrency(Currency currency) {
         this.currency.notifyChildUnLink(this);
         this.currency = currency;
         this.currency.notifyChildLink(this);
     }
 
-    @SetterProperties(sourceMethod = "getData")
+    @SetterProperties(localSourceMethod = "sourceOptions")
     public void setSource(SourceType source) {
         this.source.notifyChildUnLink(this);
         this.source = source;
         this.source.notifyChildLink(this);
     }
 
-    @SetterProperties(sourceMethod = "getData")
+    @SetterProperties(localSourceMethod = "sourceOptions")
     public void setDestination(DestinationType destination) {
         this.destination.notifyChildUnLink(this);
         this.destination = destination;

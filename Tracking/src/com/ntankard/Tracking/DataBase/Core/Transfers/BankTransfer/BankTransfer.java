@@ -4,14 +4,19 @@ import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.ClassExtension.SetterProperties;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
 import com.ntankard.Tracking.DataBase.Core.Transfers.Transfer;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
-import static com.ntankard.ClassExtension.MemberProperties.*;
+import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
+import static com.ntankard.ClassExtension.MemberProperties.TRACE_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
 public class BankTransfer extends Transfer<Bank, Bank> {
@@ -22,6 +27,25 @@ public class BankTransfer extends Transfer<Bank, Bank> {
     @ParameterMap(parameterGetters = {"getId", "getDescription", "getValue", "getPeriod", "getSource", "getDestination"})
     public BankTransfer(Integer id, String description, Double value, Period period, Bank source, Bank destination) {
         super(id, description, value, period, source, destination, null);
+    }
+
+    /**
+     * {@inheritDoc
+     */
+    @Override
+    @SuppressWarnings("SuspiciousMethodCalls")
+    public <T extends DataObject> List<T> sourceOptions(Class<T> type, String fieldName) {
+        if (fieldName.equals("Destination")) {
+            List<T> toReturn = getSource().getCurrency().getChildren(type);
+            toReturn.remove(getSource());
+            return toReturn;
+        }
+        if (fieldName.equals("Source")) {
+            List<T> toReturn = new ArrayList<>(super.sourceOptions(type, fieldName));
+            toReturn.remove(getDestination());
+            return toReturn;
+        }
+        return super.sourceOptions(type, fieldName);
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -79,13 +103,21 @@ public class BankTransfer extends Transfer<Bank, Bank> {
     //------------------------------------------------------------------------------------------------------------------
 
     @Override
-    @SetterProperties(sourceMethod = "getData")
+    @SetterProperties(localSourceMethod = "sourceOptions")
     public void setSource(Bank source) {
-        super.setSource(source);
+        this.source.notifyChildUnLink(this);
+        this.source = source;
+
+        List<Bank> options = sourceOptions(Bank.class, "Destination");
+        if (getSource().equals(getDestination()) || !options.contains(getDestination())) {
+            setDestination(options.get(0));
+        }
+
+        this.source.notifyChildLink(this);
     }
 
     @Override
-    @SetterProperties(sourceMethod = "getData")
+    @SetterProperties(localSourceMethod = "sourceOptions")
     public void setDestination(Bank destination) {
         super.setDestination(destination);
     }

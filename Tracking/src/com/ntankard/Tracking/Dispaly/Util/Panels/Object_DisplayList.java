@@ -5,7 +5,6 @@ import com.ntankard.DynamicGUI.Containers.DynamicGUI_DisplayList;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
 import com.ntankard.Tracking.DataBase.Core.Transfers.Transfer;
-import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.ObjectSet;
 import com.ntankard.Tracking.Dispaly.Util.LocaleInspectors.CurrencyBound_LocaleSource;
 import com.ntankard.Tracking.Dispaly.Util.LocaleInspectors.Transfer_LocaleSource;
@@ -46,7 +45,6 @@ public class Object_DisplayList<T> extends DynamicGUI_DisplayList<T> {
         } else if (CurrencyBound.class.isAssignableFrom(tClass)) {
             setLocaleSource(new CurrencyBound_LocaleSource());
         }
-        setSources(TrackingDatabase.get());
         if (filter) {
             addFilter();
         }
