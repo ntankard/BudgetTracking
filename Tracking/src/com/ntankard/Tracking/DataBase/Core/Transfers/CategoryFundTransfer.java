@@ -5,11 +5,11 @@ import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.ClassExtension.SetterProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Core.Pool.Fund.FundEvent;
+import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Core.Pool.Fund.Fund;
-import com.ntankard.Tracking.DataBase.Core.Currency;
+import com.ntankard.Tracking.DataBase.Core.Pool.Fund.FundEvent;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
 import java.util.List;
@@ -45,6 +45,19 @@ public class CategoryFundTransfer extends Transfer<Category, Fund> {
         return toReturn;
     }
 
+    /**
+     * {@inheritDoc
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T extends DataObject> List<T> sourceOptions(Class<T> type, String fieldName) {
+        if (fieldName.equals("FundEvent")) {
+            return (List<T>) getDestination().getChildren(FundEvent.class);
+        }
+
+        return super.sourceOptions(type, fieldName);
+    }
+
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
@@ -72,7 +85,11 @@ public class CategoryFundTransfer extends Transfer<Category, Fund> {
 
     @SetterProperties(localSourceMethod = "sourceOptions")
     public void setFundEvent(FundEvent fundEvent) {
+        if (this.fundEvent != null) {
+            this.fundEvent.notifyChildUnLink(this);
+        }
         this.fundEvent = fundEvent;
+        this.fundEvent.notifyChildLink(this);
     }
 
     @Override
@@ -84,6 +101,13 @@ public class CategoryFundTransfer extends Transfer<Category, Fund> {
     @Override
     @SetterProperties(localSourceMethod = "sourceOptions")
     public void setDestination(Fund destination) {
-        super.setDestination(destination);
+        this.destination.notifyChildUnLink(this);
+        this.destination = destination;
+
+        if (!fundEvent.getFund().equals(destination)) {
+            setFundEvent(destination.getDefaultFundEvent());
+        }
+
+        this.destination.notifyChildLink(this);
     }
 }

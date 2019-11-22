@@ -19,10 +19,10 @@ import static com.ntankard.ClassExtension.MemberProperties.*;
 public abstract class Transfer<SourceType extends DataObject, DestinationType extends DataObject> extends DataObject {
 
     // My parents
-    private Period period;
+    protected Period period;
     protected SourceType source;
-    private DestinationType destination;
-    private Currency currency;
+    protected DestinationType destination;
+    protected Currency currency;
 
     // My values
     private String description;

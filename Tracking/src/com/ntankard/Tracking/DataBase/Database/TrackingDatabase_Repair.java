@@ -5,6 +5,8 @@ import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Core.Pool.Fund.Fund;
+import com.ntankard.Tracking.DataBase.Core.Pool.Fund.FundEvent;
+import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer;
 import com.ntankard.Tracking.DataBase.Interface.Set.Children_Set;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Period_Summary;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Bank_Summary;
@@ -28,6 +30,8 @@ public class TrackingDatabase_Repair {
             repairCategory((Category) dataObject);
         } else if (dataObject instanceof Bank) {
             repairBank((Bank) dataObject);
+        } else if (dataObject instanceof CategoryFundTransfer) {
+            repairCategoryFundTransfer((CategoryFundTransfer) dataObject);
         }
     }
 
@@ -133,6 +137,21 @@ public class TrackingDatabase_Repair {
         for (Period period : TrackingDatabase.get().get(Period.class)) {
             setupFundSummary(period, fund);
         }
+
+        for (FundEvent fundEvent : fund.getChildren(FundEvent.class)) {
+            if (fundEvent.isFundDefault()) {
+                if (!fundEvent.equals(fund.getDefaultFundEvent())) {
+                    if (fund.getDefaultFundEvent() != null && !fund.getDefaultFundEvent().equals(fundEvent)) {
+                        throw new RuntimeException("Multiple fund defaults");
+                    }
+                    fund.setDefaultFundEvent(fundEvent);
+                }
+            }
+        }
+
+        if (fund.getDefaultFundEvent() == null) {
+            TrackingDatabase.get().add(new FundEvent(TrackingDatabase.get().getNextId(), "None", fund, true));
+        }
     }
 
     /**
@@ -147,6 +166,20 @@ public class TrackingDatabase_Repair {
             throw new RuntimeException("Multiple single objects exist");
         } else if (size == 0) {
             TrackingDatabase.get().add(new Fund_Summary(TrackingDatabase.get().getNextId(), period, fund));
+        }
+    }
+
+    /**
+     * Repair a CategoryFundTransfer object
+     *
+     * @param categoryFundTransfer The object to repair
+     */
+    private static void repairCategoryFundTransfer(CategoryFundTransfer categoryFundTransfer) {
+        if (categoryFundTransfer.getFundEvent() == null) {
+            if (categoryFundTransfer.getDestination().getDefaultFundEvent() == null) {
+                repairFund(categoryFundTransfer.getDestination());
+            }
+            categoryFundTransfer.setFundEvent(categoryFundTransfer.getDestination().getDefaultFundEvent());
         }
     }
 }

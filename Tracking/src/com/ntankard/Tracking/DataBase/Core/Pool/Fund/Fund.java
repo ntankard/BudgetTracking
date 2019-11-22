@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
+import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
 public class Fund extends Pool implements SpecialValues {
@@ -22,6 +23,7 @@ public class Fund extends Pool implements SpecialValues {
     // My values
     private Boolean isSavings;
     private Boolean isTax;
+    private FundEvent defaultFundEvent; // Not a parent to prevent a circular dependency
 
     /**
      * Constructor
@@ -84,5 +86,19 @@ public class Fund extends Pool implements SpecialValues {
     @DisplayProperties(order = 4)
     public Boolean isTax() {
         return isTax;
+    }
+
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    @DisplayProperties(order = 5)
+    public FundEvent getDefaultFundEvent() {
+        return defaultFundEvent;
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    //#################################################### Setters #####################################################
+    //------------------------------------------------------------------------------------------------------------------
+
+    public void setDefaultFundEvent(FundEvent defaultFundEvent) {
+        this.defaultFundEvent = defaultFundEvent;
     }
 }

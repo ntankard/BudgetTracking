@@ -48,7 +48,27 @@ class TrackingDatabase_IntegrityTest {
     }
 
     @Test
+    void validateBankTransfer() {
+        TrackingDatabase_Integrity.validateBankTransfer();
+    }
+
+    @Test
+    void validateIntraCurrencyBankTransfer() {
+        TrackingDatabase_Integrity.validateIntraCurrencyBankTransfer();
+    }
+
+    @Test
+    void validateCategoryFundTransfer() {
+        TrackingDatabase_Integrity.validateCategoryFundTransfer();
+    }
+
+    @Test
     void validatePeriodSequence() {
         TrackingDatabase_Integrity.validatePeriodSequence();
+    }
+
+    @Test
+    void validateFundFundEvent() {
+        TrackingDatabase_Integrity.validateFundFundEvent();
     }
 }

@@ -4,6 +4,12 @@ import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.HasDefault;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.SpecialValues;
 import com.ntankard.Tracking.DataBase.Core.Period;
+import com.ntankard.Tracking.DataBase.Core.Pool.Fund.Fund;
+import com.ntankard.Tracking.DataBase.Core.Pool.Fund.FundEvent;
+import com.ntankard.Tracking.DataBase.Core.Transfers.BankTransfer.BankTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfers.BankTransfer.IntraCurrencyBankTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer;
+import com.ntankard.Tracking.DataBase.Interface.Set.ExactFull_Set;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,10 +30,16 @@ public class TrackingDatabase_Integrity {
         // Is the database exposing the correct special objects?
         validateDefault();
         validateSpecial();
+
+        // Validate the transfer objects
+        validateBankTransfer();
+        validateIntraCurrencyBankTransfer();
     }
 
     public static void validateRepaired() {
+        validateCategoryFundTransfer();
         validatePeriodSequence();
+        validateFundFundEvent();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -38,9 +50,9 @@ public class TrackingDatabase_Integrity {
      * Confirm the ID of all object. Check they are unique
      */
     static void validateId() {
-        for(DataObject dataObject : TrackingDatabase.get().getAll()){
-            for(DataObject toTest : TrackingDatabase.get().getAll()){
-                if(!dataObject.equals(toTest)){
+        for (DataObject dataObject : TrackingDatabase.get().getAll()) {
+            for (DataObject toTest : TrackingDatabase.get().getAll()) {
+                if (!dataObject.equals(toTest)) {
                     if (dataObject.getId().equals(toTest.getId())) {
                         throw new RuntimeException("Core Database error. Duplicate ID found");
                     }
@@ -124,6 +136,63 @@ public class TrackingDatabase_Integrity {
     }
 
     /**
+     * Validate that the Bank Transfer is in the correct state
+     */
+    static void validateBankTransfer() {
+        for (BankTransfer bankTransfer : new ExactFull_Set<>(BankTransfer.class).get()) {
+            if (bankTransfer.getSource().equals(bankTransfer.getDestination())) {
+                throw new RuntimeException("Transferring to itself");
+            }
+
+            if (!bankTransfer.getSource().getCurrency().equals(bankTransfer.getDestination().getCurrency())) {
+                throw new RuntimeException("Transferring between banks with different currencies");
+            }
+
+            if (!bankTransfer.getValue().equals(bankTransfer.getDestinationValue()) || !bankTransfer.getDestinationValue().equals(-bankTransfer.getSourceValue())) {
+                throw new RuntimeException("Fund source and destination values do not match when they should");
+            }
+
+            if (!bankTransfer.getCurrency().equals(bankTransfer.getDestinationCurrency()) || !bankTransfer.getDestinationCurrency().equals(bankTransfer.getSourceCurrency())) {
+                throw new RuntimeException("Fund source and destination currencies do not match when they should");
+            }
+        }
+    }
+
+    /**
+     * Validate that the IntraCurrencyBankTransfers are in the correct state
+     */
+    static void validateIntraCurrencyBankTransfer() {
+        for (IntraCurrencyBankTransfer intraCurrencyBankTransfer : TrackingDatabase.get().get(IntraCurrencyBankTransfer.class)) {
+            if (intraCurrencyBankTransfer.getSource().equals(intraCurrencyBankTransfer.getDestination())) {
+                throw new RuntimeException("Transferring to itself");
+            }
+
+            if (intraCurrencyBankTransfer.getSource().getCurrency().equals(intraCurrencyBankTransfer.getDestination().getCurrency())) {
+                throw new RuntimeException("Transferring between banks with same currencies");
+            }
+        }
+    }
+
+    /**
+     * Validate that the CategoryFundTransfers are in the correct state
+     */
+    static void validateCategoryFundTransfer() {
+        for (CategoryFundTransfer categoryFundTransfer : TrackingDatabase.get().get(CategoryFundTransfer.class)) {
+            if (!categoryFundTransfer.getDestination().getChildren(FundEvent.class).contains(categoryFundTransfer.getFundEvent())) {
+                throw new RuntimeException("Fund and Fund event don't match");
+            }
+
+            if (!categoryFundTransfer.getValue().equals(categoryFundTransfer.getDestinationValue()) || !categoryFundTransfer.getDestinationValue().equals(-categoryFundTransfer.getSourceValue())) {
+                throw new RuntimeException("Fund source and destination values do not match when they should");
+            }
+
+            if (!categoryFundTransfer.getCurrency().equals(categoryFundTransfer.getDestinationCurrency()) || !categoryFundTransfer.getDestinationCurrency().equals(categoryFundTransfer.getSourceCurrency())) {
+                throw new RuntimeException("Fund source and destination currencies do not match when they should");
+            }
+        }
+    }
+
+    /**
      * Validate that all periods are in a row with none missing. Also validate that they are connected properly
      */
     static void validatePeriodSequence() {
@@ -157,6 +226,21 @@ public class TrackingDatabase_Integrity {
 
         if (periods.size() != 0) {
             throw new RuntimeException("Core Database error. Not all periods are in order");
+        }
+    }
+
+    /**
+     * Validate that all funds are fund events that are setup properly
+     */
+    static void validateFundFundEvent() {
+        for (Fund fund : TrackingDatabase.get().get(Fund.class)) {
+            if (fund.getDefaultFundEvent() == null) {
+                throw new RuntimeException("Fund dose not have a default set");
+            }
+
+            if (fund.getChildren(FundEvent.class).size() == 0) {
+                throw new RuntimeException("A fund has no Fund events available");
+            }
         }
     }
 }

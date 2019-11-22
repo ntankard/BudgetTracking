@@ -18,13 +18,17 @@ public class FundEvent extends NamedDataObject {
     // My parent
     private Fund fund;
 
+    // My values
+    private Boolean isFundDefault;
+
     /**
      * Constructor
      */
-    @ParameterMap(parameterGetters = {"getId", "getName", "getFund"})
-    public FundEvent(Integer id, String name, Fund fund) {
+    @ParameterMap(parameterGetters = {"getId", "getName", "getFund", "isFundDefault"})
+    public FundEvent(Integer id, String name, Fund fund, Boolean isFundDefault) {
         super(id, name);
         this.fund = fund;
+        this.isFundDefault = isFundDefault;
     }
 
     /**
@@ -46,5 +50,10 @@ public class FundEvent extends NamedDataObject {
     @DisplayProperties(order = 3)
     public Fund getFund() {
         return fund;
+    }
+
+    @DisplayProperties(order = 4)
+    public Boolean isFundDefault() {
+        return isFundDefault;
     }
 }
