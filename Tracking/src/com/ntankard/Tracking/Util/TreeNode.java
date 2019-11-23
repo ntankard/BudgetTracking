@@ -81,6 +81,19 @@ public class TreeNode<T> {
     }
 
     /**
+     * Get the number of all the leaves
+     *
+     * @return The number of all the leaves
+     */
+    public int size() {
+        int total = 0;
+        for (TreeNode treeNode : children) {
+            total = treeNode.size() + 1;
+        }
+        return total;
+    }
+
+    /**
      * {@inheritDoc
      */
     @Override

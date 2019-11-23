@@ -11,11 +11,25 @@ import com.ntankard.Tracking.Util.TreeNode;
 import javax.swing.*;
 import java.awt.*;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DatabasePanel extends UpdatableJPanel {
 
-    // The GUI components
+    /**
+     * The root GUI objects
+     */
     private JTabbedPane rootTabbedPane;
+
+    /**
+     * All the individual lists for updating
+     */
+    private List<DataObject_VerbosityDisplayList> updatableList;
+
+    /**
+     * The number of objects used to generate the GUI (Used to determine if the structure needs to be updated)
+     */
+    private int objectTypeSize = 0;
 
     /**
      * Constructor
@@ -35,6 +49,7 @@ public class DatabasePanel extends UpdatableJPanel {
         this.removeAll();
         this.setLayout(new BorderLayout());
 
+        this.updatableList = new ArrayList<>();
         this.rootTabbedPane = new JTabbedPane();
         this.add(rootTabbedPane);
     }
@@ -51,7 +66,7 @@ public class DatabasePanel extends UpdatableJPanel {
             // Build the bottom of the tree, the actual object
             DataObject_VerbosityDisplayList list = new DataObject_VerbosityDisplayList<>(rootNode.data, this);
             parent.add(rootNode.data.getSimpleName(), list);
-            list.update();
+            updatableList.add(list);
         } else {
             if (rootNode.data.equals(NamedDataObject.class)) {
 
@@ -69,7 +84,7 @@ public class DatabasePanel extends UpdatableJPanel {
                 if (!Modifier.isAbstract(rootNode.data.getModifiers())) {
                     DataObject_VerbosityDisplayList list = new DataObject_VerbosityDisplayList<>(rootNode.data, this);
                     container.add(rootNode.data.getSimpleName(), list);
-                    list.update();
+                    updatableList.add(list);
                 }
 
                 for (TreeNode<Class<? extends DataObject>> node : rootNode.children) {
@@ -84,7 +99,12 @@ public class DatabasePanel extends UpdatableJPanel {
      */
     @Override
     public void update() {
-        rootTabbedPane.removeAll();
-        createBach(rootTabbedPane, TrackingDatabase.get().getClassTreeRoot());
+        if (TrackingDatabase.get().getClassTreeRoot().size() != objectTypeSize) {
+            rootTabbedPane.removeAll();
+            updatableList.clear();
+            createBach(rootTabbedPane, TrackingDatabase.get().getClassTreeRoot());
+            objectTypeSize = TrackingDatabase.get().getClassTreeRoot().size();
+        }
+        updatableList.forEach(DataObject_VerbosityDisplayList::update);
     }
 }

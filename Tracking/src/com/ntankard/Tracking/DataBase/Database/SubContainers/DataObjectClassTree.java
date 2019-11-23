@@ -56,6 +56,15 @@ public class DataObjectClassTree extends Container<Integer, Integer> {
     }
 
     /**
+     * Get the number of all the leaves
+     *
+     * @return The number of all the leaves
+     */
+    public int size() {
+        return classTreeRoot.size();
+    }
+
+    /**
      * Get the root of the tree
      *
      * @return The root of the tree
