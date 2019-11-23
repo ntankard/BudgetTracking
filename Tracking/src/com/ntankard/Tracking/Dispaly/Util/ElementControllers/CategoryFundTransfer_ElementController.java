@@ -4,7 +4,7 @@ import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.Tracking.DataBase.Core.Pool.Fund.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer;
-import com.ntankard.Tracking.DataBase.Core.Pool.Category;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category.OutCategory;
 import com.ntankard.Tracking.DataBase.Core.Pool.Fund.Fund;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
@@ -42,7 +42,7 @@ public class CategoryFundTransfer_ElementController extends TrackingDatabase_Ele
                 "",
                 0.0,
                 period,
-                TrackingDatabase.get().getDefault(Category.class),
+                TrackingDatabase.get().getDefault(OutCategory.class),
                 toUse,
                 toUse.getChildren(FundEvent.class).get(0),
                 TrackingDatabase.get().getDefault(Currency.class));

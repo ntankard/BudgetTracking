@@ -4,7 +4,7 @@ import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
-import com.ntankard.Tracking.DataBase.Core.Pool.Category;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category.OutCategory;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.Dispaly.Util.Panels.TrackingDatabase_ElementController;
 
@@ -43,7 +43,7 @@ public class BankCategoryTransfer_ElementController extends TrackingDatabase_Ele
                 0.0,
                 core,
                 bank,
-                TrackingDatabase.get().getDefault(Category.class));
+                TrackingDatabase.get().getDefault(OutCategory.class));
     }
 
     /**

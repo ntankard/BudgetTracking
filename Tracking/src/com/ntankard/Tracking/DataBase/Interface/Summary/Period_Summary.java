@@ -8,7 +8,8 @@ import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
-import com.ntankard.Tracking.DataBase.Core.Pool.Category;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category.Category;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category.InCategory;
 import com.ntankard.Tracking.DataBase.Core.Transfers.Transfer;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
@@ -147,7 +148,7 @@ public class Period_Summary extends DataObject implements CurrencyBound {
      */
     @DisplayProperties(order = 8, dataType = CURRENCY)
     public Double getTax() {
-        return new PeriodPoolSet_Summary<>(period, TrackingDatabase.get().getSpecialValue(Category.class, Category.INCOME), Transfer.class).getTotal() * -TrackingDatabase.get().getTaxRate();
+        return new PeriodPoolSet_Summary<>(period, TrackingDatabase.get().getSpecialValue(InCategory.class, InCategory.TAXABLE), Transfer.class).getTotal() * -TrackingDatabase.get().getTaxRate();
     }
 
 

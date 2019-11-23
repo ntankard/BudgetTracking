@@ -153,9 +153,17 @@ public class TrackingDatabase_Reader {
 
         // Check that all dependencies are possible
         for (DataObjectSaver dataObjectSaver : pastDataObjectSavers) {
-            for (Class aClass : dependencyMap.get(dataObjectSaver)) {
+            for (Class<?> aClass : dependencyMap.get(dataObjectSaver)) {
                 if (!allObjects.contains(aClass)) {
-                    throw new RuntimeException("Dependency detected on an object that dose not exist");
+                    boolean found = false;
+                    for (Class<?> toTest : allObjects) {
+                        if (aClass.isAssignableFrom(toTest)) {
+                            found = true;
+                        }
+                    }
+                    if (!found) {
+                        throw new RuntimeException("Dependency detected on an object that dose not exist");
+                    }
                 }
             }
         }
@@ -177,12 +185,12 @@ public class TrackingDatabase_Reader {
 
                 // Check that all dependencies are earlier in the list
                 boolean allFound = true;
-                for (Class aClass : dependency) {
+                for (Class<?> aClass : dependency) {
 
                     // Look for a dependency earlier in the list
                     boolean found = false;
                     for (int j = 0; j < i; j++) {
-                        if (pastDataObjectSavers.get(j).aClass.equals(aClass)) {
+                        if (aClass.isAssignableFrom(pastDataObjectSavers.get(j).aClass)) {
                             found = true;
                             break;
                         }
