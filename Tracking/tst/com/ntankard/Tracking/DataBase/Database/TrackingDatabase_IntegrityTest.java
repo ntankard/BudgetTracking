@@ -68,6 +68,11 @@ class TrackingDatabase_IntegrityTest {
     }
 
     @Test
+    void validateCategoryFund() {
+        TrackingDatabase_Integrity.validateCategoryFund();
+    }
+
+    @Test
     void validateFundFundEvent() {
         TrackingDatabase_Integrity.validateFundFundEvent();
     }

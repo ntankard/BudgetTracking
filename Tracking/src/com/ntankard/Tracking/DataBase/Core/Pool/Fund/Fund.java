@@ -5,6 +5,7 @@ import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.SpecialValues;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category.Category;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
@@ -20,6 +21,9 @@ public class Fund extends Pool implements SpecialValues {
     public static Integer TAX = 1;
     public static Integer SAVINGS = 2;
 
+    // My Parents
+    private Category category;
+
     // My values
     private Boolean isSavings;
     private Boolean isTax;
@@ -28,9 +32,10 @@ public class Fund extends Pool implements SpecialValues {
     /**
      * Constructor
      */
-    @ParameterMap(parameterGetters = {"getId", "getName", "isSavings", "isTax"})
-    public Fund(Integer id, String name, Boolean isSavings, Boolean isTax) {
+    @ParameterMap(parameterGetters = {"getId", "getName", "getCategory", "isSavings", "isTax"})
+    public Fund(Integer id, String name, Category category, Boolean isSavings, Boolean isTax) {
         super(id, name);
+        this.category = category;
         this.isSavings = isSavings;
         this.isTax = isTax;
     }
@@ -69,27 +74,34 @@ public class Fund extends Pool implements SpecialValues {
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
     @DisplayProperties(order = 21)
     public List<DataObject> getParents() {
-        return new ArrayList<>();
+        List<DataObject> toReturn = new ArrayList<>();
+        toReturn.add(category);
+        return toReturn;
     }
 
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
     @DisplayProperties(order = 3)
+    public Category getCategory() {
+        return category;
+    }
+
+    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
+    @DisplayProperties(order = 4)
     public Boolean isSavings() {
         return isSavings;
     }
 
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 4)
+    @DisplayProperties(order = 5)
     public Boolean isTax() {
         return isTax;
     }
 
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    @DisplayProperties(order = 5)
+    @DisplayProperties(order = 6)
     public FundEvent getDefaultFundEvent() {
         return defaultFundEvent;
     }

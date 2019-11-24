@@ -7,6 +7,8 @@ import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
 import com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfers.BankTransfer.BankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfers.BankTransfer.IntraCurrencyBankTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer;
+import com.ntankard.Tracking.DataBase.Interface.Set.Children_Set;
 import com.ntankard.Tracking.DataBase.Interface.Set.ExactChildren_Set;
 import com.ntankard.Tracking.DataBase.Interface.Summary.PeriodPoolSet_Summary;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Bank_Summary;
@@ -14,6 +16,7 @@ import com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.PeriodSummar
 import com.ntankard.Tracking.Dispaly.Util.Comparators.BankSummary_Comparator;
 import com.ntankard.Tracking.Dispaly.Util.ElementControllers.BankCategoryTransfer_ElementController;
 import com.ntankard.Tracking.Dispaly.Util.ElementControllers.BankTransfer_ElementController;
+import com.ntankard.Tracking.Dispaly.Util.ElementControllers.CategoryFundTransfer_ElementController;
 import com.ntankard.Tracking.Dispaly.Util.ElementControllers.IntraCurrencyBankTransfer_ElementController;
 import com.ntankard.Tracking.Dispaly.Util.Panels.DataObject_DisplayList;
 
@@ -38,6 +41,7 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
 
     private DataObject_DisplayList<BankTransfer> bankTransfer_panel;
     private DataObject_DisplayList<IntraCurrencyBankTransfer> intraCurrencyBankTransfer_panel;
+    private DataObject_DisplayList<CategoryFundTransfer> periodFundTransfer_panel;
 
 
     /**
@@ -58,7 +62,7 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
 
         // Main table --------------------------------------------------------------------------------------------------
 
-        periodSummary_Table_panel = new PeriodSummary_Table(period, false, this);
+        periodSummary_Table_panel = new PeriodSummary_Table(period, true, this);
         periodSummary_Table_panel.getModel().addCustomFormatter((dataObject, rendererObject) -> {
             if (dataObject instanceof BankCategoryTransfer) {
                 BankCategoryTransfer transaction = (BankCategoryTransfer) dataObject;
@@ -73,6 +77,10 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
         // Transfers ---------------------------------------------------------------------------------------------------
 
         JTabbedPane statementControl_panel = new JTabbedPane();
+
+        periodFundTransfer_panel = new DataObject_DisplayList<>(CategoryFundTransfer.class, new Children_Set<>(CategoryFundTransfer.class, period), false, this);
+        periodFundTransfer_panel.addControlButtons(new CategoryFundTransfer_ElementController(period, this));
+        statementControl_panel.add("Category Fund", periodFundTransfer_panel);
 
         bankTransfer_panel = new DataObject_DisplayList<>(BankTransfer.class, new ExactChildren_Set<>(BankTransfer.class, period), false, this);
         bankTransfer_panel.addControlButtons(new BankTransfer_ElementController(period, this));
@@ -101,13 +109,14 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
         summaryContainer_C.fill = GridBagConstraints.BOTH;
         summaryContainer_C.weightx = 1;
 
-        summaryContainer_C.weighty = 1;
+        summaryContainer_C.weighty = 3;
         summaryContainer_C.gridwidth = 3;
         this.add(periodSummary_Table_panel, summaryContainer_C);
 
+        summaryContainer_C.weighty = 1;
         summaryContainer_C.gridwidth = 1;
         summaryContainer_C.gridy = 1;
-        summaryContainer_C.weightx = 1;
+        summaryContainer_C.weightx = 4;
         this.add(statementControl_panel, summaryContainer_C);
 
         summaryContainer_C.gridx = 1;
@@ -126,6 +135,7 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
     public void update() {
         bankTransfer_panel.update();
         intraCurrencyBankTransfer_panel.update();
+        periodFundTransfer_panel.update();
 
         updateTransactions();
 

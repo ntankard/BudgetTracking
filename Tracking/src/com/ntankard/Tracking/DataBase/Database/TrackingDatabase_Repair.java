@@ -111,6 +111,11 @@ public class TrackingDatabase_Repair {
         for (Period period : TrackingDatabase.get().get(Period.class)) {
             setupCategorySummary(period, category);
         }
+
+        Fund child = category.getChildren(Fund.class).get(0);
+        if (child == null) {
+            TrackingDatabase.get().add(new Fund(TrackingDatabase.get().getNextId(), category.getName(), category, false, false));
+        }
     }
 
     /**

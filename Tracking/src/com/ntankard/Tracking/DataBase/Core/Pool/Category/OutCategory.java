@@ -78,7 +78,7 @@ public class OutCategory extends Category implements HasDefault, SpecialValues {
     }
 
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 5)
+    @DisplayProperties(order = 6)
     public Boolean isSavings() {
         return isSavings;
     }

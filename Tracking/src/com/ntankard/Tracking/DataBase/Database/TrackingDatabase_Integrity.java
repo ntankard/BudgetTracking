@@ -4,6 +4,7 @@ import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.HasDefault;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.SpecialValues;
 import com.ntankard.Tracking.DataBase.Core.Period;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category.Category;
 import com.ntankard.Tracking.DataBase.Core.Pool.Fund.Fund;
 import com.ntankard.Tracking.DataBase.Core.Pool.Fund.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.Transfers.BankTransfer.BankTransfer;
@@ -39,6 +40,7 @@ public class TrackingDatabase_Integrity {
     public static void validateRepaired() {
         validateCategoryFundTransfer();
         validatePeriodSequence();
+        validateCategoryFund();
         validateFundFundEvent();
     }
 
@@ -226,6 +228,21 @@ public class TrackingDatabase_Integrity {
 
         if (periods.size() != 0) {
             throw new RuntimeException("Core Database error. Not all periods are in order");
+        }
+    }
+
+    /**
+     * Validate that there is a fund for every category and only 1
+     */
+    static void validateCategoryFund() {
+        if (TrackingDatabase.get().get(Category.class).size() != TrackingDatabase.get().get(Fund.class).size()) {
+            throw new RuntimeException("Number of categories and funds do not match");
+        }
+
+        for (Category category : TrackingDatabase.get().get(Category.class)) {
+            if (category.getChildren(Fund.class).size() != 1) {
+                throw new RuntimeException("Not exactly 1 fund per category");
+            }
         }
     }
 
