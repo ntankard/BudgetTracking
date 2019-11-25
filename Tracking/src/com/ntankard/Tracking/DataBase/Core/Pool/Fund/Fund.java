@@ -4,7 +4,6 @@ import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.SpecialValues;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.Category;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
@@ -16,55 +15,21 @@ import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-public class Fund extends Pool implements SpecialValues {
-
-    public static Integer TAX = 1;
-    public static Integer SAVINGS = 2;
+public class Fund extends Pool {
 
     // My Parents
     private Category category;
 
     // My values
-    private Boolean isSavings;
-    private Boolean isTax;
     private FundEvent defaultFundEvent; // Not a parent to prevent a circular dependency
 
     /**
      * Constructor
      */
-    @ParameterMap(parameterGetters = {"getId", "getName", "getCategory", "isSavings", "isTax"})
-    public Fund(Integer id, String name, Category category, Boolean isSavings, Boolean isTax) {
-        super(id, name);
+    @ParameterMap(parameterGetters = {"getId", "getCategory"})
+    public Fund(Integer id, Category category) {
+        super(id, "ERROR, THIS SHOULD NOT BE USED");
         this.category = category;
-        this.isSavings = isSavings;
-        this.isTax = isTax;
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public Boolean isValue(Integer key) {
-        if (key.equals(TAX)) {
-            return isTax();
-        }
-        if (key.equals(SAVINGS)) {
-            return isSavings();
-        }
-        throw new IllegalStateException("Unexpected value: " + key);
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 23)
-    public List<Integer> getKeys() {
-        List<Integer> keys = new ArrayList<>();
-        keys.add(TAX);
-        keys.add(SAVINGS);
-        return keys;
     }
 
     /**
@@ -83,25 +48,19 @@ public class Fund extends Pool implements SpecialValues {
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
+    @Override
+    @DisplayProperties(order = 2)
+    public String getName() {
+        return getCategory().getName();
+    }
+
     @DisplayProperties(order = 3)
     public Category getCategory() {
         return category;
     }
 
-    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 4)
-    public Boolean isSavings() {
-        return isSavings;
-    }
-
-    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 5)
-    public Boolean isTax() {
-        return isTax;
-    }
-
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    @DisplayProperties(order = 6)
+    @DisplayProperties(order = 4)
     public FundEvent getDefaultFundEvent() {
         return defaultFundEvent;
     }

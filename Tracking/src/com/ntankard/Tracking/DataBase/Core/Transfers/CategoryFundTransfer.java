@@ -25,9 +25,9 @@ public class CategoryFundTransfer extends Transfer<Category, Fund> {
     /**
      * Constructor
      */
-    @ParameterMap(parameterGetters = {"getId", "getDescription", "getValue", "getPeriod", "getSource", "getDestination", "getFundEvent", "getCurrency"})
-    public CategoryFundTransfer(Integer id, String description, Double value, Period period, Category source, Fund destination, FundEvent fundEvent, Currency currency) {
-        super(id, description, value, period, source, destination, currency);
+    @ParameterMap(parameterGetters = {"getId", "getDescription", "getValue", "getPeriod", "getSource", "getFundEvent", "getCurrency"})
+    public CategoryFundTransfer(Integer id, String description, Double value, Period period, Category source, FundEvent fundEvent, Currency currency) {
+        super(id, description, value, period, source, source.getChildren(Fund.class).get(0), currency);
         this.fundEvent = fundEvent;
     }
 
@@ -96,18 +96,6 @@ public class CategoryFundTransfer extends Transfer<Category, Fund> {
     @SetterProperties(localSourceMethod = "sourceOptions")
     public void setSource(Category source) {
         super.setSource(source);
-    }
-
-    @Override
-    @SetterProperties(localSourceMethod = "sourceOptions")
-    public void setDestination(Fund destination) {
-        this.destination.notifyChildUnLink(this);
-        this.destination = destination;
-
-        if (!fundEvent.getFund().equals(destination)) {
-            setFundEvent(destination.getDefaultFundEvent());
-        }
-
-        this.destination.notifyChildLink(this);
+        super.setDestination(source.getChildren(Fund.class).get(0));
     }
 }

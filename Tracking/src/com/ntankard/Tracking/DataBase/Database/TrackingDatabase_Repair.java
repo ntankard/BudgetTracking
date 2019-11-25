@@ -114,7 +114,7 @@ public class TrackingDatabase_Repair {
 
         Fund child = category.getChildren(Fund.class).get(0);
         if (child == null) {
-            TrackingDatabase.get().add(new Fund(TrackingDatabase.get().getNextId(), category.getName(), category, false, false));
+            TrackingDatabase.get().add(new Fund(TrackingDatabase.get().getNextId(), category));
         }
     }
 
