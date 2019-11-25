@@ -8,16 +8,14 @@ import com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfers.BankTransfer.BankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfers.BankTransfer.IntraCurrencyBankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryTransfer;
 import com.ntankard.Tracking.DataBase.Interface.Set.Children_Set;
 import com.ntankard.Tracking.DataBase.Interface.Set.ExactChildren_Set;
 import com.ntankard.Tracking.DataBase.Interface.Summary.PeriodPoolSet_Summary;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Bank_Summary;
 import com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.PeriodSummary_Table;
 import com.ntankard.Tracking.Dispaly.Util.Comparators.BankSummary_Comparator;
-import com.ntankard.Tracking.Dispaly.Util.ElementControllers.BankCategoryTransfer_ElementController;
-import com.ntankard.Tracking.Dispaly.Util.ElementControllers.BankTransfer_ElementController;
-import com.ntankard.Tracking.Dispaly.Util.ElementControllers.CategoryFundTransfer_ElementController;
-import com.ntankard.Tracking.Dispaly.Util.ElementControllers.IntraCurrencyBankTransfer_ElementController;
+import com.ntankard.Tracking.Dispaly.Util.ElementControllers.*;
 import com.ntankard.Tracking.Dispaly.Util.Panels.DataObject_DisplayList;
 
 import javax.swing.*;
@@ -39,9 +37,10 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
     private PeriodPoolSet_Summary<BankCategoryTransfer> bankCategoryTransfer_set;
     private DataObject_DisplayList<BankCategoryTransfer> bankCategoryTransfer_panel;
 
+    private DataObject_DisplayList<CategoryFundTransfer> periodFundTransfer_panel;
     private DataObject_DisplayList<BankTransfer> bankTransfer_panel;
     private DataObject_DisplayList<IntraCurrencyBankTransfer> intraCurrencyBankTransfer_panel;
-    private DataObject_DisplayList<CategoryFundTransfer> periodFundTransfer_panel;
+    private DataObject_DisplayList<CategoryTransfer> categoryTransfer_panel;
 
 
     /**
@@ -90,6 +89,10 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
         intraCurrencyBankTransfer_panel.addControlButtons(new IntraCurrencyBankTransfer_ElementController(period, this));
         statementControl_panel.add("Currency Transfers", intraCurrencyBankTransfer_panel);
 
+        categoryTransfer_panel = new DataObject_DisplayList<>(CategoryTransfer.class, new ExactChildren_Set<>(CategoryTransfer.class, period), false, this);
+        categoryTransfer_panel.addControlButtons(new CategoryTransfer_ElementController(period, this));
+        statementControl_panel.add("Category Transfers", categoryTransfer_panel);
+
         // Statement summary -------------------------------------------------------------------------------------------
 
         bankSummary_panel = new DataObject_DisplayList<>(Bank_Summary.class, new ExactChildren_Set<>(Bank_Summary.class, period), false, this);
@@ -133,9 +136,10 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
      */
     @Override
     public void update() {
+        periodFundTransfer_panel.update();
         bankTransfer_panel.update();
         intraCurrencyBankTransfer_panel.update();
-        periodFundTransfer_panel.update();
+        categoryTransfer_panel.update();
 
         updateTransactions();
 
