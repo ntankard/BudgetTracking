@@ -13,6 +13,7 @@ import com.ntankard.Tracking.DataBase.Interface.Set.Children_Set;
 import com.ntankard.Tracking.DataBase.Interface.Set.ExactChildren_Set;
 import com.ntankard.Tracking.DataBase.Interface.Summary.PeriodPoolSet_Summary;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Bank_Summary;
+import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Fund_Summary;
 import com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.PeriodSummary_Table;
 import com.ntankard.Tracking.Dispaly.Util.Comparators.BankSummary_Comparator;
 import com.ntankard.Tracking.Dispaly.Util.ElementControllers.*;
@@ -32,6 +33,7 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
     private PeriodSummary_Table periodSummary_Table_panel;
 
     private DataObject_DisplayList<Bank_Summary> bankSummary_panel;
+    private DataObject_DisplayList<Fund_Summary> fundSummary_panel;
 
     private BankCategoryTransfer_ElementController bankCategoryTransfer_controller;
     private PeriodPoolSet_Summary<BankCategoryTransfer> bankCategoryTransfer_set;
@@ -41,7 +43,6 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
     private DataObject_DisplayList<BankTransfer> bankTransfer_panel;
     private DataObject_DisplayList<IntraCurrencyBankTransfer> intraCurrencyBankTransfer_panel;
     private DataObject_DisplayList<CategoryTransfer> categoryTransfer_panel;
-
 
     /**
      * Constructor
@@ -95,9 +96,15 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
 
         // Statement summary -------------------------------------------------------------------------------------------
 
+        JTabbedPane summary_panel = new JTabbedPane();
+
         bankSummary_panel = new DataObject_DisplayList<>(Bank_Summary.class, new ExactChildren_Set<>(Bank_Summary.class, period), false, this);
         bankSummary_panel.setComparator(new BankSummary_Comparator());
         bankSummary_panel.getMainPanel().getListSelectionModel().addListSelectionListener(e -> updateTransactions());
+        summary_panel.add("Bank", bankSummary_panel);
+
+        fundSummary_panel = new DataObject_DisplayList<>(Fund_Summary.class, new ExactChildren_Set<>(Fund_Summary.class, period), false, this);
+        summary_panel.add("Fund", fundSummary_panel);
 
         // Statement transactions --------------------------------------------------------------------------------------
 
@@ -124,7 +131,7 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
 
         summaryContainer_C.gridx = 1;
         summaryContainer_C.weightx = 10;
-        this.add(bankSummary_panel, summaryContainer_C);
+        this.add(summary_panel, summaryContainer_C);
 
         summaryContainer_C.gridx = 2;
         summaryContainer_C.weightx = 1;
@@ -147,6 +154,7 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
         int min = bankSummary_panel.getMainPanel().getListSelectionModel().getMaxSelectionIndex();
         bankSummary_panel.update();
         bankSummary_panel.getMainPanel().getListSelectionModel().setSelectionInterval(min, max);
+        fundSummary_panel.update();
     }
 
     /**

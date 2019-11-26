@@ -6,6 +6,7 @@ import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Fund.Fund;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
+import com.ntankard.Tracking.DataBase.Interface.Set.MultiParent_Set;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
@@ -25,13 +26,15 @@ public class Fund_Summary extends PoolSummary<Fund> {
     @Override
     @DisplayProperties(order = 5, dataType = CURRENCY)
     public Double getStart() {
-        return -1.0;
+        if (getPeriod().getLast() == null)
+            return 0.0;
+        return new MultiParent_Set<>(Fund_Summary.class, getPeriod().getLast(), getPool()).get().get(0).getEnd();
     }
 
     @Override
     @DisplayProperties(order = 6, dataType = CURRENCY)
     public Double getEnd() {
-        return -1.0;
+        return getStart() + getReal();
     }
 
     @Override
