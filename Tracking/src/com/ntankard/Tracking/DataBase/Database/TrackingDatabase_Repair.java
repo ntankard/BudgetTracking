@@ -5,7 +5,8 @@ import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.Category;
 import com.ntankard.Tracking.DataBase.Core.Pool.Fund.Fund;
-import com.ntankard.Tracking.DataBase.Core.Pool.Fund.FundEvent;
+import com.ntankard.Tracking.DataBase.Core.Pool.Fund.FundEvent.FundEvent;
+import com.ntankard.Tracking.DataBase.Core.Pool.Fund.FundEvent.NoneFundEvent;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer;
 import com.ntankard.Tracking.DataBase.Interface.Set.Children_Set;
 import com.ntankard.Tracking.DataBase.Interface.Set.MultiParent_Set;
@@ -144,7 +145,7 @@ public class TrackingDatabase_Repair {
         }
 
         for (FundEvent fundEvent : fund.getChildren(FundEvent.class)) {
-            if (fundEvent.isFundDefault()) {
+            if (fundEvent instanceof NoneFundEvent) {
                 if (!fundEvent.equals(fund.getDefaultFundEvent())) {
                     if (fund.getDefaultFundEvent() != null && !fund.getDefaultFundEvent().equals(fundEvent)) {
                         throw new RuntimeException("Multiple fund defaults");
@@ -155,7 +156,7 @@ public class TrackingDatabase_Repair {
         }
 
         if (fund.getDefaultFundEvent() == null) {
-            TrackingDatabase.get().add(new FundEvent(TrackingDatabase.get().getNextId(), "None", fund, true));
+            TrackingDatabase.get().add(new NoneFundEvent(TrackingDatabase.get().getNextId(), "None", fund));
         }
     }
 

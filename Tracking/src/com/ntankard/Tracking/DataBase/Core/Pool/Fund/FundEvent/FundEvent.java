@@ -1,10 +1,11 @@
-package com.ntankard.Tracking.DataBase.Core.Pool.Fund;
+package com.ntankard.Tracking.DataBase.Core.Pool.Fund.FundEvent;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.NamedDataObject;
+import com.ntankard.Tracking.DataBase.Core.Pool.Fund.Fund;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
 import java.util.ArrayList;
@@ -13,22 +14,18 @@ import java.util.List;
 import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-public class FundEvent extends NamedDataObject {
+public abstract class FundEvent extends NamedDataObject {
 
     // My parent
     private Fund fund;
 
-    // My values
-    private Boolean isFundDefault;
-
     /**
      * Constructor
      */
-    @ParameterMap(parameterGetters = {"getId", "getName", "getFund", "isFundDefault"})
-    public FundEvent(Integer id, String name, Fund fund, Boolean isFundDefault) {
+    @ParameterMap(shouldSave = false)
+    public FundEvent(Integer id, String name, Fund fund) {
         super(id, name);
         this.fund = fund;
-        this.isFundDefault = isFundDefault;
     }
 
     /**
@@ -50,10 +47,5 @@ public class FundEvent extends NamedDataObject {
     @DisplayProperties(order = 3)
     public Fund getFund() {
         return fund;
-    }
-
-    @DisplayProperties(order = 4)
-    public Boolean isFundDefault() {
-        return isFundDefault;
     }
 }
