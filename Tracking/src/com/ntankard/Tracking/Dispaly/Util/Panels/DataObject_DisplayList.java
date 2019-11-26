@@ -2,7 +2,6 @@ package com.ntankard.Tracking.Dispaly.Util.Panels;
 
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Interface.Set.ExactFull_Set;
 import com.ntankard.Tracking.DataBase.Interface.Set.Full_Set;
 import com.ntankard.Tracking.DataBase.Interface.Set.ObjectSet;
 
@@ -26,7 +25,7 @@ public class DataObject_DisplayList<T extends DataObject> extends Object_Display
      * @param master The parent to notify if data changes
      */
     public DataObject_DisplayList(Class<T> tClass, boolean filter, Updatable master) {
-        this(tClass, new ExactFull_Set<>(tClass), filter, master);
+        this(tClass, new Full_Set<>(tClass), filter, master);
     }
 
     /**

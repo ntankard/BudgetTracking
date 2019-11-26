@@ -3,10 +3,14 @@ package com.ntankard.Tracking.DataBase.Core.Transfers.BankTransfer;
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
 
@@ -25,6 +29,29 @@ public class IntraCurrencyBankTransfer extends BankTransfer {
         super(id, description, -1.0, period, source, destination);
         this.sourceValue = sourceValue;
         this.destinationValue = destinationValue;
+    }
+
+    /**
+     * {@inheritDoc
+     */
+    @Override
+    @SuppressWarnings({"SuspiciousMethodCalls", "unchecked"})
+    public <T extends DataObject> List<T> sourceOptions(Class<T> type, String fieldName) {
+        if (fieldName.equals("Destination")) {
+            List<T> toReturn = new ArrayList<>();
+            for (Bank bank : super.sourceOptions((Class<Bank>) type, fieldName)) {
+                if (!getSource().getCurrency().equals(bank.getCurrency())) {
+                    toReturn.add((T) bank);
+                }
+            }
+            return toReturn;
+        }
+        if (fieldName.equals("Source")) {
+            List<T> toReturn = new ArrayList<>(super.sourceOptions(type, fieldName));
+            toReturn.remove(getDestination());
+            return toReturn;
+        }
+        return super.sourceOptions(type, fieldName);
     }
 
     //------------------------------------------------------------------------------------------------------------------

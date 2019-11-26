@@ -113,9 +113,23 @@ public class DataObjectDefinitionTest {
         }
     }
 
+    /**
+     * Test that no object inherits from a none abstract object
+     */
+    @SuppressWarnings("unchecked")
     @Test
-    void inheritOrder() {
-        assertTrue(false);
-        // Test that the order is the same at all layers when objects are overridden
+    void checkAbstractInheritance() {
+        for (Class<? extends DataObject> toTest : solidClasses) {
+            Class<? extends DataObject> aClass = toTest;
+
+            assertFalse(Modifier.isAbstract(aClass.getModifiers()));
+            aClass = (Class<? extends DataObject>) aClass.getSuperclass();
+            do {
+                assertTrue(Modifier.isAbstract(aClass.getModifiers()), "Class " + toTest.getSimpleName() + " inherit from " + aClass.getSimpleName() + " which is no abstract");
+
+                // Jump up the inheritance tree
+                aClass = (Class<? extends DataObject>) aClass.getSuperclass();
+            } while (DataObject.class.isAssignableFrom(aClass));
+        }
     }
 }

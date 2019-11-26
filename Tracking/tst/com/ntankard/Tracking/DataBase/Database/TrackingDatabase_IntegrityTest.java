@@ -48,8 +48,8 @@ class TrackingDatabase_IntegrityTest {
     }
 
     @Test
-    void validateBankTransfer() {
-        TrackingDatabase_Integrity.validateBankTransfer();
+    void validateCurrencyBankTransfer() {
+        TrackingDatabase_Integrity.validateCurrencyBankTransfer();
     }
 
     @Test

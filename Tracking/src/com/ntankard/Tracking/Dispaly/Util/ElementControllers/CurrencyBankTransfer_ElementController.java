@@ -2,12 +2,12 @@ package com.ntankard.Tracking.Dispaly.Util.ElementControllers;
 
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.Tracking.DataBase.Core.Period;
-import com.ntankard.Tracking.DataBase.Core.Transfers.BankTransfer.BankTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfers.BankTransfer.CurrencyBankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.Dispaly.Util.Panels.TrackingDatabase_ElementController;
 
-public class BankTransfer_ElementController extends TrackingDatabase_ElementController<BankTransfer> {
+public class CurrencyBankTransfer_ElementController extends TrackingDatabase_ElementController<CurrencyBankTransfer> {
 
     /**
      * Data to use when creating a new object
@@ -17,7 +17,7 @@ public class BankTransfer_ElementController extends TrackingDatabase_ElementCont
     /**
      * Constructor
      */
-    public BankTransfer_ElementController(Period core, Updatable master) {
+    public CurrencyBankTransfer_ElementController(Period core, Updatable master) {
         super(master);
         this.core = core;
     }
@@ -26,8 +26,8 @@ public class BankTransfer_ElementController extends TrackingDatabase_ElementCont
      * {@inheritDoc
      */
     @Override
-    public BankTransfer newElement() {
-        return new BankTransfer(TrackingDatabase.get().getNextId(),
+    public CurrencyBankTransfer newElement() {
+        return new CurrencyBankTransfer(TrackingDatabase.get().getNextId(),
                 "",
                 0.0,
                 core,

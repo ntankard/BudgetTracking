@@ -7,10 +7,10 @@ import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.Category;
 import com.ntankard.Tracking.DataBase.Core.Pool.Fund.Fund;
 import com.ntankard.Tracking.DataBase.Core.Pool.Fund.FundEvent;
-import com.ntankard.Tracking.DataBase.Core.Transfers.BankTransfer.BankTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfers.BankTransfer.CurrencyBankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfers.BankTransfer.IntraCurrencyBankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer;
-import com.ntankard.Tracking.DataBase.Interface.Set.ExactFull_Set;
+import com.ntankard.Tracking.DataBase.Interface.Set.Full_Set;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ public class TrackingDatabase_Integrity {
         validateSpecial();
 
         // Validate the transfer objects
-        validateBankTransfer();
+        validateCurrencyBankTransfer();
         validateIntraCurrencyBankTransfer();
     }
 
@@ -140,21 +140,21 @@ public class TrackingDatabase_Integrity {
     /**
      * Validate that the Bank Transfer is in the correct state
      */
-    static void validateBankTransfer() {
-        for (BankTransfer bankTransfer : new ExactFull_Set<>(BankTransfer.class).get()) {
-            if (bankTransfer.getSource().equals(bankTransfer.getDestination())) {
+    static void validateCurrencyBankTransfer() {
+        for (CurrencyBankTransfer currencyBankTransfer : new Full_Set<>(CurrencyBankTransfer.class).get()) {
+            if (currencyBankTransfer.getSource().equals(currencyBankTransfer.getDestination())) {
                 throw new RuntimeException("Transferring to itself");
             }
 
-            if (!bankTransfer.getSource().getCurrency().equals(bankTransfer.getDestination().getCurrency())) {
+            if (!currencyBankTransfer.getSource().getCurrency().equals(currencyBankTransfer.getDestination().getCurrency())) {
                 throw new RuntimeException("Transferring between banks with different currencies");
             }
 
-            if (!bankTransfer.getValue().equals(bankTransfer.getDestinationValue()) || !bankTransfer.getDestinationValue().equals(-bankTransfer.getSourceValue())) {
+            if (!currencyBankTransfer.getValue().equals(currencyBankTransfer.getDestinationValue()) || !currencyBankTransfer.getDestinationValue().equals(-currencyBankTransfer.getSourceValue())) {
                 throw new RuntimeException("Fund source and destination values do not match when they should");
             }
 
-            if (!bankTransfer.getCurrency().equals(bankTransfer.getDestinationCurrency()) || !bankTransfer.getDestinationCurrency().equals(bankTransfer.getSourceCurrency())) {
+            if (!currencyBankTransfer.getCurrency().equals(currencyBankTransfer.getDestinationCurrency()) || !currencyBankTransfer.getDestinationCurrency().equals(currencyBankTransfer.getSourceCurrency())) {
                 throw new RuntimeException("Fund source and destination currencies do not match when they should");
             }
         }
