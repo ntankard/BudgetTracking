@@ -74,6 +74,8 @@ public class TrackingDatabase {
         for (DataObject dataObject : getAll()) {
             TrackingDatabase_Repair.repair(dataObject);
         }
+        TrackingDatabase_Repair.repair();
+
         TrackingDatabase_Integrity.validateCore();
         TrackingDatabase_Integrity.validateRepaired();
     }

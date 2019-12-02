@@ -8,6 +8,7 @@ import com.ntankard.Tracking.DataBase.Core.Pool.Category.Category;
 import com.ntankard.Tracking.DataBase.Core.Pool.Fund.Fund;
 import com.ntankard.Tracking.DataBase.Core.Pool.Fund.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.Pool.Fund.FundEvent.NoneFundEvent;
+import com.ntankard.Tracking.DataBase.Core.Pool.Fund.FundEvent.SavingsFundEvent;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer.CategoryFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer.RePayCategoryFundTransfer;
 import com.ntankard.Tracking.DataBase.Interface.Set.MultiParent_Set;
@@ -15,6 +16,19 @@ import com.ntankard.Tracking.DataBase.Interface.Set.MultiParent_Set;
 import java.util.List;
 
 public class TrackingDatabase_Repair {
+
+    /**
+     * Repair the global database
+     */
+    public static void repair() {
+        if (TrackingDatabase.get().get(SavingsFundEvent.class).size() != 1) {
+            if (TrackingDatabase.get().get(SavingsFundEvent.class).size() == 0) {
+                TrackingDatabase.get().add(new SavingsFundEvent());
+            } else {
+                throw new RuntimeException("More than 1 savings event");
+            }
+        }
+    }
 
     /**
      * Repair any DataObject

@@ -7,11 +7,15 @@ import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.Category;
-import com.ntankard.Tracking.DataBase.Core.Pool.Category.InCategory;
+import com.ntankard.Tracking.DataBase.Core.Pool.Fund.FundEvent.SavingsFundEvent;
+import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer.RePayCategoryFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfers.Transfer;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
+import com.ntankard.Tracking.DataBase.Interface.Set.Array_Set;
 import com.ntankard.Tracking.DataBase.Interface.Set.Children_Set;
+import com.ntankard.Tracking.DataBase.Interface.Set.MultiParent_Set;
+import com.ntankard.Tracking.DataBase.Interface.Set.ObjectSet;
 import com.ntankard.Tracking.DataBase.Interface.Set.SummarySet.BankSummary_Set;
 import com.ntankard.Tracking.DataBase.Interface.Set.SummarySet.CategorySummary_Set;
 import com.ntankard.Tracking.DataBase.Interface.Set.SummarySet.FundEventSummary_Set;
@@ -20,6 +24,8 @@ import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Bank_Summary;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Category_Summary;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.FundEvent_Summary;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Fund_Summary;
+
+import java.util.List;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataContext.ZERO_SCALE;
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
@@ -132,36 +138,12 @@ public class Period_Summary implements CurrencyBound {
     }
 
     /**
-     * Get the remaining money to put into savings
+     * Get the total of all transfers
      *
-     * @return The remaining money to put into savings
+     * @return The total of all transfers
      */
     @DisplayProperties(order = 7, dataType = CURRENCY, dataContext = ZERO_SCALE)
-    public Double getSavings() {
-        Double sum = 0.0;
-        sum += getNonCategory();
-        sum -= getTax();
-        return sum;
-    }
-
-    /**
-     * Get the hex debut that needs to be paid for the income made
-     *
-     * @return The hex debut that needs to be paid for the income made
-     */
-    @DisplayProperties(order = 8, dataType = CURRENCY)
-    public Double getTax() {
-        return new TransferSet_Summary<>(Transfer.class, period, TrackingDatabase.get().getSpecialValue(InCategory.class, InCategory.TAXABLE)).getTotal() * -TrackingDatabase.get().getTaxRate();
-    }
-
-
-    /**
-     * Get the amount on money not in a category
-     *
-     * @return The amount on money not in a category
-     */
-    @DisplayProperties(order = 9, dataType = CURRENCY)
-    public Double getNonCategory() {
+    public Double getTotal() {
         double sum = 0.0;
         for (Category category : TrackingDatabase.get().get(Category.class)) {
             sum += new TransferSet_Summary<>(Transfer.class, period, category).getTotal();
@@ -176,5 +158,36 @@ public class Period_Summary implements CurrencyBound {
     @DisplayProperties(order = 10)
     public Currency getCurrency() {
         return TrackingDatabase.get().getDefault(Currency.class);
+    }
+
+    /**
+     * Get the total of all transfers not including the savings transfer
+     *
+     * @return The total of all transfers not including the savings transfer
+     */
+    public Double getNonSaveTotal() {
+        double sum = 0.0;
+        for (Category category : TrackingDatabase.get().get(Category.class)) {
+
+            ObjectSet<Transfer> set = new MultiParent_Set<>(Transfer.class, period, category);
+            List<Transfer> data = set.get();
+            Object toRemove = null;
+            for (Transfer transfer : data) {
+                if (transfer instanceof RePayCategoryFundTransfer) {
+                    RePayCategoryFundTransfer rePayCategoryFundTransfer = (RePayCategoryFundTransfer) transfer;
+                    if (rePayCategoryFundTransfer.getFundEvent() instanceof SavingsFundEvent) {
+                        toRemove = transfer;
+                        break;
+                    }
+                }
+            }
+
+            if (toRemove != null) {
+                data.remove(toRemove);
+            }
+
+            sum += new TransferSet_Summary<>(new Array_Set<>(data), category).getTotal();
+        }
+        return -sum;
     }
 }
