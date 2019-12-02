@@ -3,10 +3,6 @@ package com.ntankard.Tracking.DataBase.Database;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Database.SubContainers.*;
-import com.ntankard.Tracking.DataBase.Interface.Summary.Period_Summary;
-import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Bank_Summary;
-import com.ntankard.Tracking.Dispaly.Util.Comparators.BankSummary_Comparator;
-import com.ntankard.Tracking.Dispaly.Util.Comparators.PeriodSummary_Comparator;
 import com.ntankard.Tracking.Dispaly.Util.Comparators.Period_Comparator;
 import com.ntankard.Tracking.Util.TreeNode;
 
@@ -66,8 +62,6 @@ public class TrackingDatabase {
         containers.add(dataObjectClassTree);
 
         masterMap.addComparator(Period.class, new Period_Comparator());
-        masterMap.addComparator(Bank_Summary.class, new BankSummary_Comparator());
-        masterMap.addComparator(Period_Summary.class, new PeriodSummary_Comparator());
     }
 
     /**

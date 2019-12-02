@@ -5,6 +5,7 @@ import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.Category;
+import com.ntankard.Tracking.DataBase.Core.Transfers.Transfer;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
@@ -14,8 +15,13 @@ import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 public class Category_Summary extends PoolSummary<Category> {
 
     @ParameterMap(shouldSave = false)
-    public Category_Summary(Integer id, Period period, Category pool) {
-        super(id, period, pool);
+    public Category_Summary(Period period, Category pool, Class<? extends Transfer> transferType) {
+        super(period, pool, transferType);
+    }
+
+    @ParameterMap(shouldSave = false)
+    public Category_Summary(Period period, Category pool) {
+        super(period, pool);
     }
 
     //------------------------------------------------------------------------------------------------------------------

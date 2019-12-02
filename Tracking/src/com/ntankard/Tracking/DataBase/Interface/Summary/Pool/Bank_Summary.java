@@ -10,8 +10,9 @@ import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.StatementEnd;
 import com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfers.BankTransfer.BankTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfers.Transfer;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
-import com.ntankard.Tracking.DataBase.Interface.Summary.PeriodPoolSet_Summary;
+import com.ntankard.Tracking.DataBase.Interface.Summary.TransferSet_Summary;
 import com.ntankard.Tracking.DataBase.Interface.Set.MultiParent_Set;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataContext.ZERO_TARGET;
@@ -22,10 +23,15 @@ import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 public class Bank_Summary extends PoolSummary<Bank> implements CurrencyBound {
 
     @ParameterMap(shouldSave = false)
-    public Bank_Summary(Integer id, Period period, Bank pool) {
-        super(id, period, pool);
+    public Bank_Summary(Period period, Bank pool, Class<? extends Transfer> transferType) {
+        super(period, pool, transferType);
     }
 
+    @ParameterMap(shouldSave = false)
+    public Bank_Summary(Period period, Bank pool) {
+        super(period, pool);
+    }
+    
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
@@ -53,12 +59,12 @@ public class Bank_Summary extends PoolSummary<Bank> implements CurrencyBound {
 
     @DisplayProperties(order = 7, dataType = CURRENCY)
     public Double getNetTransfer() {
-        return new PeriodPoolSet_Summary<>(getPeriod(), getPool(), BankTransfer.class).getTotal() / getCurrency().getToPrimary();
+        return new TransferSet_Summary<>(BankTransfer.class, getPeriod(), getPool()).getTotal() / getCurrency().getToPrimary();
     }
 
     @DisplayProperties(order = 8, dataType = CURRENCY)
     public Double getSpend() {
-        return new PeriodPoolSet_Summary<>(getPeriod(), getPool(), BankCategoryTransfer.class).getTotal() / getCurrency().getToPrimary();
+        return new TransferSet_Summary<>(BankCategoryTransfer.class, getPeriod(), getPool()).getTotal() / getCurrency().getToPrimary();
     }
 
     @Override
@@ -69,8 +75,8 @@ public class Bank_Summary extends PoolSummary<Bank> implements CurrencyBound {
 
     @Override
     @DisplayProperties(order = 10, dataType = CURRENCY)
-    public Double getReal() {
-        return super.getReal();
+    public Double getTransferSum() {
+        return super.getTransferSum();
     }
 
     @Override

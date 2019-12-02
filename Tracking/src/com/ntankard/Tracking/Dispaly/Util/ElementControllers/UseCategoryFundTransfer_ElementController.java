@@ -5,11 +5,11 @@ import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.OutCategory;
 import com.ntankard.Tracking.DataBase.Core.Pool.Fund.Fund;
-import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer.UseCategoryFundTransfer;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.Dispaly.Util.Panels.TrackingDatabase_ElementController;
 
-public class CategoryFundTransfer_ElementController extends TrackingDatabase_ElementController<CategoryFundTransfer> {
+public class UseCategoryFundTransfer_ElementController extends TrackingDatabase_ElementController<UseCategoryFundTransfer> {
 
     /**
      * Data to use when creating a new object
@@ -19,7 +19,7 @@ public class CategoryFundTransfer_ElementController extends TrackingDatabase_Ele
     /**
      * Constructor
      */
-    public CategoryFundTransfer_ElementController(Period period, Updatable master) {
+    public UseCategoryFundTransfer_ElementController(Period period, Updatable master) {
         super(master);
         this.period = period;
     }
@@ -28,8 +28,8 @@ public class CategoryFundTransfer_ElementController extends TrackingDatabase_Ele
      * {@inheritDoc
      */
     @Override
-    public CategoryFundTransfer newElement() {
-        return new CategoryFundTransfer(TrackingDatabase.get().getNextId(),
+    public UseCategoryFundTransfer newElement() {
+        return new UseCategoryFundTransfer(TrackingDatabase.get().getNextId(),
                 "",
                 0.0,
                 period,

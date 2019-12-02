@@ -68,14 +68,14 @@ public class SummaryPanel extends UpdatableJPanel {
         double netMin = Double.MAX_VALUE;
         double netMax = Double.MIN_VALUE;
         for (Period period : TrackingDatabase.get().get(Period.class)) {
-            double saving = period.getChildren(Period_Summary.class).get(0).getSavings();
+            double saving = new Period_Summary(period).getSavings();
             if (saving > savingMax) {
                 savingMax = saving;
             }
             if (saving < savingMin) {
                 savingMin = saving;
             }
-            double profit = period.getChildren(Period_Summary.class).get(0).getProfit();
+            double profit = new Period_Summary(period).getProfit();
             if (profit > netMax) {
                 netMax = profit;
             }
@@ -84,7 +84,7 @@ public class SummaryPanel extends UpdatableJPanel {
             }
         }
 
-        Period_Summary period_summary = core.getChildren(Period_Summary.class).get(0);
+        Period_Summary period_summary = new Period_Summary(core);
 
         double profit = period_summary.getProfit();
         netMoney_txt.setText(formatter.format(profit * YEN.getToPrimary()));

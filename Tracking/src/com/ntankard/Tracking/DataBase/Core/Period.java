@@ -16,12 +16,12 @@ import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 public class Period extends DataObject {
 
     // My parents
-    private Period last;
-    private Period next;
 
     // My values
     private Integer month;
     private Integer year;
+    private Period last;  // Not a parent to prevent a circular dependency
+    private Period next;  // Not a parent to prevent a circular dependency
 
     /**
      * Constructor
@@ -33,6 +33,16 @@ public class Period extends DataObject {
         this.year = year;
         this.last = last;
         this.next = next;
+    }
+
+    /**
+     * {@inheritDoc
+     */
+    @Override
+    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
+    @DisplayProperties(order = 21)
+    public List<DataObject> getParents() {
+        return new ArrayList<>();
     }
 
     /**
@@ -53,24 +63,6 @@ public class Period extends DataObject {
     }
 
     /**
-     * {@inheritDoc
-     */
-    @Override
-    public String toString() {
-        return year + "-" + month;
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 21)
-    public List<DataObject> getParents() {
-        return new ArrayList<>();
-    }
-
-    /**
      * Get the first Period know about
      *
      * @return The first Period know about
@@ -85,6 +77,26 @@ public class Period extends DataObject {
             }
             first = first.getLast();
         }
+    }
+
+    /**
+     * Dose this period exist within this range of time?
+     *
+     * @param start    The start of the range
+     * @param duration The duration of the range (in months)
+     * @return True if this period is withing the range
+     */
+    public boolean isWithin(Period start, Integer duration) {
+        int diff = this.getOrder() - start.getOrder();
+        return diff >= 0 && diff < duration;
+    }
+
+    /**
+     * {@inheritDoc
+     */
+    @Override
+    public String toString() {
+        return year + "-" + month;
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -111,6 +123,12 @@ public class Period extends DataObject {
     @DisplayProperties(order = 5)
     public Period getNext() {
         return next;
+    }
+
+    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
+    @DisplayProperties(order = 6)
+    public Integer getOrder() {
+        return getYear() * 12 + getMonth();
     }
 
     //------------------------------------------------------------------------------------------------------------------

@@ -1,54 +1,42 @@
 package com.ntankard.Tracking.DataBase.Interface.Summary.Pool;
 
-import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Core.Transfers.Transfer;
-import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
-import com.ntankard.Tracking.DataBase.Interface.Summary.PeriodPoolSet_Summary;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.ntankard.Tracking.DataBase.Interface.Summary.TransferSet_Summary;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataContext.ZERO_TARGET;
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
-import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
-@ClassExtensionProperties(includeParent = true)
-public abstract class PoolSummary<PoolType extends Pool> extends DataObject implements CurrencyBound {
+public abstract class PoolSummary<PoolType extends Pool> implements CurrencyBound {
 
     // My parents
     private Period period;
     private PoolType pool;
 
+    // My Values
+    protected Class<? extends Transfer> transferType;
+
     /**
      * Constructor
      */
-    @ParameterMap(shouldSave = false)
-    protected PoolSummary(Integer id, Period period, PoolType pool) {
-        super(id);
-        this.period = period;
-        this.pool = pool;
+    protected PoolSummary(Period period, PoolType pool) {
+        this(period, pool, Transfer.class);
     }
 
     /**
-     * {@inheritDoc
+     * Constructor
      */
-    @Override
-    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 21)
-    public List<DataObject> getParents() {
-        List<DataObject> toReturn = new ArrayList<>();
-        toReturn.add(period);
-        toReturn.add(pool);
-        return toReturn;
+    protected PoolSummary(Period period, PoolType pool, Class<? extends Transfer> transferType) {
+        this.period = period;
+        this.pool = pool;
+        this.transferType = transferType;
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -85,13 +73,13 @@ public abstract class PoolSummary<PoolType extends Pool> extends DataObject impl
     }
 
     @DisplayProperties(order = 8, dataType = CURRENCY)
-    public Double getReal() {
-        return new PeriodPoolSet_Summary<>(getPeriod(), getPool(), Transfer.class).getTotal() / getCurrency().getToPrimary();
+    public Double getTransferSum() {
+        return new TransferSet_Summary<>(transferType, getPeriod(), getPool()).getTotal() / getCurrency().getToPrimary();
     }
 
     @DisplayProperties(order = 9, dataContext = ZERO_TARGET, dataType = CURRENCY)
     public Double getMissing() {
-        return Currency.round(getReal() - getExpected());
+        return Currency.round(getTransferSum() - getExpected());
     }
 
     @MemberProperties(verbosityLevel = INFO_DISPLAY)

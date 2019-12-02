@@ -5,7 +5,7 @@ import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.Category;
 import com.ntankard.Tracking.DataBase.Core.Transfers.Transfer;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
-import com.ntankard.Tracking.DataBase.Interface.Summary.PeriodPoolSet_Summary;
+import com.ntankard.Tracking.DataBase.Interface.Summary.TransferSet_Summary;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -65,7 +65,7 @@ public class ModelData_Columns {
      * @return All currencies that transaction are in for a specific category
      */
     private List<Currency> getCurrencies(Category category) {
-        return new PeriodPoolSet_Summary<>(core, category, Transfer.class).getCurrencies();
+        return new TransferSet_Summary<>(Transfer.class, core, category).getCurrencies();
     }
 
     /**

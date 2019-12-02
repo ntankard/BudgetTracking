@@ -1,6 +1,7 @@
 package com.ntankard.Tracking.DataBase.Database;
 
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
+import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.Util.FileUtil;
 
 import java.lang.reflect.Constructor;
@@ -153,11 +154,19 @@ public class TrackingDatabase_Reader {
 
         // Check that all dependencies are possible
         for (DataObjectSaver dataObjectSaver : pastDataObjectSavers) {
+            List<Class> toAdd = new ArrayList<>();
             for (Class<?> aClass : dependencyMap.get(dataObjectSaver)) {
                 if (!allObjects.contains(aClass)) {
                     boolean found = false;
                     for (Class<?> toTest : allObjects) {
-                        if (aClass.isAssignableFrom(toTest)) {
+                        if (aClass.equals(toTest)) {
+                            if (found) {
+                                throw new RuntimeException("Found both an inherited dependency and a direct one. This means a class has inherited from a non abstract");
+                            }
+                            found = true;
+                            break;
+                        } else if (aClass.isAssignableFrom(toTest)) {
+                            toAdd.add(toTest);
                             found = true;
                         }
                     }
@@ -166,6 +175,7 @@ public class TrackingDatabase_Reader {
                     }
                 }
             }
+            dependencyMap.get(dataObjectSaver).addAll(toAdd);
         }
 
         // Sort the list
@@ -257,7 +267,11 @@ public class TrackingDatabase_Reader {
                     if (paramString.equals(" ")) {
                         params.add(null);
                     } else {
-                        params.add(trackingDatabase.get(paramType, Integer.parseInt(paramString)));
+                        DataObject dataObject = trackingDatabase.get(paramType, Integer.parseInt(paramString));
+                        if (dataObject == null && !Period.class.isAssignableFrom(paramType)) { // TODO fix period so this isn't required
+                            throw new RuntimeException("Trying to load an object that is not yet in the database");
+                        }
+                        params.add(dataObject);
                     }
                 } else if (String.class.isAssignableFrom(paramType)) {
                     params.add(paramString);
@@ -428,6 +442,11 @@ public class TrackingDatabase_Reader {
         NameTypePair(String name, Class type) {
             this.type = type;
             this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name + " " + type.toString();
         }
     }
 }

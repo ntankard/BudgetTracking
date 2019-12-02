@@ -10,10 +10,10 @@ import com.ntankard.Tracking.DataBase.Interface.Set.ObjectSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PeriodPoolSet_Summary<T extends Transfer> implements ObjectSet<T> {
+public class TransferSet_Summary<T extends Transfer> implements ObjectSet<T> {
 
     // The source of data
-    private MultiParent_Set<T, Period, Pool> coreSet;
+    private ObjectSet<T> coreSet;
 
     // What side of the transaction is this for calculations
     private Pool pool;
@@ -21,8 +21,15 @@ public class PeriodPoolSet_Summary<T extends Transfer> implements ObjectSet<T> {
     /**
      * Constructor
      */
-    public PeriodPoolSet_Summary(Period period, Pool pool, Class<T> toGet) {
-        this.coreSet = new MultiParent_Set<>(toGet, period, pool);
+    public TransferSet_Summary(Class<T> toGet, Period period, Pool pool) {
+        this(new MultiParent_Set<>(toGet, period, pool), pool);
+    }
+
+    /**
+     * Constructor
+     */
+    public TransferSet_Summary(ObjectSet<T> coreSet, Pool pool) {
+        this.coreSet = coreSet;
         this.pool = pool;
     }
 
@@ -141,7 +148,7 @@ public class PeriodPoolSet_Summary<T extends Transfer> implements ObjectSet<T> {
      * @param pool The pool object to filter on
      */
     public void setPool(Pool pool) {
-        this.coreSet.setSecondaryParent(pool);
+        ((MultiParent_Set<T, Period, Pool>) this.coreSet).setSecondaryParent(pool);
         this.pool = pool;
     }
 }

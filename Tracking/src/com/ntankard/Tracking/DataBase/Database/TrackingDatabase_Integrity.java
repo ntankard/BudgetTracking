@@ -9,7 +9,7 @@ import com.ntankard.Tracking.DataBase.Core.Pool.Fund.Fund;
 import com.ntankard.Tracking.DataBase.Core.Pool.Fund.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.Transfers.BankTransfer.CurrencyBankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfers.BankTransfer.IntraCurrencyBankTransfer;
-import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer.CategoryFundTransfer;
 import com.ntankard.Tracking.DataBase.Interface.Set.Full_Set;
 
 import java.util.ArrayList;

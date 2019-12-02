@@ -80,7 +80,7 @@ public class SavingsGraph extends UpdatableJPanel {
             final XYSeries cur = new XYSeries(currency.getName());
             Period period = TrackingDatabase.get().get(Period.class).get(0).getFirst();
             for (int i = 0; i < TrackingDatabase.get().get(Period.class).size(); i++) {
-                cur.add(i, period.getChildren(Period_Summary.class).get(0).getEndBalance(currency));
+                cur.add(i, new Period_Summary(period).getEndBalance(currency));
                 period = period.getNext();
             }
             dataset.addSeries(cur);
@@ -89,7 +89,7 @@ public class SavingsGraph extends UpdatableJPanel {
         final XYSeries total = new XYSeries("Total");
         Period period = TrackingDatabase.get().get(Period.class).get(0).getFirst();
         for (int i = 0; i < TrackingDatabase.get().get(Period.class).size(); i++) {
-            total.add(i, period.getChildren(Period_Summary.class).get(0).getEndBalance());
+            total.add(i, new Period_Summary(period).getEndBalance());
             period = period.getNext();
         }
         dataset.addSeries(total);

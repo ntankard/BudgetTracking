@@ -3,10 +3,10 @@ package com.ntankard.Tracking.Dispaly.Frames.MainFrame.Funds.IndividualFund;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.Pool.Fund.Fund;
-import com.ntankard.Tracking.DataBase.Interface.Set.Children_Set;
+import com.ntankard.Tracking.DataBase.Interface.Set.SummarySet.FundSummary_Set;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Fund_Summary;
 import com.ntankard.Tracking.Dispaly.Util.Comparators.FundSummary_Comparator;
-import com.ntankard.Tracking.Dispaly.Util.Panels.DataObject_DisplayList;
+import com.ntankard.Tracking.Dispaly.Util.Panels.Object_DisplayList;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,7 +19,7 @@ public class IndividualFundPanel extends UpdatableJPanel {
     private Fund core;
 
     // The GUI components
-    private DataObject_DisplayList<Fund_Summary> fundSummary_panel;
+    private Object_DisplayList<Fund_Summary> fundSummary_panel;
     private FundTransactionList fundTransactionList;
     private SumGraph sumGraph;
 
@@ -41,7 +41,7 @@ public class IndividualFundPanel extends UpdatableJPanel {
 
         JTabbedPane master_tPanel = new JTabbedPane();
 
-        fundSummary_panel = new DataObject_DisplayList<>(Fund_Summary.class, new Children_Set<>(Fund_Summary.class, core), false, this);
+        fundSummary_panel = new Object_DisplayList<>(Fund_Summary.class, new FundSummary_Set(core), false, this);
         fundSummary_panel.setVerbosity(INFO_DISPLAY);
         fundSummary_panel.setComparator(new FundSummary_Comparator());
         master_tPanel.addTab("Summary", fundSummary_panel);

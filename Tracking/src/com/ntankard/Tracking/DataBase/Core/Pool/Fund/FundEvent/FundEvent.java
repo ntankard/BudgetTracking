@@ -5,6 +5,7 @@ import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.NamedDataObject;
+import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Fund.Fund;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
@@ -39,6 +40,30 @@ public abstract class FundEvent extends NamedDataObject {
         toReturn.add(fund);
         return toReturn;
     }
+
+    /**
+     * Is this fund event active in this period?
+     *
+     * @param period The period to check
+     * @return True if its active at this time
+     */
+    public abstract Boolean isActiveThisPeriod(Period period);
+
+    /**
+     * Will there be a charge this period?
+     *
+     * @param period The period to test
+     * @return True if there needs to be a charge for this period
+     */
+    public abstract Boolean isChargeThisPeriod(Period period);
+
+    /**
+     * Get the required charge amount for a specific period
+     *
+     * @param period The period to get
+     * @return The required charge
+     */
+    public abstract Double getCharge(Period period);
 
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Getters #####################################################

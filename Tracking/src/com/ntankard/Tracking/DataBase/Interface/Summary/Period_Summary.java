@@ -2,8 +2,6 @@ package com.ntankard.Tracking.DataBase.Interface.Summary;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
-import com.ntankard.ClassExtension.MemberProperties;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period;
@@ -14,19 +12,20 @@ import com.ntankard.Tracking.DataBase.Core.Transfers.Transfer;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.Children_Set;
-import com.ntankard.Tracking.DataBase.Interface.Set.MultiParent_Set;
+import com.ntankard.Tracking.DataBase.Interface.Set.SummarySet.BankSummary_Set;
+import com.ntankard.Tracking.DataBase.Interface.Set.SummarySet.CategorySummary_Set;
+import com.ntankard.Tracking.DataBase.Interface.Set.SummarySet.FundEventSummary_Set;
+import com.ntankard.Tracking.DataBase.Interface.Set.SummarySet.FundSummary_Set;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Bank_Summary;
-import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.PoolSummary;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Category_Summary;
+import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.FundEvent_Summary;
+import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Fund_Summary;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataContext.ZERO_SCALE;
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
-import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-public class Period_Summary extends DataObject implements CurrencyBound {
+public class Period_Summary implements CurrencyBound {
 
     /**
      * The period to summarise
@@ -37,21 +36,8 @@ public class Period_Summary extends DataObject implements CurrencyBound {
      * Constructor
      */
     @ParameterMap(shouldSave = false)
-    public Period_Summary(Integer id, Period period) {
-        super(id);
+    public Period_Summary(Period period) {
         this.period = period;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    @Override
-    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 21)
-    public List<DataObject> getParents() {
-        List<DataObject> toReturn = new ArrayList<>();
-        toReturn.add(period);
-        return toReturn;
     }
 
     @DisplayProperties(order = 2)
@@ -66,8 +52,26 @@ public class Period_Summary extends DataObject implements CurrencyBound {
      */
     @DisplayProperties(order = 3)
     public Boolean isValid() {
-        for (PoolSummary poolSummary : new Children_Set<>(PoolSummary.class, period).get()) {
-            if (!poolSummary.isValid()) {
+        for (Bank_Summary summary : new BankSummary_Set(period).get()) {
+            if (!summary.isValid()) {
+                return false;
+            }
+        }
+
+        for (Category_Summary summary : new CategorySummary_Set(period).get()) {
+            if (!summary.isValid()) {
+                return false;
+            }
+        }
+
+        for (Fund_Summary summary : new FundSummary_Set(period).get()) {
+            if (!summary.isValid()) {
+                return false;
+            }
+        }
+
+        for (FundEvent_Summary summary : new FundEventSummary_Set(period).get()) {
+            if (!summary.isValid()) {
                 return false;
             }
         }
@@ -82,7 +86,7 @@ public class Period_Summary extends DataObject implements CurrencyBound {
     @DisplayProperties(order = 4, dataType = CURRENCY)
     public Double getStartBalance() {
         double value = 0.0;
-        for (Bank_Summary bank_summary : new Children_Set<>(Bank_Summary.class, period).get()) {
+        for (Bank_Summary bank_summary : new BankSummary_Set(period).get()) {
             value += bank_summary.getStart() * bank_summary.getCurrency().getToPrimary();
         }
         return value;
@@ -96,7 +100,7 @@ public class Period_Summary extends DataObject implements CurrencyBound {
     @DisplayProperties(order = 5, dataType = CURRENCY)
     public Double getEndBalance() {
         double value = 0.0;
-        for (Bank_Summary bank_summary : new Children_Set<>(Bank_Summary.class, period).get()) {
+        for (Bank_Summary bank_summary : new BankSummary_Set(period).get()) {
             value += bank_summary.getEnd() * bank_summary.getCurrency().getToPrimary();
         }
         return value;
@@ -121,10 +125,9 @@ public class Period_Summary extends DataObject implements CurrencyBound {
     public Double getEndBalance(Currency currency) {
         double value = 0.0;
         for (Bank bank : new Children_Set<>(Bank.class, currency).get()) {
-            Bank_Summary bank_summary = new MultiParent_Set<>(Bank_Summary.class, period, bank).get().get(0);
-            value += bank_summary.getEnd() * bank_summary.getCurrency().getToPrimary();
+            Bank_Summary summary = new Bank_Summary(period, bank);
+            value += summary.getEnd() * summary.getCurrency().getToPrimary();
         }
-
         return value;
     }
 
@@ -148,7 +151,7 @@ public class Period_Summary extends DataObject implements CurrencyBound {
      */
     @DisplayProperties(order = 8, dataType = CURRENCY)
     public Double getTax() {
-        return new PeriodPoolSet_Summary<>(period, TrackingDatabase.get().getSpecialValue(InCategory.class, InCategory.TAXABLE), Transfer.class).getTotal() * -TrackingDatabase.get().getTaxRate();
+        return new TransferSet_Summary<>(Transfer.class, period, TrackingDatabase.get().getSpecialValue(InCategory.class, InCategory.TAXABLE)).getTotal() * -TrackingDatabase.get().getTaxRate();
     }
 
 
@@ -161,7 +164,7 @@ public class Period_Summary extends DataObject implements CurrencyBound {
     public Double getNonCategory() {
         double sum = 0.0;
         for (Category category : TrackingDatabase.get().get(Category.class)) {
-            sum += new PeriodPoolSet_Summary<>(period, category, Transfer.class).getTotal();
+            sum += new TransferSet_Summary<>(Transfer.class, period, category).getTotal();
         }
         return -sum;
     }
