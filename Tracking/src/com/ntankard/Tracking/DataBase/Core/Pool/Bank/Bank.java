@@ -5,6 +5,7 @@ import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
@@ -16,14 +17,14 @@ import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-public class Bank extends Pool implements CurrencyBound {
+public class Bank extends Pool implements CurrencyBound, Ordered {
 
     // My parents
     private Currency currency;
 
     // My values
     private Integer order;
-    private Double start = 0.0;
+    private Double start;
 
     /**
      * Constructor
@@ -31,6 +32,7 @@ public class Bank extends Pool implements CurrencyBound {
     @ParameterMap(parameterGetters = {"getId", "getName", "getCurrency", "getStart", "getOrder"})
     public Bank(Integer id, String name, Currency currency, Double start, Integer order) {
         super(id, name);
+        if (currency == null) throw new IllegalArgumentException("Currency is null");
         this.currency = currency;
         this.start = start;
         this.order = order;
@@ -44,7 +46,7 @@ public class Bank extends Pool implements CurrencyBound {
     @DisplayProperties(order = 21)
     public List<DataObject> getParents() {
         List<DataObject> toReturn = new ArrayList<>();
-        toReturn.add(currency);
+        toReturn.add(getCurrency());
         return toReturn;
     }
 

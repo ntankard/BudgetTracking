@@ -41,17 +41,6 @@ public abstract class DataObject {
     }
 
     /**
-     * The class used to group these objects
-     *
-     * @return The class used to group these objects
-     */
-    @MemberProperties(verbosityLevel = MemberProperties.DEBUG_DISPLAY)
-    @DisplayProperties(order = 20)
-    public Class<?> getTypeClass() {
-        return getClass();
-    }
-
-    /**
      * {@inheritDoc
      */
     @Override
@@ -67,12 +56,8 @@ public abstract class DataObject {
      * Notify all the objects parents that this object has linked to them
      */
     public void notifyParentLink() {
-        try {
-            for (DataObject dataObject : getParents()) {
-                dataObject.notifyChildLink(this);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        for (DataObject dataObject : getParents()) {
+            dataObject.notifyChildLink(this);
         }
     }
 

@@ -8,7 +8,6 @@ import com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfers.BankTransfer.CurrencyBankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfers.BankTransfer.IntraCurrencyBankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer.UseCategoryFundTransfer;
-import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryTransfer;
 import com.ntankard.Tracking.DataBase.Interface.Set.Children_Set;
 import com.ntankard.Tracking.DataBase.Interface.Set.SummarySet.BankSummary_Set;
 import com.ntankard.Tracking.DataBase.Interface.Set.SummarySet.FundSummary_Set;
@@ -44,7 +43,6 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
     private DataObject_DisplayList<UseCategoryFundTransfer> periodFundTransfer_panel;
     private DataObject_DisplayList<CurrencyBankTransfer> bankTransfer_panel;
     private DataObject_DisplayList<IntraCurrencyBankTransfer> intraCurrencyBankTransfer_panel;
-    private DataObject_DisplayList<CategoryTransfer> categoryTransfer_panel;
 
     /**
      * Constructor
@@ -91,10 +89,6 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
         intraCurrencyBankTransfer_panel = new DataObject_DisplayList<>(IntraCurrencyBankTransfer.class, new Children_Set<>(IntraCurrencyBankTransfer.class, period), false, this);
         intraCurrencyBankTransfer_panel.addControlButtons(new IntraCurrencyBankTransfer_ElementController(period, this));
         statementControl_panel.add("Currency Transfers", intraCurrencyBankTransfer_panel);
-
-        categoryTransfer_panel = new DataObject_DisplayList<>(CategoryTransfer.class, new Children_Set<>(CategoryTransfer.class, period), false, this);
-        categoryTransfer_panel.addControlButtons(new CategoryTransfer_ElementController(period, this));
-        statementControl_panel.add("Category Transfers", categoryTransfer_panel);
 
         // Statement summary -------------------------------------------------------------------------------------------
 
@@ -148,7 +142,6 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
         periodFundTransfer_panel.update();
         bankTransfer_panel.update();
         intraCurrencyBankTransfer_panel.update();
-        categoryTransfer_panel.update();
 
         updateTransactions();
 

@@ -4,7 +4,7 @@ import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.HasDefault;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.SpecialValues;
 import com.ntankard.Tracking.DataBase.Core.Period;
-import com.ntankard.Tracking.DataBase.Core.Pool.Category.Category;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Core.Pool.Fund.Fund;
 import com.ntankard.Tracking.DataBase.Core.Pool.Fund.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.Transfers.BankTransfer.CurrencyBankTransfer;
@@ -51,7 +51,7 @@ public class TrackingDatabase_Integrity {
     /**
      * Confirm the ID of all object. Check they are unique
      */
-    static void validateId() {
+    public static void validateId() {
         for (DataObject dataObject : TrackingDatabase.get().getAll()) {
             for (DataObject toTest : TrackingDatabase.get().getAll()) {
                 if (!dataObject.equals(toTest)) {
@@ -71,7 +71,7 @@ public class TrackingDatabase_Integrity {
     /**
      * Confirm that all parent objects are present and have been linked
      */
-    static void validateParent() {
+    public static void validateParent() {
         for (DataObject dataObject : TrackingDatabase.get().getAll()) {
             for (DataObject parent : dataObject.getParents()) {
                 if (parent == null) {
@@ -87,7 +87,7 @@ public class TrackingDatabase_Integrity {
     /**
      * Confirm that all children that the object knows about are present and connected to the parent
      */
-    static void validateChild() {
+    public static void validateChild() {
         for (DataObject dataObject : TrackingDatabase.get().getAll()) {
             for (DataObject child : dataObject.getChildren()) {
                 if (child == null) {
@@ -107,7 +107,7 @@ public class TrackingDatabase_Integrity {
     /**
      * Confirm that all default values are set and correct
      */
-    static void validateDefault() {
+    public static void validateDefault() {
         for (Class<? extends DataObject> aClass : TrackingDatabase.get().getDataObjectTypes()) {
             if (HasDefault.class.isAssignableFrom(aClass)) {
                 if (TrackingDatabase.get().getDefault(aClass) == null) {
@@ -123,7 +123,7 @@ public class TrackingDatabase_Integrity {
     /**
      * Confirm that all special values are present in the database, and are the correct ones
      */
-    static void validateSpecial() {
+    public static void validateSpecial() {
         for (Class<? extends DataObject> aClass : TrackingDatabase.get().getDataObjectTypes()) {
             if (TrackingDatabase.get().get(aClass).size() != 0) {
                 if (SpecialValues.class.isAssignableFrom(aClass)) {
@@ -140,7 +140,7 @@ public class TrackingDatabase_Integrity {
     /**
      * Validate that the Bank Transfer is in the correct state
      */
-    static void validateCurrencyBankTransfer() {
+    public static void validateCurrencyBankTransfer() {
         for (CurrencyBankTransfer currencyBankTransfer : new Full_Set<>(CurrencyBankTransfer.class).get()) {
             if (currencyBankTransfer.getSource().equals(currencyBankTransfer.getDestination())) {
                 throw new RuntimeException("Transferring to itself");
@@ -150,11 +150,11 @@ public class TrackingDatabase_Integrity {
                 throw new RuntimeException("Transferring between banks with different currencies");
             }
 
-            if (!currencyBankTransfer.getValue().equals(currencyBankTransfer.getDestinationValue()) || !currencyBankTransfer.getDestinationValue().equals(-currencyBankTransfer.getSourceValue())) {
+            if (!currencyBankTransfer.getDestinationValue().equals(-currencyBankTransfer.getSourceValue())) {
                 throw new RuntimeException("Fund source and destination values do not match when they should");
             }
 
-            if (!currencyBankTransfer.getCurrency().equals(currencyBankTransfer.getDestinationCurrency()) || !currencyBankTransfer.getDestinationCurrency().equals(currencyBankTransfer.getSourceCurrency())) {
+            if (!currencyBankTransfer.getDestinationCurrency().equals(currencyBankTransfer.getSourceCurrency())) {
                 throw new RuntimeException("Fund source and destination currencies do not match when they should");
             }
         }
@@ -163,7 +163,7 @@ public class TrackingDatabase_Integrity {
     /**
      * Validate that the IntraCurrencyBankTransfers are in the correct state
      */
-    static void validateIntraCurrencyBankTransfer() {
+    public static void validateIntraCurrencyBankTransfer() {
         for (IntraCurrencyBankTransfer intraCurrencyBankTransfer : TrackingDatabase.get().get(IntraCurrencyBankTransfer.class)) {
             if (intraCurrencyBankTransfer.getSource().equals(intraCurrencyBankTransfer.getDestination())) {
                 throw new RuntimeException("Transferring to itself");
@@ -178,17 +178,17 @@ public class TrackingDatabase_Integrity {
     /**
      * Validate that the CategoryFundTransfers are in the correct state
      */
-    static void validateCategoryFundTransfer() {
+    public static void validateCategoryFundTransfer() {
         for (CategoryFundTransfer categoryFundTransfer : TrackingDatabase.get().get(CategoryFundTransfer.class)) {
             if (!categoryFundTransfer.getDestination().getChildren(FundEvent.class).contains(categoryFundTransfer.getFundEvent())) {
                 throw new RuntimeException("Fund and Fund event don't match");
             }
 
-            if (!categoryFundTransfer.getValue().equals(categoryFundTransfer.getDestinationValue()) || !categoryFundTransfer.getDestinationValue().equals(-categoryFundTransfer.getSourceValue())) {
+            if (!categoryFundTransfer.getDestinationValue().equals(-categoryFundTransfer.getSourceValue())) {
                 throw new RuntimeException("Fund source and destination values do not match when they should");
             }
 
-            if (!categoryFundTransfer.getCurrency().equals(categoryFundTransfer.getDestinationCurrency()) || !categoryFundTransfer.getDestinationCurrency().equals(categoryFundTransfer.getSourceCurrency())) {
+            if (!categoryFundTransfer.getDestinationCurrency().equals(categoryFundTransfer.getSourceCurrency())) {
                 throw new RuntimeException("Fund source and destination currencies do not match when they should");
             }
         }
@@ -197,7 +197,7 @@ public class TrackingDatabase_Integrity {
     /**
      * Validate that all periods are in a row with none missing. Also validate that they are connected properly
      */
-    static void validatePeriodSequence() {
+    public static void validatePeriodSequence() {
         List<Period> periods = new ArrayList<>(TrackingDatabase.get().get(Period.class));
 
         // Find the first period
@@ -234,7 +234,7 @@ public class TrackingDatabase_Integrity {
     /**
      * Validate that there is a fund for every category and only 1
      */
-    static void validateCategoryFund() {
+    public static void validateCategoryFund() {
         if (TrackingDatabase.get().get(Category.class).size() != TrackingDatabase.get().get(Fund.class).size()) {
             throw new RuntimeException("Number of categories and funds do not match");
         }

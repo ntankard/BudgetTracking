@@ -4,7 +4,7 @@ import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
-import com.ntankard.Tracking.DataBase.Core.Pool.Category.Category;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Core.Pool.Fund.Fund;
 import com.ntankard.Tracking.DataBase.Core.Pool.Fund.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.Pool.Fund.FundEvent.NoneFundEvent;
@@ -66,8 +66,14 @@ public class TrackingDatabase_Repair {
      * @param period The period to repair
      */
     private static void repairPeriod(Period period) {
-        if (period.getLast() != null) {
-            period.getLast().setNext(period);
+        List<Period> periods = TrackingDatabase.get().get(Period.class);
+        for (int i = 0; i < periods.size(); i++) {
+            if (i >= 1) {
+                periods.get(i).setLast(periods.get(i - 1));
+            }
+            if (i < periods.size() - 1) {
+                periods.get(i).setNext(periods.get(i + 1));
+            }
         }
 
         for (FundEvent fundEvent : TrackingDatabase.get().get(FundEvent.class)) {

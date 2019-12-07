@@ -14,8 +14,6 @@ public class Transfer_LocaleSource implements CurrencyDecoder_NumberFormatSource
     public NumberFormat getNumberFormat(Object rowObject, String contextName) {
         Transfer moneyEvent = (Transfer) rowObject;
         switch (contextName) {
-            case "Value":
-                return moneyEvent.getCurrency().getNumberFormat();
             case "SourceValue":
                 return moneyEvent.getSourceCurrency().getNumberFormat();
             case "DestinationValue":

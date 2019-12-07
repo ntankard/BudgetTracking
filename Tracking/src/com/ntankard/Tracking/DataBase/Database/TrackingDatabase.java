@@ -1,9 +1,7 @@
 package com.ntankard.Tracking.DataBase.Database;
 
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Database.SubContainers.*;
-import com.ntankard.Tracking.Dispaly.Util.Comparators.Period_Comparator;
 import com.ntankard.Tracking.Util.TreeNode;
 
 import java.util.ArrayList;
@@ -60,15 +58,24 @@ public class TrackingDatabase {
         containers.add(specialValuesMap);
         containers.add(classMap);
         containers.add(dataObjectClassTree);
-
-        masterMap.addComparator(Period.class, new Period_Comparator());
     }
 
     /**
      * Finalise the database. From this point on the integrate of the database can be guaranteed and call generated values will exist
      */
     public void finalizeCore() {
-        TrackingDatabase_Integrity.validateCore();
+        finalizeCore(true);
+    }
+
+    /**
+     * Finalise the database. From this point on the integrate of the database can be guaranteed and call generated values will exist
+     *
+     * @param shouldTest SHouyld validation run?
+     */
+    public void finalizeCore(boolean shouldTest) {
+        if (shouldTest) {
+            TrackingDatabase_Integrity.validateCore();
+        }
         isFinalized = true;
 
         for (DataObject dataObject : getAll()) {
@@ -76,8 +83,10 @@ public class TrackingDatabase {
         }
         TrackingDatabase_Repair.repair();
 
-        TrackingDatabase_Integrity.validateCore();
-        TrackingDatabase_Integrity.validateRepaired();
+        if (shouldTest) {
+            TrackingDatabase_Integrity.validateCore();
+            TrackingDatabase_Integrity.validateRepaired();
+        }
     }
 
     /**

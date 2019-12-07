@@ -1,9 +1,11 @@
-package com.ntankard.Tracking.DataBase.Core.Pool.Category;
+package com.ntankard.Tracking.DataBase.Core.Pool;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.HasDefault;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.SpecialValues;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
@@ -11,27 +13,40 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
+import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-public class OutCategory extends Category implements HasDefault, SpecialValues {
+public class Category extends Pool implements HasDefault, SpecialValues, Ordered {
 
-    public static Integer TAX = 1;
-    public static Integer SAVINGS = 2;
+    public static Integer SAVINGS = 1;
+    public static Integer TAXABLE = 2;
 
     // My values
+    private Integer order;
     private Boolean isDefault;
-    private Boolean isTax;
     private Boolean isSavings;
+    private Boolean isTaxable;
 
     /**
      * Constructor
      */
-    @ParameterMap(parameterGetters = {"getId", "getName", "getOrder", "isDefault", "isTax", "isSavings"})
-    public OutCategory(Integer id, String name, Integer order, Boolean isDefault, Boolean isTax, Boolean isSavings) {
-        super(id, name, order);
+    @ParameterMap(parameterGetters = {"getId", "getName", "getOrder", "isDefault", "isSavings", "isTaxable"})
+    public Category(Integer id, String name, Integer order, Boolean isDefault, Boolean isSavings, Boolean isTaxable) {
+        super(id, name);
+        this.order = order;
         this.isDefault = isDefault;
-        this.isTax = isTax;
         this.isSavings = isSavings;
+        this.isTaxable = isTaxable;
+    }
+
+    /**
+     * {@inheritDoc
+     */
+    @Override
+    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
+    @DisplayProperties(order = 21)
+    public List<DataObject> getParents() {
+        return new ArrayList<>();
     }
 
     /**
@@ -39,13 +54,13 @@ public class OutCategory extends Category implements HasDefault, SpecialValues {
      */
     @Override
     public Boolean isValue(Integer key) {
-        if (key.equals(TAX)) {
-            return isTax();
-        }
         if (key.equals(SAVINGS)) {
             return isSavings();
         }
-        throw new IllegalStateException("Unexpected value: " + key);
+        if (key.equals(TAXABLE)) {
+            return isTaxable();
+        }
+        throw new IllegalArgumentException("Unexpected key: " + key);
     }
 
     /**
@@ -56,7 +71,7 @@ public class OutCategory extends Category implements HasDefault, SpecialValues {
     @DisplayProperties(order = 23)
     public List<Integer> getKeys() {
         List<Integer> keys = new ArrayList<>();
-        keys.add(TAX);
+        keys.add(TAXABLE);
         keys.add(SAVINGS);
         return keys;
     }
@@ -64,6 +79,12 @@ public class OutCategory extends Category implements HasDefault, SpecialValues {
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
+
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    @DisplayProperties(order = 3)
+    public Integer getOrder() {
+        return order;
+    }
 
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
     @DisplayProperties(order = 4)
@@ -73,13 +94,13 @@ public class OutCategory extends Category implements HasDefault, SpecialValues {
 
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
     @DisplayProperties(order = 5)
-    public Boolean isTax() {
-        return isTax;
+    public Boolean isSavings() {
+        return isSavings;
     }
 
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
     @DisplayProperties(order = 6)
-    public Boolean isSavings() {
-        return isSavings;
+    public Boolean isTaxable() {
+        return isTaxable;
     }
 }

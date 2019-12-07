@@ -3,7 +3,7 @@ package com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.ModelData.R
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period;
-import com.ntankard.Tracking.DataBase.Core.Pool.Category.Category;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Core.Transfers.Transfer;
 import com.ntankard.Tracking.DataBase.Interface.Summary.TransferSet_Summary;
 import com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.ModelData.ModelData_Columns;
@@ -70,7 +70,7 @@ public class TransferRow<T extends Transfer> extends DataRows<T> {
             if (currency == null) {
                 return rowData.getDescription();
             } else {
-                if (getValueCurrency(rowData).equals(currency)) {
+                if (getValueCurrency(rowData, category).equals(currency)) {
                     return currency.getNumberFormat().format(getValue(rowData, category));
                 }
             }
@@ -127,10 +127,10 @@ public class TransferRow<T extends Transfer> extends DataRows<T> {
      */
     private double getValue(T rowData, Category category) {
         if (rowData.isThisSource(category)) {
-            return -rowData.getValue();
+            return rowData.getSourceValue();
         }
         if (rowData.isThisDestination(category)) {
-            return rowData.getValue();
+            return rowData.getDestinationValue();
         }
         throw new RuntimeException("Bad row");
     }
@@ -159,7 +159,13 @@ public class TransferRow<T extends Transfer> extends DataRows<T> {
     /**
      * {@inheritDoc
      */
-    private Currency getValueCurrency(T rowData) {
-        return rowData.getCurrency();
+    private Currency getValueCurrency(T rowData, Category category) {
+        if (rowData.isThisSource(category)) {
+            return rowData.getSourceCurrency();
+        }
+        if (rowData.isThisDestination(category)) {
+            return rowData.getDestinationCurrency();
+        }
+        throw new RuntimeException("Bad row");
     }
 }

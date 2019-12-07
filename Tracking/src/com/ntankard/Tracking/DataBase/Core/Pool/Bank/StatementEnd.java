@@ -5,6 +5,7 @@ import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
 import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
@@ -13,11 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
-import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
-import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
+import static com.ntankard.ClassExtension.MemberProperties.*;
 
 @ClassExtensionProperties(includeParent = true)
-public class StatementEnd extends DataObject implements CurrencyBound {
+public class StatementEnd extends DataObject implements CurrencyBound, Ordered {
 
     // My parents
     private Period period;
@@ -33,6 +33,9 @@ public class StatementEnd extends DataObject implements CurrencyBound {
     @ParameterMap(parameterGetters = {"getId", "getPeriod", "getBank", "getCurrency", "getEnd"})
     public StatementEnd(Integer id, Period period, Bank bank, Currency currency, Double end) {
         super(id);
+        if (period == null) throw new IllegalArgumentException("Period is null");
+        if (bank == null) throw new IllegalArgumentException("Bank is null");
+        if (currency == null) throw new IllegalArgumentException("Currency is null");
         this.period = period;
         this.bank = bank;
         this.currency = currency;
@@ -47,9 +50,9 @@ public class StatementEnd extends DataObject implements CurrencyBound {
     @DisplayProperties(order = 21)
     public List<DataObject> getParents() {
         List<DataObject> toReturn = new ArrayList<>();
-        toReturn.add(period);
-        toReturn.add(bank);
-        toReturn.add(currency);
+        toReturn.add(getPeriod());
+        toReturn.add(getBank());
+        toReturn.add(getCurrency());
         return toReturn;
     }
 
@@ -77,6 +80,13 @@ public class StatementEnd extends DataObject implements CurrencyBound {
     @DisplayProperties(order = 5)
     public Currency getCurrency() {
         return currency;
+    }
+
+    @Override
+    @MemberProperties(verbosityLevel = TRACE_DISPLAY)
+    @DisplayProperties(order = 6)
+    public Integer getOrder() {
+        return getBank().getOrder();
     }
 
     //------------------------------------------------------------------------------------------------------------------

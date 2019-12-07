@@ -3,7 +3,9 @@ package com.ntankard.Tracking.DataBase.Core;
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
+import com.ntankard.ClassExtension.SetterProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 
@@ -13,26 +15,24 @@ import java.util.List;
 import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-public class Period extends DataObject {
+public class Period extends DataObject implements Ordered {
 
     // My parents
 
     // My values
     private Integer month;
     private Integer year;
-    private Period last;  // Not a parent to prevent a circular dependency
-    private Period next;  // Not a parent to prevent a circular dependency
+    private Period last = null;  // Not a parent to prevent a circular dependency
+    private Period next = null;  // Not a parent to prevent a circular dependency
 
     /**
      * Constructor
      */
-    @ParameterMap(parameterGetters = {"getId", "getMonth", "getYear", "getLast", "getNext"})
-    public Period(Integer id, Integer month, Integer year, Period last, Period next) {
+    @ParameterMap(parameterGetters = {"getId", "getMonth", "getYear"})
+    public Period(Integer id, Integer month, Integer year) {
         super(id);
         this.month = month;
         this.year = year;
-        this.last = last;
-        this.next = next;
     }
 
     /**
@@ -43,6 +43,33 @@ public class Period extends DataObject {
     @DisplayProperties(order = 21)
     public List<DataObject> getParents() {
         return new ArrayList<>();
+    }
+
+    /**
+     * {@inheritDoc
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T extends DataObject> List<T> sourceOptions(Class<T> type, String fieldName) {
+        if (fieldName.equals("Next")) {
+            List<T> options = new ArrayList<>();
+            for (Period period : TrackingDatabase.get().get(Period.class)) {
+                if (getOrder() == period.getOrder() - 1) {
+                    options.add((T) period);
+                }
+            }
+            return options;
+        }
+        if (fieldName.equals("Last")) {
+            List<T> options = new ArrayList<>();
+            for (Period period : TrackingDatabase.get().get(Period.class)) {
+                if (getOrder() == period.getOrder() + 1) {
+                    options.add((T) period);
+                }
+            }
+            return options;
+        }
+        return super.sourceOptions(type, fieldName);
     }
 
     /**
@@ -59,7 +86,9 @@ public class Period extends DataObject {
             nextYear++;
         }
 
-        return new Period(TrackingDatabase.get().getNextId(), nextMonth, nextYear, this, null);
+        Period newPeriod = new Period(TrackingDatabase.get().getNextId(), nextMonth, nextYear);
+        newPeriod.setLast(this);
+        return newPeriod;
     }
 
     /**
@@ -68,7 +97,7 @@ public class Period extends DataObject {
      * @return The first Period know about
      */
     @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
-    @DisplayProperties(order = 6)
+    @DisplayProperties(order = 7)
     public Period getFirst() {
         Period first = this;
         while (true) {
@@ -135,7 +164,19 @@ public class Period extends DataObject {
     //##################################################### Setter #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
+    @SetterProperties(localSourceMethod = "sourceOptions", displaySet = false)
     public void setNext(Period next) {
+        if (getOrder() != next.getOrder() - 1) {
+            throw new IllegalArgumentException("Not the next month");
+        }
         this.next = next;
+    }
+
+    @SetterProperties(localSourceMethod = "sourceOptions", displaySet = false)
+    public void setLast(Period last) {
+        if (getOrder() != last.getOrder() + 1) {
+            throw new IllegalArgumentException("Not the last month");
+        }
+        this.last = last;
     }
 }

@@ -9,8 +9,8 @@ public class ClassMap extends Container<String, Class> {
      */
     @Override
     public void add(DataObject dataObject) {
-        if (!container.containsKey(dataObject.getTypeClass().getSimpleName())) {
-            container.put(dataObject.getTypeClass().getSimpleName(), dataObject.getTypeClass());
+        if (!container.containsKey(dataObject.getClass().getSimpleName())) {
+            container.put(dataObject.getClass().getSimpleName(), dataObject.getClass());
         }
     }
 

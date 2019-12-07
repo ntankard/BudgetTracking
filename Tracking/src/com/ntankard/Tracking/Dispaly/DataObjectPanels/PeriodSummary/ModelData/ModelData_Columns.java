@@ -2,13 +2,13 @@ package com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.ModelData;
 
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period;
-import com.ntankard.Tracking.DataBase.Core.Pool.Category.Category;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Core.Transfers.Transfer;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Summary.TransferSet_Summary;
+import com.ntankard.Tracking.Dispaly.Util.Comparators.Ordered_Comparator;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 public class ModelData_Columns {
@@ -39,7 +39,7 @@ public class ModelData_Columns {
 
         // Find all categories
         categories.addAll(TrackingDatabase.get().get(Category.class));
-        categories.sort(Comparator.comparingInt(Category::getOrder));
+        categories.sort(new Ordered_Comparator());
 
         for (Category category : categories) {
 

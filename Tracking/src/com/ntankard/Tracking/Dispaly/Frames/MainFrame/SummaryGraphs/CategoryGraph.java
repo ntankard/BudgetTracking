@@ -3,8 +3,7 @@ package com.ntankard.Tracking.Dispaly.Frames.MainFrame.SummaryGraphs;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.Period;
-import com.ntankard.Tracking.DataBase.Core.Pool.Category.Category;
-import com.ntankard.Tracking.DataBase.Core.Pool.Category.OutCategory;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Core.Transfers.Transfer;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Summary.TransferSet_Summary;
@@ -87,7 +86,7 @@ public class CategoryGraph extends UpdatableJPanel {
 
         int i = 0;
         for (Period period : TrackingDatabase.get().get(Period.class)) {
-            for (OutCategory category : TrackingDatabase.get().get(OutCategory.class)) {
+            for (Category category : TrackingDatabase.get().get(Category.class)) {
                 categories.get(category).add(i, new TransferSet_Summary<>(Transfer.class, period, category).getTotal());
             }
             i++;

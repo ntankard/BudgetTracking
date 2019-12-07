@@ -60,8 +60,6 @@ public class TrackingDatabase_Reader {
                 data.add(toAdd);
             }
         }
-
-        data.finalizeCore();
     }
 
     /**
@@ -312,7 +310,7 @@ public class TrackingDatabase_Reader {
             try {
                 getter = dataObjectSaver.aClass.getMethod(nameTypePair.name);
             } catch (NoSuchMethodException e) {
-                throw new RuntimeException(e);
+                throw new RuntimeException("\n" + "Class: " + dataObjectSaver.aClass.getSimpleName() + " Method:" + nameTypePair.name + "\n" + e);
             }
             if (!getter.getReturnType().equals(nameTypePair.type))
                 throw new RuntimeException("Getter provided by ParameterMap dose not match the parameter in the constructor. Could save but would not be able to load. Aborting save");

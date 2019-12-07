@@ -1,19 +1,13 @@
 package com.ntankard.Tracking.DataBase.Core.Transfers.BankTransfer;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
-import com.ntankard.ClassExtension.DisplayProperties;
-import com.ntankard.ClassExtension.MemberProperties;
+import com.ntankard.ClassExtension.SetterProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
-import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
 public class CurrencyBankTransfer extends BankTransfer {
@@ -21,9 +15,15 @@ public class CurrencyBankTransfer extends BankTransfer {
     /**
      * Constructor
      */
-    @ParameterMap(parameterGetters = {"getId", "getDescription", "getValue", "getPeriod", "getSource", "getDestination"})
+    @ParameterMap(parameterGetters = {"getId", "getDescription", "getDestinationValue", "getPeriod", "getSource", "getDestination"})
     public CurrencyBankTransfer(Integer id, String description, Double value, Period period, Bank source, Bank destination) {
         super(id, description, value, period, source, destination);
+        if (period == null) throw new IllegalArgumentException("Period is null");
+        if (source == null) throw new IllegalArgumentException("Source is null");
+        if (destination == null) throw new IllegalArgumentException("Destination is null");
+        if (source.equals(destination)) throw new IllegalArgumentException("Source and destination are the same");
+        if (!source.getCurrency().equals(destination.getCurrency()))
+            throw new IllegalArgumentException("Currencies are not the same");
     }
 
     /**
@@ -37,29 +37,22 @@ public class CurrencyBankTransfer extends BankTransfer {
             toReturn.remove(getSource());
             return toReturn;
         }
-        if (fieldName.equals("Source")) {
-            List<T> toReturn = new ArrayList<>(super.sourceOptions(type, fieldName));
-            toReturn.remove(getDestination());
-            return toReturn;
-        }
+
         return super.sourceOptions(type, fieldName);
     }
 
     //------------------------------------------------------------------------------------------------------------------
-    //#################################################### Getters #####################################################
+    //#################################################### Setters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
     @Override
-    @DisplayProperties(order = 4, dataType = CURRENCY)
-    public Double getValue() {
-        return super.getValue();
+    @SetterProperties(localSourceMethod = "sourceOptions")
+    public void setDestination(Bank destination) {
+        if (destination == null) throw new IllegalArgumentException("Destination is null");
+        if (getSource().equals(destination))
+            throw new IllegalArgumentException("Can not set the source as the destination");
+        if (!getSource().getCurrency().equals(destination.getCurrency()))
+            throw new IllegalArgumentException("Can not set a destination with a different currency to source");
+        super.setDestination(destination);
     }
-
-    @Override
-    @DisplayProperties(order = 5)
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    public Currency getCurrency() {
-        return getSource().getCurrency();
-    }
-
 }

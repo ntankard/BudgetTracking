@@ -1,26 +1,12 @@
 package com.ntankard.Tracking.DataBase.Database.SubContainers;
 
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
+import com.ntankard.Tracking.Dispaly.Util.Comparators.Ordered_Comparator;
 
 import java.util.*;
 
 public class DataObjectContainer extends Container<Class<? extends DataObject>, Map<Integer, DataObject>> {
-
-    /**
-     * The main container
-     */
-    private Map<Class<? extends DataObject>, Comparator> comparators = new HashMap<>();
-
-    /**
-     * Add a comparator to be used when getting a list of a certain type
-     *
-     * @param aClass     The type to use the comparator on
-     * @param comparator The comparator to use
-     * @param <T>        The type, same as aClass
-     */
-    public <T extends DataObject> void addComparator(Class<T> aClass, Comparator<T> comparator) {
-        comparators.put(aClass, comparator);
-    }
 
     /**
      * Add a new object
@@ -64,8 +50,7 @@ public class DataObjectContainer extends Container<Class<? extends DataObject>, 
         do {
             // Check that we have seen this object before
             if (!container.containsKey(aClass) || !container.get(aClass).containsKey(toRemove.getId())) {
-                System.out.println("Removing an object that was never added, TODO create error");
-                //throw new RuntimeException("Removing an object that was never added");
+                throw new RuntimeException("Removing an object that was never added");
             }
 
             // Remove the object
@@ -101,8 +86,8 @@ public class DataObjectContainer extends Container<Class<? extends DataObject>, 
             container.put(tClass, new HashMap<>());
         }
         List toReturn = new ArrayList(container.get(tClass).values());
-        if (comparators.containsKey(tClass)) {
-            toReturn.sort(comparators.get(tClass));
+        if (Ordered.class.isAssignableFrom(tClass)) {
+            toReturn.sort(new Ordered_Comparator());
         }
         return toReturn;
     }

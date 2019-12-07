@@ -7,10 +7,10 @@ import com.ntankard.ClassExtension.SetterProperties;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
-import com.ntankard.Tracking.DataBase.Core.Pool.Category.Category;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
-import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
+import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
 public class BankCategoryTransfer extends Transfer<Bank, Category> {
@@ -18,9 +18,12 @@ public class BankCategoryTransfer extends Transfer<Bank, Category> {
     /**
      * Constructor
      */
-    @ParameterMap(parameterGetters = {"getId", "getDescription", "getValue", "getPeriod", "getSource", "getDestination"})
+    @ParameterMap(parameterGetters = {"getId", "getDescription", "getDestinationValue", "getPeriod", "getSource", "getDestination"})
     public BankCategoryTransfer(Integer id, String description, Double value, Period period, Bank source, Category destination) {
         super(id, description, value, period, source, destination, null);
+        if (period == null) throw new IllegalArgumentException("Period is null");
+        if (source == null) throw new IllegalArgumentException("Source is null");
+        if (destination == null) throw new IllegalArgumentException("Destination is null");
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -28,22 +31,29 @@ public class BankCategoryTransfer extends Transfer<Bank, Category> {
     //------------------------------------------------------------------------------------------------------------------
 
     @Override
-    @DisplayProperties(order = 5)
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    public Currency getCurrency() {
-        return getSource().getCurrency();
-    }
-
-    @Override
-    @DisplayProperties(order = 6)
+    @DisplayProperties(order = 4)
     public Bank getSource() {
         return super.getSource();
     }
 
     @Override
-    @DisplayProperties(order = 9)
+    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
+    @DisplayProperties(order = 6)
+    public Currency getSourceCurrency() {
+        return getSource().getCurrency();
+    }
+
+    @Override
+    @DisplayProperties(order = 7)
     public Category getDestination() {
         return super.getDestination();
+    }
+
+    @Override
+    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
+    @DisplayProperties(order = 9)
+    public Currency getDestinationCurrency() {
+        return getSource().getCurrency();
     }
 
     //------------------------------------------------------------------------------------------------------------------

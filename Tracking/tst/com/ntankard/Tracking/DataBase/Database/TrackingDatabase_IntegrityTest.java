@@ -10,16 +10,34 @@ class TrackingDatabase_IntegrityTest {
         TrackingDatabase.reset();
         String savePath = "C:\\Users\\Nicholas\\Google Drive\\BudgetTrackingData";
         TrackingDatabase_Reader.read(TrackingDatabase.get(), savePath);
+        TrackingDatabase.get().finalizeCore(false);
     }
 
     @Test
     void validateCore() {
         TrackingDatabase_Integrity.validateCore();
     }
-
+    
     @Test
     void validateRepaired() {
         TrackingDatabase_Integrity.validateRepaired();
+    }
+
+    @Test
+    void validateFundFundEvent() {
+        TrackingDatabase_Integrity.validateFundFundEvent();
+    }
+
+    // Duplicated
+
+    @Test
+    void validateSpecial() {
+        TrackingDatabase_Integrity.validateSpecial();
+    }
+
+    @Test
+    void validateDefault() {
+        TrackingDatabase_Integrity.validateDefault();
     }
 
     @Test
@@ -38,13 +56,8 @@ class TrackingDatabase_IntegrityTest {
     }
 
     @Test
-    void validateDefault() {
-        TrackingDatabase_Integrity.validateDefault();
-    }
-
-    @Test
-    void validateSpecial() {
-        TrackingDatabase_Integrity.validateSpecial();
+    void validatePeriodSequence() {
+        TrackingDatabase_Integrity.validatePeriodSequence();
     }
 
     @Test
@@ -63,17 +76,7 @@ class TrackingDatabase_IntegrityTest {
     }
 
     @Test
-    void validatePeriodSequence() {
-        TrackingDatabase_Integrity.validatePeriodSequence();
-    }
-
-    @Test
     void validateCategoryFund() {
         TrackingDatabase_Integrity.validateCategoryFund();
-    }
-
-    @Test
-    void validateFundFundEvent() {
-        TrackingDatabase_Integrity.validateFundFundEvent();
     }
 }

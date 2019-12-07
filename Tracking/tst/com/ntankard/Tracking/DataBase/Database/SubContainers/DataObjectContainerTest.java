@@ -1,7 +1,6 @@
 package com.ntankard.Tracking.DataBase.Database.SubContainers;
 
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Database.SubContainers.DataObjectContainer;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -26,6 +25,7 @@ class DataObjectContainerTest {
         });
     }
 
+    @SuppressWarnings("SuspiciousMethodCalls")
     @Test
     void testAdd() {
         DataObjectContainer dataObjectContainer = new DataObjectContainer();
@@ -55,9 +55,10 @@ class DataObjectContainerTest {
         assertFalse(dataObjectContainer.get(Layer1_ALT_DataObject_New.class).contains(layer3));
     }
 
+    @SuppressWarnings("SuspiciousMethodCalls")
     @Test
     void testAddRemove() {
-        int testSize = 4000;
+        int testSize = 1000;
 
         DataObjectContainer dataObjectContainer = new DataObjectContainer();
         List<DataObject> all = new ArrayList<>();

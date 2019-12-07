@@ -13,16 +13,16 @@ public class SpecialValuesMap extends Container<Class, Map<Integer, DataObject>>
      */
     @Override
     public void add(DataObject dataObject) {
-        if (SpecialValues.class.isAssignableFrom(dataObject.getTypeClass())) {
-            if (!container.containsKey(dataObject.getTypeClass())) {
-                container.put(dataObject.getTypeClass(), new HashMap<>());
+        if (SpecialValues.class.isAssignableFrom(dataObject.getClass())) {
+            if (!container.containsKey(dataObject.getClass())) {
+                container.put(dataObject.getClass(), new HashMap<>());
             }
         }
 
         if (dataObject instanceof SpecialValues) {
             for (Integer key : ((SpecialValues) dataObject).getKeys()) {
                 if (((SpecialValues) dataObject).isValue(key)) {
-                    Map<Integer, DataObject> keyMap = container.get(dataObject.getTypeClass());
+                    Map<Integer, DataObject> keyMap = container.get(dataObject.getClass());
                     if (keyMap.containsKey(key)) {
                         throw new RuntimeException("Double add");
                     }
@@ -42,7 +42,7 @@ public class SpecialValuesMap extends Container<Class, Map<Integer, DataObject>>
         if (dataObject instanceof SpecialValues) {
             for (Integer key : ((SpecialValues) dataObject).getKeys()) {
                 if (((SpecialValues) dataObject).isValue(key)) {
-                    Map<Integer, DataObject> keyMap = container.get(dataObject.getTypeClass());
+                    Map<Integer, DataObject> keyMap = container.get(dataObject.getClass());
                     if (!keyMap.containsKey(key)) {
                         throw new RuntimeException("Removing a value that dose not exist");
                     }

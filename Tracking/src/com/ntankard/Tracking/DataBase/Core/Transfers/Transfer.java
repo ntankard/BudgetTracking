@@ -50,11 +50,12 @@ public abstract class Transfer<SourceType extends DataObject, DestinationType ex
     @DisplayProperties(order = 21)
     public List<DataObject> getParents() {
         List<DataObject> toReturn = new ArrayList<>();
-        toReturn.add(source);
-        toReturn.add(destination);
-        toReturn.add(period);
-        if (currency != null) {
-            toReturn.add(currency);
+        toReturn.add(getSource());
+        toReturn.add(getDestination());
+        toReturn.add(getPeriod());
+        toReturn.add(getDestinationCurrency());
+        if (!getDestinationCurrency().equals(getSourceCurrency())) {
+            toReturn.add(getSourceCurrency());
         }
         return toReturn;
     }
@@ -66,7 +67,7 @@ public abstract class Transfer<SourceType extends DataObject, DestinationType ex
      * @return True if the params represent this transfers source
      */
     public Boolean isThisSource(DataObject sourceContainer) {
-        return this.source.equals(sourceContainer);
+        return this.getSource().equals(sourceContainer);
     }
 
     /**
@@ -76,7 +77,7 @@ public abstract class Transfer<SourceType extends DataObject, DestinationType ex
      * @return True if the params represent this transfers destination
      */
     public Boolean isThisDestination(DataObject destinationContainer) {
-        return this.destination.equals(destinationContainer);
+        return this.getDestination().equals(destinationContainer);
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -94,49 +95,37 @@ public abstract class Transfer<SourceType extends DataObject, DestinationType ex
         return description;
     }
 
-    @DisplayProperties(order = 4, dataType = CURRENCY)
-    public Double getValue() {
-        return value;
-    }
-
-    @DisplayProperties(order = 5)
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    public Currency getCurrency() {
-        return currency;
-    }
-
-    @DisplayProperties(order = 6)
+    @DisplayProperties(order = 4)
     public SourceType getSource() {
         return source;
     }
 
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 7, dataType = CURRENCY)
+    @DisplayProperties(order = 5, dataType = CURRENCY)
     public Double getSourceValue() {
-        return -getValue();
+        return -value;
     }
 
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 8)
+    @DisplayProperties(order = 6)
     public Currency getSourceCurrency() {
-        return getCurrency();
+        return currency;
     }
 
-    @DisplayProperties(order = 9)
+    @DisplayProperties(order = 7)
     public DestinationType getDestination() {
         return destination;
     }
 
-    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 10, dataType = CURRENCY)
+    @DisplayProperties(order = 8, dataType = CURRENCY)
     public Double getDestinationValue() {
-        return getValue();
+        return value;
     }
 
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 11)
+    @DisplayProperties(order = 9)
     public Currency getDestinationCurrency() {
-        return getCurrency();
+        return currency;
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -147,26 +136,21 @@ public abstract class Transfer<SourceType extends DataObject, DestinationType ex
         this.description = description;
     }
 
-    public void setValue(Double value) {
+    public void setDestinationValue(Double value) {
         this.value = value;
     }
 
     @SetterProperties(localSourceMethod = "sourceOptions")
-    public void setCurrency(Currency currency) {
-        this.currency.notifyChildUnLink(this);
-        this.currency = currency;
-        this.currency.notifyChildLink(this);
-    }
-
-    @SetterProperties(localSourceMethod = "sourceOptions")
-    public void setSource(SourceType source) {
+    protected void setSource(SourceType source) {
+        if (source == null) throw new IllegalArgumentException("Source is null");
         this.source.notifyChildUnLink(this);
         this.source = source;
         this.source.notifyChildLink(this);
     }
 
     @SetterProperties(localSourceMethod = "sourceOptions")
-    public void setDestination(DestinationType destination) {
+    protected void setDestination(DestinationType destination) {
+        if (destination == null) throw new IllegalArgumentException("Destination is null");
         this.destination.notifyChildUnLink(this);
         this.destination = destination;
         this.destination.notifyChildLink(this);

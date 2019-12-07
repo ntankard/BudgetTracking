@@ -39,27 +39,27 @@ public abstract class BankTransfer extends Transfer<Bank, Bank> {
     }
 
     @Override
-    @DisplayProperties(order = 6)
+    @DisplayProperties(order = 4)
     public Bank getSource() {
         return super.getSource();
     }
 
     @Override
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    @DisplayProperties(order = 8)
+    @DisplayProperties(order = 6)
     public Currency getSourceCurrency() {
         return super.getSource().getCurrency();
     }
 
     @Override
-    @DisplayProperties(order = 9)
+    @DisplayProperties(order = 7)
     public Bank getDestination() {
         return super.getDestination();
     }
 
     @Override
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    @DisplayProperties(order = 11)
+    @DisplayProperties(order = 9)
     public Currency getDestinationCurrency() {
         return getDestination().getCurrency();
     }
@@ -71,20 +71,16 @@ public abstract class BankTransfer extends Transfer<Bank, Bank> {
     @Override
     @SetterProperties(localSourceMethod = "sourceOptions")
     public void setSource(Bank source) {
+        if (source == null) throw new IllegalArgumentException("Source is null");
+
         this.source.notifyChildUnLink(this);
         this.source = source;
 
         List<Bank> options = sourceOptions(Bank.class, "Destination");
-        if (getSource().equals(getDestination()) || !options.contains(getDestination())) {
+        if (!options.contains(getDestination())) {
             setDestination(options.get(0));
         }
 
         this.source.notifyChildLink(this);
-    }
-
-    @Override
-    @SetterProperties(localSourceMethod = "sourceOptions")
-    public void setDestination(Bank destination) {
-        super.setDestination(destination);
     }
 }

@@ -12,12 +12,12 @@ public class DefaultObjectMap extends Container<Class, DataObject> {
      */
     @Override
     public void add(DataObject dataObject) {
-        if (HasDefault.class.isAssignableFrom(dataObject.getTypeClass())) {
+        if (HasDefault.class.isAssignableFrom(dataObject.getClass())) {
             if (((HasDefault) dataObject).isDefault()) {
-                if (container.containsKey(dataObject.getTypeClass())) {
+                if (container.containsKey(dataObject.getClass())) {
                     throw new RuntimeException("Default already set");
                 }
-                container.put(dataObject.getTypeClass(), dataObject);
+                container.put(dataObject.getClass(), dataObject);
             }
         }
     }
@@ -29,9 +29,9 @@ public class DefaultObjectMap extends Container<Class, DataObject> {
     public void remove(DataObject dataObject) {
         checkCanDelete(dataObject);
 
-        if (container.containsKey(dataObject.getTypeClass())) {
-            if (container.get(dataObject.getTypeClass()).equals(dataObject)) {
-                container.remove(dataObject.getTypeClass());
+        if (container.containsKey(dataObject.getClass())) {
+            if (container.get(dataObject.getClass()).equals(dataObject)) {
+                container.remove(dataObject.getClass());
             }
         }
     }
