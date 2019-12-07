@@ -5,7 +5,6 @@ import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
-import com.ntankard.Tracking.DataBase.Core.Pool.Fund.Fund;
 import com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
@@ -22,9 +21,9 @@ public class TaxFundEvent extends FundEvent {
     /**
      * Constructor
      */
-    @ParameterMap(parameterGetters = {"getId", "getName", "getFund", "getPercentage"})
-    public TaxFundEvent(Integer id, String name, Fund fund, Double percentage) {
-        super(id, name, fund);
+    @ParameterMap(parameterGetters = {"getId", "getName", "getCategory", "getPercentage"})
+    public TaxFundEvent(Integer id, String name, Category category, Double percentage) {
+        super(id, name, category);
         this.percentage = percentage;
     }
 

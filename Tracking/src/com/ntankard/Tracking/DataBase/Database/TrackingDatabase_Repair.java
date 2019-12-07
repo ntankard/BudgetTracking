@@ -110,9 +110,9 @@ public class TrackingDatabase_Repair {
             }
         }
 
-        if (fund.getDefaultFundEvent() == null) {
+      /*  if (fund.getDefaultFundEvent() == null) {
             TrackingDatabase.get().add(new NoneFundEvent(TrackingDatabase.get().getNextId(), "None", fund));
-        }
+        }*/
     }
 
     /**

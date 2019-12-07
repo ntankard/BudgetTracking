@@ -3,8 +3,6 @@ package com.ntankard.Tracking.DataBase.Core.Pool.Fund;
 import com.ntankard.TestUtil.DataAccessUntil;
 import com.ntankard.TestUtil.DataObjectTestUtil;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
-import com.ntankard.Tracking.DataBase.Core.Pool.Fund.FundEvent.FundEvent;
-import com.ntankard.Tracking.DataBase.Core.Pool.Fund.FundEvent.NoneFundEvent;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase_Integrity;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,14 +48,15 @@ class FundTest {
         Fund fund1 = new Fund(-1, category);
         Fund fund2 = new Fund(-1, category);
 
-        FundEvent event1 = new NoneFundEvent(-1, "", fund1);
-        FundEvent event2 = new NoneFundEvent(-1, "", fund2);
-
-        assertDoesNotThrow(() -> fund1.setDefaultFundEvent(event1));
-        assertThrows(IllegalArgumentException.class, () -> fund1.setDefaultFundEvent(event2));
-
-        assertDoesNotThrow(() -> fund2.setDefaultFundEvent(event2));
-        assertThrows(IllegalArgumentException.class, () -> fund2.setDefaultFundEvent(event1));
+        assertTrue(false);
+//        FundEvent event1 = new NoneFundEvent(-1, "", fund1);
+//        FundEvent event2 = new NoneFundEvent(-1, "", fund2);
+//
+//        assertDoesNotThrow(() -> fund1.setDefaultFundEvent(event1));
+//        assertThrows(IllegalArgumentException.class, () -> fund1.setDefaultFundEvent(event2));
+//
+//        assertDoesNotThrow(() -> fund2.setDefaultFundEvent(event2));
+//        assertThrows(IllegalArgumentException.class, () -> fund2.setDefaultFundEvent(event1));
     }
 
     //------------------------------------------------------------------------------------------------------------------

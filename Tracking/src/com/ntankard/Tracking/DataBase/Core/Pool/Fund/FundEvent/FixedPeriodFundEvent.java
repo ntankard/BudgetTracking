@@ -5,7 +5,7 @@ import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.Period;
-import com.ntankard.Tracking.DataBase.Core.Pool.Fund.Fund;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer.UseCategoryFundTransfer;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Interface.Set.Children_Set;
@@ -27,9 +27,9 @@ public class FixedPeriodFundEvent extends FundEvent {
     /**
      * Constructor
      */
-    @ParameterMap(parameterGetters = {"getId", "getName", "getFund", "getStart", "getDuration"})
-    public FixedPeriodFundEvent(Integer id, String name, Fund fund, Period start, Integer duration) {
-        super(id, name, fund);
+    @ParameterMap(parameterGetters = {"getId", "getName", "getCategory", "getStart", "getDuration"})
+    public FixedPeriodFundEvent(Integer id, String name, Category category, Period start, Integer duration) {
+        super(id, name, category);
         this.start = start;
         this.duration = duration;
     }

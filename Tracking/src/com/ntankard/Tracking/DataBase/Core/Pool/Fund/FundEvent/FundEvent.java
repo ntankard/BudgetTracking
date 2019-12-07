@@ -6,6 +6,7 @@ import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.NamedDataObject;
 import com.ntankard.Tracking.DataBase.Core.Period;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Core.Pool.Fund.Fund;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
@@ -20,13 +21,16 @@ public abstract class FundEvent extends NamedDataObject {
     // My parent
     private Fund fund;
 
+    private Category category;
+
     /**
      * Constructor
      */
     @ParameterMap(shouldSave = false)
-    public FundEvent(Integer id, String name, Fund fund) {
+    public FundEvent(Integer id, String name, Category category) {
         super(id, name);
-        this.fund = fund;
+        this.fund = category.getChildren(Fund.class).get(0);
+        this.category = category;
     }
 
     /**
@@ -72,5 +76,10 @@ public abstract class FundEvent extends NamedDataObject {
     @DisplayProperties(order = 3)
     public Fund getFund() {
         return fund;
+    }
+
+    @DisplayProperties(order = 4)
+    public Category getCategory() {
+        return category;
     }
 }

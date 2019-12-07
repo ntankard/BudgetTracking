@@ -2,7 +2,7 @@ package com.ntankard.Tracking.DataBase.Core.Pool.Fund.FundEvent;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.Tracking.DataBase.Core.Period;
-import com.ntankard.Tracking.DataBase.Core.Pool.Fund.Fund;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
 @ClassExtensionProperties(includeParent = true)
@@ -11,9 +11,9 @@ public class NoneFundEvent extends FundEvent {
     /**
      * Constructor
      */
-    @ParameterMap(parameterGetters = {"getId", "getName", "getFund"})
-    public NoneFundEvent(Integer id, String name, Fund fund) {
-        super(id, name, fund);
+    @ParameterMap(parameterGetters = {"getId", "getName", "getCategory"})
+    public NoneFundEvent(Integer id, String name, Category category) {
+        super(id, name, category);
     }
 
     /**

@@ -3,7 +3,6 @@ package com.ntankard.Tracking.DataBase.Core.Pool.Fund.FundEvent;
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
-import com.ntankard.Tracking.DataBase.Core.Pool.Fund.Fund;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Period_Summary;
@@ -16,7 +15,7 @@ public class SavingsFundEvent extends FundEvent {
      */
     @ParameterMap(shouldSave = false)
     public SavingsFundEvent() {
-        super(-1, "Savings", TrackingDatabase.get().getSpecialValue(Category.class, Category.SAVINGS).getChildren(Fund.class).get(0));
+        super(-1, "Savings", TrackingDatabase.get().getSpecialValue(Category.class, Category.SAVINGS));
     }
 
     /**
