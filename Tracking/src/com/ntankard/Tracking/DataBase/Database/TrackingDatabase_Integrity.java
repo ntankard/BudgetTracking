@@ -4,9 +4,6 @@ import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.HasDefault;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.SpecialValues;
 import com.ntankard.Tracking.DataBase.Core.Period;
-import com.ntankard.Tracking.DataBase.Core.Pool.Category;
-import com.ntankard.Tracking.DataBase.Core.Pool.Fund.Fund;
-import com.ntankard.Tracking.DataBase.Core.Pool.Fund.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.Transfers.BankTransfer.CurrencyBankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfers.BankTransfer.IntraCurrencyBankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer.CategoryFundTransfer;
@@ -40,8 +37,6 @@ public class TrackingDatabase_Integrity {
     public static void validateRepaired() {
         validateCategoryFundTransfer();
         validatePeriodSequence();
-        validateCategoryFund();
-        validateFundFundEvent();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -180,10 +175,6 @@ public class TrackingDatabase_Integrity {
      */
     public static void validateCategoryFundTransfer() {
         for (CategoryFundTransfer categoryFundTransfer : TrackingDatabase.get().get(CategoryFundTransfer.class)) {
-            if (!categoryFundTransfer.getDestination().getChildren(FundEvent.class).contains(categoryFundTransfer.getFundEvent())) {
-                throw new RuntimeException("Fund and Fund event don't match");
-            }
-
             if (!categoryFundTransfer.getDestinationValue().equals(-categoryFundTransfer.getSourceValue())) {
                 throw new RuntimeException("Fund source and destination values do not match when they should");
             }
@@ -228,32 +219,6 @@ public class TrackingDatabase_Integrity {
 
         if (periods.size() != 0) {
             throw new RuntimeException("Core Database error. Not all periods are in order");
-        }
-    }
-
-    /**
-     * Validate that there is a fund for every category and only 1
-     */
-    public static void validateCategoryFund() {
-        if (TrackingDatabase.get().get(Category.class).size() != TrackingDatabase.get().get(Fund.class).size()) {
-            throw new RuntimeException("Number of categories and funds do not match");
-        }
-
-        for (Category category : TrackingDatabase.get().get(Category.class)) {
-            if (category.getChildren(Fund.class).size() != 1) {
-                throw new RuntimeException("Not exactly 1 fund per category");
-            }
-        }
-    }
-
-    /**
-     * Validate that all funds are fund events that are setup properly
-     */
-    static void validateFundFundEvent() {
-        for (Fund fund : TrackingDatabase.get().get(Fund.class)) {
-            if (fund.getChildren(FundEvent.class).size() == 0) {
-                throw new RuntimeException("A fund has no Fund events available");
-            }
         }
     }
 }

@@ -2,10 +2,10 @@ package com.ntankard.Tracking.Dispaly.Frames.MainFrame.Funds.IndividualFund;
 
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
-import com.ntankard.Tracking.DataBase.Core.Pool.Fund.Fund;
-import com.ntankard.Tracking.DataBase.Interface.Set.SummarySet.FundSummary_Set;
-import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Fund_Summary;
-import com.ntankard.Tracking.Dispaly.Util.Comparators.FundSummary_Comparator;
+import com.ntankard.Tracking.DataBase.Core.Pool.Fund.FundEvent.FundEvent;
+import com.ntankard.Tracking.DataBase.Interface.Set.SummarySet.FundEventSummary_Set;
+import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.FundEvent_Summary;
+import com.ntankard.Tracking.Dispaly.Util.Comparators.FundEventSummary_Comparator;
 import com.ntankard.Tracking.Dispaly.Util.Panels.Object_DisplayList;
 
 import javax.swing.*;
@@ -16,17 +16,17 @@ import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 public class IndividualFundPanel extends UpdatableJPanel {
 
     // Core Data
-    private Fund core;
+    private FundEvent core;
 
     // The GUI components
-    private Object_DisplayList<Fund_Summary> fundSummary_panel;
+    private Object_DisplayList<FundEvent_Summary> fundEventSummary_panel;
     private FundTransactionList fundTransactionList;
     private SumGraph sumGraph;
 
     /**
      * Constructor
      */
-    public IndividualFundPanel(Fund core, Updatable master) {
+    public IndividualFundPanel(FundEvent core, Updatable master) {
         super(master);
         this.core = core;
         createUIComponents();
@@ -41,10 +41,10 @@ public class IndividualFundPanel extends UpdatableJPanel {
 
         JTabbedPane master_tPanel = new JTabbedPane();
 
-        fundSummary_panel = new Object_DisplayList<>(Fund_Summary.class, new FundSummary_Set(core), false, this);
-        fundSummary_panel.setVerbosity(INFO_DISPLAY);
-        fundSummary_panel.setComparator(new FundSummary_Comparator());
-        master_tPanel.addTab("Summary", fundSummary_panel);
+        fundEventSummary_panel = new Object_DisplayList<>(FundEvent_Summary.class, new FundEventSummary_Set(core), false, this);
+        fundEventSummary_panel.setVerbosity(INFO_DISPLAY);
+        fundEventSummary_panel.setComparator(new FundEventSummary_Comparator());
+        master_tPanel.addTab("Summary", fundEventSummary_panel);
 
         fundTransactionList = new FundTransactionList(core, this);
         master_tPanel.addTab("List", fundTransactionList);
@@ -60,7 +60,7 @@ public class IndividualFundPanel extends UpdatableJPanel {
      */
     @Override
     public void update() {
-        fundSummary_panel.update();
+        fundEventSummary_panel.update();
         fundTransactionList.update();
         sumGraph.update();
     }

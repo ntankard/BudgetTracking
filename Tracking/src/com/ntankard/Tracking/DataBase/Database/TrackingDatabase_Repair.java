@@ -5,7 +5,6 @@ import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
-import com.ntankard.Tracking.DataBase.Core.Pool.Fund.Fund;
 import com.ntankard.Tracking.DataBase.Core.Pool.Fund.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.Pool.Fund.FundEvent.SavingsFundEvent;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer.RePayCategoryFundTransfer;
@@ -36,8 +35,6 @@ public class TrackingDatabase_Repair {
     public static void repair(DataObject dataObject) {
         if (dataObject instanceof Period) {
             repairPeriod((Period) dataObject);
-        } else if (dataObject instanceof Category) {
-            repairCategory((Category) dataObject);
         } else if (dataObject instanceof FundEvent) {
             repairFundEvent((FundEvent) dataObject);
         }
@@ -49,7 +46,7 @@ public class TrackingDatabase_Repair {
      * @param dataObject The object to delete
      */
     public static void prepareForRemove(DataObject dataObject) {
-        if (dataObject instanceof Period || dataObject instanceof Bank || dataObject instanceof Fund || dataObject instanceof Category) {
+        if (dataObject instanceof Period || dataObject instanceof Bank || dataObject instanceof FundEvent || dataObject instanceof Category) {
             throw new RuntimeException("Cant delete this kind of object");
         }
     }
@@ -72,18 +69,6 @@ public class TrackingDatabase_Repair {
 
         for (FundEvent fundEvent : TrackingDatabase.get().get(FundEvent.class)) {
             setupRePay(fundEvent, period);
-        }
-    }
-
-    /**
-     * Repair a Category object
-     *
-     * @param category The object to repair
-     */
-    private static void repairCategory(Category category) {
-        Fund child = category.getChildren(Fund.class).get(0);
-        if (child == null) {
-            TrackingDatabase.get().add(new Fund(TrackingDatabase.get().getNextId(), category));
         }
     }
 

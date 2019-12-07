@@ -23,11 +23,6 @@ class TrackingDatabase_IntegrityTest {
         TrackingDatabase_Integrity.validateRepaired();
     }
 
-    @Test
-    void validateFundFundEvent() {
-        TrackingDatabase_Integrity.validateFundFundEvent();
-    }
-
     // Duplicated
 
     @Test
@@ -73,10 +68,5 @@ class TrackingDatabase_IntegrityTest {
     @Test
     void validateCategoryFundTransfer() {
         TrackingDatabase_Integrity.validateCategoryFundTransfer();
-    }
-
-    @Test
-    void validateCategoryFund() {
-        TrackingDatabase_Integrity.validateCategoryFund();
     }
 }

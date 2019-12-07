@@ -27,12 +27,12 @@ public class RePayCategoryFundTransfer extends CategoryFundTransfer {
     @Override
     @DisplayProperties(order = 5, dataType = CURRENCY)
     public Double getSourceValue() {
-        return -getFundEvent().getCharge(getPeriod());
+        return -getDestination().getCharge(getPeriod());
     }
 
     @Override
     @DisplayProperties(order = 8, dataType = CURRENCY)
     public Double getDestinationValue() {
-        return getFundEvent().getCharge(getPeriod());
+        return getDestination().getCharge(getPeriod());
     }
 }

@@ -10,13 +10,16 @@ import com.ntankard.Tracking.DataBase.Core.Transfers.BankTransfer.IntraCurrencyB
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer.UseCategoryFundTransfer;
 import com.ntankard.Tracking.DataBase.Interface.Set.Children_Set;
 import com.ntankard.Tracking.DataBase.Interface.Set.SummarySet.BankSummary_Set;
-import com.ntankard.Tracking.DataBase.Interface.Set.SummarySet.FundSummary_Set;
+import com.ntankard.Tracking.DataBase.Interface.Set.SummarySet.FundEventSummary_Set;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Bank_Summary;
-import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Fund_Summary;
+import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.FundEvent_Summary;
 import com.ntankard.Tracking.DataBase.Interface.Summary.TransferSet_Summary;
 import com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.PeriodSummary_Table;
 import com.ntankard.Tracking.Dispaly.Util.Comparators.BankSummary_Comparator;
-import com.ntankard.Tracking.Dispaly.Util.ElementControllers.*;
+import com.ntankard.Tracking.Dispaly.Util.ElementControllers.BankCategoryTransfer_ElementController;
+import com.ntankard.Tracking.Dispaly.Util.ElementControllers.CurrencyBankTransfer_ElementController;
+import com.ntankard.Tracking.Dispaly.Util.ElementControllers.IntraCurrencyBankTransfer_ElementController;
+import com.ntankard.Tracking.Dispaly.Util.ElementControllers.UseCategoryFundTransfer_ElementController;
 import com.ntankard.Tracking.Dispaly.Util.Panels.DataObject_DisplayList;
 import com.ntankard.Tracking.Dispaly.Util.Panels.Object_DisplayList;
 
@@ -34,7 +37,7 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
     private PeriodSummary_Table periodSummary_Table_panel;
 
     private Object_DisplayList<Bank_Summary> bankSummary_panel;
-    private Object_DisplayList<Fund_Summary> fundSummary_panel;
+    private Object_DisplayList<FundEvent_Summary> fundEventSummary_panel;
 
     private BankCategoryTransfer_ElementController bankCategoryTransfer_controller;
     private TransferSet_Summary<BankCategoryTransfer> bankCategoryTransfer_set;
@@ -99,8 +102,8 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
         bankSummary_panel.getMainPanel().getListSelectionModel().addListSelectionListener(e -> updateTransactions());
         summary_panel.add("Bank", bankSummary_panel);
 
-        fundSummary_panel = new Object_DisplayList<>(Fund_Summary.class, new FundSummary_Set(period), false, this);
-        summary_panel.add("Fund", fundSummary_panel);
+        fundEventSummary_panel = new Object_DisplayList<>(FundEvent_Summary.class, new FundEventSummary_Set(period), false, this);
+        summary_panel.add("Fund Event", fundEventSummary_panel);
 
         // Statement transactions --------------------------------------------------------------------------------------
 
@@ -149,7 +152,7 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
         int min = bankSummary_panel.getMainPanel().getListSelectionModel().getMaxSelectionIndex();
         bankSummary_panel.update();
         bankSummary_panel.getMainPanel().getListSelectionModel().setSelectionInterval(min, max);
-        fundSummary_panel.update();
+        fundEventSummary_panel.update();
     }
 
     /**

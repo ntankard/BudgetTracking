@@ -2,7 +2,7 @@ package com.ntankard.Tracking.Dispaly.Frames.MainFrame.Funds;
 
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
-import com.ntankard.Tracking.DataBase.Core.Pool.Fund.Fund;
+import com.ntankard.Tracking.DataBase.Core.Pool.Fund.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.Dispaly.Frames.MainFrame.Funds.IndividualFund.IndividualFundPanel;
 
@@ -14,7 +14,7 @@ import java.util.List;
 public class FundTabPanel extends UpdatableJPanel {
 
     // The data displayed (clone of the data in the database)
-    private List<Fund> funds = new ArrayList<>();
+    private List<FundEvent> fundEvents = new ArrayList<>();
 
     // The GUI components
     private JTabbedPane master_tPanel = new JTabbedPane();
@@ -58,12 +58,12 @@ public class FundTabPanel extends UpdatableJPanel {
      * @return True if there is new or removed period what warrant a complete panel regeneration
      */
     private boolean hasFundsChanged() {
-        if (TrackingDatabase.get().get(Fund.class).size() != funds.size()) {
+        if (TrackingDatabase.get().get(FundEvent.class).size() != fundEvents.size()) {
             return true;
         }
 
-        for (int i = 0; i < funds.size(); i++) {
-            if (!funds.get(i).equals(TrackingDatabase.get().get(Fund.class).get(i))) {
+        for (int i = 0; i < fundEvents.size(); i++) {
+            if (!fundEvents.get(i).equals(TrackingDatabase.get().get(FundEvent.class).get(i))) {
                 return true;
             }
         }
@@ -76,16 +76,16 @@ public class FundTabPanel extends UpdatableJPanel {
      */
     private void rebuildFunds() {
         if (hasFundsChanged()) {
-            funds.clear();
+            fundEvents.clear();
             fundPanels.clear();
 
             master_tPanel.removeAll();
 
-            funds.addAll(TrackingDatabase.get().get(Fund.class));
-            for (Fund fund : funds) {
-                IndividualFundPanel panel = new IndividualFundPanel(fund, this);
+            fundEvents.addAll(TrackingDatabase.get().get(FundEvent.class));
+            for (FundEvent fundEvent : fundEvents) {
+                IndividualFundPanel panel = new IndividualFundPanel(fundEvent, this);
                 fundPanels.add(panel);
-                master_tPanel.addTab(fund.toString(), panel);
+                master_tPanel.addTab(fundEvent.toString(), panel);
             }
         }
     }

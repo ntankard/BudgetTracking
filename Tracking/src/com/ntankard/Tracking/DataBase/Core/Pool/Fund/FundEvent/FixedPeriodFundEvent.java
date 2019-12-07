@@ -67,7 +67,7 @@ public class FixedPeriodFundEvent extends FundEvent {
      */
     @Override
     public Double getCharge(Period period) {
-        return -new TransferSet_Summary<>(new Children_Set<>(UseCategoryFundTransfer.class, this), getFund()).getTotal() / duration;
+        return -new TransferSet_Summary<>(new Children_Set<>(UseCategoryFundTransfer.class, this), this).getTotal() / duration;
     }
 
     //------------------------------------------------------------------------------------------------------------------

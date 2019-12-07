@@ -19,11 +19,9 @@ import com.ntankard.Tracking.DataBase.Interface.Set.ObjectSet;
 import com.ntankard.Tracking.DataBase.Interface.Set.SummarySet.BankSummary_Set;
 import com.ntankard.Tracking.DataBase.Interface.Set.SummarySet.CategorySummary_Set;
 import com.ntankard.Tracking.DataBase.Interface.Set.SummarySet.FundEventSummary_Set;
-import com.ntankard.Tracking.DataBase.Interface.Set.SummarySet.FundSummary_Set;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Bank_Summary;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Category_Summary;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.FundEvent_Summary;
-import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Fund_Summary;
 
 import java.util.List;
 
@@ -70,7 +68,7 @@ public class Period_Summary implements CurrencyBound {
             }
         }
 
-        for (Fund_Summary summary : new FundSummary_Set(period).get()) {
+        for (FundEvent_Summary summary : new FundEventSummary_Set(period).get()) {
             if (!summary.isValid()) {
                 return false;
             }
@@ -175,7 +173,7 @@ public class Period_Summary implements CurrencyBound {
             for (Transfer transfer : data) {
                 if (transfer instanceof RePayCategoryFundTransfer) {
                     RePayCategoryFundTransfer rePayCategoryFundTransfer = (RePayCategoryFundTransfer) transfer;
-                    if (rePayCategoryFundTransfer.getFundEvent() instanceof SavingsFundEvent) {
+                    if (rePayCategoryFundTransfer.getDestination() instanceof SavingsFundEvent) {
                         toRemove = transfer;
                         break;
                     }

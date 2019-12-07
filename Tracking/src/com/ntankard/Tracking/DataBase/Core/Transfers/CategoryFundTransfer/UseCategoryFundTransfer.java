@@ -12,7 +12,7 @@ public class UseCategoryFundTransfer extends CategoryFundTransfer {
     /**
      * Constructor
      */
-    @ParameterMap(parameterGetters = {"getId", "getDescription", "getDestinationValue", "getPeriod", "getFundEvent", "getDestinationCurrency"})
+    @ParameterMap(parameterGetters = {"getId", "getDescription", "getDestinationValue", "getPeriod", "getDestination", "getDestinationCurrency"})
     public UseCategoryFundTransfer(Integer id, String description, Double value, Period period, FundEvent fundEvent, Currency currency) {
         super(id, description, value, period, fundEvent, currency);
     }

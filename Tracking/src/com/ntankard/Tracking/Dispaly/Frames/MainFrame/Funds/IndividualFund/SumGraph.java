@@ -3,11 +3,9 @@ package com.ntankard.Tracking.Dispaly.Frames.MainFrame.Funds.IndividualFund;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.Period;
-import com.ntankard.Tracking.DataBase.Core.Pool.Fund.Fund;
 import com.ntankard.Tracking.DataBase.Core.Pool.Fund.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.FundEvent_Summary;
-import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Fund_Summary;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -20,22 +18,20 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import java.awt.*;
-import java.util.HashMap;
-import java.util.Map;
 
 public class SumGraph extends UpdatableJPanel {
 
     // Core Data
-    private Fund fund;
+    private FundEvent fundEvent;
 
     /**
      * Constructor
      *
      * @param master The parent of this object to be notified if data changes
      */
-    public SumGraph(Fund fund, Updatable master) {
+    public SumGraph(FundEvent fundEvent, Updatable master) {
         super(master);
-        this.fund = fund;
+        this.fundEvent = fundEvent;
         createUIComponents();
     }
 
@@ -77,28 +73,15 @@ public class SumGraph extends UpdatableJPanel {
      * @return The generated data
      */
     private XYDataset createDataset() {
-        Map<FundEvent, XYSeries> categories = new HashMap<>();
-
-        for (FundEvent fundEvent : fund.getChildren(FundEvent.class)) {
-            categories.put(fundEvent, new XYSeries(fundEvent.toString()));
-        }
         XYSeries total = new XYSeries("Total");
 
         int i = 0;
         for (Period period : TrackingDatabase.get().get(Period.class)) {
-            for (FundEvent fundEvent : fund.getChildren(FundEvent.class)) {
-                if (fundEvent.isActiveThisPeriod(period)) {
-                    categories.get(fundEvent).add(i, new FundEvent_Summary(period, fundEvent).getEnd());
-                }
-            }
-            total.add(i, new Fund_Summary(period, fund).getEnd());
+            total.add(i, new FundEvent_Summary(period, fundEvent).getEnd());
             i++;
         }
 
         final XYSeriesCollection dataset = new XYSeriesCollection();
-        for (FundEvent fundEvent : fund.getChildren(FundEvent.class)) {
-            dataset.addSeries(categories.get(fundEvent));
-        }
         dataset.addSeries(total);
 
         return dataset;
