@@ -2,7 +2,7 @@ package com.ntankard.Tracking.Dispaly.Frames.MainFrame.Funds.IndividualFund;
 
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
-import com.ntankard.Tracking.DataBase.Core.Pool.Fund.FundEvent.FundEvent;
+import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer.CategoryFundTransfer;
 import com.ntankard.Tracking.DataBase.Interface.Set.Children_Set;
 import com.ntankard.Tracking.Dispaly.Util.Panels.DataObject_DisplayList;

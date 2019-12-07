@@ -1,4 +1,4 @@
-package com.ntankard.Tracking.DataBase.Core.Pool.Fund.FundEvent;
+package com.ntankard.Tracking.DataBase.Core.Pool.FundEvent;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
