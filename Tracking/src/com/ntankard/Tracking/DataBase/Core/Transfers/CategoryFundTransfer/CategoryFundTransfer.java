@@ -90,7 +90,7 @@ public abstract class CategoryFundTransfer extends Transfer<Category, Fund> {
         if (destination == null) throw new IllegalArgumentException("Fund is null");
         super.setDestination(destination);
         super.setSource(destination.getCategory());
-        setFundEvent(destination.getDefaultFundEvent());
+        setFundEvent(destination.getChildren(FundEvent.class).get(0));
     }
 
     @SetterProperties(localSourceMethod = "sourceOptions")

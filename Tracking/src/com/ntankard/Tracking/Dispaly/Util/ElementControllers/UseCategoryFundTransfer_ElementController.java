@@ -5,6 +5,7 @@ import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Core.Pool.Fund.Fund;
+import com.ntankard.Tracking.DataBase.Core.Pool.Fund.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer.UseCategoryFundTransfer;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.Dispaly.Util.Panels.TrackingDatabase_ElementController;
@@ -33,7 +34,7 @@ public class UseCategoryFundTransfer_ElementController extends TrackingDatabase_
                 "",
                 0.0,
                 period,
-                TrackingDatabase.get().getDefault(Category.class).getChildren(Fund.class).get(0).getDefaultFundEvent(),
+                TrackingDatabase.get().getDefault(Category.class).getChildren(Fund.class).get(0).getChildren(FundEvent.class).get(0),
                 TrackingDatabase.get().getDefault(Currency.class));
     }
 }

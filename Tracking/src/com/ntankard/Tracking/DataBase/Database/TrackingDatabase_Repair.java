@@ -7,9 +7,7 @@ import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Core.Pool.Fund.Fund;
 import com.ntankard.Tracking.DataBase.Core.Pool.Fund.FundEvent.FundEvent;
-import com.ntankard.Tracking.DataBase.Core.Pool.Fund.FundEvent.NoneFundEvent;
 import com.ntankard.Tracking.DataBase.Core.Pool.Fund.FundEvent.SavingsFundEvent;
-import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer.CategoryFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer.RePayCategoryFundTransfer;
 import com.ntankard.Tracking.DataBase.Interface.Set.MultiParent_Set;
 
@@ -38,12 +36,8 @@ public class TrackingDatabase_Repair {
     public static void repair(DataObject dataObject) {
         if (dataObject instanceof Period) {
             repairPeriod((Period) dataObject);
-        } else if (dataObject instanceof Fund) {
-            repairFund((Fund) dataObject);
         } else if (dataObject instanceof Category) {
             repairCategory((Category) dataObject);
-        } else if (dataObject instanceof CategoryFundTransfer) {
-            repairCategoryFundTransfer((CategoryFundTransfer) dataObject);
         } else if (dataObject instanceof FundEvent) {
             repairFundEvent((FundEvent) dataObject);
         }
@@ -90,42 +84,6 @@ public class TrackingDatabase_Repair {
         Fund child = category.getChildren(Fund.class).get(0);
         if (child == null) {
             TrackingDatabase.get().add(new Fund(TrackingDatabase.get().getNextId(), category));
-        }
-    }
-
-    /**
-     * Repair a Fund object
-     *
-     * @param fund The object to repair
-     */
-    private static void repairFund(Fund fund) {
-        for (FundEvent fundEvent : fund.getChildren(FundEvent.class)) {
-            if (fundEvent instanceof NoneFundEvent) {
-                if (!fundEvent.equals(fund.getDefaultFundEvent())) {
-                    if (fund.getDefaultFundEvent() != null && !fund.getDefaultFundEvent().equals(fundEvent)) {
-                        throw new RuntimeException("Multiple fund defaults");
-                    }
-                    fund.setDefaultFundEvent(fundEvent);
-                }
-            }
-        }
-
-      /*  if (fund.getDefaultFundEvent() == null) {
-            TrackingDatabase.get().add(new NoneFundEvent(TrackingDatabase.get().getNextId(), "None", fund));
-        }*/
-    }
-
-    /**
-     * Repair a CategoryFundTransfer object
-     *
-     * @param categoryFundTransfer The object to repair
-     */
-    private static void repairCategoryFundTransfer(CategoryFundTransfer categoryFundTransfer) {
-        if (categoryFundTransfer.getFundEvent() == null) {
-            if (categoryFundTransfer.getDestination().getDefaultFundEvent() == null) {
-                repairFund(categoryFundTransfer.getDestination());
-            }
-            categoryFundTransfer.setFundEvent(categoryFundTransfer.getDestination().getDefaultFundEvent());
         }
     }
 

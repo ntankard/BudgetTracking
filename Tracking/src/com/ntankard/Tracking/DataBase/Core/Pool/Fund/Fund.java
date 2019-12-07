@@ -74,15 +74,9 @@ public class Fund extends Pool implements Ordered {
         return category;
     }
 
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    @DisplayProperties(order = 4)
-    public FundEvent getDefaultFundEvent() {
-        return defaultFundEvent;
-    }
-
     @Override
     @MemberProperties(verbosityLevel = TRACE_DISPLAY)
-    @DisplayProperties(order = 5)
+    @DisplayProperties(order = 4)
     public Integer getOrder() {
         return getCategory().getOrder();
     }

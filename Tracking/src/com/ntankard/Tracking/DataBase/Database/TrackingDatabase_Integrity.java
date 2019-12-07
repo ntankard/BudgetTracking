@@ -251,10 +251,6 @@ public class TrackingDatabase_Integrity {
      */
     static void validateFundFundEvent() {
         for (Fund fund : TrackingDatabase.get().get(Fund.class)) {
-            if (fund.getDefaultFundEvent() == null) {
-                throw new RuntimeException("Fund dose not have a default set");
-            }
-
             if (fund.getChildren(FundEvent.class).size() == 0) {
                 throw new RuntimeException("A fund has no Fund events available");
             }
