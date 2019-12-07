@@ -10,27 +10,12 @@ import java.util.List;
 
 public class FundSummary_Set extends Summary_Set<Fund_Summary, Fund> {
 
-    public FundSummary_Set() {
-    }
-
-    public FundSummary_Set(Class<? extends Transfer> transferType) {
-        super(transferType);
-    }
-
     public FundSummary_Set(Fund coreParent) {
         super(coreParent);
     }
 
-    public FundSummary_Set(Fund coreParent, Class<? extends Transfer> transferType) {
-        super(coreParent, transferType);
-    }
-
     public FundSummary_Set(Period corePeriod) {
         super(corePeriod);
-    }
-
-    public FundSummary_Set(Period corePeriod, Class<? extends Transfer> transferType) {
-        super(corePeriod, transferType);
     }
 
     public FundSummary_Set(Period corePeriod, Fund coreParent, Class<? extends Transfer> transferType) {
@@ -41,7 +26,7 @@ public class FundSummary_Set extends Summary_Set<Fund_Summary, Fund> {
      * {@inheritDoc
      */
     @Override
-    protected List<Fund> getParents() {
+    protected List<Fund> getToSummarise() {
         return TrackingDatabase.get().get(Fund.class);
     }
 

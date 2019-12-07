@@ -17,7 +17,7 @@ class TrackingDatabase_IntegrityTest {
     void validateCore() {
         TrackingDatabase_Integrity.validateCore();
     }
-    
+
     @Test
     void validateRepaired() {
         TrackingDatabase_Integrity.validateRepaired();

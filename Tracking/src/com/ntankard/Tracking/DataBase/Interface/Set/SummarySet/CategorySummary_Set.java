@@ -10,27 +10,12 @@ import java.util.List;
 
 public class CategorySummary_Set extends Summary_Set<Category_Summary, Category> {
 
-    public CategorySummary_Set() {
-    }
-
-    public CategorySummary_Set(Class<? extends Transfer> transferType) {
-        super(transferType);
-    }
-
     public CategorySummary_Set(Category coreParent) {
         super(coreParent);
     }
 
-    public CategorySummary_Set(Category coreParent, Class<? extends Transfer> transferType) {
-        super(coreParent, transferType);
-    }
-
     public CategorySummary_Set(Period corePeriod) {
         super(corePeriod);
-    }
-
-    public CategorySummary_Set(Period corePeriod, Class<? extends Transfer> transferType) {
-        super(corePeriod, transferType);
     }
 
     public CategorySummary_Set(Period corePeriod, Category coreParent, Class<? extends Transfer> transferType) {
@@ -41,7 +26,7 @@ public class CategorySummary_Set extends Summary_Set<Category_Summary, Category>
      * {@inheritDoc
      */
     @Override
-    protected List<Category> getParents() {
+    protected List<Category> getToSummarise() {
         return TrackingDatabase.get().get(Category.class);
     }
 

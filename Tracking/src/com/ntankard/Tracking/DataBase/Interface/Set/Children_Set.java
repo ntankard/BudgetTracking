@@ -10,7 +10,7 @@ public class Children_Set<T extends DataObject, ParentType extends DataObject> i
     /**
      * The DataObject to get from the core
      */
-    protected final Class<T> tClass;
+    private final Class<T> tClass;
 
     /**
      * The core object to extract children from

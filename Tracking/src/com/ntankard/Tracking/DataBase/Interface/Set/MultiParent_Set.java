@@ -9,17 +9,17 @@ public class MultiParent_Set<T extends DataObject, PrimaryParentType extends Dat
     /**
      * The DataObject to get from the core
      */
-    protected final Class<T> tClass;
+    private final Class<T> tClass;
 
     /**
      * The core object to extract children from
      */
-    protected PrimaryParentType primaryParent;
+    private PrimaryParentType primaryParent;
 
     /**
      * The secondary object to extract children from
      */
-    protected SecondaryParentType secondaryParent;
+    private SecondaryParentType secondaryParent;
 
     /**
      * The core object to extract children from
