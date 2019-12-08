@@ -2,6 +2,8 @@ package com.ntankard.Tracking.DataBase.Interface.Summary;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
+import com.ntankard.ClassExtension.MemberProperties;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period;
@@ -14,11 +16,13 @@ import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.Array_Set;
 import com.ntankard.Tracking.DataBase.Interface.Set.Children_Set;
+import com.ntankard.Tracking.DataBase.Interface.Set.Extended.Sum.PeriodPool_SumSet;
+import com.ntankard.Tracking.DataBase.Interface.Set.Extended.Sum.Transfer_SumSet;
+import com.ntankard.Tracking.DataBase.Interface.Set.Factory.PoolSummary.BankSummary_Set;
+import com.ntankard.Tracking.DataBase.Interface.Set.Factory.PoolSummary.CategorySummary_Set;
+import com.ntankard.Tracking.DataBase.Interface.Set.Factory.PoolSummary.FundEventSummary_Set;
 import com.ntankard.Tracking.DataBase.Interface.Set.MultiParent_Set;
 import com.ntankard.Tracking.DataBase.Interface.Set.ObjectSet;
-import com.ntankard.Tracking.DataBase.Interface.Set.SummarySet.BankSummary_Set;
-import com.ntankard.Tracking.DataBase.Interface.Set.SummarySet.CategorySummary_Set;
-import com.ntankard.Tracking.DataBase.Interface.Set.SummarySet.FundEventSummary_Set;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Bank_Summary;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Category_Summary;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.FundEvent_Summary;
@@ -27,9 +31,10 @@ import java.util.List;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataContext.ZERO_SCALE;
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
+import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-public class Period_Summary implements CurrencyBound {
+public class Period_Summary extends DataObject implements CurrencyBound {
 
     /**
      * The period to summarise
@@ -41,8 +46,20 @@ public class Period_Summary implements CurrencyBound {
      */
     @ParameterMap(shouldSave = false)
     public Period_Summary(Period period) {
+        super(-1);
         this.period = period;
     }
+
+    /**
+     * {@inheritDoc
+     */
+    @Override
+    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
+    @DisplayProperties(order = 21)
+    public List<DataObject> getParents() {
+        throw new UnsupportedOperationException();
+    }
+
 
     @DisplayProperties(order = 2)
     public Period getPeriod() {
@@ -144,7 +161,7 @@ public class Period_Summary implements CurrencyBound {
     public Double getTotal() {
         double sum = 0.0;
         for (Category category : TrackingDatabase.get().get(Category.class)) {
-            sum += new TransferSet_Summary<>(Transfer.class, period, category).getTotal();
+            sum += new PeriodPool_SumSet<>(Transfer.class, period, category).getTotal();
         }
         return -sum;
     }
@@ -184,7 +201,7 @@ public class Period_Summary implements CurrencyBound {
                 data.remove(toRemove);
             }
 
-            sum += new TransferSet_Summary<>(new Array_Set<>(data), category).getTotal();
+            sum += new Transfer_SumSet<>(new Array_Set<>(data), category).getTotal();
         }
         return -sum;
     }

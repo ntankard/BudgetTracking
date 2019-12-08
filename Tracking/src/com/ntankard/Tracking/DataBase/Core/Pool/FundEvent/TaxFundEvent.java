@@ -10,7 +10,7 @@ import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.MultiParent_Set;
 import com.ntankard.Tracking.DataBase.Interface.Set.ObjectSet;
-import com.ntankard.Tracking.DataBase.Interface.Summary.TransferSet_Summary;
+import com.ntankard.Tracking.DataBase.Interface.Set.Extended.Sum.Transfer_SumSet;
 
 @ClassExtensionProperties(includeParent = true)
 public class TaxFundEvent extends FundEvent {
@@ -50,7 +50,7 @@ public class TaxFundEvent extends FundEvent {
     public Double getCharge(Period period) {
         Category category = TrackingDatabase.get().getSpecialValue(Category.class, Category.TAXABLE);
         ObjectSet<BankCategoryTransfer> objectSet = new MultiParent_Set<>(BankCategoryTransfer.class, period, category);
-        return Currency.round(new TransferSet_Summary<>(objectSet, category).getTotal() * percentage);
+        return Currency.round(new Transfer_SumSet<>(objectSet, category).getTotal() * percentage);
     }
 
     //------------------------------------------------------------------------------------------------------------------

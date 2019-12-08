@@ -3,6 +3,7 @@ package com.ntankard.Tracking.Dispaly.Util.Panels;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
+import com.ntankard.Tracking.DataBase.Interface.Set.ObjectSet;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,6 +22,11 @@ public class DataObject_VerbosityDisplayList<T extends DataObject> extends Updat
      */
     private Class<T> tClass;
 
+    /**
+     * The source of data for the list
+     */
+    private ObjectSet<T> objectSet = null;
+
     // The GUI components
     private List<DataObject_DisplayList> tabs = new ArrayList<>();
 
@@ -30,6 +36,16 @@ public class DataObject_VerbosityDisplayList<T extends DataObject> extends Updat
     public DataObject_VerbosityDisplayList(Class<T> tClass, Updatable master) {
         super(master);
         this.tClass = tClass;
+        createUIComponents();
+    }
+
+    /**
+     * Constructor
+     */
+    public DataObject_VerbosityDisplayList(Class<T> tClass, ObjectSet<T> objectSet, Updatable master) {
+        super(master);
+        this.tClass = tClass;
+        this.objectSet = objectSet;
         createUIComponents();
     }
 
@@ -54,11 +70,22 @@ public class DataObject_VerbosityDisplayList<T extends DataObject> extends Updat
         master_tPanel.addTab("All", allTab);
 
         for (int i = 0; i < NAMES.length; i++) {
-            DataObject_DisplayList single = new DataObject_DisplayList<>(tClass, false, this);
+            DataObject_DisplayList single;
+            if (objectSet == null) {
+                single = new DataObject_DisplayList<>(tClass, false, this);
+            } else {
+                single = new DataObject_DisplayList<>(tClass, objectSet, false, this);
+            }
             single.setVerbosity(i);
             master_tPanel.addTab(NAMES[i], single);
 
-            DataObject_DisplayList all = new DataObject_DisplayList<>(tClass, false, this);
+            DataObject_DisplayList all;
+            if (objectSet == null) {
+                all = new DataObject_DisplayList<>(tClass, false, this);
+            } else {
+                all = new DataObject_DisplayList<>(tClass, objectSet, false, this);
+            }
+
             all.setVerbosity(i);
             all.setBorder(BorderFactory.createTitledBorder(NAMES[i]));
             allTab.add(all, allTab_C);

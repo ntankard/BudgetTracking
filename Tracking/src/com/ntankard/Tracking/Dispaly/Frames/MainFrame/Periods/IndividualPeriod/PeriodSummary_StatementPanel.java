@@ -9,11 +9,11 @@ import com.ntankard.Tracking.DataBase.Core.Transfers.BankTransfer.CurrencyBankTr
 import com.ntankard.Tracking.DataBase.Core.Transfers.BankTransfer.IntraCurrencyBankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer.UseCategoryFundTransfer;
 import com.ntankard.Tracking.DataBase.Interface.Set.Children_Set;
-import com.ntankard.Tracking.DataBase.Interface.Set.SummarySet.BankSummary_Set;
-import com.ntankard.Tracking.DataBase.Interface.Set.SummarySet.FundEventSummary_Set;
+import com.ntankard.Tracking.DataBase.Interface.Set.Extended.Sum.PeriodPool_SumSet;
+import com.ntankard.Tracking.DataBase.Interface.Set.Factory.PoolSummary.BankSummary_Set;
+import com.ntankard.Tracking.DataBase.Interface.Set.Factory.PoolSummary.FundEventSummary_Set;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Bank_Summary;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.FundEvent_Summary;
-import com.ntankard.Tracking.DataBase.Interface.Summary.TransferSet_Summary;
 import com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.PeriodSummary_Table;
 import com.ntankard.Tracking.Dispaly.Util.Comparators.BankSummary_Comparator;
 import com.ntankard.Tracking.Dispaly.Util.ElementControllers.BankCategoryTransfer_ElementController;
@@ -40,7 +40,7 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
     private Object_DisplayList<FundEvent_Summary> fundEventSummary_panel;
 
     private BankCategoryTransfer_ElementController bankCategoryTransfer_controller;
-    private TransferSet_Summary<BankCategoryTransfer> bankCategoryTransfer_set;
+    private PeriodPool_SumSet<BankCategoryTransfer> bankCategoryTransfer_set;
     private DataObject_DisplayList<BankCategoryTransfer> bankCategoryTransfer_panel;
 
     private DataObject_DisplayList<UseCategoryFundTransfer> periodFundTransfer_panel;
@@ -107,7 +107,7 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
 
         // Statement transactions --------------------------------------------------------------------------------------
 
-        bankCategoryTransfer_set = new TransferSet_Summary<>(BankCategoryTransfer.class, period, null);
+        bankCategoryTransfer_set = new PeriodPool_SumSet<>(BankCategoryTransfer.class, period, null);
         bankCategoryTransfer_controller = new BankCategoryTransfer_ElementController(period, this);
         bankCategoryTransfer_panel = new DataObject_DisplayList<>(BankCategoryTransfer.class, bankCategoryTransfer_set, false, this);
         bankCategoryTransfer_panel.addControlButtons(bankCategoryTransfer_controller);

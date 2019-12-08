@@ -5,6 +5,7 @@ import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
+import com.ntankard.Tracking.DataBase.Interface.Set.Factory.PoolSummary.FundEventSummary_Set;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.FundEvent_Summary;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -58,10 +59,11 @@ public class SumGraph extends UpdatableJPanel {
 
         String[] axisLabel = new String[TrackingDatabase.get().get(Period.class).size()];
         int i = 0;
-        for (Period period : TrackingDatabase.get().get(Period.class)) {
-            axisLabel[i] = period.toString();
+        for (FundEvent_Summary fundEvent_summary : new FundEventSummary_Set(fundEvent).get()) {
+            axisLabel[i] = fundEvent_summary.getPeriod().toString();
             i++;
         }
+
         plot.setDomainAxis(new SymbolAxis("Period", axisLabel));
 
         this.add(chartPanel, BorderLayout.CENTER);
@@ -76,8 +78,8 @@ public class SumGraph extends UpdatableJPanel {
         XYSeries total = new XYSeries("Total");
 
         int i = 0;
-        for (Period period : TrackingDatabase.get().get(Period.class)) {
-            total.add(i, new FundEvent_Summary(period, fundEvent).getEnd());
+        for (FundEvent_Summary fundEvent_summary : new FundEventSummary_Set(fundEvent).get()) {
+            total.add(i, fundEvent_summary.getEnd());
             i++;
         }
 

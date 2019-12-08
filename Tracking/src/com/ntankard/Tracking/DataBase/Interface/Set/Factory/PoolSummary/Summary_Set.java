@@ -1,4 +1,4 @@
-package com.ntankard.Tracking.DataBase.Interface.Set.SummarySet;
+package com.ntankard.Tracking.DataBase.Interface.Set.Factory.PoolSummary;
 
 import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
@@ -14,7 +14,7 @@ public abstract class Summary_Set<SummaryType, PoolType extends Pool> implements
     // The objects used to generate the set
     private Period corePeriod;
     private PoolType corePool;
-    private Class<? extends Transfer> transferType;
+    // Class<? extends Transfer> transferType;
 
     protected Summary_Set(PoolType corePool) {
         this(null, corePool, Transfer.class);
@@ -27,7 +27,7 @@ public abstract class Summary_Set<SummaryType, PoolType extends Pool> implements
     protected Summary_Set(Period corePeriod, PoolType corePool, Class<? extends Transfer> transferType) {
         this.corePeriod = corePeriod;
         this.corePool = corePool;
-        this.transferType = transferType;
+        //   this.transferType = transferType;
     }
 
     /**
@@ -40,7 +40,7 @@ public abstract class Summary_Set<SummaryType, PoolType extends Pool> implements
         if (corePool == null && corePeriod == null) {
             for (PoolType pool : getPools()) {
                 for (Period period : TrackingDatabase.get().get(Period.class)) {
-                    SummaryType summary = getSummary(period, pool, transferType);
+                    SummaryType summary = getSummary(period, pool);
                     if (summary != null) {
                         toReturn.add(summary);
                     }
@@ -48,14 +48,14 @@ public abstract class Summary_Set<SummaryType, PoolType extends Pool> implements
             }
         } else if (corePool == null) {
             for (PoolType pool : getPools()) {
-                SummaryType summary = getSummary(corePeriod, pool, transferType);
+                SummaryType summary = getSummary(corePeriod, pool);
                 if (summary != null) {
                     toReturn.add(summary);
                 }
             }
         } else {
             for (Period period : TrackingDatabase.get().get(Period.class)) {
-                SummaryType summary = getSummary(period, corePool, transferType);
+                SummaryType summary = getSummary(period, corePool);
                 if (summary != null) {
                     toReturn.add(summary);
                 }
@@ -75,10 +75,9 @@ public abstract class Summary_Set<SummaryType, PoolType extends Pool> implements
     /**
      * Build the specific summary object
      *
-     * @param period       The Period
-     * @param pool       The Parent
-     * @param transferType The type of object to summarise
+     * @param period The Period
+     * @param pool   The Parent
      * @return A solid summary object
      */
-    protected abstract SummaryType getSummary(Period period, PoolType pool, Class<? extends Transfer> transferType);
+    protected abstract SummaryType getSummary(Period period, PoolType pool);
 }

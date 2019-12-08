@@ -4,34 +4,19 @@ import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
-import com.ntankard.Tracking.DataBase.Core.Transfers.Transfer;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
-import com.ntankard.Tracking.DataBase.Interface.Set.MultiParent_Set;
-import com.ntankard.Tracking.DataBase.Interface.Summary.TransferSet_Summary;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
 
 @ClassExtensionProperties(includeParent = true)
 public class FundEvent_Summary extends PoolSummary<FundEvent> {
 
-    // My Parents
-    private FundEvent fundEvent;
-
-    @ParameterMap(shouldSave = false)
-    public FundEvent_Summary(Period period, FundEvent fundEvent, Class<? extends Transfer> transferType) {
-        super(period, fundEvent, transferType);
-        this.fundEvent = fundEvent;
-    }
-
     @ParameterMap(shouldSave = false)
     public FundEvent_Summary(Period period, FundEvent fundEvent) {
         super(period, fundEvent);
-        this.fundEvent = fundEvent;
     }
 
-    //------------------------------------------------------------------------------------------------------------------
-    //#################################################### Getters #####################################################
-    //------------------------------------------------------------------------------------------------------------------
+    // Start End -------------------------------------------------------------------------------------------------------
 
     @Override
     @DisplayProperties(order = 5, dataType = CURRENCY)
@@ -39,18 +24,12 @@ public class FundEvent_Summary extends PoolSummary<FundEvent> {
         if (getPeriod().getLast() == null) {
             return 0.0;
         }
-        return new FundEvent_Summary(getPeriod().getLast(), fundEvent).getEnd();
+        return new FundEvent_Summary(getPeriod().getLast(), getPool()).getEnd();
     }
 
     @Override
     @DisplayProperties(order = 6, dataType = CURRENCY)
     public Double getEnd() {
         return getStart() + getTransferSum();
-    }
-
-    @Override
-    @DisplayProperties(order = 8, dataType = CURRENCY)
-    public Double getTransferSum() {
-        return new TransferSet_Summary<>(new MultiParent_Set<>(transferType, getPeriod(), fundEvent), getPool()).getTotal() / getCurrency().getToPrimary();
     }
 }

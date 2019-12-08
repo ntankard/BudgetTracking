@@ -19,6 +19,7 @@ public class Master_Frame extends JPanel implements Updatable {
     private FundTabPanel fundTabPanel;
     private DatabasePanel databasePanel;
     private SummaryGraphPanel summaryGraphPanel;
+    private SummaryPanel summaryPanel;
 
     private String savePath;
 
@@ -81,12 +82,14 @@ public class Master_Frame extends JPanel implements Updatable {
         fundTabPanel = new FundTabPanel(this);
         databasePanel = new DatabasePanel(this);
         summaryGraphPanel = new SummaryGraphPanel(this);
+        summaryPanel = new SummaryPanel(this);
 
         JTabbedPane master_tPanel = new JTabbedPane();
         master_tPanel.addTab("Periods", periodPanel);
         master_tPanel.addTab("Fund", fundTabPanel);
         master_tPanel.addTab("Database", databasePanel);
-        master_tPanel.addTab("Summary", summaryGraphPanel);
+        master_tPanel.addTab("Summary Graphs", summaryGraphPanel);
+        master_tPanel.addTab("Summary", summaryPanel);
 
         this.add(master_tPanel, BorderLayout.CENTER);
     }
@@ -108,5 +111,6 @@ public class Master_Frame extends JPanel implements Updatable {
         fundTabPanel.update();
         databasePanel.update();
         summaryGraphPanel.update();
+        summaryPanel.update();
     }
 }

@@ -1,4 +1,4 @@
-package com.ntankard.Tracking.DataBase.Interface.Set.SummarySet;
+package com.ntankard.Tracking.DataBase.Interface.Set.Factory.PoolSummary;
 
 import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
@@ -34,10 +34,10 @@ public class FundEventSummary_Set extends Summary_Set<FundEvent_Summary, FundEve
      * {@inheritDoc
      */
     @Override
-    protected FundEvent_Summary getSummary(Period period, FundEvent pool, Class<? extends Transfer> transferType) {
+    protected FundEvent_Summary getSummary(Period period, FundEvent pool) {
         if (!pool.isActiveThisPeriod(period)) {
             return null;
         }
-        return new FundEvent_Summary(period, pool, transferType);
+        return new FundEvent_Summary(period, pool);
     }
 }

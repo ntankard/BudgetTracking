@@ -1,4 +1,4 @@
-package com.ntankard.Tracking.DataBase.Interface.Set.SummarySet;
+package com.ntankard.Tracking.DataBase.Interface.Set.Factory.PoolSummary;
 
 import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
@@ -34,7 +34,7 @@ public class BankSummary_Set extends Summary_Set<Bank_Summary, Bank> {
      * {@inheritDoc
      */
     @Override
-    protected Bank_Summary getSummary(Period period, Bank pool, Class<? extends Transfer> transferType) {
-        return new Bank_Summary(period, pool, transferType);
+    protected Bank_Summary getSummary(Period period, Bank pool) {
+        return new Bank_Summary(period, pool);
     }
 }

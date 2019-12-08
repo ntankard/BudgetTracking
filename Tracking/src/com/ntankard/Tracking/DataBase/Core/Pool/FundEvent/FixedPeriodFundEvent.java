@@ -9,7 +9,7 @@ import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer.UseCategoryFundTransfer;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Interface.Set.Children_Set;
-import com.ntankard.Tracking.DataBase.Interface.Summary.TransferSet_Summary;
+import com.ntankard.Tracking.DataBase.Interface.Set.Extended.Sum.Transfer_SumSet;
 
 import java.util.List;
 
@@ -67,7 +67,7 @@ public class FixedPeriodFundEvent extends FundEvent {
      */
     @Override
     public Double getCharge(Period period) {
-        return -new TransferSet_Summary<>(new Children_Set<>(UseCategoryFundTransfer.class, this), this).getTotal() / duration;
+        return -new Transfer_SumSet<>(new Children_Set<>(UseCategoryFundTransfer.class, this), this).getTotal() / duration;
     }
 
     //------------------------------------------------------------------------------------------------------------------
