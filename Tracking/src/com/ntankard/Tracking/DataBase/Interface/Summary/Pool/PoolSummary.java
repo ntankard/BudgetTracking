@@ -36,7 +36,7 @@ public abstract class PoolSummary<PoolType extends Pool> extends DataObject impl
      * {@inheritDoc
      */
     @Override
-    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
+    @MemberProperties(verbosityLevel = DEBUG_DISPLAY, shouldDisplay = false)
     @DisplayProperties(order = 21)
     public List<DataObject> getParents() {
         throw new UnsupportedOperationException();

@@ -54,7 +54,7 @@ public class Period_Summary extends DataObject implements CurrencyBound {
      * {@inheritDoc
      */
     @Override
-    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
+    @MemberProperties(verbosityLevel = DEBUG_DISPLAY, shouldDisplay = false)
     @DisplayProperties(order = 21)
     public List<DataObject> getParents() {
         throw new UnsupportedOperationException();
