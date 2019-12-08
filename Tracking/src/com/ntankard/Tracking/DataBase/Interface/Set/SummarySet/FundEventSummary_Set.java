@@ -26,7 +26,7 @@ public class FundEventSummary_Set extends Summary_Set<FundEvent_Summary, FundEve
      * {@inheritDoc
      */
     @Override
-    protected List<FundEvent> getToSummarise() {
+    protected List<FundEvent> getPools() {
         return TrackingDatabase.get().get(FundEvent.class);
     }
 
@@ -34,10 +34,10 @@ public class FundEventSummary_Set extends Summary_Set<FundEvent_Summary, FundEve
      * {@inheritDoc
      */
     @Override
-    protected FundEvent_Summary getSummary(Period period, FundEvent parent, Class<? extends Transfer> transferType) {
-        if (!parent.isActiveThisPeriod(period)) {
+    protected FundEvent_Summary getSummary(Period period, FundEvent pool, Class<? extends Transfer> transferType) {
+        if (!pool.isActiveThisPeriod(period)) {
             return null;
         }
-        return new FundEvent_Summary(period, parent, transferType);
+        return new FundEvent_Summary(period, pool, transferType);
     }
 }

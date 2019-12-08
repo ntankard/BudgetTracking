@@ -1,6 +1,7 @@
 package com.ntankard.Tracking.DataBase.Interface.Set.SummarySet;
 
 import com.ntankard.Tracking.DataBase.Core.Period;
+import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Core.Transfers.Transfer;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.ObjectSet;
@@ -8,24 +9,24 @@ import com.ntankard.Tracking.DataBase.Interface.Set.ObjectSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Summary_Set<SummaryType, ParentType> implements ObjectSet<SummaryType> {
+public abstract class Summary_Set<SummaryType, PoolType extends Pool> implements ObjectSet<SummaryType> {
 
     // The objects used to generate the set
     private Period corePeriod;
-    private ParentType coreParent;
+    private PoolType corePool;
     private Class<? extends Transfer> transferType;
 
-    protected Summary_Set(ParentType coreParent) {
-        this(null, coreParent, Transfer.class);
+    protected Summary_Set(PoolType corePool) {
+        this(null, corePool, Transfer.class);
     }
 
     protected Summary_Set(Period corePeriod) {
         this(corePeriod, null, Transfer.class);
     }
 
-    protected Summary_Set(Period corePeriod, ParentType coreParent, Class<? extends Transfer> transferType) {
+    protected Summary_Set(Period corePeriod, PoolType corePool, Class<? extends Transfer> transferType) {
         this.corePeriod = corePeriod;
-        this.coreParent = coreParent;
+        this.corePool = corePool;
         this.transferType = transferType;
     }
 
@@ -36,25 +37,25 @@ public abstract class Summary_Set<SummaryType, ParentType> implements ObjectSet<
     public List<SummaryType> get() {
         List<SummaryType> toReturn = new ArrayList<>();
 
-        if (coreParent == null && corePeriod == null) {
-            for (ParentType parent : getToSummarise()) {
+        if (corePool == null && corePeriod == null) {
+            for (PoolType pool : getPools()) {
                 for (Period period : TrackingDatabase.get().get(Period.class)) {
-                    SummaryType summary = getSummary(period, parent, transferType);
+                    SummaryType summary = getSummary(period, pool, transferType);
                     if (summary != null) {
                         toReturn.add(summary);
                     }
                 }
             }
-        } else if (coreParent == null) {
-            for (ParentType parent : getToSummarise()) {
-                SummaryType summary = getSummary(corePeriod, parent, transferType);
+        } else if (corePool == null) {
+            for (PoolType pool : getPools()) {
+                SummaryType summary = getSummary(corePeriod, pool, transferType);
                 if (summary != null) {
                     toReturn.add(summary);
                 }
             }
         } else {
             for (Period period : TrackingDatabase.get().get(Period.class)) {
-                SummaryType summary = getSummary(period, coreParent, transferType);
+                SummaryType summary = getSummary(period, corePool, transferType);
                 if (summary != null) {
                     toReturn.add(summary);
                 }
@@ -69,15 +70,15 @@ public abstract class Summary_Set<SummaryType, ParentType> implements ObjectSet<
      *
      * @return The parent objects
      */
-    protected abstract List<ParentType> getToSummarise();
+    protected abstract List<PoolType> getPools();
 
     /**
      * Build the specific summary object
      *
      * @param period       The Period
-     * @param parent       The Parent
+     * @param pool       The Parent
      * @param transferType The type of object to summarise
      * @return A solid summary object
      */
-    protected abstract SummaryType getSummary(Period period, ParentType parent, Class<? extends Transfer> transferType);
+    protected abstract SummaryType getSummary(Period period, PoolType pool, Class<? extends Transfer> transferType);
 }

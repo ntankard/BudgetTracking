@@ -26,7 +26,7 @@ public class CategorySummary_Set extends Summary_Set<Category_Summary, Category>
      * {@inheritDoc
      */
     @Override
-    protected List<Category> getToSummarise() {
+    protected List<Category> getPools() {
         return TrackingDatabase.get().get(Category.class);
     }
 
@@ -34,7 +34,7 @@ public class CategorySummary_Set extends Summary_Set<Category_Summary, Category>
      * {@inheritDoc
      */
     @Override
-    protected Category_Summary getSummary(Period period, Category parent, Class<? extends Transfer> transferType) {
-        return new Category_Summary(period, parent, transferType);
+    protected Category_Summary getSummary(Period period, Category pool, Class<? extends Transfer> transferType) {
+        return new Category_Summary(period, pool, transferType);
     }
 }

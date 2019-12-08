@@ -26,7 +26,7 @@ public class BankSummary_Set extends Summary_Set<Bank_Summary, Bank> {
      * {@inheritDoc
      */
     @Override
-    protected List<Bank> getToSummarise() {
+    protected List<Bank> getPools() {
         return TrackingDatabase.get().get(Bank.class);
     }
 
@@ -34,7 +34,7 @@ public class BankSummary_Set extends Summary_Set<Bank_Summary, Bank> {
      * {@inheritDoc
      */
     @Override
-    protected Bank_Summary getSummary(Period period, Bank parent, Class<? extends Transfer> transferType) {
-        return new Bank_Summary(period, parent, transferType);
+    protected Bank_Summary getSummary(Period period, Bank pool, Class<? extends Transfer> transferType) {
+        return new Bank_Summary(period, pool, transferType);
     }
 }
