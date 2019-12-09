@@ -19,7 +19,6 @@ public class SummaryPanel extends UpdatableJPanel {
 
     // The GUI components
     private JTextField netMoney_txt;
-    private JTextField total_txt;
     private JTextField nonSave_txt;
     private JLabel isValid_lbl;
 
@@ -43,9 +42,6 @@ public class SummaryPanel extends UpdatableJPanel {
         netMoney_txt = new JTextField("0");
         netMoney_txt.setEditable(false);
 
-        total_txt = new JTextField("0");
-        total_txt.setEditable(false);
-
         nonSave_txt = new JTextField("0");
         nonSave_txt.setEnabled(false);
 
@@ -54,8 +50,6 @@ public class SummaryPanel extends UpdatableJPanel {
 
         this.add(new JLabel("Net Money"));
         this.add(netMoney_txt);
-        this.add(new JLabel("Total"));
-        this.add(total_txt);
         this.add(new JLabel("Non Save"));
         this.add(nonSave_txt);
         this.add(isValid_lbl);
@@ -74,14 +68,7 @@ public class SummaryPanel extends UpdatableJPanel {
         double netMin = Double.MAX_VALUE;
         double netMax = Double.MIN_VALUE;
         for (Period period : TrackingDatabase.get().get(Period.class)) {
-            double total = new Period_Summary(period).getTotal();
-            if (total > savingMax) {
-                savingMax = total;
-            }
-            if (total < savingMin) {
-                savingMin = total;
-            }
-            double profit = new Period_Summary(period).getProfit();
+            double profit = new Period_Summary(period).getBankDelta();
             if (profit > netMax) {
                 netMax = profit;
             }
@@ -92,7 +79,7 @@ public class SummaryPanel extends UpdatableJPanel {
 
         Period_Summary period_summary = new Period_Summary(core);
 
-        double profit = period_summary.getProfit();
+        double profit = period_summary.getBankDelta();
         netMoney_txt.setText(formatter.format(profit * YEN.getToPrimary()));
         if (profit > 0.0) {
             int scale = getScale(profit, netMax);
@@ -102,17 +89,7 @@ public class SummaryPanel extends UpdatableJPanel {
             netMoney_txt.setBackground(new Color(255, scale, scale));
         }
 
-        double total = period_summary.getTotal();
-        total_txt.setText(formatter.format(total * YEN.getToPrimary()));
-        if (total > 0.0) {
-            int scale = getScale(total, savingMax);
-            total_txt.setBackground(new Color(scale, 255, scale));
-        } else {
-            int scale = getScale(total, savingMin);
-            total_txt.setBackground(new Color(255, scale, scale));
-        }
-
-        nonSave_txt.setText(formatter.format(period_summary.getNonSaveTotal() * YEN.getToPrimary()));
+        nonSave_txt.setText(formatter.format(period_summary.getNonSaveCategoryDelta() * YEN.getToPrimary()));
 
         // Check that all spends are accounted for
         if (period_summary.isValid()) {
