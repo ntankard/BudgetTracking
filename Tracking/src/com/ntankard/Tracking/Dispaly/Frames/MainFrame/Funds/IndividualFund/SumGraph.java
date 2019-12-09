@@ -2,9 +2,7 @@ package com.ntankard.Tracking.Dispaly.Frames.MainFrame.Funds.IndividualFund;
 
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
-import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
-import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.Factory.PoolSummary.FundEventSummary_Set;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.FundEvent_Summary;
 import org.jfree.chart.ChartFactory;
@@ -57,7 +55,7 @@ public class SumGraph extends UpdatableJPanel {
         XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
         plot.setRenderer(renderer);
 
-        String[] axisLabel = new String[TrackingDatabase.get().get(Period.class).size()];
+        String[] axisLabel = new String[new FundEventSummary_Set(fundEvent).get().size()];
         int i = 0;
         for (FundEvent_Summary fundEvent_summary : new FundEventSummary_Set(fundEvent).get()) {
             axisLabel[i] = fundEvent_summary.getPeriod().toString();

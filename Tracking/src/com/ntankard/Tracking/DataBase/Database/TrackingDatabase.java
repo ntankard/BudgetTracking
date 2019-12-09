@@ -132,7 +132,21 @@ public class TrackingDatabase {
     public void remove(DataObject dataObject) {
         TrackingDatabase_Repair.prepareForRemove(dataObject);
         dataObject.notifyParentUnLink();
-        containers.forEach(container -> container.remove(dataObject));
+        containers.forEach(container -> {
+            checkCanDelete(dataObject);
+            container.remove(dataObject);
+        });
+    }
+
+    /**
+     * Throws an exception if an object is not safe to delete
+     *
+     * @param dataObject The object to check
+     */
+    protected void checkCanDelete(DataObject dataObject) {
+        if (dataObject.getChildren().size() != 0) {
+            throw new RuntimeException("Deleting an object with dependencies");
+        }
     }
 
     //------------------------------------------------------------------------------------------------------------------

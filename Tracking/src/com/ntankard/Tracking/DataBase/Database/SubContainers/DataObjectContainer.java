@@ -44,8 +44,6 @@ public class DataObjectContainer extends Container<Class<? extends DataObject>, 
     @SuppressWarnings("unchecked")
     @Override
     public void remove(DataObject toRemove) {
-        checkCanDelete(toRemove);
-
         Class<? extends DataObject> aClass = toRemove.getClass();
         do {
             // Check that we have seen this object before
