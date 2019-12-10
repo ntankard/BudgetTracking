@@ -25,7 +25,7 @@ public abstract class FundEvent extends Pool {
      */
     @ParameterMap(shouldSave = false)
     public FundEvent(Integer id, String name, Category category) {
-        super(id, name);
+        super(id, name, 1);
         if (category == null) throw new IllegalArgumentException("Category is null");
         this.category = category;
     }

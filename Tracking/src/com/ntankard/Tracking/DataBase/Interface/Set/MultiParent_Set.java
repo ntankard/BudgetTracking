@@ -1,6 +1,8 @@
 package com.ntankard.Tracking.DataBase.Interface.Set;
 
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
+import com.ntankard.Tracking.Dispaly.Util.Comparators.Ordered_Comparator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +35,7 @@ public class MultiParent_Set<T extends DataObject, PrimaryParentType extends Dat
     /**
      * {@inheritDoc
      */
+    @SuppressWarnings("unchecked")
     @Override
     public List<T> get() {
         if (primaryParent == null || secondaryParent == null) {
@@ -48,6 +51,9 @@ public class MultiParent_Set<T extends DataObject, PrimaryParentType extends Dat
             }
         }
 
+        if (Ordered.class.isAssignableFrom(tClass)) {
+            ((List<? extends Ordered>) toReturn).sort(new Ordered_Comparator<>());
+        }
         return toReturn;
     }
 

@@ -1,26 +1,21 @@
 package com.ntankard.Tracking.DataBase.Database;
 
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
 import com.ntankard.Tracking.DataBase.Database.SubContainers.*;
+import com.ntankard.Tracking.Dispaly.Util.Comparators.Ordered_Comparator;
 import com.ntankard.Tracking.Util.TreeNode;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class TrackingDatabase {
 
     // Core data objects
     private List<Container> containers = new ArrayList<>();
-    private ClassMap classMap = new ClassMap();
     private DefaultObjectMap defaultObjectMap = new DefaultObjectMap();
     private SpecialValuesMap specialValuesMap = new SpecialValuesMap();
     private DataObjectContainer masterMap = new DataObjectContainer();
     private DataObjectClassTree dataObjectClassTree = new DataObjectClassTree();
-
-    // Special values
-    private static Double taxRate = 0.06;
 
     // Is the database complete?
     private boolean isFinalized = false;
@@ -56,7 +51,6 @@ public class TrackingDatabase {
         containers.add(masterMap);
         containers.add(defaultObjectMap);
         containers.add(specialValuesMap);
-        containers.add(classMap);
         containers.add(dataObjectClassTree);
     }
 
@@ -87,15 +81,6 @@ public class TrackingDatabase {
             TrackingDatabase_Integrity.validateCore();
             TrackingDatabase_Integrity.validateRepaired();
         }
-    }
-
-    /**
-     * Get the tax rate to use
-     *
-     * @return The tax rate to use
-     */
-    public Double getTaxRate() {
-        return taxRate;
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -132,21 +117,7 @@ public class TrackingDatabase {
     public void remove(DataObject dataObject) {
         TrackingDatabase_Repair.prepareForRemove(dataObject);
         dataObject.notifyParentUnLink();
-        containers.forEach(container -> {
-            checkCanDelete(dataObject);
-            container.remove(dataObject);
-        });
-    }
-
-    /**
-     * Throws an exception if an object is not safe to delete
-     *
-     * @param dataObject The object to check
-     */
-    protected void checkCanDelete(DataObject dataObject) {
-        if (dataObject.getChildren().size() != 0) {
-            throw new RuntimeException("Deleting an object with dependencies");
-        }
+        containers.forEach(container -> container.remove(dataObject));
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -175,7 +146,11 @@ public class TrackingDatabase {
      */
     @SuppressWarnings("unchecked")
     public <T extends DataObject> List<T> get(Class<T> type) {
-        return Collections.unmodifiableList(masterMap.get(type));
+        List<T> toReturn = masterMap.get(type);
+        if (Ordered.class.isAssignableFrom(type)) {
+            ((List<? extends Ordered>) toReturn).sort(new Ordered_Comparator<>());
+        }
+        return toReturn;
     }
 
     /**
@@ -194,22 +169,6 @@ public class TrackingDatabase {
      */
     public List<DataObject> getAll() {
         return Collections.unmodifiableList(masterMap.get());
-    }
-
-    /**
-     * Get all elements of the database of a certain type name
-     *
-     * @param type The data type to get
-     * @param <T>  The data type to return (same as type)
-     * @return A unmodifiableList of all elements of that type
-     */
-    @SuppressWarnings("unchecked")
-    public <T extends DataObject> List<T> getData(String type) {
-        Class toGet = classMap.get(type);
-        if (toGet == null) {
-            throw new RuntimeException("Attempting to get a item that dose not exist");
-        }
-        return get(toGet);
     }
 
     /**

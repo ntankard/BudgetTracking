@@ -5,6 +5,7 @@ import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
@@ -36,7 +37,7 @@ import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 import static com.ntankard.ClassExtension.MemberProperties.TRACE_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-public class Period_Summary extends DataObject implements CurrencyBound {
+public class Period_Summary extends DataObject implements CurrencyBound, Ordered {
 
     /**
      * The period to summarise
@@ -320,5 +321,11 @@ public class Period_Summary extends DataObject implements CurrencyBound {
     @DisplayProperties(order = 2)
     public Period getPeriod() {
         return period;
+    }
+
+    @MemberProperties(verbosityLevel = TRACE_DISPLAY)
+    @DisplayProperties(order = 23)
+    public Integer getOrder() {
+        return getPeriod().getOrder();
     }
 }

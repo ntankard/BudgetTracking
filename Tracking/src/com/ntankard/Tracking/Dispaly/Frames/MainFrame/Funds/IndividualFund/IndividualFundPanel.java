@@ -5,7 +5,7 @@ import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Interface.Set.Factory.PoolSummary.FundEventSummary_Set;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.FundEvent_Summary;
-import com.ntankard.Tracking.Dispaly.Util.Comparators.FundEventSummary_Comparator;
+import com.ntankard.Tracking.Dispaly.Util.Comparators.Ordered_Comparator;
 import com.ntankard.Tracking.Dispaly.Util.Panels.Object_DisplayList;
 
 import javax.swing.*;
@@ -43,7 +43,7 @@ public class IndividualFundPanel extends UpdatableJPanel {
 
         fundEventSummary_panel = new Object_DisplayList<>(FundEvent_Summary.class, new FundEventSummary_Set(core), false, this);
         fundEventSummary_panel.setVerbosity(INFO_DISPLAY);
-        fundEventSummary_panel.setComparator(new FundEventSummary_Comparator());
+        fundEventSummary_panel.setComparator(new Ordered_Comparator<>());
         master_tPanel.addTab("Summary", fundEventSummary_panel);
 
         fundTransactionList = new FundTransactionList(core, this);

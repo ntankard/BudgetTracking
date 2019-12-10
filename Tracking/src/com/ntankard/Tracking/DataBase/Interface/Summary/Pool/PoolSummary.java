@@ -4,6 +4,7 @@ import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
@@ -15,10 +16,9 @@ import java.util.List;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataContext.ZERO_TARGET;
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
-import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
-import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
+import static com.ntankard.ClassExtension.MemberProperties.*;
 
-public abstract class PoolSummary<PoolType extends Pool> extends DataObject implements CurrencyBound {
+public abstract class PoolSummary<PoolType extends Pool> extends DataObject implements CurrencyBound, Ordered {
 
     private Period period;
     private PoolType pool;
@@ -95,5 +95,11 @@ public abstract class PoolSummary<PoolType extends Pool> extends DataObject impl
     @DisplayProperties(order = 3)
     public PoolType getPool() {
         return pool;
+    }
+
+    @MemberProperties(verbosityLevel = TRACE_DISPLAY)
+    @DisplayProperties(order = 23)
+    public Integer getOrder() {
+        return getPeriod().getOrder() * 100 + getPool().getOrder();
     }
 }

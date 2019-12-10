@@ -29,8 +29,8 @@ class BankTest {
 
         Currency currency = TrackingDatabase.get().get(Currency.class).get(0);
 
-        assertThrows(IllegalArgumentException.class, () -> new Bank(-1, "", null, 0.0, 0));
-        assertDoesNotThrow(() -> new Bank(-1, "", currency, 0.0, 0));
+        assertThrows(IllegalArgumentException.class, () -> new Bank(-1, "", 0, null, 0.0));
+        assertDoesNotThrow(() -> new Bank(-1, "", 0, currency, 0.0));
     }
 
     //------------------------------------------------------------------------------------------------------------------

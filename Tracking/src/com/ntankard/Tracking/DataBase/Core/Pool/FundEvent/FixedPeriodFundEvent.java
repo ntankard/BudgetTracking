@@ -11,7 +11,7 @@ import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer.UseCat
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Interface.Set.Children_Set;
 import com.ntankard.Tracking.DataBase.Interface.Set.Extended.Sum.Transfer_SumSet;
-import com.ntankard.Tracking.Dispaly.Util.Comparators.Period_Comparator;
+import com.ntankard.Tracking.Dispaly.Util.Comparators.Ordered_Comparator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +68,7 @@ public class FixedPeriodFundEvent extends FundEvent {
                 return false;
             }
 
-            periods.sort(new Period_Comparator());
+            periods.sort(new Ordered_Comparator<>());
             if (period.getOrder() < getStart().getOrder()) {
                 return period.getOrder() >= periods.get(0).getOrder();
             } else {

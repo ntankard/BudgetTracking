@@ -15,7 +15,7 @@ import com.ntankard.Tracking.DataBase.Interface.Set.Factory.PoolSummary.FundEven
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Bank_Summary;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.FundEvent_Summary;
 import com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.PeriodSummary_Table;
-import com.ntankard.Tracking.Dispaly.Util.Comparators.BankSummary_Comparator;
+import com.ntankard.Tracking.Dispaly.Util.Comparators.Ordered_Comparator;
 import com.ntankard.Tracking.Dispaly.Util.ElementControllers.BankCategoryTransfer_ElementController;
 import com.ntankard.Tracking.Dispaly.Util.ElementControllers.CurrencyBankTransfer_ElementController;
 import com.ntankard.Tracking.Dispaly.Util.ElementControllers.IntraCurrencyBankTransfer_ElementController;
@@ -98,7 +98,7 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
         JTabbedPane summary_panel = new JTabbedPane();
 
         bankSummary_panel = new Object_DisplayList<>(Bank_Summary.class, new BankSummary_Set(period), false, this);
-        bankSummary_panel.setComparator(new BankSummary_Comparator());
+        bankSummary_panel.setComparator(new Ordered_Comparator<>());
         bankSummary_panel.getMainPanel().getListSelectionModel().addListSelectionListener(e -> updateTransactions());
         summary_panel.add("Bank", bankSummary_panel);
 

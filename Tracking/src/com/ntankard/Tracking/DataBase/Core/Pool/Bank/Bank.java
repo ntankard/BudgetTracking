@@ -5,9 +5,8 @@ import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
-import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Core.Currency;
+import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
 import java.util.ArrayList;
@@ -17,25 +16,23 @@ import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-public class Bank extends Pool implements CurrencyBound, Ordered {
+public class Bank extends Pool implements CurrencyBound {
 
     // My parents
     private Currency currency;
 
     // My values
-    private Integer order;
     private Double start;
 
     /**
      * Constructor
      */
-    @ParameterMap(parameterGetters = {"getId", "getName", "getCurrency", "getStart", "getOrder"})
-    public Bank(Integer id, String name, Currency currency, Double start, Integer order) {
-        super(id, name);
+    @ParameterMap(parameterGetters = {"getId", "getName", "getOrder", "getCurrency", "getStart"})
+    public Bank(Integer id, String name, Integer order, Currency currency, Double start) {
+        super(id, name, order);
         if (currency == null) throw new IllegalArgumentException("Currency is null");
         this.currency = currency;
         this.start = start;
-        this.order = order;
     }
 
     /**
@@ -60,12 +57,6 @@ public class Bank extends Pool implements CurrencyBound, Ordered {
     }
 
     @DisplayProperties(order = 4)
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    public Integer getOrder() {
-        return order;
-    }
-
-    @DisplayProperties(order = 5)
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     public Double getStart() {
         return start;

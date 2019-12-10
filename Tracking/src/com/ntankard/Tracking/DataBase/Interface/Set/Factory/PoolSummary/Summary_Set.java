@@ -2,32 +2,33 @@ package com.ntankard.Tracking.DataBase.Interface.Set.Factory.PoolSummary;
 
 import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
-import com.ntankard.Tracking.DataBase.Core.Transfers.Transfer;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.ObjectSet;
+import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.PoolSummary;
+import com.ntankard.Tracking.Dispaly.Util.Comparators.Ordered_Comparator;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Summary_Set<SummaryType, PoolType extends Pool> implements ObjectSet<SummaryType> {
+public abstract class Summary_Set<SummaryType extends PoolSummary, PoolType extends Pool> implements ObjectSet<SummaryType> {
 
     // The objects used to generate the set
+    private Class<PoolType> poolTypeClass;
     private Period corePeriod;
     private PoolType corePool;
-    // Class<? extends Transfer> transferType;
 
-    protected Summary_Set(PoolType corePool) {
-        this(null, corePool, Transfer.class);
+    protected Summary_Set(Class<PoolType> poolTypeClass, PoolType corePool) {
+        this(poolTypeClass, null, corePool);
     }
 
-    protected Summary_Set(Period corePeriod) {
-        this(corePeriod, null, Transfer.class);
+    protected Summary_Set(Class<PoolType> poolTypeClass, Period corePeriod) {
+        this(poolTypeClass, corePeriod, null);
     }
 
-    protected Summary_Set(Period corePeriod, PoolType corePool, Class<? extends Transfer> transferType) {
+    protected Summary_Set(Class<PoolType> poolTypeClass, Period corePeriod, PoolType corePool) {
+        this.poolTypeClass = poolTypeClass;
         this.corePeriod = corePeriod;
         this.corePool = corePool;
-        //   this.transferType = transferType;
     }
 
     /**
@@ -62,6 +63,7 @@ public abstract class Summary_Set<SummaryType, PoolType extends Pool> implements
             }
         }
 
+        toReturn.sort(new Ordered_Comparator<>());
         return toReturn;
     }
 
@@ -70,7 +72,9 @@ public abstract class Summary_Set<SummaryType, PoolType extends Pool> implements
      *
      * @return The parent objects
      */
-    protected abstract List<PoolType> getPools();
+    private List<PoolType> getPools() {
+        return TrackingDatabase.get().get(poolTypeClass);
+    }
 
     /**
      * Build the specific summary object

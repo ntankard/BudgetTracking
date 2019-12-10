@@ -4,7 +4,7 @@ import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
 
 import java.util.Comparator;
 
-public class Ordered_Comparator implements Comparator<Ordered> {
+public class Ordered_Comparator<T extends Ordered> implements Comparator<T> {
 
     /**
      * {@inheritDoc
