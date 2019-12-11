@@ -32,7 +32,7 @@ public class FixedPeriodFundEvent extends FundEvent {
      */
     @ParameterMap(parameterGetters = {"getId", "getName", "getCategory", "getStart", "getDuration"})
     public FixedPeriodFundEvent(Integer id, String name, Category category, Period start, Integer duration) {
-        super(id, name, category);
+        super(id, name, category, 1);
         if (start == null) throw new IllegalArgumentException("Start was null");
         if (duration < 1) throw new IllegalArgumentException("Duration is less than 1");
         this.start = start;
@@ -114,6 +114,14 @@ public class FixedPeriodFundEvent extends FundEvent {
     //------------------------------------------------------------------------------------------------------------------
     //##################################################### Setter #####################################################
     //------------------------------------------------------------------------------------------------------------------
+
+    @SetterProperties(localSourceMethod = "sourceOptions")
+    public void setCategory(Category category) {
+        if (category == null) throw new IllegalArgumentException("Category is null");
+        this.category.notifyChildUnLink(this);
+        this.category = category;
+        this.category.notifyChildLink(this);
+    }
 
     @SetterProperties(localSourceMethod = "sourceOptions")
     public void setStart(Period start) {

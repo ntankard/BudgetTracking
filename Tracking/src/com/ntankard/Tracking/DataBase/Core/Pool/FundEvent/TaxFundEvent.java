@@ -19,7 +19,7 @@ public class TaxFundEvent extends FundEvent {
      */
     @ParameterMap(parameterGetters = {"getId", "getName", "getCategory", "getPercentage"})
     public TaxFundEvent(Integer id, String name, Category category, Double percentage) {
-        super(id, name, category);
+        super(id, name, category, 13);
         this.percentage = percentage;
     }
 

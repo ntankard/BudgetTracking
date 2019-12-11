@@ -18,14 +18,14 @@ import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 public abstract class FundEvent extends Pool {
 
     // My parent
-    private Category category;
+    protected Category category;
 
     /**
      * Constructor
      */
     @ParameterMap(shouldSave = false)
-    public FundEvent(Integer id, String name, Category category) {
-        super(id, name, 1);
+    public FundEvent(Integer id, String name, Category category, Integer order) {
+        super(id, name, order);
         if (category == null) throw new IllegalArgumentException("Category is null");
         this.category = category;
     }

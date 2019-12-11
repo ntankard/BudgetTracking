@@ -15,7 +15,7 @@ public class SavingsFundEvent extends FundEvent {
      */
     @ParameterMap(shouldSave = false)
     public SavingsFundEvent() {
-        super(TrackingDatabase.get().getNextId(), "Savings", TrackingDatabase.get().getSpecialValue(Category.class, Category.SAVINGS));
+        super(TrackingDatabase.get().getNextId(), "Savings", TrackingDatabase.get().getSpecialValue(Category.class, Category.SAVINGS), 2);
     }
 
     /**
