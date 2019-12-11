@@ -225,6 +225,23 @@ class FixedPeriodFundEventTest {
     }
 
     @Test
+    void setCategory() {
+        assertNotEquals(0, TrackingDatabase.get().get(Period.class).size());
+        assertNotEquals(0, TrackingDatabase.get().get(Category.class).size());
+        assertNotEquals(1, TrackingDatabase.get().get(Category.class).size());
+
+        Period period = TrackingDatabase.get().get(Period.class).get(0);
+        Category category1 = TrackingDatabase.get().get(Category.class).get(0);
+        Category category2 = TrackingDatabase.get().get(Category.class).get(0);
+
+        FixedPeriodFundEvent fixedPeriodFundEvent = new FixedPeriodFundEvent(-1, "", category1, period.getNext(), 1);
+        fixedPeriodFundEvent.notifyParentLink();
+
+        assertThrows(IllegalArgumentException.class, () -> fixedPeriodFundEvent.setCategory(null));
+        assertDoesNotThrow(() -> fixedPeriodFundEvent.setCategory(category2));
+    }
+
+    @Test
     void setStart() {
         assertNotEquals(0, TrackingDatabase.get().get(Period.class).size());
         assertNotEquals(0, TrackingDatabase.get().get(Category.class).size());

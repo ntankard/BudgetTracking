@@ -39,12 +39,4 @@ public class NoneFundEvent extends FundEvent {
     public Double getCharge(Period period) {
         throw new UnsupportedOperationException("Not relevant for this type");
     }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public String toString() {
-        return super.toString() + " " + getCategory().toString();
-    }
 }

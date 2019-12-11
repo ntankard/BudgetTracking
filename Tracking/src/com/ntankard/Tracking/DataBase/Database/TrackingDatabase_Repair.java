@@ -6,6 +6,7 @@ import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
+import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.NoneFundEvent;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.SavingsFundEvent;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer.RePayCategoryFundTransfer;
 import com.ntankard.Tracking.DataBase.Interface.Set.MultiParent_Set;
@@ -46,6 +47,13 @@ public class TrackingDatabase_Repair {
      * @param dataObject The object to delete
      */
     public static void prepareForRemove(DataObject dataObject) {
+        if(dataObject instanceof NoneFundEvent){
+            if(dataObject.getChildren().size() != 0){
+                throw new RuntimeException("Cant delete this kind of object. NoneFundEvent still has children");
+            }
+            return;
+        }
+
         if (dataObject instanceof Period || dataObject instanceof Bank || dataObject instanceof FundEvent || dataObject instanceof Category) {
             throw new RuntimeException("Cant delete this kind of object");
         }
@@ -77,7 +85,7 @@ public class TrackingDatabase_Repair {
      *
      * @param fundEvent The event to repair
      */
-    private static void repairFundEvent(FundEvent fundEvent) {
+    public static void repairFundEvent(FundEvent fundEvent) {
         for (Period period : TrackingDatabase.get().get(Period.class)) {
             setupRePay(fundEvent, period);
         }

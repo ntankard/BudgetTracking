@@ -9,6 +9,7 @@ import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer.UseCategoryFundTransfer;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
+import com.ntankard.Tracking.DataBase.Database.TrackingDatabase_Repair;
 import com.ntankard.Tracking.DataBase.Interface.Set.Children_Set;
 import com.ntankard.Tracking.DataBase.Interface.Set.Extended.Sum.Transfer_SumSet;
 import com.ntankard.Tracking.Dispaly.Util.Comparators.Ordered_Comparator;
@@ -121,6 +122,7 @@ public class FixedPeriodFundEvent extends FundEvent {
         this.category.notifyChildUnLink(this);
         this.category = category;
         this.category.notifyChildLink(this);
+        TrackingDatabase_Repair.repairFundEvent(this);
     }
 
     @SetterProperties(localSourceMethod = "sourceOptions")
@@ -129,10 +131,12 @@ public class FixedPeriodFundEvent extends FundEvent {
         this.start.notifyChildUnLink(this);
         this.start = start;
         this.start.notifyChildLink(this);
+        TrackingDatabase_Repair.repairFundEvent(this);
     }
 
     public void setDuration(Integer duration) {
         if (duration < 1) throw new IllegalArgumentException("Duration is less than 1");
         this.duration = duration;
+        TrackingDatabase_Repair.repairFundEvent(this);
     }
 }
