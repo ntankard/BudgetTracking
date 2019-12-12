@@ -4,6 +4,7 @@ import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.ClassExtension.SetterProperties;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
@@ -13,7 +14,7 @@ import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-public class BankCategoryTransfer extends Transfer<Bank, Category> {
+public class BankCategoryTransfer extends Transfer<Bank, Category> implements Ordered {
 
     /**
      * Constructor
@@ -54,6 +55,13 @@ public class BankCategoryTransfer extends Transfer<Bank, Category> {
     @DisplayProperties(order = 9)
     public Currency getDestinationCurrency() {
         return getSource().getCurrency();
+    }
+
+    @Override
+    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
+    @DisplayProperties(order = 10)
+    public Integer getOrder() {
+        return getSource().getOrder() * 100 + getDestination().getOrder();
     }
 
     //------------------------------------------------------------------------------------------------------------------

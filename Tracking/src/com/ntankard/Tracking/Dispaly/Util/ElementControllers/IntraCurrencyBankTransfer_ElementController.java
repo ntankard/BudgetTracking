@@ -1,6 +1,7 @@
 package com.ntankard.Tracking.Dispaly.Util.ElementControllers;
 
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
+import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Transfers.BankTransfer.IntraCurrencyBankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
@@ -32,7 +33,7 @@ public class IntraCurrencyBankTransfer_ElementController extends TrackingDatabas
                 0.0,
                 0.0,
                 core,
-                TrackingDatabase.get().get(Bank.class).get(0),
-                TrackingDatabase.get().get(Bank.class).get(1));
+                TrackingDatabase.get().get(Currency.class).get(0).getChildren(Bank.class).get(0),
+                TrackingDatabase.get().get(Currency.class).get(1).getChildren(Bank.class).get(0));
     }
 }
