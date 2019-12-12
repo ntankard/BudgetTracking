@@ -4,7 +4,6 @@ import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
-import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Period_Summary;
 
 @ClassExtensionProperties(includeParent = true)
@@ -13,9 +12,9 @@ public class SavingsFundEvent extends FundEvent {
     /**
      * Constructor
      */
-    @ParameterMap(shouldSave = false)
-    public SavingsFundEvent() {
-        super(TrackingDatabase.get().getNextId(), "Savings", TrackingDatabase.get().getSpecialValue(Category.class, Category.SAVINGS), 2);
+    @ParameterMap(parameterGetters = {"getId", "getCategory"})
+    public SavingsFundEvent(Integer id, Category category) {
+        super(id, "Savings", category, 2);
     }
 
     /**

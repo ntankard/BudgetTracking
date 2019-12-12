@@ -21,7 +21,7 @@ public class TrackingDatabase_Repair {
     public static void repair() {
         if (TrackingDatabase.get().get(SavingsFundEvent.class).size() != 1) {
             if (TrackingDatabase.get().get(SavingsFundEvent.class).size() == 0) {
-                TrackingDatabase.get().add(new SavingsFundEvent());
+                TrackingDatabase.get().add(new SavingsFundEvent(TrackingDatabase.get().getNextId(), TrackingDatabase.get().getSpecialValue(Category.class, Category.SAVINGS)));
             } else {
                 throw new RuntimeException("More than 1 savings event");
             }
@@ -47,8 +47,8 @@ public class TrackingDatabase_Repair {
      * @param dataObject The object to delete
      */
     public static void prepareForRemove(DataObject dataObject) {
-        if(dataObject instanceof NoneFundEvent){
-            if(dataObject.getChildren().size() != 0){
+        if (dataObject instanceof NoneFundEvent) {
+            if (dataObject.getChildren().size() != 0) {
                 throw new RuntimeException("Cant delete this kind of object. NoneFundEvent still has children");
             }
             return;
