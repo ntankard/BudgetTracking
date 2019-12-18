@@ -4,6 +4,7 @@ import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
+import com.ntankard.Tracking.DataBase.Core.Pool.Bank.StatementEnd;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.NoneFundEvent;
@@ -38,6 +39,8 @@ public class TrackingDatabase_Repair {
             repairPeriod((Period) dataObject);
         } else if (dataObject instanceof FundEvent) {
             repairFundEvent((FundEvent) dataObject);
+        } else if (dataObject instanceof Bank) {
+            repairBank((Bank) dataObject);
         }
     }
 
@@ -78,6 +81,10 @@ public class TrackingDatabase_Repair {
         for (FundEvent fundEvent : TrackingDatabase.get().get(FundEvent.class)) {
             setupRePay(fundEvent, period);
         }
+
+        for (Bank bank : TrackingDatabase.get().get(Bank.class)) {
+            setupStatementEnd(bank, period);
+        }
     }
 
     /**
@@ -88,6 +95,32 @@ public class TrackingDatabase_Repair {
     public static void repairFundEvent(FundEvent fundEvent) {
         for (Period period : TrackingDatabase.get().get(Period.class)) {
             setupRePay(fundEvent, period);
+        }
+    }
+
+    /**
+     * Repair a Bank event
+     *
+     * @param bank The event to repair
+     */
+    private static void repairBank(Bank bank) {
+        for (Period period : TrackingDatabase.get().get(Period.class)) {
+            setupStatementEnd(bank, period);
+        }
+    }
+
+    /**
+     * Ensure that there is a StatementEnd object for this pair
+     *
+     * @param bank   The bank
+     * @param period The period
+     */
+    private static void setupStatementEnd(Bank bank, Period period) {
+        if (new MultiParent_Set<>(StatementEnd.class, bank, period).get().size() > 1) {
+            throw new RuntimeException("More than 1 statement end");
+        }
+        if (new MultiParent_Set<>(StatementEnd.class, bank, period).get().size() == 0) {
+            TrackingDatabase.get().add(new StatementEnd(TrackingDatabase.get().getNextId(), period, bank, 0.0));
         }
     }
 

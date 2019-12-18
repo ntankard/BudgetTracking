@@ -32,6 +32,14 @@ public class UseCategoryFundTransfer extends CategoryFundTransfer {
     //#################################################### Setters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
+    @Override
+    @SetterProperties(localSourceMethod = "sourceOptions")
+    public void setDestination(FundEvent destination) {
+        if (destination == null) throw new IllegalArgumentException("Fund is null");
+        super.setDestination(destination);
+        super.setSource(destination.getCategory());
+    }
+
     @SetterProperties(localSourceMethod = "sourceOptions")
     public void setDestinationCurrency(Currency currency) {
         if (currency == null) throw new IllegalArgumentException("Currency was null");

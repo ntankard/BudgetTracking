@@ -22,7 +22,6 @@ public class StatementEnd extends DataObject implements CurrencyBound, Ordered {
     // My parents
     private Period period;
     private Bank bank;
-    private Currency currency;
 
     // My values
     private Double end;
@@ -30,15 +29,13 @@ public class StatementEnd extends DataObject implements CurrencyBound, Ordered {
     /**
      * Constructor
      */
-    @ParameterMap(parameterGetters = {"getId", "getPeriod", "getBank", "getCurrency", "getEnd"})
-    public StatementEnd(Integer id, Period period, Bank bank, Currency currency, Double end) {
+    @ParameterMap(parameterGetters = {"getId", "getPeriod", "getBank", "getEnd"})
+    public StatementEnd(Integer id, Period period, Bank bank, Double end) {
         super(id);
         if (period == null) throw new IllegalArgumentException("Period is null");
         if (bank == null) throw new IllegalArgumentException("Bank is null");
-        if (currency == null) throw new IllegalArgumentException("Currency is null");
         this.period = period;
         this.bank = bank;
-        this.currency = currency;
         this.end = end;
     }
 
@@ -79,7 +76,7 @@ public class StatementEnd extends DataObject implements CurrencyBound, Ordered {
     @Override
     @DisplayProperties(order = 5)
     public Currency getCurrency() {
-        return currency;
+        return getBank().getCurrency();
     }
 
     @Override

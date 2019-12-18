@@ -3,7 +3,6 @@ package com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer;
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
-import com.ntankard.ClassExtension.SetterProperties;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
@@ -15,7 +14,7 @@ import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
 public abstract class CategoryFundTransfer extends Transfer<Category, FundEvent> {
-    
+
     /**
      * Constructor
      */
@@ -41,17 +40,5 @@ public abstract class CategoryFundTransfer extends Transfer<Category, FundEvent>
     @DisplayProperties(order = 7)
     public FundEvent getDestination() {
         return super.getDestination();
-    }
-
-    //------------------------------------------------------------------------------------------------------------------
-    //#################################################### Setters #####################################################
-    //------------------------------------------------------------------------------------------------------------------
-
-    @Override
-    @SetterProperties(localSourceMethod = "sourceOptions")
-    public void setDestination(FundEvent destination) {
-        if (destination == null) throw new IllegalArgumentException("Fund is null");
-        super.setDestination(destination);
-        super.setSource(destination.getCategory());
     }
 }

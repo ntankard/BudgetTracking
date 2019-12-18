@@ -62,11 +62,7 @@ class CategoryFundTransferTest {
 
         RePayCategoryFundTransfer rePayCategoryFundTransfer = new RePayCategoryFundTransfer(-1, period, fundEvent_fund1, currency);
         rePayCategoryFundTransfer.notifyParentLink();
-        assertThrows(IllegalArgumentException.class, () -> rePayCategoryFundTransfer.setDestination(null));
         assertEquals(fundEvent_fund1.getCategory(), rePayCategoryFundTransfer.getSource());
-
-        rePayCategoryFundTransfer.setDestination(fundEvent_fund2);
-        assertEquals(fundEvent_fund2.getCategory(), rePayCategoryFundTransfer.getSource());
 
         UseCategoryFundTransfer useCategoryFundTransfer = new UseCategoryFundTransfer(-2, "", 0.0, period, fundEvent_fund1, currency);
         useCategoryFundTransfer.notifyParentLink();
