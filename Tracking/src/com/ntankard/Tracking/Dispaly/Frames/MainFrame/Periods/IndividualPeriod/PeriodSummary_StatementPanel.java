@@ -118,7 +118,7 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
         summaryContainer_C.fill = GridBagConstraints.BOTH;
         summaryContainer_C.weightx = 1;
 
-        summaryContainer_C.weighty = 3;
+        summaryContainer_C.weighty = 2;
         summaryContainer_C.gridwidth = 3;
         this.add(periodSummary_Table_panel, summaryContainer_C);
 
