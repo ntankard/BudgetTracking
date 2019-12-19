@@ -1,7 +1,7 @@
 package com.ntankard.Tracking.Dispaly.Util.ElementControllers;
 
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
-import com.ntankard.Tracking.DataBase.Core.Period;
+import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Transfers.BankTransfer.CurrencyBankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;

@@ -3,7 +3,7 @@ package com.ntankard.Tracking.DataBase.Core.Transfers.BankTransfer;
 import com.ntankard.TestUtil.DataAccessUntil;
 import com.ntankard.TestUtil.DataObjectTestUtil;
 import com.ntankard.Tracking.DataBase.Core.Currency;
-import com.ntankard.Tracking.DataBase.Core.Period;
+import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase_Integrity;

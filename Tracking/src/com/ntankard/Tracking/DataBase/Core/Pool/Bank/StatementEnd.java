@@ -6,7 +6,7 @@ import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
-import com.ntankard.Tracking.DataBase.Core.Period;
+import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 

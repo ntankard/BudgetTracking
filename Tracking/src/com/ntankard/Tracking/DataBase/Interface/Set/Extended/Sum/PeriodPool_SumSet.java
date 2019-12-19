@@ -1,6 +1,6 @@
 package com.ntankard.Tracking.DataBase.Interface.Set.Extended.Sum;
 
-import com.ntankard.Tracking.DataBase.Core.Period;
+import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Core.Transfers.Transfer;
 import com.ntankard.Tracking.DataBase.Interface.Set.MultiParent_Set;

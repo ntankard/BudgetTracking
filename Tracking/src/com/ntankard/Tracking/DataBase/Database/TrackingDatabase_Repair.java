@@ -2,7 +2,7 @@ package com.ntankard.Tracking.DataBase.Database;
 
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.Currency;
-import com.ntankard.Tracking.DataBase.Core.Period;
+import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.StatementEnd;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;

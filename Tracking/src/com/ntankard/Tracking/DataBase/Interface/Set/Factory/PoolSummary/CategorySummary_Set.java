@@ -1,6 +1,6 @@
 package com.ntankard.Tracking.DataBase.Interface.Set.Factory.PoolSummary;
 
-import com.ntankard.Tracking.DataBase.Core.Period;
+import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Category_Summary;
 

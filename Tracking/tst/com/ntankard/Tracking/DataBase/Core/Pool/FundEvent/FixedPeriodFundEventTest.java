@@ -3,7 +3,7 @@ package com.ntankard.Tracking.DataBase.Core.Pool.FundEvent;
 import com.ntankard.TestUtil.DataAccessUntil;
 import com.ntankard.TestUtil.DataObjectTestUtil;
 import com.ntankard.Tracking.DataBase.Core.Currency;
-import com.ntankard.Tracking.DataBase.Core.Period;
+import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer.UseCategoryFundTransfer;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;

@@ -3,7 +3,7 @@ package com.ntankard.Tracking.Dispaly.Frames.MainFrame.Periods.IndividualPeriod;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.Currency;
-import com.ntankard.Tracking.DataBase.Core.Period;
+import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Period_Summary;
 

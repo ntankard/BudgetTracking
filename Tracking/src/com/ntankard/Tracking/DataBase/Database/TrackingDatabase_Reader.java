@@ -1,7 +1,7 @@
 package com.ntankard.Tracking.DataBase.Database;
 
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Core.Period;
+import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.Util.FileUtil;
 
 import java.lang.reflect.Constructor;

@@ -2,7 +2,7 @@ package com.ntankard.Tracking.Dispaly.Frames.MainFrame.Periods;
 
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
-import com.ntankard.Tracking.DataBase.Core.Period;
+import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.Dispaly.Frames.MainFrame.Periods.IndividualPeriod.IndividualPeriodPanel;
 

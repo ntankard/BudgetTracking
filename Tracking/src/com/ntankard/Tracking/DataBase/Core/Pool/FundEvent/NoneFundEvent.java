@@ -1,7 +1,7 @@
 package com.ntankard.Tracking.DataBase.Core.Pool.FundEvent;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
-import com.ntankard.Tracking.DataBase.Core.Period;
+import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 

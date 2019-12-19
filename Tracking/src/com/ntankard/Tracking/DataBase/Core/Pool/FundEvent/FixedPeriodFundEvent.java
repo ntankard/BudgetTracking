@@ -5,7 +5,7 @@ import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.ClassExtension.SetterProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Core.Period;
+import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer.UseCategoryFundTransfer;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;

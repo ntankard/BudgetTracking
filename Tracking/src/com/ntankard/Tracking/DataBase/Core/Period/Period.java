@@ -1,4 +1,4 @@
-package com.ntankard.Tracking.DataBase.Core;
+package com.ntankard.Tracking.DataBase.Core.Period;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
