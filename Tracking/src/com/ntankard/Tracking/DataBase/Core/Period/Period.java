@@ -15,7 +15,7 @@ import java.util.List;
 import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-public class Period extends DataObject implements Ordered {
+public abstract class Period extends DataObject implements Ordered {
 
     // My parents
 
@@ -28,7 +28,7 @@ public class Period extends DataObject implements Ordered {
     /**
      * Constructor
      */
-    @ParameterMap(parameterGetters = {"getId", "getMonth", "getYear"})
+    @ParameterMap(shouldSave = false)
     public Period(Integer id, Integer month, Integer year) {
         super(id);
         this.month = month;
@@ -86,7 +86,7 @@ public class Period extends DataObject implements Ordered {
             nextYear++;
         }
 
-        Period newPeriod = new Period(TrackingDatabase.get().getNextId(), nextMonth, nextYear);
+        Period newPeriod = new ExistingPeriod(TrackingDatabase.get().getNextId(), nextMonth, nextYear);
         newPeriod.setLast(this);
         return newPeriod;
     }

@@ -2,7 +2,6 @@ package com.ntankard.Tracking.DataBase.Core.Period;
 
 import com.ntankard.TestUtil.DataAccessUntil;
 import com.ntankard.TestUtil.DataObjectTestUtil;
-import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase_Integrity;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,7 +31,7 @@ class PeriodTest {
         int month = 2;
         int year = 1;
 
-        Period last = new Period(-1, month - 1, year);
+        Period last = new ExistingPeriod(-1, month - 1, year);
         Period period = last.generateNext();
         Period first = last;
 
@@ -62,7 +61,7 @@ class PeriodTest {
 
         // Generate test data
         List<Period> periods = new ArrayList<>();
-        Period period = new Period(-1, 1, 1);
+        Period period = new ExistingPeriod(-1, 1, 1);
         for (int i = 0; i < testSize; i++) {
             period = period.generateNext();
             periods.add(period);
@@ -91,9 +90,9 @@ class PeriodTest {
 
     @Test
     void setNext() {
-        Period period1 = new Period(-1, 1, 1);
-        Period period2 = new Period(-1, 2, 1);
-        Period period3 = new Period(-1, 3, 1);
+        Period period1 = new ExistingPeriod(-1, 1, 1);
+        Period period2 = new ExistingPeriod(-1, 2, 1);
+        Period period3 = new ExistingPeriod(-1, 3, 1);
 
         assertThrows(IllegalArgumentException.class, () -> period1.setNext(period1));
         assertDoesNotThrow(() -> period1.setNext(period2));
@@ -102,9 +101,9 @@ class PeriodTest {
 
     @Test
     void setLast() {
-        Period period1 = new Period(-1, 1, 1);
-        Period period2 = new Period(-1, 2, 1);
-        Period period3 = new Period(-1, 3, 1);
+        Period period1 = new ExistingPeriod(-1, 1, 1);
+        Period period2 = new ExistingPeriod(-1, 2, 1);
+        Period period3 = new ExistingPeriod(-1, 3, 1);
 
         assertThrows(IllegalArgumentException.class, () -> period3.setLast(period1));
         assertDoesNotThrow(() -> period3.setLast(period2));
