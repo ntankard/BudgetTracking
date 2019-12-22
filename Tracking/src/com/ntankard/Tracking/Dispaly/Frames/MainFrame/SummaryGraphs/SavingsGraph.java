@@ -3,6 +3,7 @@ package com.ntankard.Tracking.Dispaly.Frames.MainFrame.SummaryGraphs;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.Currency;
+import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Period_Summary;
@@ -56,10 +57,9 @@ public class SavingsGraph extends UpdatableJPanel {
         plot.setRenderer(renderer);
 
         String[] axisLabel = new String[TrackingDatabase.get().get(Period.class).size()];
-        Period period = TrackingDatabase.get().get(Period.class).get(0).getFirst();
-        for (int i = 0; i < TrackingDatabase.get().get(Period.class).size(); i++) {
-            axisLabel[i] = period.toString();
-            period = period.getNext();
+        int i = 0;
+        for (ExistingPeriod period : TrackingDatabase.get().get(ExistingPeriod.class)) {
+            axisLabel[i++] = period.toString();
         }
 
         SymbolAxis sa = new SymbolAxis("Period", axisLabel);
@@ -78,19 +78,17 @@ public class SavingsGraph extends UpdatableJPanel {
 
         for (Currency currency : TrackingDatabase.get().get(Currency.class)) {
             final XYSeries cur = new XYSeries(currency.getName());
-            Period period = TrackingDatabase.get().get(Period.class).get(0).getFirst();
-            for (int i = 0; i < TrackingDatabase.get().get(Period.class).size(); i++) {
-                cur.add(i, new Period_Summary(period).getBankEnd(currency));
-                period = period.getNext();
+            int i = 0;
+            for (ExistingPeriod period : TrackingDatabase.get().get(ExistingPeriod.class)) {
+                cur.add(i++, new Period_Summary(period).getBankEnd(currency));
             }
             dataset.addSeries(cur);
         }
 
         final XYSeries total = new XYSeries("Total");
-        Period period = TrackingDatabase.get().get(Period.class).get(0).getFirst();
-        for (int i = 0; i < TrackingDatabase.get().get(Period.class).size(); i++) {
-            total.add(i, new Period_Summary(period).getBankEnd());
-            period = period.getNext();
+        int i = 0;
+        for (ExistingPeriod period : TrackingDatabase.get().get(ExistingPeriod.class)) {
+            total.add(i++, new Period_Summary(period).getBankEnd());
         }
         dataset.addSeries(total);
 

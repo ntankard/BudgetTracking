@@ -2,7 +2,7 @@ package com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 
 import com.ntankard.TestUtil.DataAccessUntil;
 import com.ntankard.TestUtil.DataObjectTestUtil;
-import com.ntankard.Tracking.DataBase.Core.Period.Period;
+import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,10 +25,10 @@ class StatementEndTest {
 
     @Test
     void constructor() {
-        assertNotEquals(0, TrackingDatabase.get().get(Period.class).size());
+        assertNotEquals(0, TrackingDatabase.get().get(ExistingPeriod.class).size());
         assertNotEquals(0, TrackingDatabase.get().get(Bank.class).size());
 
-        Period period = TrackingDatabase.get().get(Period.class).get(0);
+        ExistingPeriod period = TrackingDatabase.get().get(ExistingPeriod.class).get(0);
         Bank bank = TrackingDatabase.get().get(Bank.class).get(0);
 
         assertThrows(IllegalArgumentException.class, () -> new StatementEnd(-1, null, bank, 0.0));

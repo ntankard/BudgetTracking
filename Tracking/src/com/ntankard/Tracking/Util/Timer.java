@@ -8,9 +8,22 @@ public class Timer {
     private long start;
 
     /**
-     * Constructor, state the timer
+     * A string to put on the start of the message
+     */
+    private String prefix;
+
+    /**
+     * Constructor, start the timer
      */
     public Timer() {
+        this("");
+    }
+
+    /**
+     * Constructor, start the timer
+     */
+    public Timer(String prefix) {
+        this.prefix = prefix;
         this.start = System.currentTimeMillis();
     }
 
@@ -29,7 +42,7 @@ public class Timer {
     public void stopPrint(String string) {
         long end = System.currentTimeMillis();
         long delta = end - start;
-        System.out.println(string + ": " + delta);
+        System.out.println(prefix + string + ": " + delta);
         start = System.currentTimeMillis();
     }
 }

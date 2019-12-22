@@ -3,7 +3,6 @@ package com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.TestUtil.DataAccessUntil;
 import com.ntankard.TestUtil.DataObjectTestUtil;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
-import com.ntankard.Tracking.DataBase.Database.TrackingDatabase_Integrity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +11,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class PeriodTest {
+class ExistingPeriodTest {
 
     /**
      * Load the database
@@ -27,41 +26,12 @@ class PeriodTest {
     //------------------------------------------------------------------------------------------------------------------
 
     @Test
-    void generateNextAndGetFirst() {
-        int month = 2;
-        int year = 1;
-
-        Period last = new ExistingPeriod(-1, month - 1, year);
-        Period period = last.generateNext();
-        Period first = last;
-
-        int lastOrder = period.getOrder();
-        for (int i = 0; i < 500; i++) {
-            assertEquals(lastOrder++, period.getOrder());
-            assertEquals(last, period.getLast());
-            assertEquals(first, period.getFirst());
-
-            assertEquals(month, period.getMonth());
-            assertEquals(year, period.getYear());
-
-            month++;
-            if (month > 12) {
-                month = 1;
-                year++;
-            }
-
-            last = period;
-            period = last.generateNext();
-        }
-    }
-
-    @Test
     void isWithin() {
         int testSize = 200;
 
         // Generate test data
         List<Period> periods = new ArrayList<>();
-        Period period = new ExistingPeriod(-1, 1, 1);
+        ExistingPeriod period = new ExistingPeriod(-1, 1, 1);
         for (int i = 0; i < testSize; i++) {
             period = period.generateNext();
             periods.add(period);
@@ -88,28 +58,6 @@ class PeriodTest {
         }
     }
 
-    @Test
-    void setNext() {
-        Period period1 = new ExistingPeriod(-1, 1, 1);
-        Period period2 = new ExistingPeriod(-1, 2, 1);
-        Period period3 = new ExistingPeriod(-1, 3, 1);
-
-        assertThrows(IllegalArgumentException.class, () -> period1.setNext(period1));
-        assertDoesNotThrow(() -> period1.setNext(period2));
-        assertThrows(IllegalArgumentException.class, () -> period1.setNext(period3));
-    }
-
-    @Test
-    void setLast() {
-        Period period1 = new ExistingPeriod(-1, 1, 1);
-        Period period2 = new ExistingPeriod(-1, 2, 1);
-        Period period3 = new ExistingPeriod(-1, 3, 1);
-
-        assertThrows(IllegalArgumentException.class, () -> period3.setLast(period1));
-        assertDoesNotThrow(() -> period3.setLast(period2));
-        assertThrows(IllegalArgumentException.class, () -> period3.setLast(period3));
-    }
-
     //------------------------------------------------------------------------------------------------------------------
     //########################## Implementation Tests (all declared objects in isolation) ##############################
     //------------------------------------------------------------------------------------------------------------------
@@ -123,7 +71,7 @@ class PeriodTest {
         exclude.add("Last");
         exclude.add("Next");
         exclude.add("First");
-        DataObjectTestUtil.testStandardParents(Period.class, exclude);
+        DataObjectTestUtil.testStandardParents(ExistingPeriod.class, exclude);
     }
 
     /**
@@ -134,7 +82,7 @@ class PeriodTest {
         List<String> exclude = new ArrayList<>();
         exclude.add("Last");
         exclude.add("Next");
-        DataObjectTestUtil.checkDataObjectNotNull(Period.class, exclude);
+        DataObjectTestUtil.checkDataObjectNotNull(ExistingPeriod.class, exclude);
     }
 
     /**
@@ -142,8 +90,8 @@ class PeriodTest {
      */
     @Test
     void getMonth() {
-        assertNotEquals(0, TrackingDatabase.get().get(Period.class).size());
-        for (Period period : TrackingDatabase.get().get(Period.class)) {
+        assertNotEquals(0, TrackingDatabase.get().get(ExistingPeriod.class).size());
+        for (ExistingPeriod period : TrackingDatabase.get().get(ExistingPeriod.class)) {
             assertTrue(period.getMonth() > 0);
             assertTrue(period.getMonth() <= 12);
         }
@@ -158,14 +106,6 @@ class PeriodTest {
      */
     @Test
     void getOrder() {
-        DataObjectTestUtil.testStandardOrder(Period.class);
-    }
-
-    /**
-     * Run the validator
-     */
-    @Test
-    void validatePeriodSequence() {
-        assertDoesNotThrow(TrackingDatabase_Integrity::validatePeriodSequence);
+        DataObjectTestUtil.testStandardOrder(ExistingPeriod.class);
     }
 }

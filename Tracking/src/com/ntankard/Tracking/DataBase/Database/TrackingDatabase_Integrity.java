@@ -3,14 +3,10 @@ package com.ntankard.Tracking.DataBase.Database;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.HasDefault;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.SpecialValues;
-import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Transfers.BankTransfer.CurrencyBankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfers.BankTransfer.IntraCurrencyBankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer.CategoryFundTransfer;
 import com.ntankard.Tracking.DataBase.Interface.Set.Full_Set;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class TrackingDatabase_Integrity {
 
@@ -36,7 +32,6 @@ public class TrackingDatabase_Integrity {
 
     public static void validateRepaired() {
         validateCategoryFundTransfer();
-        validatePeriodSequence();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -182,43 +177,6 @@ public class TrackingDatabase_Integrity {
             if (!categoryFundTransfer.getDestinationCurrency().equals(categoryFundTransfer.getSourceCurrency())) {
                 throw new RuntimeException("Fund source and destination currencies do not match when they should");
             }
-        }
-    }
-
-    /**
-     * Validate that all periods are in a row with none missing. Also validate that they are connected properly
-     */
-    public static void validatePeriodSequence() {
-        List<Period> periods = new ArrayList<>(TrackingDatabase.get().get(Period.class));
-
-        // Find the first period
-        Period start = periods.get(0);
-        while (start.getLast() != null) {
-            start = start.getLast();
-        }
-
-        // Iterate through all periods
-        periods.remove(start);
-        while (start.getNext() != null) {
-            if (!start.getNext().getLast().equals(start)) {
-                throw new RuntimeException("Core Database error. Periods are not sequential");
-            }
-            if (start.getMonth() == 12) {
-                if (start.getNext().getMonth() != 1 || start.getYear() != start.getNext().getYear() - 1) {
-                    throw new RuntimeException("Core Database error. Periods dates did not roll over");
-                }
-            } else {
-                if (start.getMonth() + 1 != start.getNext().getMonth()) {
-                    throw new RuntimeException("Core Database error. Months out of over");
-                }
-            }
-
-            start = start.getNext();
-            periods.remove(start);
-        }
-
-        if (periods.size() != 0) {
-            throw new RuntimeException("Core Database error. Not all periods are in order");
         }
     }
 }

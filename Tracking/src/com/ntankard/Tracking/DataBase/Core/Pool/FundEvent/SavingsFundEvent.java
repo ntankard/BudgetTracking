@@ -1,6 +1,7 @@
 package com.ntankard.Tracking.DataBase.Core.Pool.FundEvent;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
+import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
@@ -22,7 +23,7 @@ public class SavingsFundEvent extends FundEvent {
      */
     @Override
     public Boolean isActiveThisPeriod(Period period) {
-        return true;
+        return isChargeThisPeriod(period);
     }
 
     /**
@@ -30,7 +31,7 @@ public class SavingsFundEvent extends FundEvent {
      */
     @Override
     public Boolean isChargeThisPeriod(Period period) {
-        return true;
+        return period instanceof ExistingPeriod;
     }
 
     /**

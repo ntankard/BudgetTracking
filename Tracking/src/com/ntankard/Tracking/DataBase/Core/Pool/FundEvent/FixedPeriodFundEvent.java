@@ -5,6 +5,7 @@ import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.ClassExtension.SetterProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
+import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer.UseCategoryFundTransfer;
@@ -23,7 +24,7 @@ import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 public class FixedPeriodFundEvent extends FundEvent {
 
     // My parents
-    private Period start;
+    private ExistingPeriod start;
 
     // My values
     private Integer duration;
@@ -32,7 +33,7 @@ public class FixedPeriodFundEvent extends FundEvent {
      * Constructor
      */
     @ParameterMap(parameterGetters = {"getId", "getName", "getCategory", "getStart", "getDuration"})
-    public FixedPeriodFundEvent(Integer id, String name, Category category, Period start, Integer duration) {
+    public FixedPeriodFundEvent(Integer id, String name, Category category, ExistingPeriod start, Integer duration) {
         super(id, name, category, 1);
         if (start == null) throw new IllegalArgumentException("Start was null");
         if (duration < 1) throw new IllegalArgumentException("Duration is less than 1");
@@ -68,8 +69,8 @@ public class FixedPeriodFundEvent extends FundEvent {
             if (periods.size() == 0) {
                 return false;
             }
+            periods.sort(new Ordered_Comparator());
 
-            periods.sort(new Ordered_Comparator<>());
             if (period.getOrder() < getStart().getOrder()) {
                 return period.getOrder() >= periods.get(0).getOrder();
             } else {
@@ -103,7 +104,7 @@ public class FixedPeriodFundEvent extends FundEvent {
     //------------------------------------------------------------------------------------------------------------------
 
     @DisplayProperties(order = 4)
-    public Period getStart() {
+    public ExistingPeriod getStart() {
         return start;
     }
 
@@ -126,7 +127,7 @@ public class FixedPeriodFundEvent extends FundEvent {
     }
 
     @SetterProperties(localSourceMethod = "sourceOptions")
-    public void setStart(Period start) {
+    public void setStart(ExistingPeriod start) {
         if (start == null) throw new IllegalArgumentException("Start was null");
         this.start.notifyChildUnLink(this);
         this.start = start;

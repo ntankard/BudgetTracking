@@ -313,7 +313,7 @@ public class TrackingDatabase_Reader {
                 throw new RuntimeException("\n" + "Class: " + dataObjectSaver.aClass.getSimpleName() + " Method:" + nameTypePair.name + "\n" + e);
             }
             if (!getter.getReturnType().equals(nameTypePair.type))
-                throw new RuntimeException("Getter provided by ParameterMap dose not match the parameter in the constructor. Could save but would not be able to load. Aborting save");
+                throw new RuntimeException("Class:" + dataObject.getClass().getSimpleName() + " Method:" + nameTypePair.name + " Getter provided by ParameterMap dose not match the parameter in the constructor. Could save but would not be able to load. Aborting save");
 
             // Execute the getter
             Object getterValue;

@@ -2,11 +2,9 @@ package com.ntankard.Tracking.DataBase.Core.BaseObject;
 
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Database.SubContainers.DataObjectContainer;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
-import com.ntankard.Tracking.Dispaly.Util.Comparators.Ordered_Comparator;
 
 import java.util.List;
 
@@ -108,11 +106,7 @@ public abstract class DataObject {
      */
     @SuppressWarnings("unchecked")
     public <T extends DataObject> List<T> getChildren(Class<T> type) {
-        List<T> toReturn = container.get(type);
-        if (Ordered.class.isAssignableFrom(type)) {
-            ((List<? extends Ordered>) toReturn).sort(new Ordered_Comparator<>());
-        }
-        return toReturn;
+        return container.get(type);
     }
 
     /**

@@ -6,7 +6,6 @@ import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Core.Transfers.Transfer;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.Extended.Sum.PeriodPool_SumSet;
-import com.ntankard.Tracking.Dispaly.Util.Comparators.Ordered_Comparator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +38,6 @@ public class ModelData_Columns {
 
         // Find all categories
         categories.addAll(TrackingDatabase.get().get(Category.class));
-        categories.sort(new Ordered_Comparator());
 
         for (Category category : categories) {
 

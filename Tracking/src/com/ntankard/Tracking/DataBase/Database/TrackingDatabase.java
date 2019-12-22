@@ -146,11 +146,7 @@ public class TrackingDatabase {
      */
     @SuppressWarnings("unchecked")
     public <T extends DataObject> List<T> get(Class<T> type) {
-        List<T> toReturn = masterMap.get(type);
-        if (Ordered.class.isAssignableFrom(type)) {
-            ((List<? extends Ordered>) toReturn).sort(new Ordered_Comparator<>());
-        }
-        return toReturn;
+        return masterMap.get(type);
     }
 
     /**

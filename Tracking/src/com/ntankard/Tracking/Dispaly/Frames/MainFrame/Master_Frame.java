@@ -2,6 +2,7 @@ package com.ntankard.Tracking.Dispaly.Frames.MainFrame;
 
 import com.ntankard.DynamicGUI.Util.Containers.ButtonPanel;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
+import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase_Reader;
@@ -66,7 +67,7 @@ public class Master_Frame extends JPanel implements Updatable {
 
         JButton addPeriod_btn = new JButton("Add Period");
         addPeriod_btn.addActionListener(e -> {
-            Period last = TrackingDatabase.get().get(Period.class).get(TrackingDatabase.get().get(Period.class).size() - 1);
+            ExistingPeriod last = TrackingDatabase.get().get(ExistingPeriod.class).get(TrackingDatabase.get().get(ExistingPeriod.class).size() - 1);
             Period period = last.generateNext();
             TrackingDatabase.get().add(period);
             notifyUpdate();

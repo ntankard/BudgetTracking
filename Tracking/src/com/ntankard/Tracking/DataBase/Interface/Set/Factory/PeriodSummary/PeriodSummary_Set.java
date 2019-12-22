@@ -4,7 +4,6 @@ import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.ObjectSet;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Period_Summary;
-import com.ntankard.Tracking.Dispaly.Util.Comparators.Ordered_Comparator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +21,6 @@ public class PeriodSummary_Set implements ObjectSet<Period_Summary> {
         for (Period period : TrackingDatabase.get().get(Period.class)) {
             toReturn.add(new Period_Summary(period));
         }
-        toReturn.sort(new Ordered_Comparator<>());
         return toReturn;
     }
 }

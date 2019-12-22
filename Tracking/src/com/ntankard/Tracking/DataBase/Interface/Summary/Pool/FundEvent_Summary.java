@@ -5,6 +5,7 @@ import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
+import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
 
@@ -21,10 +22,12 @@ public class FundEvent_Summary extends PoolSummary<FundEvent> {
     @Override
     @DisplayProperties(order = 5, dataType = CURRENCY)
     public Double getStart() {
-        if (getPeriod().getLast() == null) {
+        int index = TrackingDatabase.get().get(Period.class).indexOf(getPeriod());
+        if (index == 0) {
             return 0.0;
         }
-        return new FundEvent_Summary(getPeriod().getLast(), getPool()).getEnd();
+        Period last = TrackingDatabase.get().get(Period.class).get(index - 1);
+        return new FundEvent_Summary(last, getPool()).getEnd();
     }
 
     @Override

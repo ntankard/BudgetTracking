@@ -1,7 +1,7 @@
 package com.ntankard.Tracking.Dispaly.Util.ElementControllers;
 
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
-import com.ntankard.Tracking.DataBase.Core.Period.Period;
+import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FixedPeriodFundEvent;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
@@ -24,7 +24,7 @@ public class FixedPeriodFundEvent_ElementController extends TrackingDatabase_Ele
         return new FixedPeriodFundEvent(TrackingDatabase.get().getNextId(),
                 "",
                 TrackingDatabase.get().getDefault(Category.class),
-                TrackingDatabase.get().getDefault(Period.class),
+                TrackingDatabase.get().getDefault(ExistingPeriod.class),
                 1);
     }
 }

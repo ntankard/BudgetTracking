@@ -8,6 +8,8 @@ import java.util.*;
 
 public class DataObjectContainer extends Container<Class<? extends DataObject>, Map<Integer, DataObject>> {
 
+    private Map<Class<? extends DataObject>, List<DataObject>> masterContainer = new HashMap<>();
+
     /**
      * Add a new object
      *
@@ -22,6 +24,9 @@ public class DataObjectContainer extends Container<Class<? extends DataObject>, 
             if (!container.containsKey(aClass)) {
                 container.put(aClass, new HashMap<>());
             }
+            if (!masterContainer.containsKey(aClass)) {
+                masterContainer.put(aClass, new ArrayList<>());
+            }
 
             // Check for duplicate IDs across the entire container
             if (container.get(aClass).containsKey(toAdd.getId())) {
@@ -30,6 +35,11 @@ public class DataObjectContainer extends Container<Class<? extends DataObject>, 
 
             // Add the object at this layer
             container.get(aClass).put(toAdd.getId(), toAdd);
+            masterContainer.get(aClass).add(toAdd);
+
+            if (Ordered.class.isAssignableFrom(aClass)) {
+                masterContainer.get(aClass).sort(new Ordered_Comparator());
+            }
 
             // Jump up the inheritance tree
             aClass = (Class<? extends DataObject>) aClass.getSuperclass();
@@ -53,6 +63,7 @@ public class DataObjectContainer extends Container<Class<? extends DataObject>, 
 
             // Remove the object
             container.get(aClass).remove(toRemove.getId());
+            masterContainer.get(aClass).remove(toRemove);
 
             // Jump up the inheritance tree
             aClass = (Class<? extends DataObject>) aClass.getSuperclass();
@@ -77,17 +88,13 @@ public class DataObjectContainer extends Container<Class<? extends DataObject>, 
      */
     @SuppressWarnings("unchecked")
     public <T extends DataObject> List<T> get(Class<T> tClass) {
-        if (!container.containsKey(tClass)) {
+        if (!masterContainer.containsKey(tClass)) {
             if (tClass == null) {
                 throw new RuntimeException("Trying to get a null item");
             }
-            container.put(tClass, new HashMap<>());
+            masterContainer.put(tClass, new ArrayList<>());
         }
-        List toReturn = new ArrayList(container.get(tClass).values());
-        if (Ordered.class.isAssignableFrom(tClass)) {
-            toReturn.sort(new Ordered_Comparator());
-        }
-        return toReturn;
+        return new ArrayList<T>((Collection<? extends T>) masterContainer.get(tClass));
     }
 
     /**

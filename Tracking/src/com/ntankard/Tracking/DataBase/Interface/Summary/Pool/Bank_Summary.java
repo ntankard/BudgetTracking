@@ -5,12 +5,14 @@ import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
 import com.ntankard.Tracking.DataBase.Core.Currency;
+import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.StatementEnd;
 import com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfers.BankTransfer.BankTransfer;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
+import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.Extended.Sum.PeriodPool_SumSet;
 import com.ntankard.Tracking.DataBase.Interface.Set.MultiParent_Set;
 
@@ -22,7 +24,7 @@ import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 public class Bank_Summary extends PoolSummary<Bank> implements CurrencyBound {
 
     @ParameterMap(shouldSave = false)
-    public Bank_Summary(Period period, Bank pool) {
+    public Bank_Summary(ExistingPeriod period, Bank pool) {
         super(period, pool);
     }
 
@@ -40,9 +42,15 @@ public class Bank_Summary extends PoolSummary<Bank> implements CurrencyBound {
     @Override
     @DisplayProperties(order = 5, dataType = CURRENCY)
     public Double getStart() {
-        if (getPeriod().getLast() == null)
-            return getPool().getStart();
-        return new MultiParent_Set<>(StatementEnd.class, getPeriod().getLast(), getPool()).get().get(0).getEnd();
+        int index = TrackingDatabase.get().get(Period.class).indexOf(getPeriod());
+        if (index == 0) {
+            throw new RuntimeException("This type of Period should not have a bank summary");
+        }
+        Period last = TrackingDatabase.get().get(Period.class).get(index - 1);
+        if (last instanceof ExistingPeriod) {
+            return new MultiParent_Set<>(StatementEnd.class, last, getPool()).get().get(0).getEnd();
+        }
+        return getPool().getStart();
     }
 
     @Override

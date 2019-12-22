@@ -84,7 +84,6 @@ public abstract class Transfer<SourceType extends DataObject, DestinationType ex
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
     @DisplayProperties(order = 2)
     public Period getPeriod() {
         return period;

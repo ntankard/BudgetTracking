@@ -2,6 +2,7 @@ package com.ntankard.Tracking.Dispaly.Frames.MainFrame;
 
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
+import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.Factory.PeriodSummary.PeriodSummary_Set;
@@ -50,9 +51,11 @@ public class SummaryPanel extends UpdatableJPanel {
         JTabbedPane category_tPanel = new JTabbedPane();
         JTabbedPane fundEvent_tPanel = new JTabbedPane();
         for (Period period : TrackingDatabase.get().get(Period.class)) {
-            DataObject_VerbosityDisplayList<Bank_Summary> bankPanel = new DataObject_VerbosityDisplayList<>(Bank_Summary.class, new BankSummary_Set(period), this);
-            bankSummary_panels.add(bankPanel);
-            bank_tPanel.addTab(period.toString(), bankPanel);
+            if (period instanceof ExistingPeriod) {
+                DataObject_VerbosityDisplayList<Bank_Summary> bankPanel = new DataObject_VerbosityDisplayList<>(Bank_Summary.class, new BankSummary_Set((ExistingPeriod) period), this);
+                bankSummary_panels.add(bankPanel);
+                bank_tPanel.addTab(period.toString(), bankPanel);
+            }
 
             DataObject_VerbosityDisplayList<Category_Summary> categoryPanel = new DataObject_VerbosityDisplayList<>(Category_Summary.class, new CategorySummary_Set(period), this);
             categorySummary_panels.add(categoryPanel);

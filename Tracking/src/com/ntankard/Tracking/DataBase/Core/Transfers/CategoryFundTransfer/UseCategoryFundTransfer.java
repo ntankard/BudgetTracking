@@ -47,4 +47,12 @@ public class UseCategoryFundTransfer extends CategoryFundTransfer {
         this.currency = currency;
         this.currency.notifyChildLink(this);
     }
+
+    @SetterProperties(localSourceMethod = "sourceOptions")
+    public void setPeriod(Period period) {
+        if (period == null) throw new IllegalArgumentException("Period was null");
+        this.period.notifyChildUnLink(this);
+        this.period = period;
+        this.period.notifyChildLink(this);
+    }
 }

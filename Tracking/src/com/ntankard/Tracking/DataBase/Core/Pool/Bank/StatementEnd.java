@@ -6,8 +6,8 @@ import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
-import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Currency;
+import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ import static com.ntankard.ClassExtension.MemberProperties.*;
 public class StatementEnd extends DataObject implements CurrencyBound, Ordered {
 
     // My parents
-    private Period period;
+    private ExistingPeriod period;
     private Bank bank;
 
     // My values
@@ -30,7 +30,7 @@ public class StatementEnd extends DataObject implements CurrencyBound, Ordered {
      * Constructor
      */
     @ParameterMap(parameterGetters = {"getId", "getPeriod", "getBank", "getEnd"})
-    public StatementEnd(Integer id, Period period, Bank bank, Double end) {
+    public StatementEnd(Integer id, ExistingPeriod period, Bank bank, Double end) {
         super(id);
         if (period == null) throw new IllegalArgumentException("Period is null");
         if (bank == null) throw new IllegalArgumentException("Bank is null");
@@ -59,7 +59,7 @@ public class StatementEnd extends DataObject implements CurrencyBound, Ordered {
 
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     @DisplayProperties(order = 2)
-    public Period getPeriod() {
+    public ExistingPeriod getPeriod() {
         return period;
     }
 

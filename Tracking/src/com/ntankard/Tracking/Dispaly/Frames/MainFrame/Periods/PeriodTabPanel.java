@@ -88,6 +88,8 @@ public class PeriodTabPanel extends UpdatableJPanel {
                 periodsPanels.add(panel);
                 master_tPanel.addTab(period.toString(), panel);
             }
+
+            master_tPanel.setSelectedIndex(periods.size() - 2);
         }
     }
 }

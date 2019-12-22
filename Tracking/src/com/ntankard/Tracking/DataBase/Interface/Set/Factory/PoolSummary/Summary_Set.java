@@ -5,30 +5,31 @@ import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.ObjectSet;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.PoolSummary;
-import com.ntankard.Tracking.Dispaly.Util.Comparators.Ordered_Comparator;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Summary_Set<SummaryType extends PoolSummary, PoolType extends Pool> implements ObjectSet<SummaryType> {
+public abstract class Summary_Set<SummaryType extends PoolSummary, PoolType extends Pool, PeriodType extends Period> implements ObjectSet<SummaryType> {
 
     // The objects used to generate the set
+    private Class<PeriodType> periodTypeClass;
+    private PeriodType corePeriod;
     private Class<PoolType> poolTypeClass;
-    private Period corePeriod;
     private PoolType corePool;
 
-    protected Summary_Set(Class<PoolType> poolTypeClass, PoolType corePool) {
-        this(poolTypeClass, null, corePool);
+    protected Summary_Set(Class<PeriodType> periodTypeClass, Class<PoolType> poolTypeClass, PoolType corePool) {
+        this(periodTypeClass, null, poolTypeClass, corePool);
     }
 
-    protected Summary_Set(Class<PoolType> poolTypeClass, Period corePeriod) {
-        this(poolTypeClass, corePeriod, null);
+    protected Summary_Set(Class<PeriodType> periodTypeClass, PeriodType corePeriod, Class<PoolType> poolTypeClass) {
+        this(periodTypeClass, corePeriod, poolTypeClass, null);
     }
 
-    protected Summary_Set(Class<PoolType> poolTypeClass, Period corePeriod, PoolType corePool) {
+    protected Summary_Set(Class<PeriodType> periodTypeClass, PeriodType corePeriod, Class<PoolType> poolTypeClass, PoolType corePool) {
         this.poolTypeClass = poolTypeClass;
-        this.corePeriod = corePeriod;
         this.corePool = corePool;
+        this.corePeriod = corePeriod;
+        this.periodTypeClass = periodTypeClass;
     }
 
     /**
@@ -40,7 +41,7 @@ public abstract class Summary_Set<SummaryType extends PoolSummary, PoolType exte
 
         if (corePool == null && corePeriod == null) {
             for (PoolType pool : getPools()) {
-                for (Period period : TrackingDatabase.get().get(Period.class)) {
+                for (PeriodType period : TrackingDatabase.get().get(periodTypeClass)) {
                     SummaryType summary = getSummary(period, pool);
                     if (summary != null) {
                         toReturn.add(summary);
@@ -55,7 +56,7 @@ public abstract class Summary_Set<SummaryType extends PoolSummary, PoolType exte
                 }
             }
         } else {
-            for (Period period : TrackingDatabase.get().get(Period.class)) {
+            for (PeriodType period : TrackingDatabase.get().get(periodTypeClass)) {
                 SummaryType summary = getSummary(period, corePool);
                 if (summary != null) {
                     toReturn.add(summary);
@@ -63,7 +64,6 @@ public abstract class Summary_Set<SummaryType extends PoolSummary, PoolType exte
             }
         }
 
-        toReturn.sort(new Ordered_Comparator<>());
         return toReturn;
     }
 
@@ -83,5 +83,5 @@ public abstract class Summary_Set<SummaryType extends PoolSummary, PoolType exte
      * @param pool   The Parent
      * @return A solid summary object
      */
-    protected abstract SummaryType getSummary(Period period, PoolType pool);
+    protected abstract SummaryType getSummary(PeriodType period, PoolType pool);
 }

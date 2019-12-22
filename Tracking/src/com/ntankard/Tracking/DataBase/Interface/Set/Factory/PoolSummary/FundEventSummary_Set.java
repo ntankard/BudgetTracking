@@ -4,18 +4,18 @@ import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.FundEvent_Summary;
 
-public class FundEventSummary_Set extends Summary_Set<FundEvent_Summary, FundEvent> {
+public class FundEventSummary_Set extends Summary_Set<FundEvent_Summary, FundEvent, Period> {
 
     public FundEventSummary_Set(FundEvent coreParent) {
-        super(FundEvent.class, coreParent);
+        super(Period.class, FundEvent.class, coreParent);
     }
 
     public FundEventSummary_Set(Period corePeriod) {
-        super(FundEvent.class, corePeriod);
+        super(Period.class, corePeriod, FundEvent.class);
     }
 
     public FundEventSummary_Set(Period corePeriod, FundEvent coreParent) {
-        super(FundEvent.class, corePeriod, coreParent);
+        super(Period.class, corePeriod, FundEvent.class, coreParent);
     }
 
     /**

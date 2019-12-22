@@ -51,11 +51,6 @@ class TrackingDatabase_IntegrityTest {
     }
 
     @Test
-    void validatePeriodSequence() {
-        TrackingDatabase_Integrity.validatePeriodSequence();
-    }
-
-    @Test
     void validateCurrencyBankTransfer() {
         TrackingDatabase_Integrity.validateCurrencyBankTransfer();
     }

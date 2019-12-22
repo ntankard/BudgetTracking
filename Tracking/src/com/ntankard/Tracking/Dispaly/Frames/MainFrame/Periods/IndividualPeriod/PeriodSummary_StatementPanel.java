@@ -2,6 +2,7 @@ package com.ntankard.Tracking.Dispaly.Frames.MainFrame.Periods.IndividualPeriod;
 
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
+import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
 import com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer;
@@ -15,7 +16,6 @@ import com.ntankard.Tracking.DataBase.Interface.Set.Factory.PoolSummary.FundEven
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Bank_Summary;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.FundEvent_Summary;
 import com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.PeriodSummary_Table;
-import com.ntankard.Tracking.Dispaly.Util.Comparators.Ordered_Comparator;
 import com.ntankard.Tracking.Dispaly.Util.ElementControllers.BankCategoryTransfer_ElementController;
 import com.ntankard.Tracking.Dispaly.Util.ElementControllers.CurrencyBankTransfer_ElementController;
 import com.ntankard.Tracking.Dispaly.Util.ElementControllers.IntraCurrencyBankTransfer_ElementController;
@@ -97,10 +97,11 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
 
         JTabbedPane summary_panel = new JTabbedPane();
 
-        bankSummary_panel = new Object_DisplayList<>(Bank_Summary.class, new BankSummary_Set(period), false, this);
-        bankSummary_panel.setComparator(new Ordered_Comparator<>());
-        bankSummary_panel.getMainPanel().getListSelectionModel().addListSelectionListener(e -> updateTransactions());
-        summary_panel.add("Bank", bankSummary_panel);
+        if (period instanceof ExistingPeriod) {
+            bankSummary_panel = new Object_DisplayList<>(Bank_Summary.class, new BankSummary_Set((ExistingPeriod) period), false, this);
+            bankSummary_panel.getMainPanel().getListSelectionModel().addListSelectionListener(e -> updateTransactions());
+            summary_panel.add("Bank", bankSummary_panel);
+        }
 
         fundEventSummary_panel = new Object_DisplayList<>(FundEvent_Summary.class, new FundEventSummary_Set(period), false, this);
         summary_panel.add("Fund Event", fundEventSummary_panel);
@@ -148,10 +149,12 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
 
         updateTransactions();
 
-        int max = bankSummary_panel.getMainPanel().getListSelectionModel().getMaxSelectionIndex();
-        int min = bankSummary_panel.getMainPanel().getListSelectionModel().getMaxSelectionIndex();
-        bankSummary_panel.update();
-        bankSummary_panel.getMainPanel().getListSelectionModel().setSelectionInterval(min, max);
+        if (bankSummary_panel != null) {
+            int max = bankSummary_panel.getMainPanel().getListSelectionModel().getMaxSelectionIndex();
+            int min = bankSummary_panel.getMainPanel().getListSelectionModel().getMaxSelectionIndex();
+            bankSummary_panel.update();
+            bankSummary_panel.getMainPanel().getListSelectionModel().setSelectionInterval(min, max);
+        }
         fundEventSummary_panel.update();
     }
 
@@ -160,11 +163,12 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
      */
     private void updateTransactions() {
         // Find out if a statement has been selected
-        List selected = bankSummary_panel.getMainPanel().getSelectedItems();
-        if (selected.size() == 1) {
-            selectedBank = ((Bank_Summary) selected.get(0)).getPool();
-        } else {
-            selectedBank = null;
+        selectedBank = null;
+        if (bankSummary_panel != null) {
+            List selected = bankSummary_panel.getMainPanel().getSelectedItems();
+            if (selected.size() == 1) {
+                selectedBank = ((Bank_Summary) selected.get(0)).getPool();
+            }
         }
 
         // Update children on the selection
