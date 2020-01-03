@@ -25,6 +25,12 @@ public class RePayCategoryFundTransfer extends CategoryFundTransfer {
     //------------------------------------------------------------------------------------------------------------------
 
     @Override
+    @DisplayProperties(order = 3)
+    public String getDescription() {
+        return "RP " + super.getDescription();
+    }
+
+    @Override
     @DisplayProperties(order = 5, dataType = CURRENCY)
     public Double getSourceValue() {
         return -getDestination().getCharge(getPeriod());

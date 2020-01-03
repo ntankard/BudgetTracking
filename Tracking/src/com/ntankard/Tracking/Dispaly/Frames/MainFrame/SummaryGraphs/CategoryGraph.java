@@ -2,7 +2,7 @@ package com.ntankard.Tracking.Dispaly.Frames.MainFrame.SummaryGraphs;
 
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
-import com.ntankard.Tracking.DataBase.Core.Period.Period;
+import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Core.Transfers.Transfer;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
@@ -59,9 +59,9 @@ public class CategoryGraph extends UpdatableJPanel {
         //renderer.setSeriesPaint(2, Color.RED);
         plot.setRenderer(renderer);
 
-        String[] axisLabel = new String[TrackingDatabase.get().get(Period.class).size()];
+        String[] axisLabel = new String[TrackingDatabase.get().get(ExistingPeriod.class).size()];
         int i = 0;
-        for (Period period : TrackingDatabase.get().<Period>get(Period.class)) {
+        for (ExistingPeriod period : TrackingDatabase.get().get(ExistingPeriod.class)) {
             axisLabel[i] = period.toString();
             i++;
         }
@@ -85,7 +85,7 @@ public class CategoryGraph extends UpdatableJPanel {
         }
 
         int i = 0;
-        for (Period period : TrackingDatabase.get().get(Period.class)) {
+        for (ExistingPeriod period : TrackingDatabase.get().get(ExistingPeriod.class)) {
             for (Category category : TrackingDatabase.get().get(Category.class)) {
                 categories.get(category).add(i, new PeriodPool_SumSet<>(Transfer.class, period, category).getTotal());
             }
