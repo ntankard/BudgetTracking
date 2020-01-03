@@ -1,4 +1,4 @@
-package com.ntankard.Tracking.Dispaly.Frames.MainFrame;
+package com.ntankard.Tracking.Dispaly.Frames.MainFrame.Funds;
 
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;

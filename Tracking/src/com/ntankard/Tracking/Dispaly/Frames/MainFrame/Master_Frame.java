@@ -6,7 +6,7 @@ import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase_Reader;
-import com.ntankard.Tracking.Dispaly.Frames.MainFrame.Funds.FundTabPanel;
+import com.ntankard.Tracking.Dispaly.Frames.MainFrame.Funds.FundPanel;
 import com.ntankard.Tracking.Dispaly.Frames.MainFrame.Periods.PeriodTabPanel;
 import com.ntankard.Tracking.Dispaly.Frames.MainFrame.SummaryGraphs.SummaryGraphPanel;
 
@@ -17,11 +17,10 @@ public class Master_Frame extends JPanel implements Updatable {
 
     // The GUI components
     private PeriodTabPanel periodPanel;
-    private FundTabPanel fundTabPanel;
+    private FundPanel fundPanel;
     private DatabasePanel databasePanel;
     private SummaryGraphPanel summaryGraphPanel;
     private SummaryPanel summaryPanel;
-    private FundEventsPanel fundEventsPanel;
 
     private String savePath;
 
@@ -81,19 +80,17 @@ public class Master_Frame extends JPanel implements Updatable {
         this.add(btnPanel, BorderLayout.NORTH);
 
         periodPanel = new PeriodTabPanel(this);
-        fundTabPanel = new FundTabPanel(this);
+        fundPanel = new FundPanel(this);
         databasePanel = new DatabasePanel(this);
         summaryGraphPanel = new SummaryGraphPanel(this);
         summaryPanel = new SummaryPanel(this);
-        fundEventsPanel = new FundEventsPanel(this);
 
         JTabbedPane master_tPanel = new JTabbedPane();
         master_tPanel.addTab("Periods", periodPanel);
-        master_tPanel.addTab("Fund", fundTabPanel);
+        master_tPanel.addTab("Fund", fundPanel);
         master_tPanel.addTab("Database", databasePanel);
         master_tPanel.addTab("Summary Graphs", summaryGraphPanel);
         master_tPanel.addTab("Summary", summaryPanel);
-        master_tPanel.addTab("Fund Event", fundEventsPanel);
 
         this.add(master_tPanel, BorderLayout.CENTER);
     }
@@ -112,10 +109,9 @@ public class Master_Frame extends JPanel implements Updatable {
     @Override
     public void update() {
         periodPanel.update();
-        fundTabPanel.update();
+        fundPanel.update();
         databasePanel.update();
         summaryGraphPanel.update();
         summaryPanel.update();
-        fundEventsPanel.update();
     }
 }
