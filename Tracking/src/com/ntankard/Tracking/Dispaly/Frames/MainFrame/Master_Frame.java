@@ -68,7 +68,7 @@ public class Master_Frame extends JPanel implements Updatable {
         addPeriod_btn.addActionListener(e -> {
             ExistingPeriod last = TrackingDatabase.get().get(ExistingPeriod.class).get(TrackingDatabase.get().get(ExistingPeriod.class).size() - 1);
             Period period = last.generateNext();
-            TrackingDatabase.get().add(period);
+            period.add();
             notifyUpdate();
         });
 

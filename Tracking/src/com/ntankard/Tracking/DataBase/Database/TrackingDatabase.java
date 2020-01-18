@@ -97,8 +97,6 @@ public class TrackingDatabase {
      */
     public void add(DataObject dataObject) {
         containers.forEach(container -> container.add(dataObject));
-        dataObject.notifyParentLink();
-        TrackingDatabase_Repair.repair(dataObject);
     }
 
     /**

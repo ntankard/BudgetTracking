@@ -24,7 +24,7 @@ public class TrackingDatabase_Repair {
     public static void repair() {
         if (TrackingDatabase.get().get(SavingsFundEvent.class).size() != 1) {
             if (TrackingDatabase.get().get(SavingsFundEvent.class).size() == 0) {
-                TrackingDatabase.get().add(new SavingsFundEvent(TrackingDatabase.get().getNextId(), TrackingDatabase.get().getSpecialValue(Category.class, Category.SAVINGS)));
+                new SavingsFundEvent(TrackingDatabase.get().getNextId(), TrackingDatabase.get().getSpecialValue(Category.class, Category.SAVINGS)).add();
             } else {
                 throw new RuntimeException("More than 1 savings event");
             }
@@ -43,11 +43,11 @@ public class TrackingDatabase_Repair {
         }
 
         if (!beforeFound) {
-            TrackingDatabase.get().add(new VirtualPeriod(TrackingDatabase.get().getNextId(), "Before", 0));
+            new VirtualPeriod(TrackingDatabase.get().getNextId(), "Before", 0).add();
         }
 
         if (!afterFound) {
-            TrackingDatabase.get().add(new VirtualPeriod(TrackingDatabase.get().getNextId(), "After", Integer.MAX_VALUE));
+            new VirtualPeriod(TrackingDatabase.get().getNextId(), "After", Integer.MAX_VALUE).add();
         }
     }
 
@@ -132,7 +132,7 @@ public class TrackingDatabase_Repair {
             throw new RuntimeException("More than 1 statement end");
         }
         if (new MultiParent_Set<>(StatementEnd.class, bank, period).get().size() == 0) {
-            TrackingDatabase.get().add(new StatementEnd(TrackingDatabase.get().getNextId(), period, bank, 0.0));
+            new StatementEnd(TrackingDatabase.get().getNextId(), period, bank, 0.0).add();
         }
     }
 
@@ -145,11 +145,11 @@ public class TrackingDatabase_Repair {
     private static void setupRePay(FundEvent fundEvent, ExistingPeriod period) {
         List<RePayCategoryFundTransfer> toRemove = new MultiParent_Set<>(RePayCategoryFundTransfer.class, fundEvent, period).get();
         for (RePayCategoryFundTransfer rePayCategoryFundTransfer : toRemove) {
-            TrackingDatabase.get().remove(rePayCategoryFundTransfer);
+            rePayCategoryFundTransfer.remove();
         }
 
         if (fundEvent.isChargeThisPeriod(period)) {
-            TrackingDatabase.get().add(new RePayCategoryFundTransfer(TrackingDatabase.get().getNextId(), period, fundEvent, TrackingDatabase.get().getDefault(Currency.class)));
+            new RePayCategoryFundTransfer(TrackingDatabase.get().getNextId(), period, fundEvent, TrackingDatabase.get().getDefault(Currency.class)).add();
         }
     }
 }

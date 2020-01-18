@@ -3,7 +3,6 @@ package com.ntankard.Tracking.Dispaly.Util.Panels;
 import com.ntankard.DynamicGUI.Containers.DynamicGUI_DisplayList.ElementController;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 
 public abstract class TrackingDatabase_ElementController<T extends DataObject> implements ElementController<T> {
 
@@ -24,7 +23,7 @@ public abstract class TrackingDatabase_ElementController<T extends DataObject> i
      */
     @Override
     public void deleteElement(T toDel) {
-        TrackingDatabase.get().remove(toDel);
+        toDel.remove();
         master.notifyUpdate();
     }
 
@@ -33,7 +32,7 @@ public abstract class TrackingDatabase_ElementController<T extends DataObject> i
      */
     @Override
     public void addElement(T newObj) {
-        TrackingDatabase.get().add(newObj);
+        newObj.add();
         master.notifyUpdate();
     }
 }

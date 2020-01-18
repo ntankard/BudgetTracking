@@ -82,7 +82,7 @@ public class TrackingDatabase_Reader {
         for (Class toLoad : loadOrder) {
             if (readObjects.containsKey(toLoad)) {
                 for (DataObject toAdd : readObjects.get(toLoad)) {
-                    data.add(toAdd);
+                    toAdd.add();
                 }
             }
         }

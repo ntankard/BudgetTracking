@@ -5,6 +5,7 @@ import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Database.SubContainers.DataObjectContainer;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
+import com.ntankard.Tracking.DataBase.Database.TrackingDatabase_Repair;
 
 import java.util.List;
 
@@ -49,7 +50,27 @@ public abstract class DataObject {
     }
 
     //------------------------------------------------------------------------------------------------------------------
-    //############################################# Parental Hierarchy  ################################################
+    //################################################ Database access  ################################################
+    //------------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Add this object to the database. Notify everyone required and create or add supporting objects if needed
+     */
+    public void add(){
+        TrackingDatabase.get().add(this);
+        this.notifyParentLink();
+        TrackingDatabase_Repair.repair(this);
+    }
+
+    /**
+     * Safely remove this object from the database
+     */
+    public void remove(){
+        throw new UnsupportedOperationException("Not cleared for removal");
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    //############################################### Parental Hierarchy  ##############################################
     //------------------------------------------------------------------------------------------------------------------
 
     /**
