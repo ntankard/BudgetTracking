@@ -5,7 +5,6 @@ import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Database.SubContainers.DataObjectContainer;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
-import com.ntankard.Tracking.DataBase.Database.TrackingDatabase_Repair;
 
 import java.util.List;
 
@@ -56,17 +55,27 @@ public abstract class DataObject {
     /**
      * Add this object to the database. Notify everyone required and create or add supporting objects if needed
      */
-    public void add(){
+    public void add() {
         TrackingDatabase.get().add(this);
         this.notifyParentLink();
-        TrackingDatabase_Repair.repair(this);
     }
 
     /**
-     * Safely remove this object from the database
+     * Safely remove this object from the database. Disabled by default
      */
-    public void remove(){
+    public void remove() {
         throw new UnsupportedOperationException("Not cleared for removal");
+    }
+
+    /**
+     * Safely remove this object from the database.
+     */
+    protected void remove_impl() {
+        if (this.getChildren().size() != 0) {
+            throw new RuntimeException("Cant delete this kind of object. NoneFundEvent still has children");
+        }
+
+        this.notifyParentUnLink();
     }
 
     //------------------------------------------------------------------------------------------------------------------

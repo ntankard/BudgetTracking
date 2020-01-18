@@ -4,12 +4,16 @@ import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
+import com.ntankard.Tracking.DataBase.Core.Currency;
+import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer.RePayCategoryFundTransfer;
 import com.ntankard.Tracking.DataBase.Database.ObjectFactory;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
+import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
+import com.ntankard.Tracking.DataBase.Interface.Set.Children_Set;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +72,43 @@ public abstract class FundEvent extends Pool {
      * @return The required charge
      */
     public abstract Double getCharge(Period period);
+
+    /**
+     * {@inheritDoc
+     */
+    @Override
+    public void add() {
+        super.add();
+
+        recreateRePay();
+    }
+
+    /**
+     * {@inheritDoc
+     */
+    @Override
+    public void remove() {
+        for (RePayCategoryFundTransfer toRemove : new Children_Set<>(RePayCategoryFundTransfer.class, this).get()) {
+            toRemove.remove();
+        }
+
+        super.remove_impl();
+    }
+
+    /**
+     * Create the repay objects (remove old ones)
+     */
+    protected void recreateRePay() {
+        for (RePayCategoryFundTransfer toRemove : new Children_Set<>(RePayCategoryFundTransfer.class, this).get()) {
+            toRemove.remove();
+        }
+
+        for (ExistingPeriod period : TrackingDatabase.get().get(ExistingPeriod.class)) {
+            if (this.isChargeThisPeriod(period)) {
+                new RePayCategoryFundTransfer(TrackingDatabase.get().getNextId(), period, this, TrackingDatabase.get().getDefault(Currency.class)).add();
+            }
+        }
+    }
 
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Getters #####################################################

@@ -105,8 +105,6 @@ public class TrackingDatabase {
      * @param dataObject The object to remove
      */
     public void remove(DataObject dataObject) {
-        TrackingDatabase_Repair.prepareForRemove(dataObject);
-        dataObject.notifyParentUnLink();
         containers.forEach(container -> container.remove(dataObject));
     }
 

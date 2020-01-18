@@ -3,11 +3,15 @@ package com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
+import com.ntankard.Tracking.DataBase.Core.Currency;
+import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.StatementEnd;
+import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer.RePayCategoryFundTransfer;
 import com.ntankard.Tracking.DataBase.Database.ObjectFactory;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
+import com.ntankard.Tracking.DataBase.Interface.Set.MultiParent_Set;
 
 @ClassExtensionProperties(includeParent = true)
 @ObjectFactory(builtObjects = {StatementEnd.class, RePayCategoryFundTransfer.class})
@@ -52,6 +56,32 @@ public class ExistingPeriod extends Period {
         return year + "-" + month;
     }
 
+    /**
+     * {@inheritDoc
+     */
+    @Override
+    public void add() {
+        super.add();
+
+        for (FundEvent fundEvent : TrackingDatabase.get().get(FundEvent.class)) {
+            if (new MultiParent_Set<>(RePayCategoryFundTransfer.class, fundEvent, this).get().size() != 0) {
+                throw new RuntimeException("Repay exists before it should");
+            }
+
+            if (fundEvent.isChargeThisPeriod(this)) {
+                new RePayCategoryFundTransfer(TrackingDatabase.get().getNextId(), this, fundEvent, TrackingDatabase.get().getDefault(Currency.class)).add();
+            }
+        }
+
+        for (Bank bank : TrackingDatabase.get().get(Bank.class)) {
+            if (new MultiParent_Set<>(StatementEnd.class, bank, this).get().size() > 1) {
+                throw new RuntimeException("More than 1 statement end");
+            }
+            if (new MultiParent_Set<>(StatementEnd.class, bank, this).get().size() == 0) {
+                new StatementEnd(TrackingDatabase.get().getNextId(), this, bank, 0.0).add();
+            }
+        }
+    }
 
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Getters #####################################################
