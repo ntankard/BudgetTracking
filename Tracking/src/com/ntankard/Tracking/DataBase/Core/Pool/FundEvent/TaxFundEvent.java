@@ -6,10 +6,13 @@ import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
+import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer.RePayCategoryFundTransfer;
+import com.ntankard.Tracking.DataBase.Database.ObjectFactory;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Period_Summary;
 
 @ClassExtensionProperties(includeParent = true)
+@ObjectFactory(builtObjects = {RePayCategoryFundTransfer.class})
 public class TaxFundEvent extends FundEvent {
 
     // My Values

@@ -6,8 +6,11 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import static com.ntankard.Tracking.DataBase.Database.TrackingDatabase_Reader.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TrackingDatabase_ReaderTest {
@@ -16,22 +19,30 @@ class TrackingDatabase_ReaderTest {
     static void setUp() {
         TrackingDatabase.reset();
         String savePath = "C:\\Users\\Nicholas\\Google Drive\\BudgetTrackingData";
-        TrackingDatabase_Reader.read(TrackingDatabase.get(), savePath);
+        read(TrackingDatabase.get(), savePath);
         TrackingDatabase.get().finalizeCore();
     }
 
     @Test
     void testReadWrite() {
+
+        // Generate a list of all objects in the database linked to there ID
+        Map<Integer, DataObject> allObjects = new HashMap<>();
+        for (DataObject toAdd : TrackingDatabase.get().getAll()) {
+            allObjects.put(toAdd.getId(), toAdd);
+        }
+
+
         for (Class<? extends DataObject> aClass : TrackingDatabase.get().getDataObjectTypes()) {
-            for (Object dataObject : TrackingDatabase.get().get(aClass)) {
+            for (DataObject dataObject : TrackingDatabase.get().get(aClass)) {
 
-                TrackingDatabase_Reader.DataObjectSaver dataObjectSaver = TrackingDatabase_Reader.generateConstructorMap(dataObject.getClass());
-                if (dataObjectSaver.shouldSave) {
-                    List<String> first = TrackingDatabase_Reader.dataObjectToString((DataObject) dataObject, dataObjectSaver);
+                List<ConstructorParameter> constructorParameters = getConstructorParameters(dataObject.getClass());
+                if (getParameterMap(dataObject.getClass()).shouldSave()) {
+                    List<String> first = dataObjectToString(dataObject, constructorParameters);
 
-                    DataObject newObj = TrackingDatabase_Reader.dataObjectFromString(first.toArray(new String[0]), dataObjectSaver, dataObjectSaver, TrackingDatabase.get());
+                    DataObject newObj = dataObjectFromString(dataObject.getClass(), first.toArray(new String[0]), constructorParameters, constructorParameters, allObjects);
 
-                    List<String> second = TrackingDatabase_Reader.dataObjectToString(newObj, dataObjectSaver);
+                    List<String> second = dataObjectToString(newObj, constructorParameters);
 
                     assertEquals(first.size(), second.size());
                     for (int i = 0; i < second.size(); i++) {
@@ -48,11 +59,11 @@ class TrackingDatabase_ReaderTest {
         String testPath = "testFiles\\";
 
         TrackingDatabase.reset();
-        TrackingDatabase_Reader.read(TrackingDatabase.get(), savePath);
+        read(TrackingDatabase.get(), savePath);
         TrackingDatabase.get().finalizeCore();
 
         new File(testPath).mkdir();
-        TrackingDatabase_Reader.save(TrackingDatabase.get(), testPath);
+        save(TrackingDatabase.get(), testPath);
 
         String saveDir = FileUtil.getLatestSaveDirectory(savePath);
         List<String> saveFiles = FileUtil.findFilesInDirectory(saveDir);

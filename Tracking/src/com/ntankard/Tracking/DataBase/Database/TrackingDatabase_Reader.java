@@ -1,7 +1,6 @@
 package com.ntankard.Tracking.DataBase.Database;
 
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.Util.FileUtil;
 
 import java.lang.reflect.Constructor;
@@ -20,44 +19,71 @@ public class TrackingDatabase_Reader {
      * @param data     The data to load into
      * @param corePath The path that files are located in
      */
+    @SuppressWarnings("unchecked")
     public static void read(TrackingDatabase data, String corePath) {
-        String csvFile = FileUtil.getLatestSaveDirectory(corePath);
-        List<String> files = FileUtil.findFilesInDirectory(csvFile);
+        String savePath = FileUtil.getLatestSaveDirectory(corePath);
+        List<String> files = FileUtil.findFilesInDirectory(savePath);
 
-        Map<DataObjectSaver, List<String[]>> readLines = new HashMap<>();
-        List<DataObjectSaver> pastDataObjectSavers = new ArrayList<>();
+        List<Class<? extends DataObject>> savedClasses = new ArrayList<>();
+        Map<Class<? extends DataObject>, List<String[]>> savedLines = new HashMap<>();
+        Map<Class<? extends DataObject>, List<ConstructorParameter>> savedConstructorParameters = new HashMap<>();
 
-        // Find all saved files
+        // Find all saved files, load the object types but not the data
         for (String file : files) {
 
             // Read the lines
-            List<String[]> allLines = FileUtil.readLines(csvFile + file);
+            List<String[]> allLines = FileUtil.readLines(savePath + file);
+
+            // Check that the file has the class type and the parameter map in its header
             if (allLines.size() < 2 || allLines.get(0).length != 1 || allLines.get(1).length % 2 != 0) {
                 throw new RuntimeException("File is in the wrong format");
             }
 
             // Parse the object
-            DataObjectSaver dataObjectSaver = extractConstructorMap(allLines);
+            Class<? extends DataObject> fileClass = (Class<? extends DataObject>) classForName(allLines.get(0)[0], "com.ntankard.Tracking.DataBase.Core");
 
-            readLines.put(dataObjectSaver, allLines);
-            pastDataObjectSavers.add(dataObjectSaver);
+            // Save the meta data
+            savedClasses.add(fileClass);
+            savedLines.put(fileClass, allLines);
+            savedConstructorParameters.put(fileClass, getConstructorParameters(allLines.get(1)));
         }
 
-        // Sort the objects so they load correctly
-        sortByDependency(pastDataObjectSavers);
+        // Sort the objects so they are read correctly
+        List<Class<? extends DataObject>> readOrder = sortByDependency(getConstructorDependencies(savedClasses));
 
-        // Load each object type
-        for (DataObjectSaver pastDataObjectSaver : pastDataObjectSavers) {
-            DataObjectSaver currentObjectMap = generateConstructorMap(pastDataObjectSaver.aClass);
-            List<String[]> allLines = readLines.get(pastDataObjectSaver);
+        // Read each object type
+        Map<Class, List<DataObject>> readObjects = new HashMap<>();
+        Map<Integer, DataObject> objectIDMap = new HashMap<>();
+        for (Class<? extends DataObject> toRead : readOrder) {
+            List<ConstructorParameter> pastConstructorParameters = savedConstructorParameters.get(toRead);
+            List<ConstructorParameter> currentConstructorParameters = getConstructorParameters(toRead);
+            List<String[]> toReadSavedLines = savedLines.get(toRead);
 
             // Load each object
-            for (int i = 2; i < allLines.size(); i++) {
-                if (currentObjectMap.nameTypePairs.size() != allLines.get(i).length)
+            List<DataObject> loadedObjects = new ArrayList<>();
+            for (int i = 2; i < toReadSavedLines.size(); i++) {
+                if (currentConstructorParameters.size() != toReadSavedLines.get(i).length)
                     throw new RuntimeException("Line parts dose not match the available params");
 
-                DataObject toAdd = dataObjectFromString(allLines.get(i), currentObjectMap, pastDataObjectSaver, data);
-                data.add(toAdd);
+                // Generate
+                DataObject toAdd = dataObjectFromString(toRead, toReadSavedLines.get(i), currentConstructorParameters, pastConstructorParameters, objectIDMap);
+
+                // Store
+                loadedObjects.add(toAdd);
+                objectIDMap.put(toAdd.getId(), toAdd);
+            }
+            readObjects.put(toRead, loadedObjects);
+        }
+
+        // Sort the objects so they can be added correctly
+        List<Class<? extends DataObject>> loadOrder = sortByDependency(generateMangedDependencies(savedClasses));
+
+        // Load into the database
+        for (Class toLoad : loadOrder) {
+            if (readObjects.containsKey(toLoad)) {
+                for (DataObject toAdd : readObjects.get(toLoad)) {
+                    data.add(toAdd);
+                }
             }
         }
     }
@@ -69,136 +95,99 @@ public class TrackingDatabase_Reader {
      * @param corePath The directory to put the folder
      */
     public static void save(TrackingDatabase data, String corePath) {
-        Map<Class, List<List<String>>> linesToSave = new HashMap<>();
-        Map<Class, DataObjectSaver> dataObjectSavers = new HashMap<>();
+        Map<Class<? extends DataObject>, List<List<String>>> classLinesToSave = new HashMap<>();
+        Map<Class<? extends DataObject>, List<ConstructorParameter>> classConstructorParameters = new HashMap<>();
 
         // Generate the headers
-        for (Class aClass : data.getDataObjectTypes()) {
+        for (Class<? extends DataObject> aClass : data.getDataObjectTypes()) {
+
+            // Only save solid objects
             if (Modifier.isAbstract(aClass.getModifiers())) {
                 continue;
             }
 
-            DataObjectSaver dataObjectSaver = generateConstructorMap(aClass);
-            if (dataObjectSaver.shouldSave) {
+            // Should we save?
+            if (getParameterMap(aClass).shouldSave()) {
 
                 // Create entry
-                dataObjectSavers.put(aClass, dataObjectSaver);
-                linesToSave.put(aClass, new ArrayList<>());
+                classLinesToSave.put(aClass, new ArrayList<>());
 
                 // Write the object type
-                linesToSave.get(aClass).add(new ArrayList<>(Collections.singletonList(aClass.getName())));
+                classLinesToSave.get(aClass).add(new ArrayList<>(Collections.singletonList(aClass.getName())));
 
                 // Write the object parameters to the header of the file
+                classConstructorParameters.put(aClass, getConstructorParameters(aClass));
                 List<String> types = new ArrayList<>();
-                for (NameTypePair nameTypePair : dataObjectSaver.nameTypePairs) {
-                    types.add(nameTypePair.name);
-                    types.add(nameTypePair.type.getName());
+                for (ConstructorParameter constructorParameter : classConstructorParameters.get(aClass)) {
+                    types.add(constructorParameter.name);
+                    types.add(constructorParameter.type.getName());
                 }
-                linesToSave.get(aClass).add(types);
+                classLinesToSave.get(aClass).add(types);
             }
         }
 
         // Add each individual object
         for (DataObject dataObject : data.getAll()) {
-            List<List<String>> lines = linesToSave.get(dataObject.getClass());
-            DataObjectSaver dataObjectSaver = dataObjectSavers.get(dataObject.getClass());
+            List<List<String>> lines = classLinesToSave.get(dataObject.getClass());
+            List<ConstructorParameter> constructorParameters = classConstructorParameters.get(dataObject.getClass());
 
-            if (lines == null || dataObjectSaver == null) {
-                DataObjectSaver generated = generateConstructorMap(dataObject.getClass());
-                if (generated.shouldSave) {
+            if (lines == null || constructorParameters == null) {
+                if (getParameterMap(dataObject.getClass()).shouldSave()) {
                     throw new RuntimeException("Trying to save and object that is not setup for saving");
                 } else {
                     continue;
                 }
             }
 
-            if (dataObjectSaver.shouldSave) {
-                lines.add(dataObjectToString(dataObject, dataObjectSaver));
-            }
+            lines.add(dataObjectToString(dataObject, constructorParameters));
         }
 
         // Write to file
         String csvFile = FileUtil.newSaveDirectory(corePath);
-        for (Map.Entry<Class, List<List<String>>> entry : linesToSave.entrySet()) {
-            if (dataObjectSavers.get(entry.getKey()).shouldSave) {
+        for (Map.Entry<Class<? extends DataObject>, List<List<String>>> entry : classLinesToSave.entrySet()) {
+            if (getParameterMap(entry.getKey()).shouldSave()) {
                 FileUtil.writeLines(csvFile + entry.getKey().getSimpleName() + ".csv", entry.getValue());
             }
         }
     }
 
+    //------------------------------------------------------------------------------------------------------------------
+    //############################################## Dependency management #############################################
+    //------------------------------------------------------------------------------------------------------------------
+
     /**
-     * Sort a list of Data Objects based on other objects they depends on. Is objects are loaded in this order all dependencies can be guaranteed
+     * Get a class order that ensures all dependencies come before a class
      *
-     * @param pastDataObjectSavers The list to sort
+     * @param dependencyMap The list of dependencies
+     * @return The order that will ensure all dependencies come first
      */
-    private static void sortByDependency(List<DataObjectSaver> pastDataObjectSavers) {
-        Map<DataObjectSaver, List<Class>> dependencyMap = new HashMap<>();
-        List<Class> allObjects = new ArrayList<>();
-
-        // Generate the dependencies
-        for (DataObjectSaver dataObjectSaver : pastDataObjectSavers) {
-            List<Class> dependency = new ArrayList<>();
-            for (NameTypePair nameTypePair : dataObjectSaver.nameTypePairs) {
-                if (DataObject.class.isAssignableFrom(nameTypePair.type)) {
-                    if (!nameTypePair.type.equals(dataObjectSaver.aClass)) {
-                        dependency.add(nameTypePair.type);
-                    }
-                }
-            }
-
-            dependencyMap.put(dataObjectSaver, dependency);
-            allObjects.add(dataObjectSaver.aClass);
-        }
-
-        // Check that all dependencies are possible
-        for (DataObjectSaver dataObjectSaver : pastDataObjectSavers) {
-            List<Class> toAdd = new ArrayList<>();
-            for (Class<?> aClass : dependencyMap.get(dataObjectSaver)) {
-                if (!allObjects.contains(aClass)) {
-                    boolean found = false;
-                    for (Class<?> toTest : allObjects) {
-                        if (aClass.equals(toTest)) {
-                            if (found) {
-                                throw new RuntimeException("Found both an inherited dependency and a direct one. This means a class has inherited from a non abstract");
-                            }
-                            found = true;
-                            break;
-                        } else if (aClass.isAssignableFrom(toTest)) {
-                            toAdd.add(toTest);
-                            found = true;
-                        }
-                    }
-                    if (!found) {
-                        throw new RuntimeException("Dependency detected on an object that dose not exist");
-                    }
-                }
-            }
-            dependencyMap.get(dataObjectSaver).addAll(toAdd);
-        }
+    private static List<Class<? extends DataObject>> sortByDependency(Map<Class<? extends DataObject>, List<Class<? extends DataObject>>> dependencyMap) {
+        List<Class<? extends DataObject>> toReturn = new ArrayList<>(dependencyMap.keySet());
 
         // Sort the list
-        boolean sorted;
+        boolean allSorted;
         int attempts = 0;
         do {
 
             // Infinite loop catch
-            if (attempts++ > pastDataObjectSavers.size() * pastDataObjectSavers.size()) {
+            if (attempts++ > toReturn.size() * toReturn.size()) {
                 throw new RuntimeException("Failed to sort dependencies, infinite loop detected");
             }
 
-            sorted = true;
-            for (int i = 0; i < pastDataObjectSavers.size(); i++) {
-                DataObjectSaver dataObjectSaver = pastDataObjectSavers.get(i);
-                List<Class> dependency = dependencyMap.get(dataObjectSaver);
+            allSorted = true;
+            for (int i = 0; i < toReturn.size(); i++) {
+
+                Class<? extends DataObject> toTest = toReturn.get(i);
+                List<Class<? extends DataObject>> toTestDependencies = dependencyMap.get(toTest);
 
                 // Check that all dependencies are earlier in the list
                 boolean allFound = true;
-                for (Class<?> aClass : dependency) {
+                for (Class<?> dependency : toTestDependencies) {
 
                     // Look for a dependency earlier in the list
                     boolean found = false;
                     for (int j = 0; j < i; j++) {
-                        if (aClass.isAssignableFrom(pastDataObjectSavers.get(j).aClass)) {
+                        if (dependency.isAssignableFrom(toReturn.get(j))) {
                             found = true;
                             break;
                         }
@@ -210,15 +199,141 @@ public class TrackingDatabase_Reader {
                     }
                 }
 
-                // If one of more dependencies is not before the test object more it to the end of the list
+                // If one of more dependencies is not before the test object, move it to the end of the list
                 if (!allFound) {
-                    pastDataObjectSavers.remove(dataObjectSaver);
-                    pastDataObjectSavers.add(dataObjectSaver);
-                    sorted = false;
+                    toReturn.remove(toTest);
+                    toReturn.add(toTest);
+                    allSorted = false;
                     break;
                 }
             }
-        } while (!sorted);
+        } while (!allSorted);
+
+        return toReturn;
+    }
+
+    /**
+     * Find all dependencies to load all objects
+     *
+     * @param loadingObjects The objects to load
+     * @return The dependency map
+     */
+    @SuppressWarnings("unchecked")
+    private static Map<Class<? extends DataObject>, List<Class<? extends DataObject>>> generateMangedDependencies(List<Class<? extends DataObject>> loadingObjects) {
+
+        // Find all the objects that manage other objects, add the objects they make to there own dependency
+        Map<Class<? extends DataObject>, List<Class<? extends DataObject>>> managedObjectDependencies = new HashMap<>();
+        for (Class<? extends DataObject> loadedObject : loadingObjects) {
+            ObjectFactory objectFactory = loadedObject.getAnnotation(ObjectFactory.class);
+            if (objectFactory != null) {
+                managedObjectDependencies.put(loadedObject, new ArrayList<>(Arrays.asList(objectFactory.builtObjects())));
+            }
+        }
+
+        // For each managed object, add dependencies for its constructors
+        Map<Class<? extends DataObject>, List<Class<? extends DataObject>>> managedObjectConstructorDependencies = new HashMap<>();
+        for (Class<? extends DataObject> objectManager : managedObjectDependencies.keySet()) {                          // For each ObjectManager (Class with ObjectFactory attached)
+            for (Class<? extends DataObject> managedObject : managedObjectDependencies.get(objectManager)) {            // For each ObjectManagers, ManagedObjects
+                if (!managedObjectConstructorDependencies.containsKey(managedObject)) {                                 // If not seen before
+
+                    // Get the non conflicting dependencies for the constructor
+                    List<Class<? extends DataObject>> constructorParameters = new ArrayList<>();
+                    for (Class<?> constructorParameterType : getConstructor(managedObject).getParameterTypes()) {       // For each ObjectManagers, ManagedObjects, Constructor parameters
+                        if (DataObject.class.isAssignableFrom(constructorParameterType)) {                              // If its a DataObject
+
+                            // Check that the constructor parameter cant be used to build the managed object
+                            ObjectFactory constructorParameterTypeFactory = constructorParameterType.getAnnotation(ObjectFactory.class);
+                            boolean found = false;
+                            if (constructorParameterTypeFactory != null) {                                              // If the constructor parameter manages objects
+                                for (Class<?> toTest : constructorParameterTypeFactory.builtObjects()) {
+                                    if (toTest.isAssignableFrom(managedObject)) {                                       // Check that is dose not manage this object
+                                        found = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (!found && !constructorParameters.contains(constructorParameterType)) {                  // If it dose not manage objects, or if it dost no managed this Managed object
+                                constructorParameters.add((Class<? extends DataObject>) constructorParameterType);      // Add to the list of dependencies
+                            }
+                        }
+                    }
+
+                    // Add them all
+                    managedObjectConstructorDependencies.put(managedObject, constructorParameters);
+                }
+            }
+        }
+
+        // Create one master dependency map
+        Map<Class<? extends DataObject>, List<Class<? extends DataObject>>> dependencyMap = new HashMap<>();
+
+        // Add all the ObjectManagers dependencies on the object they manage
+        for (Class<? extends DataObject> objectManager : managedObjectDependencies.keySet())
+            if (!dependencyMap.containsKey(objectManager))
+                dependencyMap.put(objectManager, managedObjectDependencies.get(objectManager));
+
+        // Add all the ManagedObjects dependencies on there contractors
+        for (Class<? extends DataObject> managedObject : managedObjectConstructorDependencies.keySet())
+            if (!dependencyMap.containsKey(managedObject))
+                dependencyMap.put(managedObject, managedObjectConstructorDependencies.get(managedObject));
+
+        // Add all missing objects
+        for (Class<? extends DataObject> loadingObject : loadingObjects)
+            if (!dependencyMap.containsKey(loadingObject))
+                dependencyMap.put(loadingObject, new ArrayList<>());
+
+        return dependencyMap;
+    }
+
+    /**
+     * Find all dependencies needed to build all object
+     *
+     * @param loadingObjects The objects to load
+     * @return A list of all objects that needed to be loaded to load for each class
+     */
+    private static Map<Class<? extends DataObject>, List<Class<? extends DataObject>>> getConstructorDependencies(List<Class<? extends DataObject>> loadingObjects) {
+        Map<Class<? extends DataObject>, List<Class<? extends DataObject>>> dependencyMap = new HashMap<>();
+        for (Class<? extends DataObject> dataObjectClass : loadingObjects) {
+            dependencyMap.put(dataObjectClass, getConstructorDependencies(dataObjectClass, loadingObjects));
+        }
+        return dependencyMap;
+    }
+
+    /**
+     * Find all dependencies needed to build an object
+     *
+     * @param dataObjectClass The object to inspect
+     * @param loadingObjects  All other know objects (used to find inherited dependencies)
+     * @return A list of all objects that needed to be loaded to load this class
+     */
+    @SuppressWarnings("unchecked")
+    private static List<Class<? extends DataObject>> getConstructorDependencies(Class<? extends DataObject> dataObjectClass, List<Class<? extends DataObject>> loadingObjects) {
+        List<Class<? extends DataObject>> dependencies = new ArrayList<>();
+        for (ConstructorParameter constructorParameter : getConstructorParameters(dataObjectClass)) {
+
+            // Look for the direct dependency
+            if (DataObject.class.isAssignableFrom(constructorParameter.type)) {
+                Class<? extends DataObject> primeDependencies = constructorParameter.type;
+                dependencies.add(primeDependencies);
+
+                // Is this dependency a solid object?
+                if (!loadingObjects.contains(primeDependencies)) {
+                    boolean found = false;
+
+                    // Find an object down the tree that we can read
+                    for (Class<? extends DataObject> toTest : loadingObjects) {
+                        if (primeDependencies.isAssignableFrom(toTest)) {
+                            dependencies.add(toTest);
+                            found = true;
+                        }
+                    }
+                    if (!found) {
+                        throw new RuntimeException("Dependency detected on an object that dose not exist");
+                    }
+                }
+            }
+        }
+        return dependencies;
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -226,47 +341,38 @@ public class TrackingDatabase_Reader {
     //------------------------------------------------------------------------------------------------------------------
 
     /**
-     * Create a DataObject from a list of constructor parts
+     * Create an object based on a string of its parameters
      *
-     * @param paramStrings     The string of constructor parts
-     * @param trackingDatabase The database used to get reference objects
-     * @return THe newly constructed (but not added) DataObject
+     * @param aClass                       The type of class to build
+     * @param paramStrings                 The values as a string
+     * @param currentConstructorParameters The current state of the objects constructor
+     * @param savedConstructorParameters   The state of the constructor when the object was saved
+     * @param loadedObjects                All past loaded objects
+     * @return The newly constructed object
      */
-    @SuppressWarnings("unchecked")
-    static DataObject dataObjectFromString(String[] paramStrings, DataObjectSaver currentObjectMap, DataObjectSaver pastObjectMap, TrackingDatabase trackingDatabase) {
+    static DataObject dataObjectFromString(Class<? extends DataObject> aClass, String[] paramStrings, List<ConstructorParameter> currentConstructorParameters, List<ConstructorParameter> savedConstructorParameters, Map<Integer, DataObject> loadedObjects) {
+
+        // Find out how the saved field map the the current objects construction parameters
+        List<Integer> parameterMapping = getParameterMapping(aClass, currentConstructorParameters, savedConstructorParameters);
 
         // Build up the parameters from the strings
         List<Object> params = new ArrayList<>();
-        for (int i = 0; i < currentObjectMap.nameTypePairs.size(); i++) {
-            NameTypePair current = currentObjectMap.nameTypePairs.get(i);
+        for (int i = 0; i < currentConstructorParameters.size(); i++) {
 
-            // Find the past entry that matches the constructor parameter
-            int order = 0;
-            boolean found = false;
-            for (NameTypePair savedMethodPair : pastObjectMap.nameTypePairs) {
-                if (current.name.equals(savedMethodPair.name)) {
-                    if (!current.type.equals(savedMethodPair.type))
-                        throw new RuntimeException("Name matched, type did not");
-                    found = true;
-                    break;
-                }
-                order++;
-            }
-
-            // Parse the object type
-            if (!found) {
+            int parameterMap = parameterMapping.get(i);
+            if (parameterMap == -1) {
                 params.add(null);
-                System.out.println("Warning, the object " + currentObjectMap.aClass.getSimpleName() + ". Has a new parameter that was not saved before. Setting to null");
+                System.out.println("Warning, the object " + aClass.getSimpleName() + ". Has a new parameter that was not saved before. Setting to null");
             } else {
-                String paramString = paramStrings[order];
-                Class paramType = currentObjectMap.nameTypePairs.get(i).type;
+                String paramString = paramStrings[parameterMap];
+                Class paramType = currentConstructorParameters.get(i).type;
 
                 if (DataObject.class.isAssignableFrom(paramType)) {
                     if (paramString.equals(" ")) {
                         params.add(null);
                     } else {
-                        DataObject dataObject = trackingDatabase.get(paramType, Integer.parseInt(paramString));
-                        if (dataObject == null && !Period.class.isAssignableFrom(paramType)) { // TODO fix period so this isn't required
+                        DataObject dataObject = loadedObjects.get(Integer.parseInt(paramString));
+                        if (dataObject == null) {
                             throw new RuntimeException("Trying to load an object that is not yet in the database");
                         }
                         params.add(dataObject);
@@ -287,33 +393,32 @@ public class TrackingDatabase_Reader {
 
         // Construct the object
         try {
-            return (DataObject) currentObjectMap.constructor.newInstance(params.toArray());
+            return (DataObject) getConstructor(aClass).newInstance(params.toArray());
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException(e);
         }
     }
 
     /**
-     * Create a list of constructor parameters from a DataObject
+     * Create a string of all teh values needed to rebuild the object
      *
-     * @param dataObject      the DataObject to convert
-     * @param dataObjectSaver The description of the object to save
-     * @return The list of parameters that can be used to recreate this object
+     * @param dataObject            the DataObject to convert
+     * @param constructorParameters the parameters to save for loading in the future
+     * @return All objects needed to construct the object as a string
      */
-    static List<String> dataObjectToString(DataObject dataObject, DataObjectSaver dataObjectSaver) {
+    static List<String> dataObjectToString(DataObject dataObject, List<ConstructorParameter> constructorParameters) {
         List<String> paramStrings = new ArrayList<>();
-
-        for (NameTypePair nameTypePair : dataObjectSaver.nameTypePairs) {
+        for (ConstructorParameter constructorParameter : constructorParameters) {
 
             // Find the method
             Method getter;
             try {
-                getter = dataObjectSaver.aClass.getMethod(nameTypePair.name);
+                getter = dataObject.getClass().getMethod(constructorParameter.name);
             } catch (NoSuchMethodException e) {
-                throw new RuntimeException("\n" + "Class: " + dataObjectSaver.aClass.getSimpleName() + " Method:" + nameTypePair.name + "\n" + e);
+                throw new RuntimeException("\n" + "Class: " + dataObject.getClass().getSimpleName() + " Method:" + constructorParameter.name + "\n" + e);
             }
-            if (!getter.getReturnType().equals(nameTypePair.type))
-                throw new RuntimeException("Class:" + dataObject.getClass().getSimpleName() + " Method:" + nameTypePair.name + " Getter provided by ParameterMap dose not match the parameter in the constructor. Could save but would not be able to load. Aborting save");
+            if (!getter.getReturnType().equals(constructorParameter.type))
+                throw new RuntimeException("Class:" + dataObject.getClass().getSimpleName() + " Method:" + constructorParameter.name + " Getter provided by ParameterMap dose not match the parameter in the constructor. Could save but would not be able to load. Aborting save");
 
             // Execute the getter
             Object getterValue;
@@ -337,34 +442,72 @@ public class TrackingDatabase_Reader {
     }
 
     //------------------------------------------------------------------------------------------------------------------
-    //################################################ Class extraction ################################################
+    //############################################### Constructor access ###############################################
     //------------------------------------------------------------------------------------------------------------------
 
-    private static DataObjectSaver extractConstructorMap(List<String[]> allLines) {
-        Class aClass = classForName(allLines.get(0)[0], "com.ntankard.Tracking.DataBase.Core");
-        return generateConstructorMap(aClass, allLines.get(1));
+    /**
+     * Find out how the old constructor parameters map top the new constructor parameters
+     *
+     * @param aClass                       The Object to map
+     * @param currentConstructorParameters The current parameters
+     * @param savedConstructorParameters   The past parameters
+     * @return A orders lists of the mapping
+     */
+    private static List<Integer> getParameterMapping(Class<? extends DataObject> aClass, List<ConstructorParameter> currentConstructorParameters, List<ConstructorParameter> savedConstructorParameters) {
+        List<Integer> mappedOrder = new ArrayList<>();
+
+        // Check for duplicates parameters in current object
+        for (int i = 0; i < currentConstructorParameters.size(); i++)
+            for (int j = 0; j < currentConstructorParameters.size(); j++)
+                if (i != j)
+                    if (currentConstructorParameters.get(i).name.equals(currentConstructorParameters.get(j).name))
+                        throw new RuntimeException("Error, the object " + aClass.getSimpleName() + ". Has a duplicate parameter name");
+
+        // Check for duplicate parameters in the saved object
+        for (int i = 0; i < savedConstructorParameters.size(); i++)
+            for (int j = 0; j < savedConstructorParameters.size(); j++)
+                if (i != j)
+                    if (savedConstructorParameters.get(i).name.equals(savedConstructorParameters.get(j).name))
+                        throw new RuntimeException("Error, the object " + aClass.getSimpleName() + ". Was saved with a duplicate parameter name");
+
+        // Find the past entry that matches the constructor parameter
+        for (ConstructorParameter currentParameter : currentConstructorParameters) {
+            int foundIndex = 0;
+            boolean found = false;
+            for (ConstructorParameter savedParameter : savedConstructorParameters) {
+                if (currentParameter.name.equals(savedParameter.name)) {
+                    if (!currentParameter.type.equals(savedParameter.type))
+                        throw new RuntimeException("Error, the object " + aClass.getSimpleName() + ". Name matched, type did not");
+                    found = true;
+                    break;
+                }
+                foundIndex++;
+            }
+
+            // Save the match
+            if (!found) {
+                mappedOrder.add(-1);
+                System.out.println("Warning, the object " + aClass.getSimpleName() + ". Has a new parameter that was not saved before. Making it to be set to null");
+            } else {
+                mappedOrder.add(foundIndex);
+            }
+        }
+
+        return mappedOrder;
     }
 
     /**
      * Create a ConstructorMap object for its save line
      *
-     * @param aClass The class to generate
-     * @param lines  The lines to generate from
+     * @param lines The lines to generate from
      * @return A ConstructorMap
      */
-    private static DataObjectSaver generateConstructorMap(Class aClass, String[] lines) {
-        DataObjectSaver dataObjectSaver = new DataObjectSaver(aClass);
-
-        // Find the constructor
-        Constructor[] constructors = aClass.getConstructors();
-        if (constructors.length != 1) throw new RuntimeException("More than one constructor detected");
-        dataObjectSaver.constructor = constructors[0];
-
+    private static List<ConstructorParameter> getConstructorParameters(String[] lines) {
+        List<ConstructorParameter> constructorParameters = new ArrayList<>();
         for (int i = 0; i < lines.length / 2; i++) {
-            dataObjectSaver.nameTypePairs.add(new NameTypePair(lines[i * 2], classForName(lines[i * 2 + 1], "com.ntankard.Tracking.DataBase.Core")));
+            constructorParameters.add(new ConstructorParameter(lines[i * 2], classForName(lines[i * 2 + 1], "com.ntankard.Tracking.DataBase.Core")));
         }
-
-        return dataObjectSaver;
+        return constructorParameters;
     }
 
     /**
@@ -373,38 +516,55 @@ public class TrackingDatabase_Reader {
      * @param aClass The class to generate from
      * @return its ConstructorMap or null if its not supported
      */
-    public static DataObjectSaver generateConstructorMap(Class aClass) {
-        // Build the base object
+    static List<ConstructorParameter> getConstructorParameters(Class<? extends DataObject> aClass) {
         if (aClass.isPrimitive()) throw new RuntimeException("Primate object type detected");
-        DataObjectSaver dataObjectSaver = new DataObjectSaver(aClass);
-
-        // Find the constructor
-        Constructor[] constructors = aClass.getConstructors();
-        if (constructors.length != 1) throw new RuntimeException("More than one constructor detected");
-        dataObjectSaver.constructor = constructors[0];
 
         // Find the save settings
-        ParameterMap parameterMap = (ParameterMap) constructors[0].getAnnotation(ParameterMap.class);
-        if (parameterMap == null)
-            throw new RuntimeException("This class dose not support saving");
+        ParameterMap parameterMap = getParameterMap(aClass);
 
         // Should this object be ignored?
         String[] paramGetters = parameterMap.parameterGetters();
         if (!parameterMap.shouldSave()) {
-            dataObjectSaver.shouldSave = false;
-            return dataObjectSaver;
+            return new ArrayList<>();
         }
 
         // Find the getters that map to the each constructor parameter
-        Class<?>[] paramTypes = constructors[0].getParameterTypes();
+        Class<?>[] paramTypes = getConstructor(aClass).getParameterTypes();
         if (paramGetters.length != paramTypes.length)
             throw new RuntimeException("dataObjects ParameterMap annotation dose not match is constructor. Could save but would not be able to load. Aborting save");
 
         // Build the rest of the object
+        List<ConstructorParameter> constructorParameters = new ArrayList<>();
         for (int i = 0; i < paramGetters.length; i++) {
-            dataObjectSaver.nameTypePairs.add(new NameTypePair(paramGetters[i], paramTypes[i]));
+            constructorParameters.add(new ConstructorParameter(paramGetters[i], paramTypes[i]));
         }
-        return dataObjectSaver;
+        return constructorParameters;
+    }
+
+    /**
+     * Get the ParameterMap assigned to a class
+     *
+     * @param aClass The class to inspect
+     * @return The ParameterMap
+     */
+    static ParameterMap getParameterMap(Class<? extends DataObject> aClass) {
+        ParameterMap parameterMap = (ParameterMap) getConstructor(aClass).getAnnotation(ParameterMap.class);
+        if (parameterMap == null)
+            throw new RuntimeException("Error: " + aClass.getSimpleName() + " dose not support saving");
+        return parameterMap;
+    }
+
+    /**
+     * Get the single constructor
+     *
+     * @param aClass The class to get the constructor from
+     * @return The constructor
+     */
+    private static Constructor getConstructor(Class<? extends DataObject> aClass) {
+        Constructor[] constructors = aClass.getConstructors();
+        if (constructors.length != 1)
+            throw new RuntimeException("Error: " + aClass.getSimpleName() + ", More than one constructor detected");
+        return constructors[0];
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -412,32 +572,13 @@ public class TrackingDatabase_Reader {
     //------------------------------------------------------------------------------------------------------------------
 
     /**
-     * Description of the object needed to construct an object
+     * A constructor parameter, its name and type
      */
-    public static class DataObjectSaver {
-        public Class<?> aClass;
-        public List<NameTypePair> nameTypePairs = new ArrayList<>();
-        public Boolean shouldSave = true;
-        public Constructor constructor;
-
-        DataObjectSaver(Class aClass) {
-            this.aClass = aClass;
-        }
-
-        @Override
-        public String toString() {
-            return aClass.toString();
-        }
-    }
-
-    /**
-     * Each field (getter) and its type
-     */
-    private static class NameTypePair {
+    static class ConstructorParameter {
         Class type;
         String name;
 
-        NameTypePair(String name, Class type) {
+        ConstructorParameter(String name, Class type) {
             this.type = type;
             this.name = name;
         }

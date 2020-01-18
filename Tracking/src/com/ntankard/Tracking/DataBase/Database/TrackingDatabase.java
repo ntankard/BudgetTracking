@@ -1,12 +1,13 @@
 package com.ntankard.Tracking.DataBase.Database;
 
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
 import com.ntankard.Tracking.DataBase.Database.SubContainers.*;
-import com.ntankard.Tracking.Dispaly.Util.Comparators.Ordered_Comparator;
 import com.ntankard.Tracking.Util.TreeNode;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 public class TrackingDatabase {
 
@@ -16,9 +17,6 @@ public class TrackingDatabase {
     private SpecialValuesMap specialValuesMap = new SpecialValuesMap();
     private DataObjectContainer masterMap = new DataObjectContainer();
     private DataObjectClassTree dataObjectClassTree = new DataObjectClassTree();
-
-    // Is the database complete?
-    private boolean isFinalized = false;
 
     //------------------------------------------------------------------------------------------------------------------
     //############################################### Constructor ######################################################
@@ -70,11 +68,7 @@ public class TrackingDatabase {
         if (shouldTest) {
             TrackingDatabase_Integrity.validateCore();
         }
-        isFinalized = true;
 
-        for (DataObject dataObject : getAll()) {
-            TrackingDatabase_Repair.repair(dataObject);
-        }
         TrackingDatabase_Repair.repair();
 
         if (shouldTest) {
@@ -104,9 +98,7 @@ public class TrackingDatabase {
     public void add(DataObject dataObject) {
         containers.forEach(container -> container.add(dataObject));
         dataObject.notifyParentLink();
-        if (isFinalized) {
-            TrackingDatabase_Repair.repair(dataObject);
-        }
+        TrackingDatabase_Repair.repair(dataObject);
     }
 
     /**

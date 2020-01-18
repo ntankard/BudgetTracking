@@ -3,10 +3,14 @@ package com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
+import com.ntankard.Tracking.DataBase.Core.Pool.Bank.StatementEnd;
+import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer.RePayCategoryFundTransfer;
+import com.ntankard.Tracking.DataBase.Database.ObjectFactory;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 
 @ClassExtensionProperties(includeParent = true)
+@ObjectFactory(builtObjects = {StatementEnd.class, RePayCategoryFundTransfer.class})
 public class ExistingPeriod extends Period {
 
     // My values
