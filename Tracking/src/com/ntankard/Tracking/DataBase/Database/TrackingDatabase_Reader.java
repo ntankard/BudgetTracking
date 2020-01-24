@@ -3,6 +3,7 @@ package com.ntankard.Tracking.DataBase.Database;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.Util.FileUtil;
 
+import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -13,6 +14,11 @@ import static com.ntankard.ClassExtension.Util.classForName;
 
 public class TrackingDatabase_Reader {
 
+    static String DATA_PATH = "\\Data";
+    static String IMAGE_PATH = "\\Image";
+    static String NEW_IMAGE_PATH = "\\NewImage";
+    static String FILE_PATH = "\\BudgetTracking.txt";
+
     /**
      * Read all files for the database from the latest save folder
      *
@@ -21,7 +27,11 @@ public class TrackingDatabase_Reader {
      */
     @SuppressWarnings("unchecked")
     public static void read(TrackingDatabase data, String corePath) {
-        String savePath = FileUtil.getLatestSaveDirectory(corePath);
+        if (!checkSavePath(corePath)) {
+            throw new RuntimeException("Save path is invalid");
+        }
+
+        String savePath = FileUtil.getLatestSaveDirectory(corePath + DATA_PATH);
         List<String> files = FileUtil.findFilesInDirectory(savePath);
 
         List<Class<? extends DataObject>> savedClasses = new ArrayList<>();
@@ -95,6 +105,10 @@ public class TrackingDatabase_Reader {
      * @param corePath The directory to put the folder
      */
     public static void save(TrackingDatabase data, String corePath) {
+        if (!checkSavePath(corePath)) {
+            throw new RuntimeException("Save path is invalid");
+        }
+
         Map<Class<? extends DataObject>, List<List<String>>> classLinesToSave = new HashMap<>();
         Map<Class<? extends DataObject>, List<ConstructorParameter>> classConstructorParameters = new HashMap<>();
 
@@ -143,13 +157,49 @@ public class TrackingDatabase_Reader {
         }
 
         // Write to file
-        String csvFile = FileUtil.newSaveDirectory(corePath);
+        String csvFile = FileUtil.newSaveDirectory(corePath + DATA_PATH);
         for (Map.Entry<Class<? extends DataObject>, List<List<String>>> entry : classLinesToSave.entrySet()) {
             if (getParameterMap(entry.getKey()).shouldSave()) {
                 FileUtil.writeLines(csvFile + entry.getKey().getSimpleName() + ".csv", entry.getValue());
             }
         }
     }
+
+    /**
+     * Check that the save path is in the expected format
+     *
+     * @param path The path to check
+     * @return True if the path is valid
+     */
+    private static boolean checkSavePath(String path) {
+        File coreDir = new File(path);
+        if (!coreDir.exists()) {
+            return false;
+        }
+
+        File dataDir = new File(path + DATA_PATH);
+        if (!dataDir.exists()) {
+            return false;
+        }
+
+        File imageDir = new File(path + IMAGE_PATH);
+        if (!imageDir.exists()) {
+            return false;
+        }
+
+        File newImageDir = new File(path + NEW_IMAGE_PATH);
+        if (!newImageDir.exists()) {
+            return false;
+        }
+
+        File filePath = new File(path + FILE_PATH);
+        if (!filePath.exists()) {
+            return false;
+        }
+
+        return true;
+    }
+
 
     //------------------------------------------------------------------------------------------------------------------
     //############################################## Dependency management #############################################

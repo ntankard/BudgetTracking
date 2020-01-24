@@ -63,12 +63,16 @@ class TrackingDatabase_ReaderTest {
         TrackingDatabase.get().finalizeCore();
 
         new File(testPath).mkdir();
+        new File(testPath + DATA_PATH).mkdir();
+        new File(testPath + IMAGE_PATH).mkdir();
+        new File(testPath + NEW_IMAGE_PATH).mkdir();
+        new File(testPath + FILE_PATH).mkdir();
         save(TrackingDatabase.get(), testPath);
 
-        String saveDir = FileUtil.getLatestSaveDirectory(savePath);
+        String saveDir = FileUtil.getLatestSaveDirectory(savePath + DATA_PATH);
         List<String> saveFiles = FileUtil.findFilesInDirectory(saveDir);
 
-        String testDir = FileUtil.getLatestSaveDirectory(testPath);
+        String testDir = FileUtil.getLatestSaveDirectory(testPath + DATA_PATH);
         List<String> testFiles = FileUtil.findFilesInDirectory(testDir);
 
         assertEquals(saveFiles.size(), testFiles.size());
