@@ -18,6 +18,15 @@ public class TrackingDatabase {
     private DataObjectContainer masterMap = new DataObjectContainer();
     private DataObjectClassTree dataObjectClassTree = new DataObjectClassTree();
 
+    // Paths where images can be found
+    private String newImagePath;
+    private String savedImagePath;
+
+    /**
+     * New images to be loaded
+     */
+    private List<String> possibleImages;
+
     //------------------------------------------------------------------------------------------------------------------
     //############################################### Constructor ######################################################
     //------------------------------------------------------------------------------------------------------------------
@@ -184,5 +193,33 @@ public class TrackingDatabase {
      */
     public TreeNode<Class<? extends DataObject>> getClassTreeRoot() {
         return dataObjectClassTree.getClassTreeRoot();
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    //############################################### Image access #####################################################
+    //------------------------------------------------------------------------------------------------------------------
+
+    public List<String> getPossibleImages() {
+        return possibleImages;
+    }
+
+    public void setPossibleImages(List<String> possibleImages) {
+        this.possibleImages = possibleImages;
+    }
+
+    public String getNewImagePath() {
+        return newImagePath;
+    }
+
+    public void setNewImagePath(String newImagePath) {
+        this.newImagePath = newImagePath;
+    }
+
+    public String getSavedImagePath() {
+        return savedImagePath;
+    }
+
+    public void setSavedImagePath(String savedImagePath) {
+        this.savedImagePath = savedImagePath;
     }
 }

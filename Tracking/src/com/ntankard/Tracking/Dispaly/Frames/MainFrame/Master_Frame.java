@@ -7,6 +7,7 @@ import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase_Reader;
 import com.ntankard.Tracking.Dispaly.Frames.MainFrame.Funds.FundPanel;
+import com.ntankard.Tracking.Dispaly.Frames.MainFrame.Image.ReceiptPanel;
 import com.ntankard.Tracking.Dispaly.Frames.MainFrame.Periods.PeriodTabPanel;
 import com.ntankard.Tracking.Dispaly.Frames.MainFrame.SummaryGraphs.SummaryGraphPanel;
 
@@ -21,6 +22,7 @@ public class Master_Frame extends JPanel implements Updatable {
     private DatabasePanel databasePanel;
     private SummaryGraphPanel summaryGraphPanel;
     private SummaryPanel summaryPanel;
+    private ReceiptPanel receiptPanel;
 
     private String savePath;
 
@@ -84,6 +86,7 @@ public class Master_Frame extends JPanel implements Updatable {
         databasePanel = new DatabasePanel(this);
         summaryGraphPanel = new SummaryGraphPanel(this);
         summaryPanel = new SummaryPanel(this);
+        receiptPanel = new ReceiptPanel(this);
 
         JTabbedPane master_tPanel = new JTabbedPane();
         master_tPanel.addTab("Periods", periodPanel);
@@ -91,6 +94,7 @@ public class Master_Frame extends JPanel implements Updatable {
         master_tPanel.addTab("Database", databasePanel);
         master_tPanel.addTab("Summary Graphs", summaryGraphPanel);
         master_tPanel.addTab("Summary", summaryPanel);
+        master_tPanel.addTab("Receipts", receiptPanel);
 
         this.add(master_tPanel, BorderLayout.CENTER);
     }
@@ -113,5 +117,6 @@ public class Master_Frame extends JPanel implements Updatable {
         databasePanel.update();
         summaryGraphPanel.update();
         summaryPanel.update();
+        receiptPanel.update();
     }
 }

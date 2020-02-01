@@ -1,23 +1,30 @@
 package com.ntankard.Tracking.DataBase.Database;
 
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
+import com.ntankard.Tracking.DataBase.Core.Receipt;
 import com.ntankard.Tracking.Util.FileUtil;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.nio.file.Files;
 import java.util.*;
 
 import static com.ntankard.ClassExtension.Util.classForName;
 
 public class TrackingDatabase_Reader {
 
-    static String DATA_PATH = "\\Data";
-    static String IMAGE_PATH = "\\Image";
-    static String NEW_IMAGE_PATH = "\\NewImage";
-    static String FILE_PATH = "\\BudgetTracking.txt";
+    // Root paths
+    static String ROOT_DATA_PATH = "\\Data";
+    static String ROOT_NEW_IMAGE_PATH = "\\NewImage\\";
+    static String ROOT_FILE_PATH = "\\BudgetTracking.txt";
+
+    // Save instance paths
+    static String INSTANCE_CLASSES_PATH = "\\Classes\\";
+    static String INSTANCE_IMAGE_PATH = "\\Images\\";
 
     /**
      * Read all files for the database from the latest save folder
@@ -31,8 +38,8 @@ public class TrackingDatabase_Reader {
             throw new RuntimeException("Save path is invalid");
         }
 
-        String savePath = FileUtil.getLatestSaveDirectory(corePath + DATA_PATH);
-        List<String> files = FileUtil.findFilesInDirectory(savePath);
+        String savePath = FileUtil.getLatestSaveDirectory(corePath + ROOT_DATA_PATH);
+        List<String> files = FileUtil.findFilesInDirectory(savePath + INSTANCE_CLASSES_PATH);
 
         List<Class<? extends DataObject>> savedClasses = new ArrayList<>();
         Map<Class<? extends DataObject>, List<String[]>> savedLines = new HashMap<>();
@@ -42,7 +49,7 @@ public class TrackingDatabase_Reader {
         for (String file : files) {
 
             // Read the lines
-            List<String[]> allLines = FileUtil.readLines(savePath + file);
+            List<String[]> allLines = FileUtil.readLines(savePath + INSTANCE_CLASSES_PATH + file);
 
             // Check that the file has the class type and the parameter map in its header
             if (allLines.size() < 2 || allLines.get(0).length != 1 || allLines.get(1).length % 2 != 0) {
@@ -96,6 +103,11 @@ public class TrackingDatabase_Reader {
                 }
             }
         }
+
+        // Load the images and paths into the database
+        TrackingDatabase.get().setNewImagePath(corePath + ROOT_NEW_IMAGE_PATH);
+        TrackingDatabase.get().setSavedImagePath(savePath + INSTANCE_IMAGE_PATH);
+        TrackingDatabase.get().setPossibleImages(FileUtil.findFilesInDirectory(corePath + ROOT_NEW_IMAGE_PATH));
     }
 
     /**
@@ -104,6 +116,7 @@ public class TrackingDatabase_Reader {
      * @param data     The data to save
      * @param corePath The directory to put the folder
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void save(TrackingDatabase data, String corePath) {
         if (!checkSavePath(corePath)) {
             throw new RuntimeException("Save path is invalid");
@@ -157,10 +170,32 @@ public class TrackingDatabase_Reader {
         }
 
         // Write to file
-        String csvFile = FileUtil.newSaveDirectory(corePath + DATA_PATH);
+        String saveDir = FileUtil.newSaveDirectory(corePath + ROOT_DATA_PATH);
+        new File(saveDir + INSTANCE_CLASSES_PATH).mkdir();
+        new File(saveDir + INSTANCE_IMAGE_PATH).mkdir();
+
+        // Save the classes
         for (Map.Entry<Class<? extends DataObject>, List<List<String>>> entry : classLinesToSave.entrySet()) {
             if (getParameterMap(entry.getKey()).shouldSave()) {
-                FileUtil.writeLines(csvFile + entry.getKey().getSimpleName() + ".csv", entry.getValue());
+                FileUtil.writeLines(saveDir + INSTANCE_CLASSES_PATH + entry.getKey().getSimpleName() + ".csv", entry.getValue());
+            }
+        }
+
+        // Save the images
+        for (Receipt receipt : TrackingDatabase.get().get(Receipt.class)) {
+            if (receipt.isFirstFile()) {
+                String source = TrackingDatabase.get().getNewImagePath() + receipt.getFileName();
+                String destination = saveDir + INSTANCE_IMAGE_PATH + receipt.getFileName();
+                File file = new File(source);
+                file.renameTo(new File(destination));
+            } else {
+                String source = TrackingDatabase.get().getSavedImagePath() + receipt.getFileName();
+                String destination = saveDir + INSTANCE_IMAGE_PATH + receipt.getFileName();
+                try {
+                    Files.copy(new File(source).toPath(), new File(destination).toPath());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
     }
@@ -177,29 +212,23 @@ public class TrackingDatabase_Reader {
             return false;
         }
 
-        File dataDir = new File(path + DATA_PATH);
+        File dataDir = new File(path + ROOT_DATA_PATH);
         if (!dataDir.exists()) {
             return false;
         }
 
-        File imageDir = new File(path + IMAGE_PATH);
-        if (!imageDir.exists()) {
-            return false;
-        }
-
-        File newImageDir = new File(path + NEW_IMAGE_PATH);
+        File newImageDir = new File(path + ROOT_NEW_IMAGE_PATH);
         if (!newImageDir.exists()) {
             return false;
         }
 
-        File filePath = new File(path + FILE_PATH);
+        File filePath = new File(path + ROOT_FILE_PATH);
         if (!filePath.exists()) {
             return false;
         }
 
         return true;
     }
-
 
     //------------------------------------------------------------------------------------------------------------------
     //############################################## Dependency management #############################################
