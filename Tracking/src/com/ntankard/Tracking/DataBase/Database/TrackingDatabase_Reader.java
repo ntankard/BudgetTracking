@@ -263,6 +263,18 @@ public class TrackingDatabase_Reader {
                 boolean allFound = true;
                 for (Class<?> dependency : toTestDependencies) {
 
+                    // Dose the object this one depends on exist? if not then ignore this dependency
+                    boolean knownFound = false;
+                    for (Class<? extends DataObject> known : dependencyMap.keySet()) {
+                        if (dependency.isAssignableFrom(known)) {
+                            knownFound = true;
+                            break;
+                        }
+                    }
+                    if (!knownFound) {
+                        continue;
+                    }
+
                     // Look for a dependency earlier in the list
                     boolean found = false;
                     for (int j = 0; j < i; j++) {
@@ -360,6 +372,30 @@ public class TrackingDatabase_Reader {
         for (Class<? extends DataObject> loadingObject : loadingObjects)
             if (!dependencyMap.containsKey(loadingObject))
                 dependencyMap.put(loadingObject, new ArrayList<>());
+
+        // To prevent an infinite loop remove any non solid objects and move there dependencies to the objects that depend on them
+        List<Class<? extends DataObject>> nonSavedObjects = new ArrayList<>();
+        for (Class<? extends DataObject> nonSavedObject : dependencyMap.keySet()) {
+            ParameterMap parameterMap = (ParameterMap) getConstructor(nonSavedObject).getAnnotation(ParameterMap.class);
+            if (!parameterMap.shouldSave()) {
+                nonSavedObjects.add(nonSavedObject);
+                List<Class<? extends DataObject>> nonSavedObject_dependants = dependencyMap.get(nonSavedObject);
+                for (Class<? extends DataObject> toCheck : dependencyMap.keySet()) {
+                    if (dependencyMap.get(toCheck).remove(nonSavedObject)) {                                            // Dose this object depend on the one to be removed? If so remove
+                        for (Class<? extends DataObject> toAdd : nonSavedObject_dependants) {
+                            if (!toAdd.isAssignableFrom(toCheck) && !toCheck.isAssignableFrom(toAdd)) {                   // If the dependence is not related to this object
+                                dependencyMap.get(toCheck).add(toAdd);                                                  // Add the object nonSavedObject depends on to this object dependencies
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Remove all non save objects
+        for (Class<? extends DataObject> aClass : nonSavedObjects) {
+            dependencyMap.remove(aClass);
+        }
 
         return dependencyMap;
     }

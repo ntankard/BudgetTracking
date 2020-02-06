@@ -3,7 +3,6 @@ package com.ntankard.Tracking.DataBase.Core.Transfers;
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
-import com.ntankard.ClassExtension.SetterProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
@@ -14,17 +13,25 @@ import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-public class BankCategoryTransfer extends Transfer<Bank, Category> implements Ordered {
+public abstract class BankCategoryTransfer extends Transfer<Bank, Category> implements Ordered {
 
     /**
      * Constructor
      */
-    @ParameterMap(parameterGetters = {"getId", "getDescription", "getDestinationValue", "getPeriod", "getSource", "getDestination"})
+    @ParameterMap(shouldSave = false)
     public BankCategoryTransfer(Integer id, String description, Double value, Period period, Bank source, Category destination) {
         super(id, description, value, period, source, destination, null);
         if (period == null) throw new IllegalArgumentException("Period is null");
         if (source == null) throw new IllegalArgumentException("Source is null");
         if (destination == null) throw new IllegalArgumentException("Destination is null");
+    }
+
+    /**
+     * {@inheritDoc
+     */
+    @Override
+    public void remove() {
+        remove_impl();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -62,21 +69,5 @@ public class BankCategoryTransfer extends Transfer<Bank, Category> implements Or
     @DisplayProperties(order = 10)
     public Integer getOrder() {
         return getSource().getOrder() * 100 + getDestination().getOrder();
-    }
-
-    //------------------------------------------------------------------------------------------------------------------
-    //#################################################### Setters #####################################################
-    //------------------------------------------------------------------------------------------------------------------
-
-    @Override
-    @SetterProperties(localSourceMethod = "sourceOptions")
-    public void setSource(Bank source) {
-        super.setSource(source);
-    }
-
-    @Override
-    @SetterProperties(localSourceMethod = "sourceOptions")
-    public void setDestination(Category destination) {
-        super.setDestination(destination);
     }
 }

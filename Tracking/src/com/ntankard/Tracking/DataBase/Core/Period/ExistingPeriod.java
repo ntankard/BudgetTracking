@@ -8,13 +8,15 @@ import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.StatementEnd;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer.RePayCategoryFundTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfers.RecurringPayment.Fixed.FixedRecurringPayment;
+import com.ntankard.Tracking.DataBase.Core.Transfers.RecurringPayment.Fixed.FixedRecurringTransfer;
 import com.ntankard.Tracking.DataBase.Database.ObjectFactory;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.MultiParent_Set;
 
 @ClassExtensionProperties(includeParent = true)
-@ObjectFactory(builtObjects = {StatementEnd.class, RePayCategoryFundTransfer.class})
+@ObjectFactory(builtObjects = {StatementEnd.class, RePayCategoryFundTransfer.class, FixedRecurringTransfer.class})
 public class ExistingPeriod extends Period {
 
     // My values
@@ -80,6 +82,10 @@ public class ExistingPeriod extends Period {
             if (new MultiParent_Set<>(StatementEnd.class, bank, this).get().size() == 0) {
                 new StatementEnd(TrackingDatabase.get().getNextId(), this, bank, 0.0).add();
             }
+        }
+
+        for (FixedRecurringPayment fixedRecurringPayment : TrackingDatabase.get().get(FixedRecurringPayment.class)) {
+            fixedRecurringPayment.regenerateChildren();
         }
     }
 

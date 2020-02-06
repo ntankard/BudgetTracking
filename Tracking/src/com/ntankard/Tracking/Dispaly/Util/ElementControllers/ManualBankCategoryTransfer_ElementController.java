@@ -4,11 +4,11 @@ import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
-import com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfers.ManualBankCategoryTransfer;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.Dispaly.Util.Panels.TrackingDatabase_ElementController;
 
-public class BankCategoryTransfer_ElementController extends TrackingDatabase_ElementController<BankCategoryTransfer> {
+public class ManualBankCategoryTransfer_ElementController extends TrackingDatabase_ElementController<ManualBankCategoryTransfer> {
 
     /**
      * Data to use when creating a new object
@@ -19,7 +19,7 @@ public class BankCategoryTransfer_ElementController extends TrackingDatabase_Ele
     /**
      * Constructor
      */
-    public BankCategoryTransfer_ElementController(Period core, Bank bank, Updatable master) {
+    public ManualBankCategoryTransfer_ElementController(Period core, Bank bank, Updatable master) {
         super(master);
         this.core = core;
         this.bank = bank;
@@ -28,7 +28,7 @@ public class BankCategoryTransfer_ElementController extends TrackingDatabase_Ele
     /**
      * Constructor
      */
-    public BankCategoryTransfer_ElementController(Period core, Updatable master) {
+    public ManualBankCategoryTransfer_ElementController(Period core, Updatable master) {
         super(master);
         this.core = core;
     }
@@ -37,8 +37,8 @@ public class BankCategoryTransfer_ElementController extends TrackingDatabase_Ele
      * {@inheritDoc
      */
     @Override
-    public BankCategoryTransfer newElement() {
-        return new BankCategoryTransfer(TrackingDatabase.get().getNextId(),
+    public ManualBankCategoryTransfer newElement() {
+        return new ManualBankCategoryTransfer(TrackingDatabase.get().getNextId(),
                 "",
                 0.0,
                 core,

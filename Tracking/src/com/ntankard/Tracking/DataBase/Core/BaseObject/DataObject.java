@@ -76,6 +76,7 @@ public abstract class DataObject {
         }
 
         this.notifyParentUnLink();
+        TrackingDatabase.get().remove(this);
     }
 
     //------------------------------------------------------------------------------------------------------------------

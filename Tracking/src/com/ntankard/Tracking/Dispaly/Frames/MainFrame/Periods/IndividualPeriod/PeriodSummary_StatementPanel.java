@@ -9,6 +9,7 @@ import com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfers.BankTransfer.CurrencyBankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfers.BankTransfer.IntraCurrencyBankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer.UseCategoryFundTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfers.ManualBankCategoryTransfer;
 import com.ntankard.Tracking.DataBase.Interface.Set.Children_Set;
 import com.ntankard.Tracking.DataBase.Interface.Set.Extended.Sum.PeriodPool_SumSet;
 import com.ntankard.Tracking.DataBase.Interface.Set.Factory.PoolSummary.BankSummary_Set;
@@ -16,7 +17,7 @@ import com.ntankard.Tracking.DataBase.Interface.Set.Factory.PoolSummary.FundEven
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Bank_Summary;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.FundEvent_Summary;
 import com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.PeriodSummary_Table;
-import com.ntankard.Tracking.Dispaly.Util.ElementControllers.BankCategoryTransfer_ElementController;
+import com.ntankard.Tracking.Dispaly.Util.ElementControllers.ManualBankCategoryTransfer_ElementController;
 import com.ntankard.Tracking.Dispaly.Util.ElementControllers.CurrencyBankTransfer_ElementController;
 import com.ntankard.Tracking.Dispaly.Util.ElementControllers.IntraCurrencyBankTransfer_ElementController;
 import com.ntankard.Tracking.Dispaly.Util.ElementControllers.UseCategoryFundTransfer_ElementController;
@@ -39,9 +40,9 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
     private Object_DisplayList<Bank_Summary> bankSummary_panel;
     private Object_DisplayList<FundEvent_Summary> fundEventSummary_panel;
 
-    private BankCategoryTransfer_ElementController bankCategoryTransfer_controller;
-    private PeriodPool_SumSet<BankCategoryTransfer> bankCategoryTransfer_set;
-    private DataObject_DisplayList<BankCategoryTransfer> bankCategoryTransfer_panel;
+    private ManualBankCategoryTransfer_ElementController bankCategoryTransfer_controller;
+    private PeriodPool_SumSet<ManualBankCategoryTransfer> bankCategoryTransfer_set;
+    private DataObject_DisplayList<ManualBankCategoryTransfer> bankCategoryTransfer_panel;
 
     private DataObject_DisplayList<UseCategoryFundTransfer> periodFundTransfer_panel;
     private DataObject_DisplayList<CurrencyBankTransfer> bankTransfer_panel;
@@ -108,9 +109,9 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
 
         // Statement transactions --------------------------------------------------------------------------------------
 
-        bankCategoryTransfer_set = new PeriodPool_SumSet<>(BankCategoryTransfer.class, period, null);
-        bankCategoryTransfer_controller = new BankCategoryTransfer_ElementController(period, this);
-        bankCategoryTransfer_panel = new DataObject_DisplayList<>(BankCategoryTransfer.class, bankCategoryTransfer_set, false, this);
+        bankCategoryTransfer_set = new PeriodPool_SumSet<>(ManualBankCategoryTransfer.class, period, null);
+        bankCategoryTransfer_controller = new ManualBankCategoryTransfer_ElementController(period, this);
+        bankCategoryTransfer_panel = new DataObject_DisplayList<>(ManualBankCategoryTransfer.class, bankCategoryTransfer_set, false, this);
         bankCategoryTransfer_panel.addControlButtons(bankCategoryTransfer_controller);
 
         // Main layout -------------------------------------------------------------------------------------------------

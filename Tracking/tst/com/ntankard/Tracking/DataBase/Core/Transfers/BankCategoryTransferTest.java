@@ -35,10 +35,10 @@ class BankCategoryTransferTest {
         Bank bank = TrackingDatabase.get().get(Bank.class).get(0);
         Category category = TrackingDatabase.get().get(Category.class).get(0);
 
-        assertThrows(IllegalArgumentException.class, () -> new BankCategoryTransfer(-1, "", 0.0, null, bank, category));
-        assertThrows(IllegalArgumentException.class, () -> new BankCategoryTransfer(-1, "", 0.0, period, null, category));
-        assertThrows(IllegalArgumentException.class, () -> new BankCategoryTransfer(-1, "", 0.0, period, bank, null));
-        assertDoesNotThrow(() -> new BankCategoryTransfer(-1, "", 0.0, period, bank, category));
+        assertThrows(IllegalArgumentException.class, () -> new ManualBankCategoryTransfer(-1, "", 0.0, null, bank, category));
+        assertThrows(IllegalArgumentException.class, () -> new ManualBankCategoryTransfer(-1, "", 0.0, period, null, category));
+        assertThrows(IllegalArgumentException.class, () -> new ManualBankCategoryTransfer(-1, "", 0.0, period, bank, null));
+        assertDoesNotThrow(() -> new ManualBankCategoryTransfer(-1, "", 0.0, period, bank, category));
     }
 
     @Test
