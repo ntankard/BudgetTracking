@@ -6,7 +6,6 @@ import com.ntankard.ClassExtension.SetterProperties;
 import com.ntankard.TestUtil.ClassInspectionUtil;
 import com.ntankard.TestUtil.DataAccessUntil;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
-import com.ntankard.Tracking.DataBase.Database.TrackingDatabase_Integrity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -145,10 +144,6 @@ class DataObjectTest {
         }
     }
 
-    //------------------------------------------------------------------------------------------------------------------
-    //########################## Implementation Tests (all declared objects in isolation) ##############################
-    //------------------------------------------------------------------------------------------------------------------
-
     /**
      * Test that no object inherits from a none abstract object
      */
@@ -170,32 +165,68 @@ class DataObjectTest {
         }
     }
 
+    /**
+     * Check that primitives are not used (i cant remember why this matters)
+     */
+    @Test
+    void checkNonPrimitive() {
+        for (Class<? extends DataObject> toTest : ClassInspectionUtil.getAllClasses()) {
+            MemberClass mClass = new MemberClass(toTest);
+            List<Member> members = mClass.getVerbosityMembers(Integer.MAX_VALUE, false);
+
+            // Find the setters
+            for (Member member : members) {
+                assertFalse(member.getType().isPrimitive(), "A member is defined primitive" + " Class:" + toTest.getSimpleName() + " Method:" + member.getName());
+            }
+        }
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    //########################## Implementation Tests (all declared objects in isolation) ##############################
+    //------------------------------------------------------------------------------------------------------------------
+
     //------------------------------------------------------------------------------------------------------------------
     //######################### Database Test (all declared objects considers as a group) ##############################
     //------------------------------------------------------------------------------------------------------------------
 
     /**
-     * Run the validator
+     * Confirm the ID of all object. Check they are unique
      */
     @Test
     void validateId() {
-        assertDoesNotThrow(TrackingDatabase_Integrity::validateId);
+        for (DataObject dataObject : TrackingDatabase.get().getAll()) {
+            for (DataObject toTest : TrackingDatabase.get().getAll()) {
+                if (!dataObject.equals(toTest)) {
+                    assertNotEquals(dataObject.getId(), toTest.getId(), "Core Database error. Duplicate ID found");
+                }
+            }
+        }
     }
 
     /**
-     * Run the validator
+     * Confirm that all parent objects are present and have been linked
      */
     @Test
     void validateParent() {
-        assertDoesNotThrow(TrackingDatabase_Integrity::validateParent);
+        for (DataObject dataObject : TrackingDatabase.get().getAll()) {
+            for (DataObject parent : dataObject.getParents()) {
+                assertNotNull(parent, "Core Database error. Null parent detected");
+                assertTrue(parent.getChildren().contains(dataObject), "Core Database error. Parent has not been notified");
+            }
+        }
     }
 
     /**
-     * Run the validator
+     * Confirm that all children that the object knows about are present and connected to the parent
      */
     @Test
     void validateChild() {
-        assertDoesNotThrow(TrackingDatabase_Integrity::validateChild);
+        for (DataObject dataObject : TrackingDatabase.get().getAll()) {
+            for (DataObject child : dataObject.getChildren()) {
+                assertNotNull(child, "Core Database error. Null child detected");
+                assertTrue(child.getParents().contains(dataObject), "Core Database error. Object registers as a child that dose not list this object as a parent");
+            }
+        }
     }
 
     //------------------------------------------------------------------------------------------------------------------

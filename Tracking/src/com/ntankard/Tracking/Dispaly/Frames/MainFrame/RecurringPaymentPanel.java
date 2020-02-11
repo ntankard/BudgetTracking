@@ -2,7 +2,7 @@ package com.ntankard.Tracking.Dispaly.Frames.MainFrame;
 
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
-import com.ntankard.Tracking.DataBase.Core.Transfers.RecurringPayment.Fixed.FixedRecurringPayment;
+import com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer.RecurringPayment.Fixed.FixedRecurringPayment;
 import com.ntankard.Tracking.DataBase.Interface.Set.Full_Set;
 import com.ntankard.Tracking.Dispaly.Util.ElementControllers.FixedRecurringPayment_ElementController;
 import com.ntankard.Tracking.Dispaly.Util.Panels.DataObject_DisplayList;

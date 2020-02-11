@@ -12,13 +12,21 @@ public class DataObjectClassTree extends Container<Integer, Integer> {
     /**
      * {@inheritDoc
      */
-    @SuppressWarnings("unchecked")
     @Override
     public void add(DataObject toAdd) {
+        add(toAdd.getClass());
+    }
+
+    /**
+     * Add just based on the class
+     *
+     * @param aClass The class to add
+     */
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public void add(Class<? extends DataObject> aClass) {
         List<Class<? extends DataObject>> classes = new ArrayList<>();
 
         // Get all the classes the base one inherits from
-        Class<? extends DataObject> aClass = toAdd.getClass();
         do {
             classes.add(aClass);
             // Jump up the inheritance tree

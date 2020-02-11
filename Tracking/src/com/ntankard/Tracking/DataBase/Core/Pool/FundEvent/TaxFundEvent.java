@@ -24,6 +24,7 @@ public class TaxFundEvent extends FundEvent {
     @ParameterMap(parameterGetters = {"getId", "getName", "getCategory", "getPercentage"})
     public TaxFundEvent(Integer id, String name, Category category, Double percentage) {
         super(id, name, category, 13);
+        if (percentage == null) throw new IllegalArgumentException("Percentage is null");
         this.percentage = percentage;
     }
 
@@ -51,12 +52,28 @@ public class TaxFundEvent extends FundEvent {
         return Currency.round(new Period_Summary(period).getTaxableIncome() * percentage);
     }
 
+    /**
+     * {@inheritDoc
+     */
+    @Override
+    public void add() {
+        super.add();
+    }
+
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @DisplayProperties(order = 4)
+    // 1000000--getID
+    // 1100000----getName
+    // 1101000--------getCategory
+
+    @DisplayProperties(order = 1101100)
     public Double getPercentage() {
         return percentage;
     }
+
+    // 1110000------getOrder
+    // 2000000--getParents
+    // 3000000--getChildren
 }

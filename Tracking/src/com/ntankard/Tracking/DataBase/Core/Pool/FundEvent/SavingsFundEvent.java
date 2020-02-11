@@ -44,4 +44,23 @@ public class SavingsFundEvent extends FundEvent {
     public Double getCharge(Period period) {
         return -new Period_Summary(period).getNonSaveCategoryDelta();
     }
+
+    /**
+     * {@inheritDoc
+     */
+    @Override
+    public void add() {
+        super.add();
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    //#################################################### Getters #####################################################
+    //------------------------------------------------------------------------------------------------------------------
+
+    // 1000000--getID
+    // 1100000----getName
+    // 1101000--------getCategory
+    // 1110000------getOrder
+    // 2000000--getParents
+    // 3000000--getChildren
 }

@@ -99,7 +99,7 @@ public class DataObjectTestUtil {
     /**
      * Check that all declared objects of type have a fixed order set
      */
-    public static void testStandardOrder(Class<? extends DataObject> aClass) {
+    public static void testStandardOrder(Class<? extends DataObject> aClass, boolean strict) {
         assertTrue(Ordered.class.isAssignableFrom(aClass), "Trying to test a class that dose not implement Ordered. " + " Class:" + aClass.getSimpleName());
 
         List<Integer> order = new ArrayList<>();
@@ -110,11 +110,13 @@ public class DataObjectTestUtil {
             order.add(ordered.getOrder());
         }
 
-        order.sort(Integer::compareTo);
+        if (strict) {
+            order.sort(Integer::compareTo);
 
-        int last = order.get(0);
-        for (Integer integer : order) {
-            assertEquals(last++, integer, "Missing order value. " + aClass.getSimpleName());
+            int last = order.get(0);
+            for (Integer integer : order) {
+                assertEquals(last++, integer, "Missing order value. " + aClass.getSimpleName());
+            }
         }
     }
 }

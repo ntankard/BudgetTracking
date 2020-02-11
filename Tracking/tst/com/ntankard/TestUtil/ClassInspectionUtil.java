@@ -4,6 +4,7 @@ import com.ntankard.ClassExtension.Util;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.HasDefault;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.SpecialValues;
+import com.ntankard.Tracking.DataBase.Database.SubContainers.DataObjectClassTree;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -70,6 +71,29 @@ public class ClassInspectionUtil {
     }
 
     /**
+     * Get all classes in the PATH that extend DataObject
+     *
+     * @return All classes in the PATH that extend DataObject
+     */
+    @SuppressWarnings("rawtypes")
+    public static List<Class<? extends DataObject>> getAllClasses() {
+        // Get all classes
+        final Class[][] classes = {new Class[0]};
+        assertDoesNotThrow(() -> classes[0] = Util.getClasses(PATH));
+
+        // Filter to HasDefault
+        List<Class<? extends DataObject>> toReturn = new ArrayList<>();
+        for (Class aClass : classes[0]) {
+            if (DataObject.class.isAssignableFrom(aClass)) {
+                toReturn.add(aClass);
+            }
+        }
+
+        assertNotEquals(0, toReturn.size());
+        return toReturn;
+    }
+
+    /**
      * Get all classes that implement HasDefault in the PATH that extend DataObject
      *
      * @return All abstract  classes in the PATH that extend DataObject
@@ -118,5 +142,21 @@ public class ClassInspectionUtil {
 
         assertNotEquals(0, toReturn.size());
         return toReturn;
+    }
+
+    /**
+     * Get all the classes as a tree of there inheritance
+     *
+     * @return All the classes as a tree of there inheritance
+     */
+    public static DataObjectClassTree getDataObjectClassTree() {
+        DataObjectClassTree dataObjectClassTree = new DataObjectClassTree();
+        for (Class<? extends DataObject> dataObjectClass : getAbstractClasses()) {
+            dataObjectClassTree.add(dataObjectClass);
+        }
+        for (Class<? extends DataObject> dataObjectClass : getSolidClasses()) {
+            dataObjectClassTree.add(dataObjectClass);
+        }
+        return dataObjectClassTree;
     }
 }

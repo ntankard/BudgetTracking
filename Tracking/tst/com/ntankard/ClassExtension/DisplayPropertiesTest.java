@@ -2,10 +2,14 @@ package com.ntankard.ClassExtension;
 
 import com.ntankard.TestUtil.ClassInspectionUtil;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
+import com.ntankard.Tracking.DataBase.Database.SubContainers.DataObjectClassTree;
+import com.ntankard.Tracking.Util.TreeNode;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,39 +20,79 @@ class DisplayPropertiesTest {
      */
     @Test
     void order() {
-        assertNotEquals(0, ClassInspectionUtil.getSolidClasses().size());
-        for (Class<? extends DataObject> aClass : ClassInspectionUtil.getSolidClasses()) {
-            MemberClass mClass = new MemberClass(aClass);
-            List<Member> members = mClass.getVerbosityMembers(Integer.MAX_VALUE, false);
+        DataObjectClassTree dataObjectClassTree = ClassInspectionUtil.getDataObjectClassTree();
+        orderLayerCheck(dataObjectClassTree.getClassTreeRoot(), 6, new HashMap<>());
+    }
 
-            List<Integer> baseOrder = new ArrayList<>();
-            List<Integer> secondOrder = new ArrayList<>();
-            for (Member member : members) {
-                DisplayProperties properties = member.getGetter().getAnnotation(DisplayProperties.class);
-                assertNotNull(properties, "Member is missing DisplayProperties." + " Class:" + aClass.getSimpleName() + " Method:" + member.getGetter().getName());
+    /**
+     * Check that all object types that support DisplayProperties are orders correctly for a specific class
+     */
+    private void orderLayerCheck(TreeNode<Class<? extends DataObject>> dataObjectClassTree, int layer, Map<Integer, String> pastMethods) {
+        int layerStep = (int) Math.pow(10, layer);
+        int parentLayerStep = (int) Math.pow(10, layer + 1);
 
-                int order = properties.order();
-                List<Integer> toAdd = baseOrder;
-                if (order >= 20) {
-                    toAdd = secondOrder;
+        Map<Integer, String> currentMethods = new HashMap<>();
+        Map<Integer, List<Integer>> pastOrderSets = new HashMap<>();
+
+        // Generate all the available order sets
+        for (Integer key : pastMethods.keySet()) {
+            pastOrderSets.put(key / parentLayerStep, new ArrayList<>());
+        }
+
+        // For each method exposed at this layer
+        for (Member member : new MemberClass(dataObjectClassTree.data).getVerbosityMembers(Integer.MAX_VALUE, false)) {
+
+            // Find the listed Order
+            DisplayProperties properties = member.getGetter().getAnnotation(DisplayProperties.class);
+            assertNotNull(properties, "Method is missing DisplayProperties." + " Class:" + dataObjectClassTree.data.getSimpleName() + " Method:" + member.getGetter().getName());
+            int order = properties.order();
+
+            // Are there existing sets? (true for everything other the the first layer)
+            if (pastMethods.size() != 0) {
+
+                // Has this method been seen before? (is it overridden?)
+                if (pastMethods.containsKey(order)) {
+                    assertEquals(pastMethods.get(order), member.getName(), "A method had been overridden but its Order dose not match the parent." + " Class:" + dataObjectClassTree.data.getSimpleName() + " Method:" + member.getGetter().getName());
+                } else {
+                    int parentSet = order / parentLayerStep;
+                    int orderInSet = (order - (parentSet * parentLayerStep)) / layerStep;
+
+                    assertTrue(pastOrderSets.containsKey(parentSet), "Methods order value dose not fit into one of the ranges of the parent. Order was:" + order + " Class:" + dataObjectClassTree.data.getSimpleName() + " Method:" + member.getGetter().getName());
+                    assertFalse(pastOrderSets.get(parentSet).contains(orderInSet), "Duplicate order value found." + " Class:" + dataObjectClassTree.data.getSimpleName() + " Method:" + member.getGetter().getName());
+                    pastOrderSets.get(parentSet).add(orderInSet);
+
                 }
-
-                assertFalse(toAdd.contains(order), "More than 1 method has the same order value." + " Class:" + aClass.getSimpleName() + " Method:" + member.getGetter().getName());
-                toAdd.add(order);
             }
+            currentMethods.put(order, member.getName());
+        }
 
+        // Is this the root layer?
+        if (pastMethods.size() == 0) {
+            List<Integer> baseOrder = new ArrayList<>(currentMethods.keySet());
             baseOrder.sort(Integer::compareTo);
-            secondOrder.sort(Integer::compareTo);
-
-            int last = 0;
-            for (Integer integer : baseOrder) {
-                assertEquals(last++ + 1, integer, "One of the order values is missing. Missing values is " + last + " Class:" + aClass.getSimpleName());
+            int start = baseOrder.get(0);
+            for (int i = 1; i < baseOrder.size(); i++) {
+                assertEquals(start + layerStep, baseOrder.get(i), "One of the order values is missing. Missing values is " + start + layerStep + " Class:" + dataObjectClassTree.data.getSimpleName());
+                start = baseOrder.get(i);
             }
-
-            last = 20;
-            for (Integer integer : secondOrder) {
-                assertEquals(last++ + 1, integer, "One of the second order values is missing. Missing values is " + last + " Class:" + aClass.getSimpleName());
+        } else {
+            // Check each set independently
+            for (Integer key : pastOrderSets.keySet()) {
+                if (pastOrderSets.get(key).size() != 0) {
+                    pastOrderSets.get(key).sort(Integer::compareTo);
+                    int start = pastOrderSets.get(key).get(0);
+                    for (int i = 1; i < pastOrderSets.get(key).size(); i++) {
+                        assertEquals(start + 1, pastOrderSets.get(key).get(i), "One of the order values is missing. Missing values is " + start + layerStep + " Class:" + dataObjectClassTree.data.getSimpleName());
+                        start = pastOrderSets.get(key).get(i);
+                    }
+                }
             }
+        }
+
+        for (TreeNode<Class<? extends DataObject>> child : dataObjectClassTree.children) {
+            Map<Integer, String> newPast = new HashMap<>(pastMethods);
+            newPast.putAll(currentMethods);
+            orderLayerCheck(child, layer - 1, newPast);
         }
     }
 }

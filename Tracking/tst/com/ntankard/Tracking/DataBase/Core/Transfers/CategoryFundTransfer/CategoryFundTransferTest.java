@@ -6,7 +6,6 @@ import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
-import com.ntankard.Tracking.DataBase.Database.TrackingDatabase_Integrity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -98,10 +97,13 @@ class CategoryFundTransferTest {
     //------------------------------------------------------------------------------------------------------------------
 
     /**
-     * Run the validator
+     * Validate that the CategoryFundTransfers are in the correct state
      */
     @Test
     void validateCategoryFundTransfer() {
-        assertDoesNotThrow(TrackingDatabase_Integrity::validateCategoryFundTransfer);
+        for (CategoryFundTransfer categoryFundTransfer : TrackingDatabase.get().get(CategoryFundTransfer.class)) {
+            assertEquals(categoryFundTransfer.getDestinationValue(), -categoryFundTransfer.getSourceValue(), "Fund source and destination values do not match when they should");
+            assertEquals(categoryFundTransfer.getDestinationCurrency(), categoryFundTransfer.getSourceCurrency(), "Fund source and destination currencies do not match when they should");
+        }
     }
 }

@@ -16,6 +16,7 @@ public abstract class NamedDataObject extends DataObject {
     @ParameterMap(shouldSave = false)
     public NamedDataObject(Integer id, String name) {
         super(id);
+        if (name == null) throw new IllegalArgumentException("Name is null");
         this.name = name;
     }
 
@@ -31,16 +32,22 @@ public abstract class NamedDataObject extends DataObject {
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @DisplayProperties(order = 2)
+    // 1000000--getID
+
+    @DisplayProperties(order = 1100000)
     public String getName() {
         return name;
     }
+
+    // 2000000--getParents
+    // 3000000--getChildren
 
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Setters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
     public void setName(String name) {
+        if (name == null) throw new IllegalArgumentException("ID can not be null");
         this.name = name;
     }
 }

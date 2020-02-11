@@ -18,6 +18,7 @@ public class RePayCategoryFundTransfer extends CategoryFundTransfer {
     @ParameterMap(shouldSave = false)
     public RePayCategoryFundTransfer(Integer id, Period period, FundEvent fundEvent, Currency currency) {
         super(id, fundEvent.getName(), -1.0, period, fundEvent, currency);
+        if (currency == null) throw new IllegalArgumentException("Currency is null");
     }
 
     /**
@@ -32,21 +33,33 @@ public class RePayCategoryFundTransfer extends CategoryFundTransfer {
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
+    // 1000000--getID
+    // 1100000----getPeriod
+
     @Override
-    @DisplayProperties(order = 3)
+    @DisplayProperties(order = 1200000)
     public String getDescription() {
         return "RP " + super.getDescription();
     }
 
+    // 1300000----getSource
+
     @Override
-    @DisplayProperties(order = 5, dataType = CURRENCY)
+    @DisplayProperties(order = 1400000, dataType = CURRENCY)
     public Double getSourceValue() {
         return -getDestination().getCharge(getPeriod());
     }
 
+    // 1500000----getSourceCurrency
+    // 1600000----getDestination
+
     @Override
-    @DisplayProperties(order = 8, dataType = CURRENCY)
+    @DisplayProperties(order = 1700000, dataType = CURRENCY)
     public Double getDestinationValue() {
         return getDestination().getCharge(getPeriod());
     }
+
+    // 1800000----getDestinationCurrency
+    // 2000000--getParents
+    // 3000000--getChildren
 }

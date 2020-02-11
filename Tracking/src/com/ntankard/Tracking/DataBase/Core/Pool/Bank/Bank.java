@@ -36,6 +36,7 @@ public class Bank extends Pool implements CurrencyBound {
     public Bank(Integer id, String name, Integer order, Currency currency, Double start) {
         super(id, name, order);
         if (currency == null) throw new IllegalArgumentException("Currency is null");
+        if (start == null) throw new IllegalArgumentException("Start is null");
         this.currency = currency;
         this.start = start;
     }
@@ -45,7 +46,7 @@ public class Bank extends Pool implements CurrencyBound {
      */
     @Override
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 21)
+    @DisplayProperties(order = 2000000)
     public List<DataObject> getParents() {
         List<DataObject> toReturn = new ArrayList<>();
         toReturn.add(getCurrency());
@@ -73,14 +74,21 @@ public class Bank extends Pool implements CurrencyBound {
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @DisplayProperties(order = 3)
+    // 1000000--getID
+    // 1100000----getName
+
+    @DisplayProperties(order = 1101000)
     public Currency getCurrency() {
         return currency;
     }
 
-    @DisplayProperties(order = 4)
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    @DisplayProperties(order = 1102000)
     public Double getStart() {
         return start;
     }
+
+    // 1110000------getOrder
+    // 2000000--getParents (Above)
+    // 3000000--getChildren
 }

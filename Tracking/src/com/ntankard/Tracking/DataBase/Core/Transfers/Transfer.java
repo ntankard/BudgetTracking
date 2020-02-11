@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
-import static com.ntankard.ClassExtension.MemberProperties.*;
+import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
 public abstract class Transfer<SourceType extends DataObject, DestinationType extends DataObject> extends DataObject {
@@ -34,6 +34,10 @@ public abstract class Transfer<SourceType extends DataObject, DestinationType ex
     @ParameterMap(shouldSave = false)
     public Transfer(Integer id, String description, Double value, Period period, SourceType source, DestinationType destination, Currency currency) {
         super(id);
+        if (value == null) throw new IllegalArgumentException("Value is null");
+        if (period == null) throw new IllegalArgumentException("Period is null");
+        if (source == null) throw new IllegalArgumentException("Source is null");
+        if (destination == null) throw new IllegalArgumentException("Designation is null");
         this.description = description;
         this.value = value;
         this.period = period;
@@ -47,7 +51,7 @@ public abstract class Transfer<SourceType extends DataObject, DestinationType ex
      */
     @Override
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 21)
+    @DisplayProperties(order = 2000000)
     public List<DataObject> getParents() {
         List<DataObject> toReturn = new ArrayList<>();
         toReturn.add(getSource());
@@ -84,48 +88,53 @@ public abstract class Transfer<SourceType extends DataObject, DestinationType ex
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @DisplayProperties(order = 2)
+    // 1000000--getID
+
+    @DisplayProperties(order = 1100000)
     public Period getPeriod() {
         return period;
     }
 
-    @DisplayProperties(order = 3)
+    @DisplayProperties(order = 1200000)
     public String getDescription() {
         return description;
     }
 
-    @DisplayProperties(order = 4)
+    @DisplayProperties(order = 1300000)
     public SourceType getSource() {
         return source;
     }
 
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 5, dataType = CURRENCY)
+    @DisplayProperties(order = 1400000, dataType = CURRENCY)
     public Double getSourceValue() {
         return -value;
     }
 
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 6)
+    @DisplayProperties(order = 1500000)
     public Currency getSourceCurrency() {
         return currency;
     }
 
-    @DisplayProperties(order = 7)
+    @DisplayProperties(order = 1600000)
     public DestinationType getDestination() {
         return destination;
     }
 
-    @DisplayProperties(order = 8, dataType = CURRENCY)
+    @DisplayProperties(order = 1700000, dataType = CURRENCY)
     public Double getDestinationValue() {
         return value;
     }
 
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 9)
+    @DisplayProperties(order = 1800000)
     public Currency getDestinationCurrency() {
         return currency;
     }
+
+    // 2000000--getParents (Above)
+    // 3000000--getChildren
 
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Setters #####################################################
@@ -136,6 +145,7 @@ public abstract class Transfer<SourceType extends DataObject, DestinationType ex
     }
 
     public void setDestinationValue(Double value) {
+        if (value == null) throw new IllegalArgumentException("Value is null");
         this.value = value;
     }
 

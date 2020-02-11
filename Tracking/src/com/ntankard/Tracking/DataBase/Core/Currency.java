@@ -56,7 +56,7 @@ public class Currency extends NamedDataObject implements HasDefault {
      */
     @Override
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 21)
+    @DisplayProperties(order = 2000000)
     public List<DataObject> getParents() {
         return new ArrayList<>();
     }
@@ -67,7 +67,7 @@ public class Currency extends NamedDataObject implements HasDefault {
      * @return The formatter for this currency
      */
     @MemberProperties(verbosityLevel = TRACE_DISPLAY)
-    @DisplayProperties(order = 7)
+    @DisplayProperties(order = 1150000)
     public NumberFormat getNumberFormat() {
         return numberFormat;
     }
@@ -76,26 +76,33 @@ public class Currency extends NamedDataObject implements HasDefault {
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
+    // 1000000--getID
+    // 1100000----getName
+
     @Override
-    @DisplayProperties(order = 3)
+    @DisplayProperties(order = 1110000)
     public Boolean isDefault() {
         return isDefault;
     }
 
-    @DisplayProperties(order = 4)
+    @DisplayProperties(order = 1120000)
     public Double getToPrimary() {
         return toPrimary;
     }
 
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    @DisplayProperties(order = 5)
+    @DisplayProperties(order = 1130000)
     public String getLanguage() {
         return language;
     }
 
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    @DisplayProperties(order = 6)
+    @DisplayProperties(order = 1140000)
     public String getCountry() {
         return country;
     }
+
+    // 1150000------getNumberFormat (Above)
+    // 2000000--getParents (Above)
+    // 3000000--getChildren
 }

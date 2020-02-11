@@ -1,22 +1,24 @@
-package com.ntankard.Tracking.DataBase.Database;
+package com.ntankard.ClassExtension;
 
-import com.ntankard.TestUtil.ClassInspectionUtil;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
+import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
+import static com.ntankard.TestUtil.ClassInspectionUtil.getAllClasses;
 import static org.junit.jupiter.api.Assertions.*;
 
-class ParameterMapTest {
+public class ParameterMapTest {
 
     /**
-     * Check that all solid classes implement ParameterMap and have it setup correctly
+     * Test that ParameterMap is on all classes and used correctly
      */
+    @SuppressWarnings("rawtypes")
     @Test
-    void parameterGettersAndShouldSave() {
-        for (Class<? extends DataObject> aClass : ClassInspectionUtil.getSolidClasses()) {
+    void parameterMapUse() {
+        for (Class<? extends DataObject> aClass : getAllClasses()) {
 
             // Get the constructor
             Constructor[] constructors = aClass.getConstructors();

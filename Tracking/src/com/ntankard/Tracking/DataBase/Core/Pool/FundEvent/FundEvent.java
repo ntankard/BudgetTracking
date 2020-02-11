@@ -34,6 +34,7 @@ public abstract class FundEvent extends Pool {
     public FundEvent(Integer id, String name, Category category, Integer order) {
         super(id, name, order);
         if (category == null) throw new IllegalArgumentException("Category is null");
+        if (order == null) throw new IllegalArgumentException("Order is null");
         this.category = category;
     }
 
@@ -42,7 +43,7 @@ public abstract class FundEvent extends Pool {
      */
     @Override
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 21)
+    @DisplayProperties(order = 2000000)
     public List<DataObject> getParents() {
         List<DataObject> toReturn = new ArrayList<>();
         toReturn.add(getCategory());
@@ -79,7 +80,6 @@ public abstract class FundEvent extends Pool {
     @Override
     public void add() {
         super.add();
-
         recreateRePay();
     }
 
@@ -114,8 +114,15 @@ public abstract class FundEvent extends Pool {
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @DisplayProperties(order = 3)
+    // 1000000--getID
+    // 1100000----getName
+
+    @DisplayProperties(order = 1101000)
     public Category getCategory() {
         return category;
     }
+
+    // 1110000------getOrder
+    // 2000000--getParents (Above)
+    // 3000000--getChildren
 }

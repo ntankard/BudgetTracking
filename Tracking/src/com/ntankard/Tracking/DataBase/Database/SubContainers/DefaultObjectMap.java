@@ -45,8 +45,12 @@ public class DefaultObjectMap extends Container<Class, DataObject> {
      */
     @SuppressWarnings("unchecked")
     public <T extends DataObject> T getDefault(Class<T> aClass) {
-        if (container.containsKey(aClass)) {
-            return (T) container.get(aClass);
+        if (HasDefault.class.isAssignableFrom(aClass)) {
+            if (container.containsKey(aClass)) {
+                return (T) container.get(aClass);
+            } else {
+                throw new RuntimeException("No default registered for this type");
+            }
         }
         return TrackingDatabase.get().get(aClass).get(0);
     }

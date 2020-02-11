@@ -4,7 +4,7 @@ import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer.BankCategoryTransfer;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ public class Receipt extends DataObject {
     private String fileName;
 
     // Non save values
-    private boolean firstFile = false;
+    private Boolean firstFile = false;
 
     /**
      * Constructor
@@ -30,6 +30,8 @@ public class Receipt extends DataObject {
     @ParameterMap(parameterGetters = {"getId", "getFileName", "getBankCategoryTransfer"})
     public Receipt(Integer id, String fileName, BankCategoryTransfer bankCategoryTransfer) {
         super(id);
+        if (fileName == null) throw new IllegalArgumentException("FileName is null");
+        if (bankCategoryTransfer == null) throw new IllegalArgumentException("BankCategoryTransfer is null");
         this.fileName = fileName;
         this.bankCategoryTransfer = bankCategoryTransfer;
     }
@@ -39,7 +41,7 @@ public class Receipt extends DataObject {
      */
     @Override
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 21)
+    @DisplayProperties(order = 2000000)
     public List<DataObject> getParents() {
         List<DataObject> toReturn = new ArrayList<>();
         toReturn.add(getBankCategoryTransfer());
@@ -50,8 +52,8 @@ public class Receipt extends DataObject {
     //############################################### Non save members #################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @DisplayProperties(order = 4)
-    public boolean isFirstFile() {
+    @DisplayProperties(order = 1300000)
+    public Boolean isFirstFile() {
         return firstFile;
     }
 
@@ -63,13 +65,19 @@ public class Receipt extends DataObject {
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @DisplayProperties(order = 2)
+    // 1000000--getID
+
+    @DisplayProperties(order = 1100000)
     public BankCategoryTransfer getBankCategoryTransfer() {
         return bankCategoryTransfer;
     }
 
-    @DisplayProperties(order = 3)
+    @DisplayProperties(order = 1200000)
     public String getFileName() {
         return fileName;
     }
+
+    // 1300000----isFirstFile (Above)
+    // 2000000--getParents (Above)
+    // 3000000--getChildren
 }

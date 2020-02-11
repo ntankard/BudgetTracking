@@ -8,8 +8,8 @@ import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.StatementEnd;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer.RePayCategoryFundTransfer;
-import com.ntankard.Tracking.DataBase.Core.Transfers.RecurringPayment.Fixed.FixedRecurringPayment;
-import com.ntankard.Tracking.DataBase.Core.Transfers.RecurringPayment.Fixed.FixedRecurringTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer.RecurringPayment.Fixed.FixedRecurringPayment;
+import com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer.RecurringPayment.Fixed.FixedRecurringTransfer;
 import com.ntankard.Tracking.DataBase.Database.ObjectFactory;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
@@ -29,6 +29,8 @@ public class ExistingPeriod extends Period {
     @ParameterMap(parameterGetters = {"getId", "getMonth", "getYear"})
     public ExistingPeriod(Integer id, Integer month, Integer year) {
         super(id);
+        if (month == null) throw new IllegalArgumentException("Month is null");
+        if (year == null) throw new IllegalArgumentException("Yesr is null");
         this.month = month;
         this.year = year;
     }
@@ -93,20 +95,25 @@ public class ExistingPeriod extends Period {
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @DisplayProperties(order = 2)
+    // 1000000--getID
+
+    @DisplayProperties(order = 1010000)
     public Integer getMonth() {
         return month;
     }
 
-    @DisplayProperties(order = 3)
+    @DisplayProperties(order = 1020000)
     public Integer getYear() {
         return year;
     }
 
     @Override
     @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
-    @DisplayProperties(order = 4)
+    @DisplayProperties(order = 1030000)
     public Integer getOrder() {
         return getYear() * 12 + getMonth();
     }
+
+    // 2000000--getParents (Above)
+    // 3000000--getChildren
 }

@@ -18,9 +18,6 @@ public class CurrencyBankTransfer extends BankTransfer {
     @ParameterMap(parameterGetters = {"getId", "getDescription", "getDestinationValue", "getPeriod", "getSource", "getDestination"})
     public CurrencyBankTransfer(Integer id, String description, Double value, Period period, Bank source, Bank destination) {
         super(id, description, value, period, source, destination);
-        if (period == null) throw new IllegalArgumentException("Period is null");
-        if (source == null) throw new IllegalArgumentException("Source is null");
-        if (destination == null) throw new IllegalArgumentException("Destination is null");
         if (source.equals(destination)) throw new IllegalArgumentException("Source and destination are the same");
         if (!source.getCurrency().equals(destination.getCurrency()))
             throw new IllegalArgumentException("Currencies are not the same");
@@ -40,6 +37,22 @@ public class CurrencyBankTransfer extends BankTransfer {
 
         return super.sourceOptions(type, fieldName);
     }
+
+    //------------------------------------------------------------------------------------------------------------------
+    //#################################################### Getters #####################################################
+    //------------------------------------------------------------------------------------------------------------------
+
+    // 1000000--getID
+    // 1100000----getPeriod
+    // 1200000----getDescription
+    // 1300000----getSource
+    // 1400000----getSourceValue
+    // 1500000----getSourceCurrency
+    // 1600000----getDestination
+    // 1700000----getDestinationValue
+    // 1800000----getDestinationCurrency
+    // 2000000--getParents
+    // 3000000--getChildren
 
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Setters #####################################################

@@ -6,11 +6,12 @@ import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
-import com.ntankard.Tracking.DataBase.Database.TrackingDatabase_Integrity;
+import com.ntankard.Tracking.DataBase.Interface.Set.Full_Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CurrencyBankTransferTest {
 
@@ -143,10 +144,15 @@ class CurrencyBankTransferTest {
     //------------------------------------------------------------------------------------------------------------------
 
     /**
-     * Run the validator
+     * Validate that the Bank Transfer is in the correct state
      */
     @Test
     void validateCurrencyBankTransfer() {
-        assertDoesNotThrow(TrackingDatabase_Integrity::validateCurrencyBankTransfer);
+        for (CurrencyBankTransfer currencyBankTransfer : new Full_Set<>(CurrencyBankTransfer.class).get()) {
+            assertNotEquals(currencyBankTransfer.getSource(), currencyBankTransfer.getDestination(), "Transferring to itself");
+            assertEquals(currencyBankTransfer.getSource().getCurrency(), currencyBankTransfer.getDestination().getCurrency(), "Transferring between banks with different currencies");
+            assertEquals(currencyBankTransfer.getDestinationValue(), -currencyBankTransfer.getSourceValue(), "Fund source and destination values do not match when they should");
+            assertEquals(currencyBankTransfer.getDestinationCurrency(), currencyBankTransfer.getSourceCurrency(), "Fund source and destination currencies do not match when they should");
+        }
     }
 }

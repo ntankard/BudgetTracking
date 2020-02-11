@@ -2,7 +2,6 @@ package com.ntankard.Tracking.DataBase.Core.Pool;
 
 import com.ntankard.TestUtil.DataAccessUntil;
 import com.ntankard.TestUtil.DataObjectTestUtil;
-import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -45,6 +44,6 @@ class CategoryTest {
      */
     @Test
     void getOrder() {
-        DataObjectTestUtil.testStandardOrder(Category.class);
+        DataObjectTestUtil.testStandardOrder(Category.class, true);
     }
 }

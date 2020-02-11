@@ -17,16 +17,29 @@ public class UseCategoryFundTransfer extends CategoryFundTransfer {
     @ParameterMap(parameterGetters = {"getId", "getDescription", "getDestinationValue", "getPeriod", "getDestination", "getDestinationCurrency"})
     public UseCategoryFundTransfer(Integer id, String description, Double value, Period period, FundEvent fundEvent, Currency currency) {
         super(id, description, value, period, fundEvent, currency);
+        if (currency == null) throw new IllegalArgumentException("Currency is null");
     }
 
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @DisplayProperties(order = 9)
+    // 1000000--getID
+    // 1100000----getPeriod
+    // 1200000----getDescription
+    // 1300000----getSource
+    // 1400000----getSourceValue
+    // 1500000----getSourceCurrency
+    // 1600000----getDestination
+    // 1700000----getDestinationValue
+
+    @DisplayProperties(order = 1800000)
     public Currency getDestinationCurrency() {
         return super.getDestinationCurrency();
     }
+
+    // 2000000--getParents
+    // 3000000--getChildren
 
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Setters #####################################################

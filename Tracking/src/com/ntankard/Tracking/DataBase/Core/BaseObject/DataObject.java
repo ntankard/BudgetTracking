@@ -19,13 +19,14 @@ public abstract class DataObject {
     /**
      * All my children
      */
-    private DataObjectContainer container = new DataObjectContainer();
+    private DataObjectContainer children = new DataObjectContainer();
 
     /**
      * Constructor
      */
     @ParameterMap(shouldSave = false)
     public DataObject(Integer id) {
+        if (id == null) throw new IllegalArgumentException("ID is null");
         this.id = id;
     }
 
@@ -35,7 +36,7 @@ public abstract class DataObject {
      * @return The unique identifier for this data object
      */
     @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
-    @DisplayProperties(order = 1)
+    @DisplayProperties(order = 1000000)
     public Integer getId() {
         return id;
     }
@@ -107,7 +108,7 @@ public abstract class DataObject {
      * @return All the parents of this object
      */
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 21)
+    @DisplayProperties(order = 2000000)
     public abstract List<DataObject> getParents();
 
     /**
@@ -116,7 +117,7 @@ public abstract class DataObject {
      * @param linkObject The child
      */
     public void notifyChildLink(DataObject linkObject) {
-        container.add(linkObject);
+        children.add(linkObject);
     }
 
     /**
@@ -125,7 +126,7 @@ public abstract class DataObject {
      * @param linkObject The child
      */
     public void notifyChildUnLink(DataObject linkObject) {
-        container.remove(linkObject);
+        children.remove(linkObject);
     }
 
     /**
@@ -135,9 +136,8 @@ public abstract class DataObject {
      * @param <T>  The Object type
      * @return The list of children for a a specific class type
      */
-    @SuppressWarnings("unchecked")
     public <T extends DataObject> List<T> getChildren(Class<T> type) {
-        return container.get(type);
+        return children.get(type);
     }
 
     /**
@@ -149,7 +149,7 @@ public abstract class DataObject {
      * @return The list of children for a a specific class type
      */
     public <T extends DataObject> T getChildren(Class<T> type, Integer key) {
-        return container.get(type, key);
+        return children.get(type, key);
     }
 
     /**
@@ -158,10 +158,14 @@ public abstract class DataObject {
      * @return The list of all children
      */
     @MemberProperties(verbosityLevel = TRACE_DISPLAY)
-    @DisplayProperties(order = 22)
+    @DisplayProperties(order = 3000000)
     public List<DataObject> getChildren() {
-        return container.get();
+        return children.get();
     }
+
+    //------------------------------------------------------------------------------------------------------------------
+    //#################################################### Setters #####################################################
+    //------------------------------------------------------------------------------------------------------------------
 
     /**
      * Get possible options that a field will accept
@@ -172,5 +176,41 @@ public abstract class DataObject {
      */
     public <T extends DataObject> List<T> sourceOptions(Class<T> type, String fieldName) {
         return TrackingDatabase.get().get(type);
+    }
+
+    /**
+     * Get possible options that a field will accept
+     *
+     * @param type      The type of object expected
+     * @param fieldName The field name
+     * @return A list of objects the the field will accept
+     */
+    protected <T extends DataObject> List<T> sourceOptions_nullValidImpl(Class<T> type, String fieldName) {
+        List<T> toReturn = TrackingDatabase.get().get(type);
+        toReturn.add(null);
+        return toReturn;
+    }
+
+    /**
+     * Ensure that a DataObject is clear to set
+     *
+     * @param type      The type of object expected
+     * @param fieldName The field name
+     * @param current   The current value stores
+     * @param toSet     The new value to set
+     * @param <T>       THe type of type
+     * @return toSet
+     */
+    protected <T extends DataObject> T set_impl(Class<T> type, String fieldName, T current, T toSet) {
+        if (sourceOptions(type, fieldName).contains(toSet)) {
+            throw new IllegalArgumentException("Attempting to set a value that is not included in sourceOptions");
+        }
+        if (current != null) {
+            current.notifyChildUnLink(this);
+        }
+        if (toSet != null) {
+            toSet.notifyChildLink(this);
+        }
+        return toSet;
     }
 }

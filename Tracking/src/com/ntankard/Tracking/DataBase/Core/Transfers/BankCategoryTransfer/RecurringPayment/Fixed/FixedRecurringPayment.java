@@ -1,4 +1,4 @@
-package com.ntankard.Tracking.DataBase.Core.Transfers.RecurringPayment.Fixed;
+package com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer.RecurringPayment.Fixed;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
@@ -10,7 +10,7 @@ import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
-import com.ntankard.Tracking.DataBase.Core.Transfers.RecurringPayment.RecurringPayment;
+import com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer.RecurringPayment.RecurringPayment;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 
@@ -38,6 +38,10 @@ public class FixedRecurringPayment extends RecurringPayment implements CurrencyB
     @ParameterMap(parameterGetters = {"getId", "getName", "getValue", "getStart", "getEnd", "getBank", "getCategory"})
     public FixedRecurringPayment(Integer id, String name, Double value, ExistingPeriod start, ExistingPeriod end, Bank bank, Category category) {
         super(id, name);
+        if (value == null) throw new IllegalArgumentException("Value is null");
+        if (start == null) throw new IllegalArgumentException("Start is null");
+        if (bank == null) throw new IllegalArgumentException("Bank is null");
+        if (category == null) throw new IllegalArgumentException("Category is null");
         this.value = value;
         this.start = start;
         this.end = end;
@@ -50,7 +54,7 @@ public class FixedRecurringPayment extends RecurringPayment implements CurrencyB
      */
     @Override
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 21)
+    @DisplayProperties(order = 2000000)
     public List<DataObject> getParents() {
         List<DataObject> toReturn = new ArrayList<>();
         toReturn.add(getBank());
@@ -117,37 +121,43 @@ public class FixedRecurringPayment extends RecurringPayment implements CurrencyB
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @DisplayProperties(order = 3)
+    // 1000000--getID
+    // 1100000--getName
+
+    @DisplayProperties(order = 1101000)
     public ExistingPeriod getStart() {
         return start;
     }
 
-    @DisplayProperties(order = 4)
+    @DisplayProperties(order = 1102000)
     public ExistingPeriod getEnd() {
         return end;
     }
 
-    @DisplayProperties(order = 5)
+    @DisplayProperties(order = 1103000)
     public Bank getBank() {
         return bank;
     }
 
-    @DisplayProperties(order = 6)
+    @DisplayProperties(order = 1104000)
     public Category getCategory() {
         return category;
     }
 
-    @DisplayProperties(order = 7, dataType = CURRENCY)
+    @DisplayProperties(order = 1105000, dataType = CURRENCY)
     public Double getValue() {
         return value;
     }
 
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 8)
+    @DisplayProperties(order = 1106000)
     @Override
     public Currency getCurrency() {
         return getBank().getCurrency();
     }
+
+    // 2000000--getParents (Above)
+    // 3000000--getChildren
 
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Setters #####################################################

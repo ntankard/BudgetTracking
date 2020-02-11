@@ -38,6 +38,7 @@ public class FixedPeriodFundEvent extends FundEvent {
     public FixedPeriodFundEvent(Integer id, String name, Category category, ExistingPeriod start, Integer duration) {
         super(id, name, category, 1);
         if (start == null) throw new IllegalArgumentException("Start was null");
+        if (duration == null) throw new IllegalArgumentException("Duration is null");
         if (duration < 1) throw new IllegalArgumentException("Duration is less than 1");
         this.start = start;
         this.duration = duration;
@@ -48,7 +49,7 @@ public class FixedPeriodFundEvent extends FundEvent {
      */
     @Override
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 21)
+    @DisplayProperties(order = 2000000)
     public List<DataObject> getParents() {
         List<DataObject> toReturn = super.getParents();
         toReturn.add(getStart());
@@ -101,19 +102,35 @@ public class FixedPeriodFundEvent extends FundEvent {
         return -new Transfer_SumSet<>(new Children_Set<>(UseCategoryFundTransfer.class, this), this).getTotal() / duration;
     }
 
+    /**
+     * {@inheritDoc
+     */
+    @Override
+    public void add() {
+        super.add();
+    }
+
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @DisplayProperties(order = 4)
+    // 1000000--getID
+    // 1100000----getName
+    // 1101000--------getCategory
+
+    @DisplayProperties(order = 1101100)
     public ExistingPeriod getStart() {
         return start;
     }
 
-    @DisplayProperties(order = 5)
+    @DisplayProperties(order = 1101200)
     public Integer getDuration() {
         return duration;
     }
+
+    // 1110000------getOrder
+    // 2000000--getParents (Above)
+    // 3000000--getChildren
 
     //------------------------------------------------------------------------------------------------------------------
     //##################################################### Setter #####################################################
@@ -138,6 +155,7 @@ public class FixedPeriodFundEvent extends FundEvent {
     }
 
     public void setDuration(Integer duration) {
+        if (duration == null) throw new IllegalArgumentException("Duration is null");
         if (duration < 1) throw new IllegalArgumentException("Duration is less than 1");
         this.duration = duration;
         recreateRePay();

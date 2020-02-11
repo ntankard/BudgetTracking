@@ -26,9 +26,6 @@ public class IntraCurrencyBankTransfer extends BankTransfer {
     @ParameterMap(parameterGetters = {"getId", "getDescription", "getSourceValue", "getDestinationValue", "getPeriod", "getSource", "getDestination"})
     public IntraCurrencyBankTransfer(Integer id, String description, Double sourceValue, Double destinationValue, Period period, Bank source, Bank destination) {
         super(id, description, -1.0, period, source, destination);
-        if (period == null) throw new IllegalArgumentException("Period is null");
-        if (source == null) throw new IllegalArgumentException("Source is null");
-        if (destination == null) throw new IllegalArgumentException("Destination is null");
         if (source.equals(destination)) throw new IllegalArgumentException("Source and destination are the same");
         if (source.getCurrency().equals(destination.getCurrency()))
             throw new IllegalArgumentException("Currencies are not different");
@@ -55,17 +52,30 @@ public class IntraCurrencyBankTransfer extends BankTransfer {
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
+    // 1000000--getID
+    // 1100000----getPeriod
+    // 1200000----getDescription
+    // 1300000----getSource
+
     @Override
-    @DisplayProperties(order = 5, dataType = CURRENCY)
+    @DisplayProperties(order = 1400000, dataType = CURRENCY)
     public Double getSourceValue() {
         return sourceValue;
     }
 
+    // 1500000----getSourceCurrency
+    // 1600000----getDestination
+
     @Override
-    @DisplayProperties(order = 8, dataType = CURRENCY)
+    @DisplayProperties(order = 1700000, dataType = CURRENCY)
     public Double getDestinationValue() {
         return destinationValue;
     }
+
+    // 1800000----getDestinationCurrency
+    // 2000000--getParents
+    // 3000000--getChildren
+
 
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Setters #####################################################
@@ -83,10 +93,12 @@ public class IntraCurrencyBankTransfer extends BankTransfer {
     }
 
     public void setSourceValue(Double sourceValue) {
+        if (sourceValue == null) throw new IllegalArgumentException("SourceValue is null");
         this.sourceValue = sourceValue;
     }
 
     public void setDestinationValue(Double destinationValue) {
+        if (destinationValue == null) throw new IllegalArgumentException("DestinationValue is null");
         this.destinationValue = destinationValue;
     }
 }

@@ -5,9 +5,6 @@ import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
-import com.ntankard.Tracking.DataBase.Core.Pool.Bank.StatementEnd;
-import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer.RePayCategoryFundTransfer;
-import com.ntankard.Tracking.DataBase.Database.ObjectFactory;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
 import java.util.ArrayList;
@@ -16,7 +13,6 @@ import java.util.List;
 import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-@ObjectFactory(builtObjects = {StatementEnd.class, RePayCategoryFundTransfer.class})
 public abstract class Period extends DataObject implements Ordered {
 
     /**
@@ -32,7 +28,7 @@ public abstract class Period extends DataObject implements Ordered {
      */
     @Override
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 21)
+    @DisplayProperties(order = 2000000)
     public List<DataObject> getParents() {
         return new ArrayList<>();
     }
@@ -48,4 +44,12 @@ public abstract class Period extends DataObject implements Ordered {
         int diff = this.getOrder() - start.getOrder();
         return diff >= 0 && diff < duration;
     }
+
+    //------------------------------------------------------------------------------------------------------------------
+    //#################################################### Getters #####################################################
+    //------------------------------------------------------------------------------------------------------------------
+
+    // 1000000--getID
+    // 2000000--getParents (Above)
+    // 3000000--getChildren
 }

@@ -30,6 +30,9 @@ public class Category extends Pool implements HasDefault, SpecialValues {
     @ParameterMap(parameterGetters = {"getId", "getName", "getOrder", "isDefault", "isSavings", "isTaxable"})
     public Category(Integer id, String name, Integer order, Boolean isDefault, Boolean isSavings, Boolean isTaxable) {
         super(id, name, order);
+        if (isDefault == null) throw new IllegalArgumentException("IsDefault is null");
+        if (isSavings == null) throw new IllegalArgumentException("IsSaving is null");
+        if (isTaxable == null) throw new IllegalArgumentException("IsTaxable is null");
         this.isDefault = isDefault;
         this.isSavings = isSavings;
         this.isTaxable = isTaxable;
@@ -40,7 +43,7 @@ public class Category extends Pool implements HasDefault, SpecialValues {
      */
     @Override
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 21)
+    @DisplayProperties(order = 2000000)
     public List<DataObject> getParents() {
         return new ArrayList<>();
     }
@@ -64,7 +67,7 @@ public class Category extends Pool implements HasDefault, SpecialValues {
      */
     @Override
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 24)
+    @DisplayProperties(order = 1111000)
     public List<Integer> getKeys() {
         List<Integer> keys = new ArrayList<>();
         keys.add(TAXABLE);
@@ -76,21 +79,29 @@ public class Category extends Pool implements HasDefault, SpecialValues {
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
+    // 1000000--getID
+    // 1100000----getName
+
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 3)
+    @DisplayProperties(order = 1101000)
     public Boolean isDefault() {
         return isDefault;
     }
 
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 4)
+    @DisplayProperties(order = 1102000)
     public Boolean isSavings() {
         return isSavings;
     }
 
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 5)
+    @DisplayProperties(order = 1103000)
     public Boolean isTaxable() {
         return isTaxable;
     }
+
+    // 1110000------getOrder
+    // 1111000--------getKeys (Above)
+    // 2000000--getParents (Above)
+    // 3000000--getChildren
 }

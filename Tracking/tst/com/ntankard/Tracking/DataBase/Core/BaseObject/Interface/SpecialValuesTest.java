@@ -4,7 +4,6 @@ import com.ntankard.TestUtil.ClassInspectionUtil;
 import com.ntankard.TestUtil.DataAccessUntil;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
-import com.ntankard.Tracking.DataBase.Database.TrackingDatabase_Integrity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -100,10 +99,18 @@ class SpecialValuesTest {
     //------------------------------------------------------------------------------------------------------------------
 
     /**
-     * Run the validator
+     * Confirm that all special values are present in the database, and are the correct ones
      */
     @Test
     void validateSpecial() {
-        assertDoesNotThrow(TrackingDatabase_Integrity::validateSpecial);
+        for (Class<? extends DataObject> aClass : TrackingDatabase.get().getDataObjectTypes()) {
+            if (TrackingDatabase.get().get(aClass).size() != 0) {
+                if (SpecialValues.class.isAssignableFrom(aClass)) {
+                    for (int key : ((SpecialValues) TrackingDatabase.get().get(aClass).get(0)).getKeys()) {
+                        assertNotNull(TrackingDatabase.get().getSpecialValue(aClass, key), "Core Database error. An object with a special value has no special value set");
+                    }
+                }
+            }
+        }
     }
 }

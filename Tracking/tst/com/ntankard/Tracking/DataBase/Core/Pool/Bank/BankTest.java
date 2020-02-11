@@ -62,6 +62,6 @@ class BankTest {
      */
     @Test
     void getOrder() {
-        DataObjectTestUtil.testStandardOrder(Bank.class);
+        DataObjectTestUtil.testStandardOrder(Bank.class, true);
     }
 }

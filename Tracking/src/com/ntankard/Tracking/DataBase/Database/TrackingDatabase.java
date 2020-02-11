@@ -65,25 +65,7 @@ public class TrackingDatabase {
      * Finalise the database. From this point on the integrate of the database can be guaranteed and call generated values will exist
      */
     public void finalizeCore() {
-        finalizeCore(true);
-    }
-
-    /**
-     * Finalise the database. From this point on the integrate of the database can be guaranteed and call generated values will exist
-     *
-     * @param shouldTest SHouyld validation run?
-     */
-    public void finalizeCore(boolean shouldTest) {
-        if (shouldTest) {
-            TrackingDatabase_Integrity.validateCore();
-        }
-
         TrackingDatabase_Repair.repair();
-
-        if (shouldTest) {
-            TrackingDatabase_Integrity.validateCore();
-            TrackingDatabase_Integrity.validateRepaired();
-        }
     }
 
     //------------------------------------------------------------------------------------------------------------------

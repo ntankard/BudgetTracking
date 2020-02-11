@@ -106,6 +106,6 @@ class ExistingPeriodTest {
      */
     @Test
     void getOrder() {
-        DataObjectTestUtil.testStandardOrder(ExistingPeriod.class);
+        DataObjectTestUtil.testStandardOrder(ExistingPeriod.class, true);
     }
 }

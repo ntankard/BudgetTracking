@@ -34,6 +34,7 @@ public class StatementEnd extends DataObject implements CurrencyBound, Ordered {
         super(id);
         if (period == null) throw new IllegalArgumentException("Period is null");
         if (bank == null) throw new IllegalArgumentException("Bank is null");
+        if (end == null) throw new IllegalArgumentException("End is null");
         this.period = period;
         this.bank = bank;
         this.end = end;
@@ -44,7 +45,7 @@ public class StatementEnd extends DataObject implements CurrencyBound, Ordered {
      */
     @Override
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 21)
+    @DisplayProperties(order = 2000000)
     public List<DataObject> getParents() {
         List<DataObject> toReturn = new ArrayList<>();
         toReturn.add(getPeriod());
@@ -57,40 +58,46 @@ public class StatementEnd extends DataObject implements CurrencyBound, Ordered {
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
+    // 1000000--getID
+
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    @DisplayProperties(order = 2)
+    @DisplayProperties(order = 1100000)
     public ExistingPeriod getPeriod() {
         return period;
     }
 
-    @DisplayProperties(order = 3)
+    @DisplayProperties(order = 1200000)
     public Bank getBank() {
         return bank;
     }
 
-    @DisplayProperties(order = 4, dataType = CURRENCY)
+    @DisplayProperties(order = 1300000, dataType = CURRENCY)
     public Double getEnd() {
         return end;
     }
 
     @Override
-    @DisplayProperties(order = 5)
+    @DisplayProperties(order = 1400000)
     public Currency getCurrency() {
         return getBank().getCurrency();
     }
 
     @Override
     @MemberProperties(verbosityLevel = TRACE_DISPLAY)
-    @DisplayProperties(order = 6)
+    @DisplayProperties(order = 1500000)
     public Integer getOrder() {
         return getBank().getOrder();
     }
+
+    // 2000000--getParents (Above)
+    // 3000000--getChildren
 
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Setters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
     public void setEnd(Double end) {
+        if (end == null) throw new IllegalArgumentException("Bank is null");
         this.end = end;
     }
 }

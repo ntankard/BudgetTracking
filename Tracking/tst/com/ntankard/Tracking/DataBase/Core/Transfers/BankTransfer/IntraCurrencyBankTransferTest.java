@@ -6,7 +6,6 @@ import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
-import com.ntankard.Tracking.DataBase.Database.TrackingDatabase_Integrity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -142,10 +141,13 @@ class IntraCurrencyBankTransferTest {
     //------------------------------------------------------------------------------------------------------------------
 
     /**
-     * Run the validator
+     * Validate that the IntraCurrencyBankTransfers are in the correct state
      */
     @Test
     void validateIntraCurrencyBankTransfer() {
-        assertDoesNotThrow(TrackingDatabase_Integrity::validateIntraCurrencyBankTransfer);
+        for (IntraCurrencyBankTransfer intraCurrencyBankTransfer : TrackingDatabase.get().get(IntraCurrencyBankTransfer.class)) {
+            assertNotEquals(intraCurrencyBankTransfer.getSource(), intraCurrencyBankTransfer.getDestination(), "Transferring to itself");
+            assertNotEquals(intraCurrencyBankTransfer.getSource().getCurrency(), intraCurrencyBankTransfer.getDestination().getCurrency(), "Transferring between banks with same currencies");
+        }
     }
 }

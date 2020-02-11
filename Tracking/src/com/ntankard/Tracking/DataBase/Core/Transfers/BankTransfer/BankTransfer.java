@@ -26,43 +26,52 @@ public abstract class BankTransfer extends Transfer<Bank, Bank> {
         super(id, description, value, period, source, destination, null);
     }
 
-
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
+    // 1000000--getID
+    // 1100000----getPeriod
+
     @Override
     @MemberProperties(verbosityLevel = TRACE_DISPLAY)
-    @DisplayProperties(order = 3)
+    @DisplayProperties(order = 1200000)
     public String getDescription() {
         return super.getDescription();
     }
 
     @Override
-    @DisplayProperties(order = 4)
+    @DisplayProperties(order = 1300000)
     public Bank getSource() {
         return super.getSource();
     }
 
+    // 1400000----getSourceValue
+
     @Override
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    @DisplayProperties(order = 6)
+    @DisplayProperties(order = 1500000)
     public Currency getSourceCurrency() {
         return super.getSource().getCurrency();
     }
 
     @Override
-    @DisplayProperties(order = 7)
+    @DisplayProperties(order = 1600000)
     public Bank getDestination() {
         return super.getDestination();
     }
 
+    // 1700000----getDestinationValue
+
     @Override
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    @DisplayProperties(order = 9)
+    @DisplayProperties(order = 1800000)
     public Currency getDestinationCurrency() {
         return getDestination().getCurrency();
     }
+
+    // 2000000--getParents
+    // 3000000--getChildren
 
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Setters #####################################################
