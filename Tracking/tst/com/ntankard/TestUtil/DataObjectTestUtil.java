@@ -3,7 +3,6 @@ package com.ntankard.TestUtil;
 import com.ntankard.ClassExtension.Member;
 import com.ntankard.ClassExtension.MemberClass;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 
 import java.util.ArrayList;
@@ -92,30 +91,6 @@ public class DataObjectTestUtil {
                     DataObject toAdd = (DataObject) getter.getGetter().invoke(toTest);
                     assertNotNull(toAdd);
                 }, "Could not get the object." + " Class:" + toTest.getClass().getSimpleName() + " Object:" + toTest.toString() + " Member:" + getter.getName());
-            }
-        }
-    }
-
-    /**
-     * Check that all declared objects of type have a fixed order set
-     */
-    public static void testStandardOrder(Class<? extends DataObject> aClass, boolean strict) {
-        assertTrue(Ordered.class.isAssignableFrom(aClass), "Trying to test a class that dose not implement Ordered. " + " Class:" + aClass.getSimpleName());
-
-        List<Integer> order = new ArrayList<>();
-        assertNotEquals(0, TrackingDatabase.get().get(aClass).size());
-        for (DataObject object : TrackingDatabase.get().get(aClass)) {
-            Ordered ordered = (Ordered) object;
-            assertFalse(order.contains(ordered.getOrder()), "Duplicate order value. " + " Class " + aClass.getSimpleName());
-            order.add(ordered.getOrder());
-        }
-
-        if (strict) {
-            order.sort(Integer::compareTo);
-
-            int last = order.get(0);
-            for (Integer integer : order) {
-                assertEquals(last++, integer, "Missing order value. " + aClass.getSimpleName());
             }
         }
     }

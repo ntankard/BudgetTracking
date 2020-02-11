@@ -4,11 +4,12 @@ import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
-import com.ntankard.Tracking.DataBase.Core.Pool.Bank.StatementEnd;
+import com.ntankard.Tracking.DataBase.Core.StatementEnd;
 import com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer.BankCategoryTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfers.BankTransfer.BankTransfer;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
@@ -19,9 +20,10 @@ import com.ntankard.Tracking.DataBase.Interface.Set.MultiParent_Set;
 import static com.ntankard.ClassExtension.DisplayProperties.DataContext.ZERO_TARGET;
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
+import static com.ntankard.ClassExtension.MemberProperties.TRACE_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-public class Bank_Summary extends PoolSummary<Bank> implements CurrencyBound {
+public class Bank_Summary extends PoolSummary<Bank> implements CurrencyBound, Ordered {
 
     @ParameterMap(shouldSave = false)
     public Bank_Summary(ExistingPeriod period, Bank pool) {
@@ -92,6 +94,12 @@ public class Bank_Summary extends PoolSummary<Bank> implements CurrencyBound {
     @DisplayProperties(order = 12)
     public Boolean isValid() {
         return super.isValid();
+    }
+
+    @MemberProperties(verbosityLevel = TRACE_DISPLAY)
+    @DisplayProperties(order = 23)
+    public Integer getOrder() {
+        return getPool().getOrder();
     }
 
     //------------------------------------------------------------------------------------------------------------------

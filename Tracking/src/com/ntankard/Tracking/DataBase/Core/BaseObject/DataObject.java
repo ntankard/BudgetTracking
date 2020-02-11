@@ -177,40 +177,4 @@ public abstract class DataObject {
     public <T extends DataObject> List<T> sourceOptions(Class<T> type, String fieldName) {
         return TrackingDatabase.get().get(type);
     }
-
-    /**
-     * Get possible options that a field will accept
-     *
-     * @param type      The type of object expected
-     * @param fieldName The field name
-     * @return A list of objects the the field will accept
-     */
-    protected <T extends DataObject> List<T> sourceOptions_nullValidImpl(Class<T> type, String fieldName) {
-        List<T> toReturn = TrackingDatabase.get().get(type);
-        toReturn.add(null);
-        return toReturn;
-    }
-
-    /**
-     * Ensure that a DataObject is clear to set
-     *
-     * @param type      The type of object expected
-     * @param fieldName The field name
-     * @param current   The current value stores
-     * @param toSet     The new value to set
-     * @param <T>       THe type of type
-     * @return toSet
-     */
-    protected <T extends DataObject> T set_impl(Class<T> type, String fieldName, T current, T toSet) {
-        if (sourceOptions(type, fieldName).contains(toSet)) {
-            throw new IllegalArgumentException("Attempting to set a value that is not included in sourceOptions");
-        }
-        if (current != null) {
-            current.notifyChildUnLink(this);
-        }
-        if (toSet != null) {
-            toSet.notifyChildLink(this);
-        }
-        return toSet;
-    }
 }

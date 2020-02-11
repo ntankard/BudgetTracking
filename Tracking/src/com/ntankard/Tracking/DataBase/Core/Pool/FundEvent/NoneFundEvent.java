@@ -13,7 +13,7 @@ public class NoneFundEvent extends FundEvent {
      */
     @ParameterMap(parameterGetters = {"getId", "getName", "getCategory"})
     public NoneFundEvent(Integer id, String name, Category category) {
-        super(id, name, category, 10);
+        super(id, name, category);
     }
 
     /**

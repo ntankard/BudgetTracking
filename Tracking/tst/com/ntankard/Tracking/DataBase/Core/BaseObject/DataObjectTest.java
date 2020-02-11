@@ -31,6 +31,15 @@ class DataObjectTest {
     //------------------------------------------------------------------------------------------------------------------
 
     /**
+     * Test constructor parameters
+     */
+    @Test
+    void constructor() {
+        assertDoesNotThrow(() -> new DataObject_Inst(0, null));
+        assertThrows(IllegalArgumentException.class, () -> new DataObject_Inst(null, null));
+    }
+
+    /**
      * Test the notifying the parent results in the correct link
      */
     @Test
@@ -103,7 +112,7 @@ class DataObjectTest {
     }
 
     /**
-     * Test the setters validate there  inputs properly
+     * Test the setters validate there inputs properly
      */
     @SuppressWarnings("unchecked")
     @Test
@@ -145,7 +154,7 @@ class DataObjectTest {
     }
 
     /**
-     * Test that no object inherits from a none abstract object
+     * Test that no object inherits from a non abstract object
      */
     @SuppressWarnings("unchecked")
     @Test
@@ -184,6 +193,16 @@ class DataObjectTest {
     //------------------------------------------------------------------------------------------------------------------
     //########################## Implementation Tests (all declared objects in isolation) ##############################
     //------------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Test that no ID is null
+     */
+    @Test
+    void getId() {
+        for (DataObject dataObject : TrackingDatabase.get().get(DataObject.class)) {
+            assertNotNull(dataObject.getId());
+        }
+    }
 
     //------------------------------------------------------------------------------------------------------------------
     //######################### Database Test (all declared objects considers as a group) ##############################

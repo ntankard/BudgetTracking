@@ -57,7 +57,8 @@ public class Receipt extends DataObject {
         return firstFile;
     }
 
-    public void setFirstFile(boolean firstFile) {
+    public void setFirstFile(Boolean firstFile) {
+        if (firstFile == null) throw new IllegalArgumentException("firstFile is null");
         this.firstFile = firstFile;
     }
 

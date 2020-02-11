@@ -56,12 +56,4 @@ class BankTest {
     //------------------------------------------------------------------------------------------------------------------
     //######################### Database Test (all declared objects considers as a group) ##############################
     //------------------------------------------------------------------------------------------------------------------
-
-    /**
-     * Check that the order is correct
-     */
-    @Test
-    void getOrder() {
-        DataObjectTestUtil.testStandardOrder(Bank.class, true);
-    }
 }

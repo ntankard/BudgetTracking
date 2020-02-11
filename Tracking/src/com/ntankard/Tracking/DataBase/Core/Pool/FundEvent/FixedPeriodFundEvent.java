@@ -36,7 +36,7 @@ public class FixedPeriodFundEvent extends FundEvent {
      */
     @ParameterMap(parameterGetters = {"getId", "getName", "getCategory", "getStart", "getDuration"})
     public FixedPeriodFundEvent(Integer id, String name, Category category, ExistingPeriod start, Integer duration) {
-        super(id, name, category, 1);
+        super(id, name, category);
         if (start == null) throw new IllegalArgumentException("Start was null");
         if (duration == null) throw new IllegalArgumentException("Duration is null");
         if (duration < 1) throw new IllegalArgumentException("Duration is less than 1");

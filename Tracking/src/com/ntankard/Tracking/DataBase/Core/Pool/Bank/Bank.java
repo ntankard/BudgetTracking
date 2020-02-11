@@ -5,9 +5,11 @@ import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
+import com.ntankard.Tracking.DataBase.Core.StatementEnd;
 import com.ntankard.Tracking.DataBase.Database.ObjectFactory;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
@@ -16,27 +18,29 @@ import com.ntankard.Tracking.DataBase.Interface.Set.MultiParent_Set;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
-import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
+import static com.ntankard.ClassExtension.MemberProperties.*;
 
 @ClassExtensionProperties(includeParent = true)
 @ObjectFactory(builtObjects = {StatementEnd.class})
-public class Bank extends Pool implements CurrencyBound {
+public class Bank extends Pool implements CurrencyBound, Ordered {
 
     // My parents
     private Currency currency;
 
     // My values
     private Double start;
+    private Integer order;
 
     /**
      * Constructor
      */
     @ParameterMap(parameterGetters = {"getId", "getName", "getOrder", "getCurrency", "getStart"})
     public Bank(Integer id, String name, Integer order, Currency currency, Double start) {
-        super(id, name, order);
+        super(id, name);
+        if (order == null) throw new IllegalArgumentException("Order is null");
         if (currency == null) throw new IllegalArgumentException("Currency is null");
         if (start == null) throw new IllegalArgumentException("Start is null");
+        this.order = order;
         this.currency = currency;
         this.start = start;
     }
@@ -88,7 +92,13 @@ public class Bank extends Pool implements CurrencyBound {
         return start;
     }
 
-    // 1110000------getOrder
+    @Override
+    @MemberProperties(verbosityLevel = TRACE_DISPLAY)
+    @DisplayProperties(order = 1103000)
+    public Integer getOrder() {
+        return order;
+    }
+
     // 2000000--getParents (Above)
     // 3000000--getChildren
 }

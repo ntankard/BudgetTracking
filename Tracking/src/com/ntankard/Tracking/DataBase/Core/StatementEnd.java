@@ -1,4 +1,4 @@
-package com.ntankard.Tracking.DataBase.Core.Pool.Bank;
+package com.ntankard.Tracking.DataBase.Core;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
@@ -6,8 +6,8 @@ import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
-import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
+import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
 import java.util.ArrayList;
@@ -86,7 +86,7 @@ public class StatementEnd extends DataObject implements CurrencyBound, Ordered {
     @MemberProperties(verbosityLevel = TRACE_DISPLAY)
     @DisplayProperties(order = 1500000)
     public Integer getOrder() {
-        return getBank().getOrder();
+        return getBank().getOrder() + getPeriod().getOrder() * 1000;
     }
 
     // 2000000--getParents (Above)

@@ -5,6 +5,7 @@ import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.HasDefault;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.SpecialValues;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
@@ -12,9 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
+import static com.ntankard.ClassExtension.MemberProperties.TRACE_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-public class Category extends Pool implements HasDefault, SpecialValues {
+public class Category extends Pool implements HasDefault, SpecialValues, Ordered {
 
     public static Integer SAVINGS = 1;
     public static Integer TAXABLE = 2;
@@ -23,19 +25,22 @@ public class Category extends Pool implements HasDefault, SpecialValues {
     private Boolean isDefault;
     private Boolean isSavings;
     private Boolean isTaxable;
+    private Integer order;
 
     /**
      * Constructor
      */
     @ParameterMap(parameterGetters = {"getId", "getName", "getOrder", "isDefault", "isSavings", "isTaxable"})
     public Category(Integer id, String name, Integer order, Boolean isDefault, Boolean isSavings, Boolean isTaxable) {
-        super(id, name, order);
+        super(id, name);
         if (isDefault == null) throw new IllegalArgumentException("IsDefault is null");
         if (isSavings == null) throw new IllegalArgumentException("IsSaving is null");
         if (isTaxable == null) throw new IllegalArgumentException("IsTaxable is null");
+        if (order == null) throw new IllegalArgumentException("Order is null");
         this.isDefault = isDefault;
         this.isSavings = isSavings;
         this.isTaxable = isTaxable;
+        this.order = order;
     }
 
     /**
@@ -67,7 +72,7 @@ public class Category extends Pool implements HasDefault, SpecialValues {
      */
     @Override
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 1111000)
+    @DisplayProperties(order = 1105000)
     public List<Integer> getKeys() {
         List<Integer> keys = new ArrayList<>();
         keys.add(TAXABLE);
@@ -100,7 +105,13 @@ public class Category extends Pool implements HasDefault, SpecialValues {
         return isTaxable;
     }
 
-    // 1110000------getOrder
+    @Override
+    @MemberProperties(verbosityLevel = TRACE_DISPLAY)
+    @DisplayProperties(order = 1104000)
+    public Integer getOrder() {
+        return order;
+    }
+
     // 1111000--------getKeys (Above)
     // 2000000--getParents (Above)
     // 3000000--getChildren

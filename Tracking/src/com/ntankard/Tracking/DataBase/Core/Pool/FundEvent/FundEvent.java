@@ -31,10 +31,9 @@ public abstract class FundEvent extends Pool {
      * Constructor
      */
     @ParameterMap(shouldSave = false)
-    public FundEvent(Integer id, String name, Category category, Integer order) {
-        super(id, name, order);
+    public FundEvent(Integer id, String name, Category category) {
+        super(id, name);
         if (category == null) throw new IllegalArgumentException("Category is null");
-        if (order == null) throw new IllegalArgumentException("Order is null");
         this.category = category;
     }
 
@@ -122,7 +121,6 @@ public abstract class FundEvent extends Pool {
         return category;
     }
 
-    // 1110000------getOrder
     // 2000000--getParents (Above)
     // 3000000--getChildren
 }

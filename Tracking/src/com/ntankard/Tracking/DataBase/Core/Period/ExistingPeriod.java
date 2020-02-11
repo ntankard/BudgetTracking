@@ -5,7 +5,7 @@ import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
-import com.ntankard.Tracking.DataBase.Core.Pool.Bank.StatementEnd;
+import com.ntankard.Tracking.DataBase.Core.StatementEnd;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer.RePayCategoryFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer.RecurringPayment.Fixed.FixedRecurringPayment;
@@ -30,7 +30,7 @@ public class ExistingPeriod extends Period {
     public ExistingPeriod(Integer id, Integer month, Integer year) {
         super(id);
         if (month == null) throw new IllegalArgumentException("Month is null");
-        if (year == null) throw new IllegalArgumentException("Yesr is null");
+        if (year == null) throw new IllegalArgumentException("Year is null");
         this.month = month;
         this.year = year;
     }

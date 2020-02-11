@@ -3,15 +3,17 @@ package com.ntankard.Tracking.DataBase.Interface.Summary.Pool;
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
+import static com.ntankard.ClassExtension.MemberProperties.TRACE_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-public class Category_Summary extends PoolSummary<Category> {
+public class Category_Summary extends PoolSummary<Category> implements Ordered {
 
     @ParameterMap(shouldSave = false)
     public Category_Summary(Period period, Category pool) {
@@ -39,5 +41,11 @@ public class Category_Summary extends PoolSummary<Category> {
     @DisplayProperties(order = 10)
     public Boolean isValid() {
         return true;
+    }
+
+    @MemberProperties(verbosityLevel = TRACE_DISPLAY)
+    @DisplayProperties(order = 23)
+    public Integer getOrder() {
+        return getPool().getOrder();
     }
 }

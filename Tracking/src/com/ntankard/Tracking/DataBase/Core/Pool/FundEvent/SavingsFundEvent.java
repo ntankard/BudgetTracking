@@ -18,7 +18,7 @@ public class SavingsFundEvent extends FundEvent {
      */
     @ParameterMap(parameterGetters = {"getId", "getCategory"})
     public SavingsFundEvent(Integer id, Category category) {
-        super(id, "Savings", category, 2);
+        super(id, "Savings", category);
     }
 
     /**

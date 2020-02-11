@@ -4,7 +4,6 @@ import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
@@ -18,7 +17,7 @@ import static com.ntankard.ClassExtension.DisplayProperties.DataContext.ZERO_TAR
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
 import static com.ntankard.ClassExtension.MemberProperties.*;
 
-public abstract class PoolSummary<PoolType extends Pool> extends DataObject implements CurrencyBound, Ordered {
+public abstract class PoolSummary<PoolType extends Pool> extends DataObject implements CurrencyBound {
 
     private Period period;
     private PoolType pool;
@@ -95,11 +94,5 @@ public abstract class PoolSummary<PoolType extends Pool> extends DataObject impl
     @DisplayProperties(order = 3)
     public PoolType getPool() {
         return pool;
-    }
-
-    @MemberProperties(verbosityLevel = TRACE_DISPLAY)
-    @DisplayProperties(order = 23)
-    public Integer getOrder() {
-        return getPeriod().getOrder() * 100 + getPool().getOrder();
     }
 }

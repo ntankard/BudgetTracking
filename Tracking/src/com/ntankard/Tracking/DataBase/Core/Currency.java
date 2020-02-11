@@ -43,6 +43,10 @@ public class Currency extends NamedDataObject implements HasDefault {
     @ParameterMap(parameterGetters = {"getId", "getName", "isDefault", "getToPrimary", "getLanguage", "getCountry"})
     public Currency(Integer id, String name, Boolean isDefault, Double toPrimary, String language, String country) {
         super(id, name);
+        if (isDefault == null) throw new IllegalArgumentException("isDefault is null");
+        if (toPrimary == null) throw new IllegalArgumentException("toPrimary is null");
+        if (language == null) throw new IllegalArgumentException("language is null");
+        if (country == null) throw new IllegalArgumentException("country is null");
         this.isDefault = isDefault;
         this.toPrimary = toPrimary;
         this.language = language;
