@@ -1,4 +1,4 @@
-package com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer.RecurringPayment.Fixed;
+package com.ntankard.Tracking.DataBase.Core.RecurringPayment;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
@@ -6,13 +6,12 @@ import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.ClassExtension.SetterProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.NamedDataObject;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
-import com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer.RecurringPayment.RecurringPayment;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
-import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +20,7 @@ import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
 import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-public class FixedRecurringPayment extends RecurringPayment implements CurrencyBound {
+public abstract class RecurringPayment extends NamedDataObject implements CurrencyBound {
 
     // My parents
     private ExistingPeriod start;
@@ -35,8 +34,8 @@ public class FixedRecurringPayment extends RecurringPayment implements CurrencyB
     /**
      * Constructor
      */
-    @ParameterMap(parameterGetters = {"getId", "getName", "getValue", "getStart", "getEnd", "getBank", "getCategory"})
-    public FixedRecurringPayment(Integer id, String name, Double value, ExistingPeriod start, ExistingPeriod end, Bank bank, Category category) {
+    @ParameterMap(shouldSave = false)
+    public RecurringPayment(Integer id, String name, Double value, ExistingPeriod start, ExistingPeriod end, Bank bank, Category category) {
         super(id, name);
         if (value == null) throw new IllegalArgumentException("Value is null");
         if (start == null) throw new IllegalArgumentException("Start is null");
@@ -76,12 +75,9 @@ public class FixedRecurringPayment extends RecurringPayment implements CurrencyB
     }
 
     /**
-     * {@inheritDoc
+     * Create all the children transactions
      */
-    @Override
-    public void remove() {
-        remove_impl();
-    }
+    public abstract void regenerateChildren();
 
     /**
      * {@inheritDoc
@@ -92,29 +88,14 @@ public class FixedRecurringPayment extends RecurringPayment implements CurrencyB
         if (fieldName.equals("End")) {
             List<T> all = super.sourceOptions(type, fieldName);
             all.remove(getStart());
+            all.removeIf(t -> {
+                ExistingPeriod existingPeriod = (ExistingPeriod) t;
+                return existingPeriod.getOrder() <= start.getOrder();
+            });
+            all.add(null);
             return all;
         }
         return super.sourceOptions(type, fieldName);
-    }
-
-    /**
-     * Create all the children transactions
-     */
-    public void regenerateChildren() {
-        for (FixedRecurringTransfer fixedRecurringTransfer : getChildren(FixedRecurringTransfer.class)) {
-            fixedRecurringTransfer.remove();
-        }
-
-        for (ExistingPeriod period : TrackingDatabase.get().get(ExistingPeriod.class)) {
-            if (period.getOrder() >= start.getOrder()) {
-                if (end != null) {
-                    if (end.getOrder() < period.getOrder()) {
-                        continue;
-                    }
-                }
-                new FixedRecurringTransfer(TrackingDatabase.get().getNextId(), period, bank, category, this).add();
-            }
-        }
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -124,33 +105,33 @@ public class FixedRecurringPayment extends RecurringPayment implements CurrencyB
     // 1000000--getID
     // 1100000--getName
 
-    @DisplayProperties(order = 1101000)
+    @DisplayProperties(order = 1110000)
     public ExistingPeriod getStart() {
         return start;
     }
 
-    @DisplayProperties(order = 1102000)
+    @DisplayProperties(order = 1120000)
     public ExistingPeriod getEnd() {
         return end;
     }
 
-    @DisplayProperties(order = 1103000)
+    @DisplayProperties(order = 1130000)
     public Bank getBank() {
         return bank;
     }
 
-    @DisplayProperties(order = 1104000)
+    @DisplayProperties(order = 1140000)
     public Category getCategory() {
         return category;
     }
 
-    @DisplayProperties(order = 1105000, dataType = CURRENCY)
+    @DisplayProperties(order = 1150000, dataType = CURRENCY)
     public Double getValue() {
         return value;
     }
 
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 1106000)
+    @DisplayProperties(order = 116000)
     @Override
     public Currency getCurrency() {
         return getBank().getCurrency();
@@ -190,6 +171,12 @@ public class FixedRecurringPayment extends RecurringPayment implements CurrencyB
         this.start.notifyChildUnLink(this);
         this.start = start;
         this.start.notifyChildLink(this);
+
+        if (getEnd() != null) {
+            if (getStart().getOrder() >= getEnd().getOrder()) {
+                setEnd(sourceOptions(ExistingPeriod.class, "End").get(0));
+            }
+        }
 
         regenerateChildren();
     }

@@ -1,4 +1,4 @@
-package com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer.RecurringPayment.Fixed;
+package com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
@@ -7,12 +7,11 @@ import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
-import com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer.BankCategoryTransfer;
+import com.ntankard.Tracking.DataBase.Core.RecurringPayment.FixedRecurringPayment;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
 import java.util.List;
 
-import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
 import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
@@ -24,10 +23,10 @@ public class FixedRecurringTransfer extends BankCategoryTransfer {
     /**
      * Constructor
      */
-    @ParameterMap(shouldSave = false)
-    public FixedRecurringTransfer(Integer id, Period period, Bank source, Category destination, FixedRecurringPayment parentPayment) {
-        super(id, "NOT USED", -1.0, period, source, destination);
-        if (parentPayment == null) throw new IllegalArgumentException("PsarentPayment is null");
+    @ParameterMap(parameterGetters = {"getId", "getDestinationValue", "getPeriod", "getSource", "getDestination", "getParentPayment"})
+    public FixedRecurringTransfer(Integer id, Double value, Period period, Bank source, Category destination, FixedRecurringPayment parentPayment) {
+        super(id, "NOT USED", value, period, source, destination);
+        if (parentPayment == null) throw new IllegalArgumentException("parentPayment is null");
         this.parentPayment = parentPayment;
     }
 
@@ -57,23 +56,10 @@ public class FixedRecurringTransfer extends BankCategoryTransfer {
     }
 
     // 1300000----getSource
-
-    @Override
-    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 1400000, dataType = CURRENCY)
-    public Double getSourceValue() {
-        return -parentPayment.getValue();
-    }
-
+    // 1400000----getSourceValue
     // 1500000----getSourceCurrency
     // 1600000----getDestination
-
-    @Override
-    @DisplayProperties(order = 1700000, dataType = CURRENCY)
-    public Double getDestinationValue() {
-        return parentPayment.getValue();
-    }
-
+    // 1700000----getDestinationValue
     // 1800000----getDestinationCurrency
 
     @DisplayProperties(order = 1801000)

@@ -3,6 +3,7 @@ package com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer;
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
+import com.ntankard.ClassExtension.SetterProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
@@ -79,4 +80,20 @@ public abstract class BankCategoryTransfer extends Transfer<Bank, Category> impl
 
     // 2000000--getParents
     // 3000000--getChildren
+
+    //------------------------------------------------------------------------------------------------------------------
+    //#################################################### Setters #####################################################
+    //------------------------------------------------------------------------------------------------------------------
+
+    @Override
+    @SetterProperties(localSourceMethod = "sourceOptions")
+    public void setSource(Bank source) {
+        super.setSource(source);
+    }
+
+    @Override
+    @SetterProperties(localSourceMethod = "sourceOptions")
+    public void setDestination(Category destination) {
+        super.setDestination(destination);
+    }
 }

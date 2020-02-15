@@ -1,9 +1,10 @@
 package com.ntankard.Tracking.Dispaly.Frames.MainFrame.Periods;
 
-import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
+import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
+import com.ntankard.Tracking.DataBase.Interface.Summary.Period_Summary;
 import com.ntankard.Tracking.Dispaly.Frames.MainFrame.Periods.IndividualPeriod.IndividualPeriodPanel;
 
 import javax.swing.*;
@@ -46,6 +47,15 @@ public class PeriodTabPanel extends UpdatableJPanel {
     @Override
     public void update() {
         rebuildPeriods();
+
+        for (int i = 0; i < periodsPanels.size(); i++) {
+            periodsPanels.get(i).update();
+            if (!new Period_Summary(periods.get(i)).isValid()) {
+                master_tPanel.setBackgroundAt(i, Color.RED);
+            } else {
+                master_tPanel.setBackgroundAt(i, null);
+            }
+        }
 
         for (IndividualPeriodPanel periodPanel : periodsPanels) {
             periodPanel.update();

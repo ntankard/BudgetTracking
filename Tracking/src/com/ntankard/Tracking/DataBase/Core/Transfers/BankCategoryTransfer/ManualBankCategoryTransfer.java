@@ -1,7 +1,6 @@
 package com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
-import com.ntankard.ClassExtension.SetterProperties;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
@@ -35,19 +34,4 @@ public class ManualBankCategoryTransfer extends BankCategoryTransfer {
     // 2000000--getParents
     // 3000000--getChildren
 
-    //------------------------------------------------------------------------------------------------------------------
-    //#################################################### Setters #####################################################
-    //------------------------------------------------------------------------------------------------------------------
-
-    @Override
-    @SetterProperties(localSourceMethod = "sourceOptions")
-    public void setSource(Bank source) {
-        super.setSource(source);
-    }
-
-    @Override
-    @SetterProperties(localSourceMethod = "sourceOptions")
-    public void setDestination(Category destination) {
-        super.setDestination(destination);
-    }
 }

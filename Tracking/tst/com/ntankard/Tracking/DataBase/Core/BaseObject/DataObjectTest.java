@@ -137,7 +137,7 @@ class DataObjectTest {
 
                     // Check valid values
                     for (DataObject valid : expectedOptions.get()) {
-                        assertDoesNotThrow(() -> member.getSetter().invoke(dataObject, valid), "A valid value was rejected from a method" + "DataObject:" + dataObject.toString() + " Class:" + aClass.getSimpleName() + " Setter:" + member.getSetter().getName() + " ValidValue:" + valid.toString());
+                        assertDoesNotThrow(() -> member.getSetter().invoke(dataObject, valid), "A valid value was rejected from a method" + "DataObject:" + dataObject.toString() + " Class:" + aClass.getSimpleName() + " Setter:" + member.getSetter().getName());
                         fullOptions.remove(valid);
                     }
 
