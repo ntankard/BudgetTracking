@@ -5,9 +5,13 @@ import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
+import com.ntankard.Tracking.DataBase.Core.Receipt;
 import com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer.BankCategoryTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer.FixedRecurringTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfers.BankTransfer.CurrencyBankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfers.BankTransfer.IntraCurrencyBankTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer.CategoryFundTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer.RePayCategoryFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer.UseCategoryFundTransfer;
 import com.ntankard.Tracking.DataBase.Interface.Set.Children_Set;
 import com.ntankard.Tracking.DataBase.Interface.Set.Extended.Sum.PeriodPool_SumSet;
@@ -67,12 +71,49 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
 
         periodSummary_Table_panel = new PeriodSummary_Table(period, true, this);
         periodSummary_Table_panel.getModel().addCustomFormatter((dataObject, rendererObject) -> {
+
             if (dataObject instanceof BankCategoryTransfer) {
+
+                // Check if its selected
+                boolean selected = false;
                 BankCategoryTransfer transaction = (BankCategoryTransfer) dataObject;
                 if (selectedBank != null) {
-                    if (transaction.getSource().equals(selectedBank)) {
-                        rendererObject.background = Color.YELLOW;
+                    selected = transaction.getSource().equals(selectedBank);
+                }
+
+                if (dataObject instanceof FixedRecurringTransfer) {
+                    if (dataObject.getChildren(Receipt.class).size() != 0) {
+                        // FixedRecurringTransfer with receipt
+                        if (selected) {
+                            rendererObject.background = new Color(255, 102, 0);
+                        } else {
+                            rendererObject.background = new Color(255, 225, 204);
+                        }
+                    } else {
+                        // FixedRecurringTransfer without receipt
+                        if (selected) {
+                            rendererObject.background = new Color(255, 213, 0);
+                        } else {
+                            rendererObject.background = new Color(255, 247, 204);
+                        }
                     }
+                } else {
+                    if (dataObject.getChildren(Receipt.class).size() != 0) {
+                        // Regular with receipt
+                        if (selected) {
+                            rendererObject.background = new Color(255, 0, 0);
+                        } else {
+                            rendererObject.background = new Color(255, 204, 204);
+                        }
+                    } else {
+                        if (selected) {
+                            rendererObject.background = new Color(255, 255, 0);
+                        }
+                    }
+                }
+            } else if (dataObject instanceof CategoryFundTransfer) {
+                if (dataObject instanceof RePayCategoryFundTransfer) {
+                    rendererObject.background = new Color(204, 238, 255);
                 }
             }
         });
@@ -134,7 +175,7 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
         this.add(summary_panel, summaryContainer_C);
 
         summaryContainer_C.gridx = 2;
-        summaryContainer_C.weightx = 1;
+        summaryContainer_C.weightx = 3;
         this.add(bankCategoryTransfer_panel, summaryContainer_C);
     }
 

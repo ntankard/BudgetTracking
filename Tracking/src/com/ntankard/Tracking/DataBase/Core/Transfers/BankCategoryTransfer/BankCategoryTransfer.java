@@ -75,7 +75,7 @@ public abstract class BankCategoryTransfer extends Transfer<Bank, Category> impl
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
     @DisplayProperties(order = 1810000)
     public Integer getOrder() {
-        return getSource().getOrder() * 100000 + getDestination().getOrder() * 200000 + getId();
+        return getPeriod().getOrder() * 10000 + getId();
     }
 
     // 2000000--getParents
