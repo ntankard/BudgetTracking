@@ -5,6 +5,7 @@ import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.HasDefault;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
@@ -22,7 +23,7 @@ import static com.ntankard.ClassExtension.MemberProperties.*;
 
 @ClassExtensionProperties(includeParent = true)
 @ObjectFactory(builtObjects = {StatementEnd.class})
-public class Bank extends Pool implements CurrencyBound, Ordered {
+public class Bank extends Pool implements CurrencyBound, Ordered, HasDefault {
 
     // My parents
     private Currency currency;
@@ -30,19 +31,22 @@ public class Bank extends Pool implements CurrencyBound, Ordered {
     // My values
     private Double start;
     private Integer order;
+    private Boolean isDefault;
 
     /**
      * Constructor
      */
-    @ParameterMap(parameterGetters = {"getId", "getName", "getOrder", "getCurrency", "getStart"})
-    public Bank(Integer id, String name, Integer order, Currency currency, Double start) {
+    @ParameterMap(parameterGetters = {"getId", "getName", "getOrder", "getCurrency", "getStart", "isDefault"})
+    public Bank(Integer id, String name, Integer order, Currency currency, Double start, Boolean isDefault) {
         super(id, name);
         if (order == null) throw new IllegalArgumentException("Order is null");
         if (currency == null) throw new IllegalArgumentException("Currency is null");
         if (start == null) throw new IllegalArgumentException("Start is null");
+        if (isDefault == null) throw new IllegalArgumentException("Default is null");
         this.order = order;
         this.currency = currency;
         this.start = start;
+        this.isDefault = isDefault;
     }
 
     /**
@@ -93,8 +97,15 @@ public class Bank extends Pool implements CurrencyBound, Ordered {
     }
 
     @Override
-    @MemberProperties(verbosityLevel = TRACE_DISPLAY)
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
     @DisplayProperties(order = 1103000)
+    public Boolean isDefault() {
+        return isDefault;
+    }
+
+    @Override
+    @MemberProperties(verbosityLevel = TRACE_DISPLAY)
+    @DisplayProperties(order = 1104000)
     public Integer getOrder() {
         return order;
     }

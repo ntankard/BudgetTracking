@@ -1,13 +1,17 @@
 package com.ntankard.Tracking.Dispaly.Frames.MainFrame.Image;
 
+import com.ntankard.DynamicGUI.Util.Decoder.Decoder;
+import com.ntankard.DynamicGUI.Util.Decoder.DoubleDecoder;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Core.Receipt;
 import com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer.BankCategoryTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer.ManualBankCategoryTransfer;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.MultiParent_Set;
 import com.ntankard.Tracking.Util.Swing.ImageJPanel;
@@ -34,7 +38,12 @@ public class ImageToTransferPanel extends UpdatableJPanel implements ListSelecti
     private JComboBox<Currency> currency_combo = new JComboBox<>();
     private JComboBox<Bank> bank_combo = new JComboBox<>();
     private AbstractTableModel transfer_table_model;
-    private JButton associateButton = new JButton("Associate");
+    private JButton associate_btn = new JButton("Associate");
+
+    private JButton new_btn = new JButton("New");
+    private JTextField description_txt = new JTextField();
+    private JTextField price_txt = new JFormattedTextField();
+    private JComboBox<Category> category_combo = new JComboBox<>();
 
     /**
      * Constructor
@@ -66,7 +75,7 @@ public class ImageToTransferPanel extends UpdatableJPanel implements ListSelecti
         JPanel sidePanel = new JPanel(new GridBagLayout());
         this.add(sidePanel, BorderLayout.EAST);
         GridBagConstraints componentC = new GridBagConstraints();
-        componentC.weightx = 1;
+        componentC.weightx = 2;
         componentC.fill = GridBagConstraints.BOTH;
         componentC.gridy = 0;
 
@@ -76,6 +85,7 @@ public class ImageToTransferPanel extends UpdatableJPanel implements ListSelecti
         period_panel.add(period_combo);
         for (ExistingPeriod period : TrackingDatabase.get().get(ExistingPeriod.class))
             period_combo.addItem(period);
+        period_combo.setSelectedItem(TrackingDatabase.get().get(ExistingPeriod.class).get(TrackingDatabase.get().get(ExistingPeriod.class).size() - 1));
 
         // Create Currency combo box panel
         JPanel currency_panel = new JPanel();
@@ -97,6 +107,21 @@ public class ImageToTransferPanel extends UpdatableJPanel implements ListSelecti
         transfer_panel_scroll.setViewportView(transfer_table);
         transfer_panel.add(transfer_table);
 
+        // Create Description field panel
+        JPanel description_panel = new JPanel(new BorderLayout());
+        description_panel.setBorder(BorderFactory.createTitledBorder("Description"));
+        description_panel.add(description_txt, BorderLayout.CENTER);
+
+        // Create Price field panel
+        JPanel price_panel = new JPanel(new BorderLayout());
+        price_panel.setBorder(BorderFactory.createTitledBorder("Cost"));
+        price_panel.add(price_txt, BorderLayout.CENTER);
+
+        // Create Category combo panel
+        JPanel category_panel = new JPanel(new BorderLayout());
+        category_panel.setBorder(BorderFactory.createTitledBorder("Category"));
+        category_panel.add(category_combo, BorderLayout.CENTER);
+
         // Add all to the side panel
         componentC.gridy++;
         sidePanel.add(period_panel, componentC);
@@ -106,6 +131,12 @@ public class ImageToTransferPanel extends UpdatableJPanel implements ListSelecti
         sidePanel.add(bank_panel, componentC);
         componentC.gridy++;
         sidePanel.add(transfer_panel, componentC);
+        componentC.gridy++;
+        sidePanel.add(description_panel, componentC);
+        componentC.gridy++;
+        sidePanel.add(price_panel, componentC);
+        componentC.gridy++;
+        sidePanel.add(category_panel, componentC);
 
         // Add space to move to top
         GridBagConstraints spacerC = new GridBagConstraints();
@@ -115,7 +146,9 @@ public class ImageToTransferPanel extends UpdatableJPanel implements ListSelecti
 
         // Add the associate button
         componentC.gridy += 2;
-        sidePanel.add(associateButton, componentC);
+        sidePanel.add(associate_btn, componentC);
+        componentC.gridy += 2;
+        sidePanel.add(new_btn, componentC);
 
         // Add listeners
         period_combo.addActionListener(new AbstractAction() {
@@ -136,10 +169,16 @@ public class ImageToTransferPanel extends UpdatableJPanel implements ListSelecti
                 populateTransfer();
             }
         });
-        associateButton.addActionListener(new AbstractAction() {
+        associate_btn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 associate();
+            }
+        });
+        new_btn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                newTransaction();
             }
         });
     }
@@ -148,11 +187,16 @@ public class ImageToTransferPanel extends UpdatableJPanel implements ListSelecti
      * Populate the bank combo box based on the selected currency
      */
     private void populateBank() {
+        Currency currency = (Currency) currency_combo.getSelectedItem();
+
         bank_combo.removeAllItems();
-        for (Bank bank : ((Currency) Objects.requireNonNull(currency_combo.getSelectedItem())).getChildren(Bank.class)) {
-            if (new MultiParent_Set<>(BankCategoryTransfer.class, bank, (ExistingPeriod) period_combo.getSelectedItem()).get().size() != 0) {
-                bank_combo.addItem(bank);
-            }
+        for (Bank bank : (Objects.requireNonNull(currency)).getChildren(Bank.class)) {
+            bank_combo.addItem(bank);
+        }
+
+        Bank defaultBank = TrackingDatabase.get().getDefault(Bank.class);
+        if (defaultBank.getCurrency().equals(currency)) {
+            bank_combo.setSelectedItem(defaultBank);
         }
 
         populateTransfer();
@@ -164,7 +208,7 @@ public class ImageToTransferPanel extends UpdatableJPanel implements ListSelecti
     private void populateTransfer() {
         displayedData = new MultiParent_Set<>(BankCategoryTransfer.class, (Bank) bank_combo.getSelectedItem(), (Period) period_combo.getSelectedItem()).get();
         transfer_table_model.fireTableDataChanged();
-        associateButton.setEnabled(false);
+        associate_btn.setEnabled(false);
     }
 
     /**
@@ -181,6 +225,31 @@ public class ImageToTransferPanel extends UpdatableJPanel implements ListSelecti
         TrackingDatabase.get().getPossibleImages().remove(imagePath);
 
         notifyUpdate();
+    }
+
+    private void newTransaction() {
+        Decoder<Double> decoder = new DoubleDecoder(2);
+        Double cost;
+        try {
+            cost = decoder.encode(price_txt.getText());
+        } catch (NumberFormatException e) {
+            return;
+        }
+        Bank bank = (Bank) bank_combo.getSelectedItem();
+        Period period = (Period) period_combo.getSelectedItem();
+        String description = description_txt.getText();
+        Category category = (Category) category_combo.getSelectedItem();
+
+        BankCategoryTransfer bankCategoryTransfer = new ManualBankCategoryTransfer(TrackingDatabase.get().getNextId(), description, cost, period, bank, category);
+        bankCategoryTransfer.add();
+
+        Receipt receipt = new Receipt(TrackingDatabase.get().getNextId(), imagePath, bankCategoryTransfer);
+        receipt.setFirstFile(true);
+        receipt.add();
+
+        TrackingDatabase.get().getPossibleImages().remove(imagePath);
+
+        notifyUpdate();
 
     }
 
@@ -190,7 +259,7 @@ public class ImageToTransferPanel extends UpdatableJPanel implements ListSelecti
     @Override
     public void valueChanged(ListSelectionEvent e) {
         if (transfer_table.getSelectionModel().getMaxSelectionIndex() != -1) {
-            associateButton.setEnabled(true);
+            associate_btn.setEnabled(true);
         }
     }
 
@@ -200,6 +269,13 @@ public class ImageToTransferPanel extends UpdatableJPanel implements ListSelecti
     @Override
     public void update() {
         populateBank();
+
+        category_combo.removeAllItems();
+        for (Category category : TrackingDatabase.get().get(Category.class)) {
+            category_combo.addItem(category);
+        }
+        category_combo.setSelectedItem(TrackingDatabase.get().getDefault(Category.class));
+
     }
 
     //------------------------------------------------------------------------------------------------------------------

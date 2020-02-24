@@ -184,10 +184,12 @@ public class TrackingDatabase_Reader {
         // Save the images
         for (Receipt receipt : TrackingDatabase.get().get(Receipt.class)) {
             if (receipt.isFirstFile()) {
+                //@TODO add file check for source and destination
                 String source = TrackingDatabase.get().getNewImagePath() + receipt.getFileName();
                 String destination = saveDir + INSTANCE_IMAGE_PATH + receipt.getFileName();
                 File file = new File(source);
                 file.renameTo(new File(destination));
+                receipt.setFirstFile(false);
             } else {
                 String source = TrackingDatabase.get().getSavedImagePath() + receipt.getFileName();
                 String destination = saveDir + INSTANCE_IMAGE_PATH + receipt.getFileName();
