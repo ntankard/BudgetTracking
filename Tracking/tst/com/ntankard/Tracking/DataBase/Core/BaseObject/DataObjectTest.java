@@ -118,36 +118,41 @@ class DataObjectTest {
     @Test
     void set() {
         assertNotEquals(0, TrackingDatabase.get().getAll().size());
-        for (DataObject dataObject : TrackingDatabase.get().getAll()) {
+        for (Class<? extends DataObject> testClass : TrackingDatabase.get().getDataObjectTypes()) {
+            if (!Modifier.isAbstract(testClass.getModifiers())) {
+                for (DataObject dataObject : TrackingDatabase.get().get(testClass)) {
+                    Class<? extends DataObject> aClass = dataObject.getClass();
+                    MemberClass mClass = new MemberClass(aClass);
+                    List<Member> members = mClass.getVerbosityMembers(Integer.MAX_VALUE, false);
 
-            Class<? extends DataObject> aClass = dataObject.getClass();
-            MemberClass mClass = new MemberClass(aClass);
-            List<Member> members = mClass.getVerbosityMembers(Integer.MAX_VALUE, false);
+                    // Find the setters
+                    for (Member member : members) {
+                        if (member.getSetter() != null && DataObject.class.isAssignableFrom(member.getType())) {
+                            SetterProperties properties = member.getSetter().getAnnotation(SetterProperties.class);
+                            assertNotNull(properties, "Setter is missing a source deceleration. " + "Class:" + aClass.getSimpleName() + " Member:" + member.getSetter().getName());
 
-            // Find the setters
-            for (Member member : members) {
-                if (member.getSetter() != null && DataObject.class.isAssignableFrom(member.getType())) {
-                    SetterProperties properties = member.getSetter().getAnnotation(SetterProperties.class);
-                    assertNotNull(properties, "Setter is missing a source deceleration. " + "Class:" + aClass.getSimpleName() + " Member:" + member.getSetter().getName());
+                            if (properties.displaySet()) {
+                                // Get the data
+                                AtomicReference<List<DataObject>> expectedOptions = new AtomicReference<>();
+                                assertDoesNotThrow(() -> expectedOptions.set((List) member.getSource().invoke(dataObject, member.getType(), member.getName())));
+                                List<DataObject> fullOptions = new ArrayList(TrackingDatabase.get().get(member.getType()));
 
-                    // Get the data
-                    AtomicReference<List<DataObject>> expectedOptions = new AtomicReference<>();
-                    assertDoesNotThrow(() -> expectedOptions.set((List) member.getSource().invoke(dataObject, member.getType(), member.getName())));
-                    List<DataObject> fullOptions = new ArrayList(TrackingDatabase.get().get(member.getType()));
+                                // Check valid values
+                                for (DataObject valid : expectedOptions.get()) {
+                                    assertDoesNotThrow(() -> member.getSetter().invoke(dataObject, valid), "A valid value was rejected from a method" + "DataObject:" + dataObject.toString() + " Class:" + aClass.getSimpleName() + " Setter:" + member.getSetter().getName());
+                                    fullOptions.remove(valid);
+                                }
 
-                    // Check valid values
-                    for (DataObject valid : expectedOptions.get()) {
-                        assertDoesNotThrow(() -> member.getSetter().invoke(dataObject, valid), "A valid value was rejected from a method" + "DataObject:" + dataObject.toString() + " Class:" + aClass.getSimpleName() + " Setter:" + member.getSetter().getName());
-                        fullOptions.remove(valid);
+                                // Check invalid values
+                                for (DataObject invalid : fullOptions) {
+                                    assertThrows(Exception.class, () -> member.getSetter().invoke(dataObject, invalid), "A invalid value was allowed to be set from a method." + " DataObject:" + dataObject.toString() + " Class:" + aClass.getSimpleName() + " Setter:" + member.getSetter().getName() + " ValidValue:" + invalid.toString());
+                                }
+
+                                // Check null
+                                assertThrows(IllegalArgumentException.class, () -> member.getSetter().invoke(dataObject, null), "A null value was allowed to be set from a method." + " DataObject:" + dataObject.toString() + " Class:" + aClass.getSimpleName() + " Setter:" + member.getSetter().getName() + " ValidValue:");
+                            }
+                        }
                     }
-
-                    // Check invalid values
-                    for (DataObject invalid : fullOptions) {
-                        assertThrows(Exception.class, () -> member.getSetter().invoke(dataObject, invalid), "A invalid value was allowed to be set from a method." + " DataObject:" + dataObject.toString() + " Class:" + aClass.getSimpleName() + " Setter:" + member.getSetter().getName() + " ValidValue:" + invalid.toString());
-                    }
-
-                    // Check null
-                    assertThrows(IllegalArgumentException.class, () -> member.getSetter().invoke(dataObject, null), "A null value was allowed to be set from a method." + " DataObject:" + dataObject.toString() + " Class:" + aClass.getSimpleName() + " Setter:" + member.getSetter().getName() + " ValidValue:");
                 }
             }
         }

@@ -23,6 +23,11 @@ public class TrackingDatabase {
     private String savedImagePath;
 
     /**
+     * The lowest ID of the loaded objects, this is stored because new objects can be created while they are loading in
+     */
+    private Integer IDFloor;
+
+    /**
      * New images to be loaded
      */
     private List<String> possibleImages;
@@ -78,7 +83,20 @@ public class TrackingDatabase {
      * @return The next free ID
      */
     public Integer getNextId() {
-        return masterMap.getNextId();
+        Integer next = masterMap.getNextId();
+        if (next < (IDFloor + 1)) {
+            next = IDFloor + 1;
+        }
+        return next;
+    }
+
+    /**
+     * Set the ID floor before all the objects are loaded
+     *
+     * @param maxID The floor ID to set
+     */
+    public void setIDFloor(Integer maxID) {
+        this.IDFloor = maxID;
     }
 
     /**

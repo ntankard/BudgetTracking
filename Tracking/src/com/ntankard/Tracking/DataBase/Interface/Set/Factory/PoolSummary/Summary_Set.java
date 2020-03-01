@@ -9,7 +9,7 @@ import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.PoolSummary;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Summary_Set<SummaryType extends PoolSummary, PoolType extends Pool, PeriodType extends Period> implements ObjectSet<SummaryType> {
+public abstract class Summary_Set<SummaryType extends PoolSummary, PoolType extends Pool, PeriodType extends Period> extends ObjectSet<SummaryType> {
 
     // The objects used to generate the set
     private Class<PeriodType> periodTypeClass;
@@ -26,6 +26,7 @@ public abstract class Summary_Set<SummaryType extends PoolSummary, PoolType exte
     }
 
     protected Summary_Set(Class<PeriodType> periodTypeClass, PeriodType corePeriod, Class<PoolType> poolTypeClass, PoolType corePool) {
+        super(null);
         this.poolTypeClass = poolTypeClass;
         this.corePool = corePool;
         this.corePeriod = corePeriod;

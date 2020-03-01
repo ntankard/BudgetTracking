@@ -7,7 +7,6 @@ import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
-import com.ntankard.Tracking.DataBase.Core.Transfers.Transfer;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.Extended.Sum.PeriodPool_SumSet;
 
@@ -15,7 +14,8 @@ import java.util.List;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataContext.ZERO_TARGET;
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
-import static com.ntankard.ClassExtension.MemberProperties.*;
+import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
+import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
 public abstract class PoolSummary<PoolType extends Pool> extends DataObject implements CurrencyBound {
 
@@ -52,7 +52,7 @@ public abstract class PoolSummary<PoolType extends Pool> extends DataObject impl
 
     @DisplayProperties(order = 8, dataType = CURRENCY)
     public Double getTransferSum() {
-        return new PeriodPool_SumSet<>(Transfer.class, getPeriod(), getPool()).getTotal() / getCurrency().getToPrimary();
+        return new PeriodPool_SumSet(getPeriod(), getPool()).getTotal() / getCurrency().getToPrimary();
     }
 
     // Start End -------------------------------------------------------------------------------------------------------

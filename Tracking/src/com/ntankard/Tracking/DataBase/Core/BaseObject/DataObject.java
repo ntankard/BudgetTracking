@@ -59,6 +59,7 @@ public abstract class DataObject {
     public void add() {
         TrackingDatabase.get().add(this);
         this.notifyParentLink();
+        // @TODO check that this has not been double added
     }
 
     /**
@@ -78,6 +79,7 @@ public abstract class DataObject {
 
         this.notifyParentUnLink();
         TrackingDatabase.get().remove(this);
+        // @TODO check that this has not been double removed
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -176,5 +178,16 @@ public abstract class DataObject {
      */
     public <T extends DataObject> List<T> sourceOptions(Class<T> type, String fieldName) {
         return TrackingDatabase.get().get(type);
+    }
+
+    /**
+     * Check that all parents are linked properly
+     */
+    protected void validateParents() {
+        for (DataObject dataObject : getParents()) {
+            if (!dataObject.getChildren().contains(this)) {
+                throw new RuntimeException("Not registered with a parent");
+            }
+        }
     }
 }

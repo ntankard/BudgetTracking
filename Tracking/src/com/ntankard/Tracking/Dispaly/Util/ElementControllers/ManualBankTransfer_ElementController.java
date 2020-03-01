@@ -4,12 +4,12 @@ import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
-import com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer.BankCategoryTransfer;
-import com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer.ManualBankCategoryTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.BankTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.ManualBankTransfer;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.Dispaly.Util.Panels.TrackingDatabase_ElementController;
 
-public class ManualBankCategoryTransfer_ElementController extends TrackingDatabase_ElementController<BankCategoryTransfer> {
+public class ManualBankTransfer_ElementController extends TrackingDatabase_ElementController<BankTransfer> {
 
     /**
      * Data to use when creating a new object
@@ -20,7 +20,7 @@ public class ManualBankCategoryTransfer_ElementController extends TrackingDataba
     /**
      * Constructor
      */
-    public ManualBankCategoryTransfer_ElementController(Period core, Bank bank, Updatable master) {
+    public ManualBankTransfer_ElementController(Period core, Bank bank, Updatable master) {
         super(master);
         this.core = core;
         this.bank = bank;
@@ -29,7 +29,7 @@ public class ManualBankCategoryTransfer_ElementController extends TrackingDataba
     /**
      * Constructor
      */
-    public ManualBankCategoryTransfer_ElementController(Period core, Updatable master) {
+    public ManualBankTransfer_ElementController(Period core, Updatable master) {
         super(master);
         this.core = core;
     }
@@ -38,13 +38,10 @@ public class ManualBankCategoryTransfer_ElementController extends TrackingDataba
      * {@inheritDoc
      */
     @Override
-    public ManualBankCategoryTransfer newElement() {
-        return new ManualBankCategoryTransfer(TrackingDatabase.get().getNextId(),
-                "",
-                0.0,
-                core,
-                bank,
-                TrackingDatabase.get().getDefault(Category.class));
+    public BankTransfer newElement() {
+        return new ManualBankTransfer(TrackingDatabase.get().getNextId(), "",
+                core, bank, 0.0,
+                null, TrackingDatabase.get().getDefault(Category.class), null);
     }
 
     /**

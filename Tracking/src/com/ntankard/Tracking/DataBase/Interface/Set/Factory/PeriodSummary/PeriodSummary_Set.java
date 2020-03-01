@@ -8,7 +8,14 @@ import com.ntankard.Tracking.DataBase.Interface.Summary.Period_Summary;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PeriodSummary_Set implements ObjectSet<Period_Summary> {
+public class PeriodSummary_Set extends ObjectSet<Period_Summary> {
+
+    /**
+     * Constructor
+     */
+    public PeriodSummary_Set() {
+        super(null);
+    }
 
     /**
      * Get the set of objects

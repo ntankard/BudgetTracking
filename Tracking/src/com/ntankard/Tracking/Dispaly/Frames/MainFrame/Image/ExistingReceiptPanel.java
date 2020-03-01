@@ -133,11 +133,11 @@ public class ExistingReceiptPanel extends UpdatableJPanel implements ListSelecti
         public Object getValueAt(int rowIndex, int columnIndex) {
             switch (columnIndex) {
                 case 0:
-                    return displayedData.get(rowIndex).getBankCategoryTransfer().getDestinationValue();
+                    return displayedData.get(rowIndex).getBankTransfer().getValue();
                 case 1:
-                    return displayedData.get(rowIndex).getBankCategoryTransfer().getDescription();
+                    return displayedData.get(rowIndex).getBankTransfer().getDescription();
                 case 2:
-                    return displayedData.get(rowIndex).getBankCategoryTransfer().getDestination();
+                    return displayedData.get(rowIndex).getBankTransfer().getDestination();
             }
             return null;
         }

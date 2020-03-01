@@ -5,15 +5,15 @@ import com.ntankard.DynamicGUI.Util.Decoder.DoubleDecoder;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.Currency;
+import com.ntankard.Tracking.DataBase.Core.Receipt;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
-import com.ntankard.Tracking.DataBase.Core.Receipt;
-import com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer.BankCategoryTransfer;
-import com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer.ManualBankCategoryTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.BankTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.ManualBankTransfer;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
-import com.ntankard.Tracking.DataBase.Interface.Set.MultiParent_Set;
+import com.ntankard.Tracking.DataBase.Interface.Set.TwoParent_Children_Set;
 import com.ntankard.Tracking.Util.Swing.ImageJPanel;
 
 import javax.swing.*;
@@ -30,7 +30,7 @@ public class ImageToTransferPanel extends UpdatableJPanel implements ListSelecti
 
     // Core data
     private String imagePath;
-    private List<BankCategoryTransfer> displayedData = new ArrayList<>();
+    private List<BankTransfer> displayedData = new ArrayList<>();
 
     // Gui components
     private JTable transfer_table;
@@ -206,7 +206,7 @@ public class ImageToTransferPanel extends UpdatableJPanel implements ListSelecti
      * Populate the transfer list based on the other selected values
      */
     private void populateTransfer() {
-        displayedData = new MultiParent_Set<>(BankCategoryTransfer.class, (Bank) bank_combo.getSelectedItem(), (Period) period_combo.getSelectedItem()).get();
+        displayedData = new TwoParent_Children_Set<>(BankTransfer.class, (Bank) bank_combo.getSelectedItem(), (Period) period_combo.getSelectedItem()).get();
         transfer_table_model.fireTableDataChanged();
         associate_btn.setEnabled(false);
     }
@@ -216,7 +216,7 @@ public class ImageToTransferPanel extends UpdatableJPanel implements ListSelecti
      */
     private void associate() {
         int index = transfer_table.getSelectionModel().getMaxSelectionIndex();
-        BankCategoryTransfer transfer = displayedData.get(index);
+        BankTransfer transfer = displayedData.get(index);
 
         Receipt receipt = new Receipt(TrackingDatabase.get().getNextId(), imagePath, transfer);
         receipt.setFirstFile(true);
@@ -240,10 +240,10 @@ public class ImageToTransferPanel extends UpdatableJPanel implements ListSelecti
         String description = description_txt.getText();
         Category category = (Category) category_combo.getSelectedItem();
 
-        BankCategoryTransfer bankCategoryTransfer = new ManualBankCategoryTransfer(TrackingDatabase.get().getNextId(), description, cost, period, bank, category);
-        bankCategoryTransfer.add();
+        ManualBankTransfer manualBankTransferN = new ManualBankTransfer(TrackingDatabase.get().getNextId(), description, period, bank, cost, null, category, null);
+        manualBankTransferN.add();
 
-        Receipt receipt = new Receipt(TrackingDatabase.get().getNextId(), imagePath, bankCategoryTransfer);
+        Receipt receipt = new Receipt(TrackingDatabase.get().getNextId(), imagePath, manualBankTransferN);
         receipt.setFirstFile(true);
         receipt.add();
 
@@ -326,7 +326,7 @@ public class ImageToTransferPanel extends UpdatableJPanel implements ListSelecti
         public Object getValueAt(int rowIndex, int columnIndex) {
             switch (columnIndex) {
                 case 0:
-                    return displayedData.get(rowIndex).getDestinationValue();
+                    return displayedData.get(rowIndex).getValue();
                 case 1:
                     return displayedData.get(rowIndex).getDescription();
                 case 2:

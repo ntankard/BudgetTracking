@@ -1,4 +1,4 @@
-package com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer;
+package com.ntankard.Tracking.DataBase.Core.Transfer.Bank;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
@@ -6,7 +6,7 @@ import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
-import com.ntankard.Tracking.DataBase.Core.Pool.Category;
+import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Core.RecurringPayment.FixedRecurringPayment;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
@@ -15,7 +15,7 @@ import java.util.List;
 import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-public class FixedRecurringTransfer extends BankCategoryTransfer {
+public class RecurringBankTransfer extends BankTransfer {
 
     // My parents
     private FixedRecurringPayment parentPayment;
@@ -23,10 +23,12 @@ public class FixedRecurringTransfer extends BankCategoryTransfer {
     /**
      * Constructor
      */
-    @ParameterMap(parameterGetters = {"getId", "getDestinationValue", "getPeriod", "getSource", "getDestination", "getParentPayment"})
-    public FixedRecurringTransfer(Integer id, Double value, Period period, Bank source, Category destination, FixedRecurringPayment parentPayment) {
-        super(id, "NOT USED", value, period, source, destination);
-        if (parentPayment == null) throw new IllegalArgumentException("parentPayment is null");
+    @ParameterMap(parameterGetters = {"getId", "getPeriod", "getSource", "getValue", "getDestinationPeriod", "getDestination", "getDestinationValue", "getParentPayment"})
+    public RecurringBankTransfer(Integer id,
+                                 Period period, Bank source, Double value,
+                                 Period destinationPeriod, Pool destination, Double destinationValue,
+                                 FixedRecurringPayment parentPayment) {
+        super(id, "NOT USED", period, source, value, destinationPeriod, destination, destinationValue);
         this.parentPayment = parentPayment;
     }
 
@@ -47,27 +49,32 @@ public class FixedRecurringTransfer extends BankCategoryTransfer {
     //------------------------------------------------------------------------------------------------------------------
 
     // 1000000--getID
-    // 1100000----getPeriod
 
     @Override
-    @DisplayProperties(order = 1200000)
+    @DisplayProperties(order = 1100000)
     public String getDescription() {
         return parentPayment.getName();
     }
 
+    // 1200000----getPeriod
     // 1300000----getSource
-    // 1400000----getSourceValue
-    // 1500000----getSourceCurrency
+    // 1400000----getValue
+    // 1500000----getCurrency
+    // 1510000------getDestinationPeriod
+    // 1520000------getCategory
+    // 1530000------getBank
+    // 1540000------getFundEvent
     // 1600000----getDestination
-    // 1700000----getDestinationValue
-    // 1800000----getDestinationCurrency
+    // 1610000------getDestinationValue
+    // 1620000------getDestinationCurrency
 
-    @DisplayProperties(order = 1801000)
+    @DisplayProperties(order = 1621000)
     public FixedRecurringPayment getParentPayment() {
         return parentPayment;
     }
 
-    // 1810000------getOrder
+    // 1700000----getSourceTransfer
+    // 1800000----getDestinationTransfer
     // 2000000--getParents (Above)
     // 3000000--getChildren
 }

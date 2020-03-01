@@ -1,11 +1,13 @@
 package com.ntankard.Tracking.DataBase.Interface.Set;
 
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
+import com.ntankard.Tracking.DataBase.Interface.Set.Filter.SetFilter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MultiParent_Set<T extends DataObject, PrimaryParentType extends DataObject, SecondaryParentType extends DataObject> implements ObjectSet<T> {
+public class TwoParent_Children_Set<T extends DataObject, PrimaryParentType extends DataObject, SecondaryParentType extends DataObject> extends ObjectSet<T> {
+
     /**
      * The DataObject to get from the core
      */
@@ -22,9 +24,17 @@ public class MultiParent_Set<T extends DataObject, PrimaryParentType extends Dat
     private SecondaryParentType secondaryParent;
 
     /**
-     * The core object to extract children from
+     * Constructor
      */
-    public MultiParent_Set(Class<T> tClass, PrimaryParentType primaryParent, SecondaryParentType secondaryParent) {
+    public TwoParent_Children_Set(Class<T> tClass, PrimaryParentType primaryParent, SecondaryParentType secondaryParent) {
+        this(tClass, primaryParent, secondaryParent, null);
+    }
+
+    /**
+     * Constructor
+     */
+    public TwoParent_Children_Set(Class<T> tClass, PrimaryParentType primaryParent, SecondaryParentType secondaryParent, SetFilter<T> filter) {
+        super(filter);
         this.tClass = tClass;
         this.primaryParent = primaryParent;
         this.secondaryParent = secondaryParent;
@@ -45,7 +55,9 @@ public class MultiParent_Set<T extends DataObject, PrimaryParentType extends Dat
         List<T> secondary = secondaryParent.getChildren(tClass);
         for (T t : primary) {
             if (secondary.contains(t)) {
-                toReturn.add(t);
+                if (shouldAdd(t)) {
+                    toReturn.add(t);
+                }
             }
         }
 

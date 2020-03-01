@@ -9,13 +9,13 @@ import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Core.StatementEnd;
-import com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer.BankCategoryTransfer;
-import com.ntankard.Tracking.DataBase.Core.Transfers.BankTransfer.BankTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.BankTransfer;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.Extended.Sum.PeriodPool_SumSet;
-import com.ntankard.Tracking.DataBase.Interface.Set.MultiParent_Set;
+import com.ntankard.Tracking.DataBase.Interface.Set.TwoParent_Children_Set;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataContext.ZERO_TARGET;
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
@@ -50,7 +50,7 @@ public class Bank_Summary extends PoolSummary<Bank> implements CurrencyBound, Or
         }
         Period last = TrackingDatabase.get().get(Period.class).get(index - 1);
         if (last instanceof ExistingPeriod) {
-            return new MultiParent_Set<>(StatementEnd.class, last, getPool()).get().get(0).getEnd();
+            return new TwoParent_Children_Set<>(StatementEnd.class, last, getPool()).get().get(0).getEnd();
         }
         return getPool().getStart();
     }
@@ -58,17 +58,17 @@ public class Bank_Summary extends PoolSummary<Bank> implements CurrencyBound, Or
     @Override
     @DisplayProperties(order = 6, dataType = CURRENCY)
     public Double getEnd() {
-        return new MultiParent_Set<>(StatementEnd.class, getPeriod(), getPool()).get().get(0).getEnd();
+        return new TwoParent_Children_Set<>(StatementEnd.class, getPeriod(), getPool()).get().get(0).getEnd();
     }
 
     @DisplayProperties(order = 7, dataType = CURRENCY)
     public Double getNetTransfer() {
-        return new PeriodPool_SumSet<>(BankTransfer.class, getPeriod(), getPool()).getTotal() / getCurrency().getToPrimary();
+        return new PeriodPool_SumSet(BankTransfer.class, Bank.class, getPeriod(), getPool()).getTotal() / getCurrency().getToPrimary();
     }
 
     @DisplayProperties(order = 8, dataType = CURRENCY)
     public Double getSpend() {
-        return new PeriodPool_SumSet<>(BankCategoryTransfer.class, getPeriod(), getPool()).getTotal() / getCurrency().getToPrimary();
+        return new PeriodPool_SumSet(BankTransfer.class, Category.class, getPeriod(), getPool()).getTotal() / getCurrency().getToPrimary();
     }
 
     @Override
@@ -107,6 +107,6 @@ public class Bank_Summary extends PoolSummary<Bank> implements CurrencyBound, Or
     //------------------------------------------------------------------------------------------------------------------
 
     public void setEnd(Double end) {
-        new MultiParent_Set<>(StatementEnd.class, getPeriod(), getPool()).get().get(0).setEnd(end);
+        new TwoParent_Children_Set<>(StatementEnd.class, getPeriod(), getPool()).get().get(0).setEnd(end);
     }
 }

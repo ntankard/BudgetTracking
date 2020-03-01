@@ -11,6 +11,8 @@ import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
+import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePayFundTransfer;
+import com.ntankard.Tracking.DataBase.Database.ObjectFactory;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
 import java.util.ArrayList;
@@ -20,6 +22,7 @@ import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
 import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
+@ObjectFactory(builtObjects = {RePayFundTransfer.class})
 public abstract class RecurringPayment extends NamedDataObject implements CurrencyBound {
 
     // My parents
@@ -131,7 +134,7 @@ public abstract class RecurringPayment extends NamedDataObject implements Curren
     }
 
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 116000)
+    @DisplayProperties(order = 1160000)
     @Override
     public Currency getCurrency() {
         return getBank().getCurrency();
@@ -152,6 +155,7 @@ public abstract class RecurringPayment extends NamedDataObject implements Curren
         this.bank = bank;
         this.bank.notifyChildLink(this);
         regenerateChildren();
+        validateParents();
     }
 
     @SetterProperties(localSourceMethod = "sourceOptions")
@@ -162,6 +166,7 @@ public abstract class RecurringPayment extends NamedDataObject implements Curren
         this.category = category;
         this.category.notifyChildLink(this);
         regenerateChildren();
+        validateParents();
     }
 
     @SetterProperties(localSourceMethod = "sourceOptions")
@@ -179,10 +184,14 @@ public abstract class RecurringPayment extends NamedDataObject implements Curren
         }
 
         regenerateChildren();
+        validateParents();
     }
 
     @SetterProperties(localSourceMethod = "sourceOptions")
     public void setEnd(ExistingPeriod end) {
+        if (end != null && (getStart().getOrder() >= getEnd().getOrder())) {
+            throw new IllegalArgumentException("Setting an end date before the start");
+        }
         if (this.end != null) {
             this.end.notifyChildUnLink(this);
         }
@@ -191,6 +200,7 @@ public abstract class RecurringPayment extends NamedDataObject implements Curren
             this.end.notifyChildLink(this);
         }
         regenerateChildren();
+        validateParents();
     }
 
     public void setValue(Double value) {

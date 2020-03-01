@@ -12,20 +12,17 @@ import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.SavingsFundEvent;
-import com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer.BankCategoryTransfer;
-import com.ntankard.Tracking.DataBase.Core.Transfers.BankTransfer.IntraCurrencyBankTransfer;
-import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer.RePayCategoryFundTransfer;
-import com.ntankard.Tracking.DataBase.Core.Transfers.Transfer;
+import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.BankTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePayFundTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfer.HalfTransfer;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
-import com.ntankard.Tracking.DataBase.Interface.Set.Array_Set;
-import com.ntankard.Tracking.DataBase.Interface.Set.Children_Set;
+import com.ntankard.Tracking.DataBase.Interface.Set.*;
 import com.ntankard.Tracking.DataBase.Interface.Set.Extended.Sum.Transfer_SumSet;
 import com.ntankard.Tracking.DataBase.Interface.Set.Factory.PoolSummary.BankSummary_Set;
 import com.ntankard.Tracking.DataBase.Interface.Set.Factory.PoolSummary.CategorySummary_Set;
 import com.ntankard.Tracking.DataBase.Interface.Set.Factory.PoolSummary.FundEventSummary_Set;
-import com.ntankard.Tracking.DataBase.Interface.Set.MultiParent_Set;
-import com.ntankard.Tracking.DataBase.Interface.Set.ObjectSet;
+import com.ntankard.Tracking.DataBase.Interface.Set.Filter.TransferType_HalfTransfer_Filter;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Bank_Summary;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Category_Summary;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.FundEvent_Summary;
@@ -230,15 +227,17 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
         double sum = 0.0;
         for (Category category : TrackingDatabase.get().get(Category.class)) {
 
-            ObjectSet<Transfer> set = new MultiParent_Set<>(Transfer.class, period, category);
-            List<Transfer> data = set.get();
+            ObjectSet<HalfTransfer> set = new TwoParent_Children_Set<>(HalfTransfer.class, period, category);
+            List<HalfTransfer> data = set.get();
             Object toRemove = null;
-            for (Transfer transfer : data) {
-                if (transfer instanceof RePayCategoryFundTransfer) {
-                    RePayCategoryFundTransfer rePayCategoryFundTransfer = (RePayCategoryFundTransfer) transfer;
-                    if (rePayCategoryFundTransfer.getDestination() instanceof SavingsFundEvent) {
+            for (HalfTransfer transfer : data) {
+                if (transfer.getTransfer() instanceof RePayFundTransfer) {
+                    RePayFundTransfer rePayCategoryFundTransfer = (RePayFundTransfer) transfer.getTransfer();
+                    if (rePayCategoryFundTransfer.getSource() instanceof SavingsFundEvent) {
+                        if (toRemove != null) {
+                            throw new RuntimeException("Duplicate savings");
+                        }
                         toRemove = transfer;
-                        break;
                     }
                 }
             }
@@ -260,7 +259,7 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
     @DisplayProperties(order = 16, dataType = CURRENCY)
     public Double getTaxableIncome() {
         Category category = TrackingDatabase.get().getSpecialValue(Category.class, Category.TAXABLE);
-        ObjectSet<BankCategoryTransfer> objectSet = new MultiParent_Set<>(BankCategoryTransfer.class, period, category);
+        ObjectSet<HalfTransfer> objectSet = new TwoParent_Children_Set<>(HalfTransfer.class, period, category, new TransferType_HalfTransfer_Filter(BankTransfer.class));
         return Currency.round(new Transfer_SumSet<>(objectSet, category).getTotal());
     }
 
@@ -273,9 +272,11 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
     @DisplayProperties(order = 17, dataType = CURRENCY)
     public Double getCurrencyValueLoss() {
         double value = 0.0;
-        for (IntraCurrencyBankTransfer intraCurrencyBankTransfer : period.getChildren(IntraCurrencyBankTransfer.class)) {
-            double source = intraCurrencyBankTransfer.getSourceValue() * intraCurrencyBankTransfer.getSourceCurrency().getToPrimary();
-            double destination = intraCurrencyBankTransfer.getDestinationValue() * intraCurrencyBankTransfer.getDestinationCurrency().getToPrimary();
+        for (BankTransfer bankTransfer : period.getChildren(BankTransfer.class)) {
+            HalfTransfer halfSource = bankTransfer.getSourceTransfer();
+            HalfTransfer halfDestination = bankTransfer.getDestinationTransfer();
+            double source = halfSource.getValue() * halfSource.getCurrency().getToPrimary();
+            double destination = halfDestination.getValue() * halfDestination.getCurrency().getToPrimary();
             value += destination + source;
         }
         return value;
@@ -291,13 +292,16 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
     public Double getExchangeRate(Currency currency1, Currency currency2) {
         double primarySum = 0.0;
         double secondarySum = 0.0;
-        for (IntraCurrencyBankTransfer intraCurrencyBankTransfer : period.getChildren(IntraCurrencyBankTransfer.class)) {
-            if (intraCurrencyBankTransfer.getDestinationCurrency().equals(currency1) && intraCurrencyBankTransfer.getSourceCurrency().equals(currency2)) {
-                primarySum += intraCurrencyBankTransfer.getDestinationValue();
-                secondarySum -= intraCurrencyBankTransfer.getSourceValue();
-            } else if (intraCurrencyBankTransfer.getDestinationCurrency().equals(currency2) && intraCurrencyBankTransfer.getSourceCurrency().equals(currency1)) {
-                secondarySum += intraCurrencyBankTransfer.getDestinationValue();
-                primarySum -= intraCurrencyBankTransfer.getSourceValue();
+        for (BankTransfer bankTransfer : period.getChildren(BankTransfer.class)) {
+            HalfTransfer halfSource = bankTransfer.getSourceTransfer();
+            HalfTransfer halfDestination = bankTransfer.getDestinationTransfer();
+
+            if (halfDestination.getCurrency().equals(currency1) && halfSource.getCurrency().equals(currency2)) {
+                primarySum += halfDestination.getValue();
+                secondarySum -= halfSource.getValue();
+            } else if (halfDestination.getCurrency().equals(currency2) && halfSource.getCurrency().equals(currency1)) {
+                secondarySum += halfDestination.getValue();
+                primarySum -= halfSource.getValue();
             }
         }
 
@@ -317,7 +321,7 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
     public Double getBankEnd(Currency currency) {
         if (period instanceof ExistingPeriod) {
             double value = 0.0;
-            for (Bank bank : new Children_Set<>(Bank.class, currency).get()) {
+            for (Bank bank : new OneParent_Children_Set<>(Bank.class, currency).get()) {
                 Bank_Summary summary = new Bank_Summary((ExistingPeriod) period, bank);
                 value += summary.getEnd() * summary.getCurrency().getToPrimary();
             }

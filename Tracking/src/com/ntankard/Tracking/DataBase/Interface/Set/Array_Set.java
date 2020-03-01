@@ -2,7 +2,7 @@ package com.ntankard.Tracking.DataBase.Interface.Set;
 
 import java.util.List;
 
-public class Array_Set<T> implements ObjectSet<T> {
+public class Array_Set<T> extends ObjectSet<T> {
 
     /**
      * The data to return
@@ -13,6 +13,7 @@ public class Array_Set<T> implements ObjectSet<T> {
      * Constructor
      */
     public Array_Set(List<T> set) {
+        super(null);
         this.set = set;
     }
 

@@ -14,7 +14,7 @@ import com.ntankard.Tracking.DataBase.Core.StatementEnd;
 import com.ntankard.Tracking.DataBase.Database.ObjectFactory;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
-import com.ntankard.Tracking.DataBase.Interface.Set.MultiParent_Set;
+import com.ntankard.Tracking.DataBase.Interface.Set.TwoParent_Children_Set;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,10 +69,10 @@ public class Bank extends Pool implements CurrencyBound, Ordered, HasDefault {
         super.add();
 
         for (ExistingPeriod period : TrackingDatabase.get().get(ExistingPeriod.class)) {
-            if (new MultiParent_Set<>(StatementEnd.class, this, period).get().size() > 1) {
+            if (new TwoParent_Children_Set<>(StatementEnd.class, this, period).get().size() > 1) {
                 throw new RuntimeException("More than 1 statement end");
             }
-            if (new MultiParent_Set<>(StatementEnd.class, this, period).get().size() == 0) {
+            if (new TwoParent_Children_Set<>(StatementEnd.class, this, period).get().size() == 0) {
                 new StatementEnd(TrackingDatabase.get().getNextId(), period, this, 0.0).add();
             }
         }

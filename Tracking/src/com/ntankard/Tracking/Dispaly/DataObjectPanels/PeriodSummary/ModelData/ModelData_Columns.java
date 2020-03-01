@@ -3,7 +3,6 @@ package com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.ModelData;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
-import com.ntankard.Tracking.DataBase.Core.Transfers.Transfer;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.Extended.Sum.PeriodPool_SumSet;
 
@@ -63,7 +62,7 @@ public class ModelData_Columns {
      * @return All currencies that transaction are in for a specific category
      */
     private List<Currency> getCurrencies(Category category) {
-        return new PeriodPool_SumSet<>(Transfer.class, core, category).getCurrencies();
+        return new PeriodPool_SumSet(core, category).getCurrencies();
     }
 
     /**

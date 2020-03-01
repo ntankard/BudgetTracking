@@ -4,12 +4,15 @@ import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
-import com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer.FixedRecurringTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.RecurringBankTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePayFundTransfer;
+import com.ntankard.Tracking.DataBase.Database.ObjectFactory;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
-import com.ntankard.Tracking.DataBase.Interface.Set.MultiParent_Set;
+import com.ntankard.Tracking.DataBase.Interface.Set.TwoParent_Children_Set;
 
 @ClassExtensionProperties(includeParent = true)
+@ObjectFactory(builtObjects = {RePayFundTransfer.class})
 public class FixedRecurringPayment extends RecurringPayment {
 
     /**
@@ -21,15 +24,23 @@ public class FixedRecurringPayment extends RecurringPayment {
     }
 
     /**
+     * {@inheritDoc
+     */
+    @Override
+    public void add() {
+        super.add();
+    }
+
+    /**
      * Create all the children transactions
      */
     public void regenerateChildren() {
-        for (FixedRecurringTransfer fixedRecurringTransfer : getChildren(FixedRecurringTransfer.class)) {
-            if (fixedRecurringTransfer.getPeriod().getOrder() < getStart().getOrder()) {
-                fixedRecurringTransfer.remove();
-            }else if (getEnd() != null) {
-                if (getEnd().getOrder() < fixedRecurringTransfer.getPeriod().getOrder()) {
-                    fixedRecurringTransfer.remove();
+        for (RecurringBankTransfer recurringBankTransfer : getChildren(RecurringBankTransfer.class)) {
+            if (recurringBankTransfer.getPeriod().getOrder() < getStart().getOrder()) {
+                recurringBankTransfer.remove();
+            } else if (getEnd() != null) {
+                if (getEnd().getOrder() < recurringBankTransfer.getPeriod().getOrder()) {
+                    recurringBankTransfer.remove();
                 }
             }
         }
@@ -41,12 +52,12 @@ public class FixedRecurringPayment extends RecurringPayment {
                         continue;
                     }
                 }
-                int size = new MultiParent_Set<>(FixedRecurringTransfer.class, period, this).get().size();
-                if(size > 1){
+                int size = new TwoParent_Children_Set<>(RecurringBankTransfer.class, period, this).get().size();
+                if (size > 1) {
                     throw new RuntimeException("Duplicate payment");
                 }
-                if(size == 0){
-                    new FixedRecurringTransfer(TrackingDatabase.get().getNextId(), getValue(), period, getBank(), getCategory(), this).add();
+                if (size == 0) {
+                    new RecurringBankTransfer(TrackingDatabase.get().getNextId(), period, getBank(), getValue(), null, getCategory(), null, this).add();
                 }
             }
         }
@@ -66,6 +77,5 @@ public class FixedRecurringPayment extends RecurringPayment {
     // 1160000------getCurrency
     // 2000000--getParents
     // 3000000--getChildren
-
 
 }

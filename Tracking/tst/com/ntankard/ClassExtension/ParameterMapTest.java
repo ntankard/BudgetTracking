@@ -43,7 +43,9 @@ public class ParameterMapTest {
                 final Method[] method = new Method[1];
                 assertDoesNotThrow(() -> method[0] = aClass.getMethod(name), "Method listed dose not exist." + " Class:" + aClass.getSimpleName() + " Method:" + name);
 
-                assertEquals(type, method[0].getReturnType(), "Method type dose not match the constructor" + " Class:" + aClass.getSimpleName() + " Method:" + name);
+                if (type.isAssignableFrom(method[0].getReturnType())) {
+                    assertEquals(type, method[0].getReturnType(), "Method type dose not match the constructor" + " Class:" + aClass.getSimpleName() + " Method:" + name);
+                }
             }
         }
     }

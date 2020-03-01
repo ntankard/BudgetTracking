@@ -4,15 +4,17 @@ import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
-import com.ntankard.Tracking.DataBase.Core.Transfers.Transfer;
+import com.ntankard.Tracking.DataBase.Core.Transfer.HalfTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfer.Transfer;
 import com.ntankard.Tracking.DataBase.Interface.Set.Extended.Sum.PeriodPool_SumSet;
-import com.ntankard.Tracking.DataBase.Interface.Set.MultiParent_Set;
+import com.ntankard.Tracking.DataBase.Interface.Set.Filter.TransferType_HalfTransfer_Filter;
+import com.ntankard.Tracking.DataBase.Interface.Set.TwoParent_Children_Set;
 import com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.ModelData.ModelData_Columns;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TransferRow<T extends Transfer> extends DataRows<T> {
+public class TransferRow<T extends Transfer<?>> extends DataRows<HalfTransfer> {
 
     /**
      * The class type of T
@@ -35,7 +37,7 @@ public class TransferRow<T extends Transfer> extends DataRows<T> {
      */
     @Override
     public double getTotal_impl(Category category) {
-        return new PeriodPool_SumSet<>(typeParameterClass, core, category).getTotal();
+        return new PeriodPool_SumSet(typeParameterClass, core, category).getTotal();
     }
 
     /**
@@ -47,7 +49,7 @@ public class TransferRow<T extends Transfer> extends DataRows<T> {
 
         for (Category category : columns.categories) {
             // Populate rows data
-            List<T> rowData = getRows(category);
+            List<HalfTransfer> rowData = getRows(category);
             if (maxRows < rowData.size()) {
                 maxRows = rowData.size();
             }
@@ -64,12 +66,12 @@ public class TransferRow<T extends Transfer> extends DataRows<T> {
      * @return The formatted value
      */
     public Object getValue(Category category, Currency currency, int rowIndex) {
-        List<T> categoryRows = this.rows.get(category);
+        List<HalfTransfer> categoryRows = this.rows.get(category);
 
         if (rowIndex < categoryRows.size()) {
-            T rowData = categoryRows.get(rowIndex);
+            HalfTransfer rowData = categoryRows.get(rowIndex);
             if (currency == null) {
-                return rowData.getDescription();
+                return rowData.getTransfer().getDescription();
             } else {
                 if (getValueCurrency(rowData, category).equals(currency)) {
                     return currency.getNumberFormat().format(getValue(rowData, category));
@@ -88,7 +90,7 @@ public class TransferRow<T extends Transfer> extends DataRows<T> {
      * @return The core object
      */
     public DataObject getDataObject(Category category, int rowIndex) {
-        List<T> categoryRows = this.rows.get(category);
+        List<HalfTransfer> categoryRows = this.rows.get(category);
 
         if (rowIndex < categoryRows.size()) {
             return categoryRows.get(rowIndex);
@@ -126,14 +128,8 @@ public class TransferRow<T extends Transfer> extends DataRows<T> {
      * @param category The category of the column
      * @return The Value
      */
-    private double getValue(T rowData, Category category) {
-        if (rowData.isThisSource(category)) {
-            return rowData.getSourceValue();
-        }
-        if (rowData.isThisDestination(category)) {
-            return rowData.getDestinationValue();
-        }
-        throw new RuntimeException("Bad row");
+    private double getValue(HalfTransfer rowData, Category category) {
+        return rowData.getValue();
     }
 
     /**
@@ -144,7 +140,7 @@ public class TransferRow<T extends Transfer> extends DataRows<T> {
      * @return The formatted total
      */
     private double getCurrencyTotal_impl(Category category, Currency currency) {
-        return new PeriodPool_SumSet<>(typeParameterClass, core, category).getTotal(currency);
+        return new PeriodPool_SumSet(typeParameterClass, core, category).getTotal(currency);
     }
 
     /**
@@ -153,20 +149,14 @@ public class TransferRow<T extends Transfer> extends DataRows<T> {
      * @param category The category to get
      * @return All the rows for a specified category
      */
-    private List<T> getRows(Category category) {
-        return new ArrayList<T>(new MultiParent_Set<>(typeParameterClass, core, category).get());
+    private List<HalfTransfer> getRows(Category category) {
+        return new ArrayList<>(new TwoParent_Children_Set<>(HalfTransfer.class, core, category, new TransferType_HalfTransfer_Filter(typeParameterClass)).get());
     }
 
     /**
      * {@inheritDoc
      */
-    private Currency getValueCurrency(T rowData, Category category) {
-        if (rowData.isThisSource(category)) {
-            return rowData.getSourceCurrency();
-        }
-        if (rowData.isThisDestination(category)) {
-            return rowData.getDestinationCurrency();
-        }
-        throw new RuntimeException("Bad row");
+    private Currency getValueCurrency(HalfTransfer rowData, Category category) {
+        return rowData.getCurrency();
     }
 }

@@ -4,10 +4,12 @@ import com.ntankard.ClassExtension.MemberClass;
 import com.ntankard.DynamicGUI.Containers.DynamicGUI_DisplayList;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
-import com.ntankard.Tracking.DataBase.Core.Transfers.Transfer;
+import com.ntankard.Tracking.DataBase.Core.Transfer.HalfTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfer.Transfer;
 import com.ntankard.Tracking.DataBase.Interface.Set.ObjectSet;
 import com.ntankard.Tracking.Dispaly.Util.LocaleInspectors.CurrencyBound_LocaleSource;
-import com.ntankard.Tracking.Dispaly.Util.LocaleInspectors.Transfer_LocaleSource;
+import com.ntankard.Tracking.Dispaly.Util.LocaleInspectors.HalfTransfer_LocaleSource;
+import com.ntankard.Tracking.Dispaly.Util.LocaleInspectors.SetTransfer_LocaleSource;
 
 import java.util.ArrayList;
 
@@ -41,7 +43,9 @@ public class Object_DisplayList<T> extends DynamicGUI_DisplayList<T> {
         super(new ArrayList<>(), new MemberClass(tClass), master);
         this.objectSet = objectSet;
         if (Transfer.class.isAssignableFrom(tClass)) {
-            setLocaleSource(new Transfer_LocaleSource());
+            setLocaleSource(new SetTransfer_LocaleSource());
+        } else if (HalfTransfer.class.isAssignableFrom(tClass)) {
+            setLocaleSource(new HalfTransfer_LocaleSource());
         } else if (CurrencyBound.class.isAssignableFrom(tClass)) {
             setLocaleSource(new CurrencyBound_LocaleSource());
         }

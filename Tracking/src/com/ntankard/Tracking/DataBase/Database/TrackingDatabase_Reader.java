@@ -71,6 +71,7 @@ public class TrackingDatabase_Reader {
         // Read each object type
         Map<Class, List<DataObject>> readObjects = new HashMap<>();
         Map<Integer, DataObject> objectIDMap = new HashMap<>();
+        int maxID = 0;
         for (Class<? extends DataObject> toRead : readOrder) {
             List<ConstructorParameter> pastConstructorParameters = savedConstructorParameters.get(toRead);
             List<ConstructorParameter> currentConstructorParameters = getConstructorParameters(toRead);
@@ -88,6 +89,9 @@ public class TrackingDatabase_Reader {
                 // Store
                 loadedObjects.add(toAdd);
                 objectIDMap.put(toAdd.getId(), toAdd);
+                if (toAdd.getId() > maxID) {
+                    maxID = toAdd.getId();
+                }
             }
             readObjects.put(toRead, loadedObjects);
         }
@@ -96,6 +100,7 @@ public class TrackingDatabase_Reader {
         List<Class<? extends DataObject>> loadOrder = sortByDependency(generateMangedDependencies(savedClasses));
 
         // Load into the database
+        TrackingDatabase.get().setIDFloor(maxID);
         for (Class toLoad : loadOrder) {
             if (readObjects.containsKey(toLoad)) {
                 for (DataObject toAdd : readObjects.get(toLoad)) {
@@ -130,6 +135,11 @@ public class TrackingDatabase_Reader {
 
             // Only save solid objects
             if (Modifier.isAbstract(aClass.getModifiers())) {
+                continue;
+            }
+
+            // Don't save if there are no instances to save (avoid empty file)
+            if (TrackingDatabase.get().get(aClass).size() == 0) {
                 continue;
             }
 
@@ -379,6 +389,9 @@ public class TrackingDatabase_Reader {
         List<Class<? extends DataObject>> nonSavedObjects = new ArrayList<>();
         for (Class<? extends DataObject> nonSavedObject : dependencyMap.keySet()) {
             ParameterMap parameterMap = (ParameterMap) getConstructor(nonSavedObject).getAnnotation(ParameterMap.class);
+            if (parameterMap == null) {
+                throw new RuntimeException("Missing constructor settings");
+            }
             if (!parameterMap.shouldSave()) {
                 nonSavedObjects.add(nonSavedObject);
                 List<Class<? extends DataObject>> nonSavedObject_dependants = dependencyMap.get(nonSavedObject);
@@ -499,7 +512,11 @@ public class TrackingDatabase_Reader {
                 } else if (Boolean.class.isAssignableFrom(paramType) || boolean.class.isAssignableFrom(paramType)) {
                     params.add(Boolean.parseBoolean(paramString));
                 } else if (Double.class.isAssignableFrom(paramType) || double.class.isAssignableFrom(paramType)) {
-                    params.add(Double.parseDouble(paramString));
+                    if (paramString.equals(" ")) {
+                        params.add(null);
+                    } else {
+                        params.add(Double.parseDouble(paramString));
+                    }
                 } else if (Integer.class.isAssignableFrom(paramType) || int.class.isAssignableFrom(paramType)) {
                     params.add(Integer.parseInt(paramString));
                 } else {

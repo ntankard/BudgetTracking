@@ -4,7 +4,7 @@ import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer.BankCategoryTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.BankTransfer;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 public class Receipt extends DataObject {
 
     // My parents
-    private BankCategoryTransfer bankCategoryTransfer;
+    private BankTransfer bankTransfer;
 
     // My values
     private String fileName;
@@ -27,13 +27,13 @@ public class Receipt extends DataObject {
     /**
      * Constructor
      */
-    @ParameterMap(parameterGetters = {"getId", "getFileName", "getBankCategoryTransfer"})
-    public Receipt(Integer id, String fileName, BankCategoryTransfer bankCategoryTransfer) {
+    @ParameterMap(parameterGetters = {"getId", "getFileName", "getBankTransfer"})
+    public Receipt(Integer id, String fileName, BankTransfer bankTransfer) {
         super(id);
         if (fileName == null) throw new IllegalArgumentException("FileName is null");
-        if (bankCategoryTransfer == null) throw new IllegalArgumentException("BankCategoryTransfer is null");
+        if (bankTransfer == null) throw new IllegalArgumentException("BankCategoryTransfer is null");
         this.fileName = fileName;
-        this.bankCategoryTransfer = bankCategoryTransfer;
+        this.bankTransfer = bankTransfer;
     }
 
     /**
@@ -44,7 +44,7 @@ public class Receipt extends DataObject {
     @DisplayProperties(order = 2000000)
     public List<DataObject> getParents() {
         List<DataObject> toReturn = new ArrayList<>();
-        toReturn.add(getBankCategoryTransfer());
+        toReturn.add(getBankTransfer());
         return toReturn;
     }
 
@@ -69,8 +69,8 @@ public class Receipt extends DataObject {
     // 1000000--getID
 
     @DisplayProperties(order = 1100000)
-    public BankCategoryTransfer getBankCategoryTransfer() {
-        return bankCategoryTransfer;
+    public BankTransfer getBankTransfer() {
+        return bankTransfer;
     }
 
     @DisplayProperties(order = 1200000)

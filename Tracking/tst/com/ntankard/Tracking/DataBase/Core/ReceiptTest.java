@@ -2,7 +2,7 @@ package com.ntankard.Tracking.DataBase.Core;
 
 import com.ntankard.TestUtil.DataAccessUntil;
 import com.ntankard.TestUtil.DataObjectTestUtil;
-import com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer.BankCategoryTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.BankTransfer;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,7 @@ class ReceiptTest {
      */
     @Test
     void constructor() {
-        BankCategoryTransfer bankCategoryTransfer = getObject(BankCategoryTransfer.class, 0);
+        BankTransfer bankCategoryTransfer = getObject(BankTransfer.class, 0);
 
         assertDoesNotThrow(() -> new Receipt(0, "", bankCategoryTransfer));
         assertThrows(IllegalArgumentException.class, () -> new Receipt(0, null, bankCategoryTransfer));
@@ -41,7 +41,7 @@ class ReceiptTest {
      */
     @Test
     void setFirstFile() {
-        BankCategoryTransfer bankCategoryTransfer = getObject(BankCategoryTransfer.class, 0);
+        BankTransfer bankCategoryTransfer = getObject(BankTransfer.class, 0);
 
         Receipt receipt = new Receipt(0, "", bankCategoryTransfer);
         assertDoesNotThrow(() -> receipt.setFirstFile(true));
@@ -78,7 +78,7 @@ class ReceiptTest {
     @Test
     void getBankCategoryTransfer() {
         for (Receipt receipt : TrackingDatabase.get().get(Receipt.class)) {
-            assertNotNull(receipt.getBankCategoryTransfer());
+            assertNotNull(receipt.getBankTransfer());
         }
     }
 

@@ -9,11 +9,11 @@ import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
-import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer.RePayCategoryFundTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePayFundTransfer;
 import com.ntankard.Tracking.DataBase.Database.ObjectFactory;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
-import com.ntankard.Tracking.DataBase.Interface.Set.Children_Set;
+import com.ntankard.Tracking.DataBase.Interface.Set.OneParent_Children_Set;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,7 @@ import java.util.List;
 import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-@ObjectFactory(builtObjects = {RePayCategoryFundTransfer.class})
+@ObjectFactory(builtObjects = {RePayFundTransfer.class})
 public abstract class FundEvent extends Pool {
 
     // My parent
@@ -87,7 +87,7 @@ public abstract class FundEvent extends Pool {
      */
     @Override
     public void remove() {
-        for (RePayCategoryFundTransfer toRemove : new Children_Set<>(RePayCategoryFundTransfer.class, this).get()) {
+        for (RePayFundTransfer toRemove : new OneParent_Children_Set<>(RePayFundTransfer.class, this).get()) {
             toRemove.remove();
         }
 
@@ -98,13 +98,13 @@ public abstract class FundEvent extends Pool {
      * Create the repay objects (remove old ones)
      */
     protected void recreateRePay() {
-        for (RePayCategoryFundTransfer toRemove : new Children_Set<>(RePayCategoryFundTransfer.class, this).get()) {
+        for (RePayFundTransfer toRemove : new OneParent_Children_Set<>(RePayFundTransfer.class, this).get()) {
             toRemove.remove();
         }
 
         for (ExistingPeriod period : TrackingDatabase.get().get(ExistingPeriod.class)) {
             if (this.isChargeThisPeriod(period)) {
-                new RePayCategoryFundTransfer(TrackingDatabase.get().getNextId(), period, this, TrackingDatabase.get().getDefault(Currency.class)).add();
+                new RePayFundTransfer(TrackingDatabase.get().getNextId(), period, this, TrackingDatabase.get().getDefault(Currency.class)).add();
             }
         }
     }

@@ -2,14 +2,14 @@ package com.ntankard.Tracking.DataBase.Interface.Set.Extended.Sum;
 
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
-import com.ntankard.Tracking.DataBase.Core.Transfers.Transfer;
+import com.ntankard.Tracking.DataBase.Core.Transfer.HalfTransfer;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.ObjectSet;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Transfer_SumSet<T extends Transfer, S extends ObjectSet<T>> implements ObjectSet<T> {
+public class Transfer_SumSet<S extends ObjectSet<HalfTransfer>> extends ObjectSet<HalfTransfer> {
 
     /**
      * The source of data
@@ -25,6 +25,7 @@ public class Transfer_SumSet<T extends Transfer, S extends ObjectSet<T>> impleme
      * Constructor
      */
     public Transfer_SumSet(S coreSet, Pool pool) {
+        super(null);
         this.coreSet = coreSet;
         this.pool = pool;
     }
@@ -33,7 +34,7 @@ public class Transfer_SumSet<T extends Transfer, S extends ObjectSet<T>> impleme
      * {@inheritDoc
      */
     @Override
-    public List<T> get() {
+    public List<HalfTransfer> get() {
         return coreSet.get();
     }
 
@@ -43,19 +44,11 @@ public class Transfer_SumSet<T extends Transfer, S extends ObjectSet<T>> impleme
      * @param currency The currency to get
      * @return All the events in this set for a currency
      */
-    public List<T> get(Currency currency) {
-        List<T> toReturn = new ArrayList<>();
-        for (T moneyEvent : get()) {
-            if (moneyEvent.isThisSource(pool)) {
-                if (moneyEvent.getSourceCurrency().equals(currency)) {
-                    toReturn.add(moneyEvent);
-                }
-            } else if (moneyEvent.isThisDestination(pool)) {
-                if (moneyEvent.getDestinationCurrency().equals(currency)) {
-                    toReturn.add(moneyEvent);
-                }
-            } else {
-                throw new RuntimeException("Irrelevant transaction in the set");
+    public List<HalfTransfer> get(Currency currency) {
+        List<HalfTransfer> toReturn = new ArrayList<>();
+        for (HalfTransfer moneyEvent : get()) {
+            if (moneyEvent.getCurrency().equals(currency)) {
+                toReturn.add(moneyEvent);
             }
         }
         return toReturn;
@@ -69,15 +62,8 @@ public class Transfer_SumSet<T extends Transfer, S extends ObjectSet<T>> impleme
      */
     public double getTotal(Currency toSum) {
         double sum = 0;
-        for (T moneyEvent : get(toSum)) {
-            if (moneyEvent.isThisSource(pool)) {
-                sum += moneyEvent.getSourceValue();
-            } else if (moneyEvent.isThisDestination(pool)) {
-                sum += moneyEvent.getDestinationValue();
-            } else {
-                throw new RuntimeException("Irrelevant transaction in the set");
-            }
-
+        for (HalfTransfer moneyEvent : get(toSum)) {
+            sum += moneyEvent.getValue();
         }
         return sum;
     }
@@ -89,15 +75,8 @@ public class Transfer_SumSet<T extends Transfer, S extends ObjectSet<T>> impleme
      */
     public double getTotal() {
         double sum = 0;
-        for (T moneyEvent : get()) {
-            if (moneyEvent.isThisSource(pool)) {
-                sum += moneyEvent.getSourceValue() * moneyEvent.getSourceCurrency().getToPrimary();
-            } else if (moneyEvent.isThisDestination(pool)) {
-                sum += moneyEvent.getDestinationValue() * moneyEvent.getDestinationCurrency().getToPrimary();
-            } else {
-                throw new RuntimeException("Irrelevant transaction in the set");
-            }
-
+        for (HalfTransfer moneyEvent : get()) {
+            sum += moneyEvent.getValue() * moneyEvent.getCurrency().getToPrimary();
         }
         return sum;
     }

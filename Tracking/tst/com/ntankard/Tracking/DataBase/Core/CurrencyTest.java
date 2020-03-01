@@ -94,7 +94,7 @@ class CurrencyTest {
      */
     @Test
     void getParents() {
-        DataObjectTestUtil.testStandardParents(Receipt.class);
+        DataObjectTestUtil.testStandardParents(Currency.class);
     }
 
     /**
@@ -102,6 +102,6 @@ class CurrencyTest {
      */
     @Test
     void getDataObject() {
-        DataObjectTestUtil.checkDataObjectNotNull(Receipt.class);
+        DataObjectTestUtil.checkDataObjectNotNull(Currency.class);
     }
 }

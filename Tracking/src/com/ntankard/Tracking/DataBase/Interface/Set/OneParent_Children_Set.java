@@ -1,11 +1,12 @@
 package com.ntankard.Tracking.DataBase.Interface.Set;
 
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
+import com.ntankard.Tracking.DataBase.Interface.Set.Filter.SetFilter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Children_Set<T extends DataObject, ParentType extends DataObject> implements ObjectSet<T> {
+public class OneParent_Children_Set<T extends DataObject, ParentType extends DataObject> extends ObjectSet<T> {
 
     /**
      * The DataObject to get from the core
@@ -20,7 +21,15 @@ public class Children_Set<T extends DataObject, ParentType extends DataObject> i
     /**
      * Constructor
      */
-    public Children_Set(Class<T> tClass, ParentType parent) {
+    public OneParent_Children_Set(Class<T> tClass, ParentType parent) {
+        this(tClass, parent, null);
+    }
+
+    /**
+     * Constructor
+     */
+    public OneParent_Children_Set(Class<T> tClass, ParentType parent, SetFilter<T> filter) {
+        super(filter);
         this.tClass = tClass;
         this.parent = parent;
     }
@@ -30,10 +39,15 @@ public class Children_Set<T extends DataObject, ParentType extends DataObject> i
      */
     @Override
     public List<T> get() {
+        List<T> toReturn = new ArrayList<>();
         if (parent != null) {
-            return parent.getChildren(tClass);
+            for (T dataObject : parent.getChildren(tClass)) {
+                if (shouldAdd(dataObject)) {
+                    toReturn.add(dataObject);
+                }
+            }
         }
-        return new ArrayList<>();
+        return toReturn;
     }
 
     /**

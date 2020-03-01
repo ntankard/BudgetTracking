@@ -8,12 +8,16 @@ import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
-import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer.RePayCategoryFundTransfer;
-import com.ntankard.Tracking.DataBase.Core.Transfers.CategoryFundTransfer.UseCategoryFundTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.FundTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.ManualFundTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePayFundTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfer.HalfTransfer;
 import com.ntankard.Tracking.DataBase.Database.ObjectFactory;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
-import com.ntankard.Tracking.DataBase.Interface.Set.Children_Set;
+import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.Extended.Sum.Transfer_SumSet;
+import com.ntankard.Tracking.DataBase.Interface.Set.Filter.TransferType_HalfTransfer_Filter;
+import com.ntankard.Tracking.DataBase.Interface.Set.OneParent_Children_Set;
 import com.ntankard.Tracking.Dispaly.Util.Comparators.Ordered_Comparator;
 
 import java.util.ArrayList;
@@ -22,7 +26,7 @@ import java.util.List;
 import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-@ObjectFactory(builtObjects = {RePayCategoryFundTransfer.class})
+@ObjectFactory(builtObjects = {RePayFundTransfer.class})
 public class FixedPeriodFundEvent extends FundEvent {
 
     // My parents
@@ -64,7 +68,7 @@ public class FixedPeriodFundEvent extends FundEvent {
         List<Period> periods = new ArrayList<>();
 
         if (!isChargeThisPeriod(period)) {
-            for (UseCategoryFundTransfer useCategoryFundTransfer : new Children_Set<>(UseCategoryFundTransfer.class, this).get()) {
+            for (ManualFundTransfer useCategoryFundTransfer : new OneParent_Children_Set<>(ManualFundTransfer.class, this).get()) {
                 if (!periods.contains(useCategoryFundTransfer.getPeriod())) {
                     periods.add(useCategoryFundTransfer.getPeriod());
                 }
@@ -99,7 +103,7 @@ public class FixedPeriodFundEvent extends FundEvent {
         if (!isChargeThisPeriod(period)) {
             return -0.0;
         }
-        return -new Transfer_SumSet<>(new Children_Set<>(UseCategoryFundTransfer.class, this), this).getTotal() / duration;
+        return -new Transfer_SumSet(new OneParent_Children_Set<>(HalfTransfer.class, this, new TransferType_HalfTransfer_Filter(ManualFundTransfer.class)), this).getTotal() / duration;
     }
 
     /**
@@ -142,7 +146,12 @@ public class FixedPeriodFundEvent extends FundEvent {
         this.category.notifyChildUnLink(this);
         this.category = category;
         this.category.notifyChildLink(this);
+
+        for (FundTransfer fundTransfer : TrackingDatabase.get().get(FundTransfer.class)) {
+            fundTransfer.setDestination();
+        }
         recreateRePay();
+        validateParents();
     }
 
     @SetterProperties(localSourceMethod = "sourceOptions")
@@ -152,6 +161,7 @@ public class FixedPeriodFundEvent extends FundEvent {
         this.start = start;
         this.start.notifyChildLink(this);
         recreateRePay();
+        validateParents();
     }
 
     public void setDuration(Integer duration) {
@@ -159,5 +169,6 @@ public class FixedPeriodFundEvent extends FundEvent {
         if (duration < 1) throw new IllegalArgumentException("Duration is less than 1");
         this.duration = duration;
         recreateRePay();
+        validateParents();
     }
 }

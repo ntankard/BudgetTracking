@@ -3,8 +3,8 @@ package com.ntankard.Tracking.Dispaly.Frames.MainFrame;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.RecurringPayment.FixedRecurringPayment;
-import com.ntankard.Tracking.DataBase.Core.Transfers.BankCategoryTransfer.FixedRecurringTransfer;
-import com.ntankard.Tracking.DataBase.Interface.Set.Children_Set;
+import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.RecurringBankTransfer;
+import com.ntankard.Tracking.DataBase.Interface.Set.OneParent_Children_Set;
 import com.ntankard.Tracking.DataBase.Interface.Set.Full_Set;
 import com.ntankard.Tracking.Dispaly.Util.ElementControllers.FixedRecurringPayment_ElementController;
 import com.ntankard.Tracking.Dispaly.Util.Panels.DataObject_DisplayList;
@@ -16,8 +16,8 @@ public class RecurringPaymentPanel extends UpdatableJPanel {
 
     // The GUI components
     private DataObject_DisplayList<FixedRecurringPayment> fixedRecurringPayment_panel;
-    private DataObject_DisplayList<FixedRecurringTransfer> FixedRecurringTransfer_panel;
-    private Children_Set<FixedRecurringTransfer, FixedRecurringPayment> fixedRecurringTransfer_set;
+    private DataObject_DisplayList<RecurringBankTransfer> FixedRecurringTransfer_panel;
+    private OneParent_Children_Set<RecurringBankTransfer, FixedRecurringPayment> fixedRecurringTransfer_set;
 
     /**
      * Constructor
@@ -38,8 +38,8 @@ public class RecurringPaymentPanel extends UpdatableJPanel {
         fixedRecurringPayment_panel.addControlButtons(new FixedRecurringPayment_ElementController(this));
         fixedRecurringPayment_panel.getMainPanel().getListSelectionModel().addListSelectionListener(e -> selectPayment());
 
-        fixedRecurringTransfer_set = new Children_Set<>(FixedRecurringTransfer.class, null);
-        FixedRecurringTransfer_panel = new DataObject_DisplayList<>(FixedRecurringTransfer.class, fixedRecurringTransfer_set, false, this);
+        fixedRecurringTransfer_set = new OneParent_Children_Set<>(RecurringBankTransfer.class, null);
+        FixedRecurringTransfer_panel = new DataObject_DisplayList<>(RecurringBankTransfer.class, fixedRecurringTransfer_set, false, this);
 
         GridBagConstraints summaryContainer_C = new GridBagConstraints();
         summaryContainer_C.fill = GridBagConstraints.BOTH;
