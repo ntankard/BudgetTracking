@@ -21,17 +21,16 @@ public class PeriodPool_SumSet extends Transfer_SumSet<TwoParent_Children_Set<Ha
     /**
      * Constructor
      */
-    public PeriodPool_SumSet(Class<? extends Transfer> toGet, Period period, Pool pool) {
-        this(toGet, Pool.class, period, pool);
+    public PeriodPool_SumSet(Class<? extends Transfer> transferType, Class<? extends Pool> transferDestination, Period period, Pool pool) {
+        this(new TwoParent_Children_Set<>(HalfTransfer.class, period, pool, new TransferType_HalfTransfer_Filter(transferType, new TransferDestination_HalfTransfer_Filter(transferDestination))), pool);
     }
 
     /**
      * Constructor
      */
-    public PeriodPool_SumSet(Class<? extends Transfer> transferType, Class<? extends Pool> transferDestination, Period period, Pool pool) {
-        super(new TwoParent_Children_Set<>(HalfTransfer.class, period, pool, new TransferType_HalfTransfer_Filter(transferType, new TransferDestination_HalfTransfer_Filter(transferDestination))), pool);
+    public PeriodPool_SumSet(TwoParent_Children_Set<HalfTransfer, Period, Pool> set, Pool pool) {
+        super(set, pool);
     }
-
 
     /**
      * Set the pool object to filter on

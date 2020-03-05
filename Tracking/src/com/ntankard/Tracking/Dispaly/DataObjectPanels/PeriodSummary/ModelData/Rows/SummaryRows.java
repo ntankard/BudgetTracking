@@ -2,17 +2,17 @@ package com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.ModelData.R
 
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
-import com.ntankard.Tracking.DataBase.Core.Pool.Category;
-import com.ntankard.Tracking.DataBase.Interface.Set.Extended.Sum.PeriodPool_SumSet;
+import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
+import com.ntankard.Tracking.DataBase.Core.Transfer.Transfer;
 import com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.ModelData.ModelData_Columns;
 
-public class SummaryRows extends DataRows<Object> {
+public class SummaryRows<P extends Pool> extends DataRows<P> {
 
     /**
      * {@inheritDoc
      */
-    public SummaryRows(Period core, ModelData_Columns columns) {
-        super(core, columns);
+    public SummaryRows(Period core, ModelData_Columns<P> columns) {
+        super(core, columns, Transfer.class);
     }
 
     /**
@@ -27,31 +27,7 @@ public class SummaryRows extends DataRows<Object> {
      * {@inheritDoc
      */
     @Override
-    public void update() {
-
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public double getTotal_impl(Category category) {
-        return new PeriodPool_SumSet(core, category).getTotal();
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public Object getCurrencyTotal(Category category, Currency currency) {
-        return null;
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public Object getValue(Category category, Currency currency, int rowIndex) {
+    public Object getValue(P pool, Currency currency, int rowIndex) {
         return null;
     }
 }

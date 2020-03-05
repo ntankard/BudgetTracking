@@ -1,6 +1,7 @@
 package com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.ModelData;
 
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
+import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.BankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.FundTransfer;
 import com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.ModelData.Rows.DataRows;
@@ -11,11 +12,11 @@ import com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.ModelData.Ro
 import java.util.ArrayList;
 import java.util.List;
 
-public class ModelData_Rows {
+public class ModelData_Rows<P extends Pool> {
 
     // Core data
     private Period core;
-    private ModelData_Columns columns;
+    private ModelData_Columns<P> columns;
     private boolean addTransfers;
 
     // Column data
@@ -24,7 +25,7 @@ public class ModelData_Rows {
     /**
      * Constructor
      */
-    public ModelData_Rows(Period core, ModelData_Columns columns, boolean addTransfers) {
+    public ModelData_Rows(Period core, ModelData_Columns<P> columns, boolean addTransfers) {
         this.core = core;
         this.addTransfers = addTransfers;
         this.columns = columns;
@@ -37,11 +38,11 @@ public class ModelData_Rows {
     private void addSections() {
         this.sections.clear();
 
-        addSection(new SummaryRows(core, columns));
-        addSection(new DividerRow("Transaction", core, columns));
+        addSection(new SummaryRows<>(core, columns));
+        addSection(new DividerRow<>("Transaction", core, columns));
         addSection(new TransferRow<>(core, columns, BankTransfer.class));
         if (addTransfers) {
-            addSection(new DividerRow("External", core, columns));
+            addSection(new DividerRow<>("External", core, columns));
             addSection(new TransferRow<>(core, columns, FundTransfer.class));
         }
     }
@@ -51,7 +52,7 @@ public class ModelData_Rows {
      *
      * @param dataRows The rows to add
      */
-    private void addSection(DataRows dataRows) {
+    private void addSection(DataRows<P> dataRows) {
         dataRows.update();
         int startIndex = 0;
         if (sections.size() != 0) {
@@ -113,7 +114,7 @@ public class ModelData_Rows {
      * @param rowIndex The row to get
      * @return The DataRows this row is in
      */
-    public DataRows getDataRow(int rowIndex) {
+    public DataRows<P> getDataRow(int rowIndex) {
         return getSection(rowIndex).dataRows;
     }
 
@@ -136,7 +137,7 @@ public class ModelData_Rows {
      * Section Enum
      */
     private class Section {
-        Section(int startIndex, int endIndex, DataRows dataRows) {
+        Section(int startIndex, int endIndex, DataRows<P> dataRows) {
             this.startIndex = startIndex;
             this.endIndex = endIndex;
             this.dataRows = dataRows;
@@ -144,6 +145,6 @@ public class ModelData_Rows {
 
         int startIndex;
         int endIndex;
-        DataRows dataRows;
+        DataRows<P> dataRows;
     }
 }

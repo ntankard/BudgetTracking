@@ -2,10 +2,11 @@ package com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.ModelData.R
 
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
-import com.ntankard.Tracking.DataBase.Core.Pool.Category;
+import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
+import com.ntankard.Tracking.DataBase.Core.Transfer.Transfer;
 import com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.ModelData.ModelData_Columns;
 
-public class DividerRow extends DataRows<Object> {
+public class DividerRow<P extends Pool> extends DataRows<P> {
 
     /**
      * The name to put on the divider
@@ -15,8 +16,8 @@ public class DividerRow extends DataRows<Object> {
     /**
      * {@inheritDoc
      */
-    public DividerRow(String name, Period core, ModelData_Columns columns) {
-        super(core, columns);
+    public DividerRow(String name, Period core, ModelData_Columns<P> columns) {
+        super(core, columns, Transfer.class);
         this.name = name;
     }
 
@@ -32,14 +33,7 @@ public class DividerRow extends DataRows<Object> {
      * {@inheritDoc
      */
     @Override
-    public void update() {
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public Object getTotal(Category category) {
+    public Object getTotal(Pool pool) {
         return null;
     }
 
@@ -47,7 +41,7 @@ public class DividerRow extends DataRows<Object> {
      * {@inheritDoc
      */
     @Override
-    public double getTotal_impl(Category category) {
+    public double getTotal_impl(Pool pool) {
         return 0.0;
     }
 
@@ -55,15 +49,7 @@ public class DividerRow extends DataRows<Object> {
      * {@inheritDoc
      */
     @Override
-    public Object getCurrencyTotal(Category category, Currency currency) {
-        return null;
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public Object getValue(Category category, Currency currency, int rowIndex) {
+    public Object getValue(Pool pool, Currency currency, int rowIndex) {
         return name;
     }
 }

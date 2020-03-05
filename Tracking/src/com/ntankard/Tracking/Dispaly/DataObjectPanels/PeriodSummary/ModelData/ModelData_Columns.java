@@ -2,20 +2,24 @@ package com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.ModelData;
 
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
-import com.ntankard.Tracking.DataBase.Core.Pool.Category;
+import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
+import com.ntankard.Tracking.DataBase.Core.Transfer.HalfTransfer;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.Extended.Sum.PeriodPool_SumSet;
+import com.ntankard.Tracking.DataBase.Interface.Set.Filter.TransferDestination_HalfTransfer_Filter;
+import com.ntankard.Tracking.DataBase.Interface.Set.TwoParent_Children_Set;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ModelData_Columns {
+public class ModelData_Columns<P extends Pool> {
 
     // Core data
+    private Class<P> columnClass;
     private Period core;
 
     // Column data
-    public final List<Category> categories = new ArrayList<>();
+    public final List<P> pools = new ArrayList<>();
     private List<Column> columns = new ArrayList<>();
 
     /**
@@ -23,8 +27,9 @@ public class ModelData_Columns {
      *
      * @param core The Period this table is built around
      */
-    public ModelData_Columns(Period core) {
+    public ModelData_Columns(Period core, Class<P> columnClass) {
         this.core = core;
+        this.columnClass = columnClass;
         update();
     }
 
@@ -32,37 +37,37 @@ public class ModelData_Columns {
      * Recalculate the column data
      */
     public void update() {
-        categories.clear();
+        pools.clear();
         columns.clear();
 
         // Find all categories
-        categories.addAll(TrackingDatabase.get().get(Category.class));
+        pools.addAll(TrackingDatabase.get().get(columnClass));
 
-        for (Category category : categories) {
+        for (P pool : pools) {
 
             // Find all the currencies used in this category
-            List<Currency> transferCurrencies = getCurrencies(category);
+            List<Currency> transferCurrencies = getCurrencies(pool);
 
             if (transferCurrencies.size() != 0) {
                 // Add the name field TODO if all is blank you may want to remove this column
-                columns.add(new Column(category, null, 1 + transferCurrencies.size(), 0));
+                columns.add(new Column(pool, null, 1 + transferCurrencies.size(), 0));
 
                 // Add a column for each currency
                 for (Currency currency : transferCurrencies) {
-                    columns.add(new Column(category, currency, 1 + transferCurrencies.size(), columns.get(columns.size() - 1).index + 1));
+                    columns.add(new Column(pool, currency, 1 + transferCurrencies.size(), columns.get(columns.size() - 1).index + 1));
                 }
             }
         }
     }
 
     /**
-     * Get all currencies that transaction are in for a specific category
+     * Get all currencies that transaction are in for a specific pool
      *
-     * @param category The category to get
-     * @return All currencies that transaction are in for a specific category
+     * @param pool The pool to get
+     * @return All currencies that transaction are in for a specific pool
      */
-    private List<Currency> getCurrencies(Category category) {
-        return new PeriodPool_SumSet(core, category).getCurrencies();
+    private List<Currency> getCurrencies(P pool) {
+        return getSumSet(pool).getCurrencies();
     }
 
     /**
@@ -73,9 +78,9 @@ public class ModelData_Columns {
      */
     public String getColumnName(int column) {
         if (columns.get(column).index == 0) {
-            return columns.get(column).category.toString();
+            return columns.get(column).pool.toString();
         } else {
-            return columns.get(column).category.toString();
+            return columns.get(column).pool.toString();
         }
     }
 
@@ -144,24 +149,33 @@ public class ModelData_Columns {
      * @param columnIndex The column to get
      * @return The category for this column
      */
-    public Category getCategory(int columnIndex) {
-        return columns.get(columnIndex).category;
+    public P getCategory(int columnIndex) {
+        return columns.get(columnIndex).pool;
     }
 
     /**
      * Column Enum
      */
     private class Column {
-        Column(Category category, Currency currency, int count, int index) {
-            this.category = category;
+        Column(P pool, Currency currency, int count, int index) {
+            this.pool = pool;
             this.currency = currency;
             this.count = count;
             this.index = index;
         }
 
-        Category category;
+        P pool;
         Currency currency;
         int count;
         int index;
+    }
+
+
+    private TwoParent_Children_Set<HalfTransfer, Period, Pool> getSet(P pool) {
+        return new TwoParent_Children_Set<>(HalfTransfer.class, core, pool, new TransferDestination_HalfTransfer_Filter(pool.getClass()));
+    }
+
+    private PeriodPool_SumSet getSumSet(P pool) {
+        return new PeriodPool_SumSet(getSet(pool), pool);
     }
 }

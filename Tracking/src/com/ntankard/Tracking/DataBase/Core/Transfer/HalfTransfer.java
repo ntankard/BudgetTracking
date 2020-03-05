@@ -28,13 +28,13 @@ public class HalfTransfer extends DataObject implements CurrencyBound {
     private Period period;
     private Pool pool;
     private Currency currency;
-    private Transfer<?> transfer;
+    private Transfer transfer;
 
     /**
      * Constructor
      */
     @ParameterMap(shouldSave = false)
-    public HalfTransfer(Integer id, Period period, Pool pool, Currency currency, Transfer<?> transfer) {
+    public HalfTransfer(Integer id, Period period, Pool pool, Currency currency, Transfer transfer) {
         super(id);
         this.period = period;
         this.pool = pool;
@@ -106,7 +106,7 @@ public class HalfTransfer extends DataObject implements CurrencyBound {
 
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     @DisplayProperties(order = 1500000)
-    public Transfer<?> getTransfer() {
+    public Transfer getTransfer() {
         return transfer;
     }
 

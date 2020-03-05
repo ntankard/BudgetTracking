@@ -12,7 +12,7 @@ public class SetTransfer_LocaleSource implements CurrencyDecoder_NumberFormatSou
      */
     @Override
     public NumberFormat getNumberFormat(Object rowObject, String contextName) {
-        Transfer<?> moneyEvent = (Transfer<?>) rowObject;
+        Transfer moneyEvent = (Transfer) rowObject;
         switch (contextName) {
             case "Value":
                 return moneyEvent.getSourceTransfer().getCurrency().getNumberFormat();

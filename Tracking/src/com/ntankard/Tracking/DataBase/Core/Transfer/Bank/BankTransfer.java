@@ -23,7 +23,7 @@ import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
-public abstract class BankTransfer extends Transfer<Bank> {
+public abstract class BankTransfer extends Transfer {
 
     // My parents
     private Pool destination;
@@ -50,17 +50,19 @@ public abstract class BankTransfer extends Transfer<Bank> {
 
         // Check that custom destination values can only be set if the bank is another currency
         if (destination instanceof Bank) {
-            if (getSource().getCurrency().equals(((Bank) getDestination()).getCurrency())) {
+            if (((Bank) getSource()).getCurrency().equals(((Bank) getDestination()).getCurrency())) {
                 if (destinationValue != null) {
                     throw new IllegalArgumentException("Trying to set a destination value when not supported");
                 }
             }
         } else {
-
-            // Check that any other type of transfer cannot have a destination period or destination value
-            if (destinationPeriod != null) {
-                throw new RuntimeException("Trying to set a destination period when its not supported");
+            if (!(destination instanceof Category)) {
+                // Check that any other type of transfer cannot have a destination period
+                if (destinationPeriod != null) {
+                    throw new RuntimeException("Trying to set a destination period when its not supported");
+                }
             }
+            // Check that any other type of transfer cannot have a destination value
             if (destinationValue != null) {
                 throw new IllegalArgumentException("Trying to set a destination value when not supported");
             }
@@ -86,25 +88,35 @@ public abstract class BankTransfer extends Transfer<Bank> {
      * {@inheritDoc
      */
     @Override
-    @SuppressWarnings("SuspiciousMethodCalls")
+    @SuppressWarnings({"SuspiciousMethodCalls", "unchecked"})
     public <T extends DataObject> List<T> sourceOptions(Class<T> type, String fieldName) {
-        if (fieldName.equals("DestinationPeriod")) {
-            if (getDestination() instanceof Bank) {
+        switch (fieldName) {
+            case "DestinationPeriod":
+                if (getDestination() instanceof Bank || getDestination() instanceof Category) {
+                    List<T> toReturn = TrackingDatabase.get().get(type);
+                    toReturn.add(null);
+                    toReturn.remove(getPeriod());
+                    return toReturn;
+                } else {
+                    List<T> toReturn = new ArrayList<>();
+                    toReturn.add(null);
+                    return toReturn;
+                }
+            case "Destination":
+            case "Bank": {
                 List<T> toReturn = TrackingDatabase.get().get(type);
-                toReturn.add(null);
-                toReturn.remove(getPeriod());
-                return toReturn;
-            } else {
-                List<T> toReturn = new ArrayList<>();
-                toReturn.add(null);
+                toReturn.remove(getSource());
                 return toReturn;
             }
-        } else if (fieldName.equals("Destination") || fieldName.equals("Bank")) {
-            List<T> toReturn = TrackingDatabase.get().get(type);
-            toReturn.remove(getSource());
-            return toReturn;
+            case "Source": {
+                List<T> toReturn = new ArrayList<>();
+                for (Bank bank : TrackingDatabase.get().get(Bank.class)) {
+                    toReturn.add((T) bank);
+                }
+                return toReturn;
+            }
         }
-        return TrackingDatabase.get().get(type);
+        return super.sourceOptions(type, fieldName);
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -116,9 +128,8 @@ public abstract class BankTransfer extends Transfer<Bank> {
     // 1200000----getPeriod
 
     @Override
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
     @DisplayProperties(order = 1300000)
-    public Bank getSource() {
+    public Pool getSource() {
         return super.getSource();
     }
 
@@ -132,7 +143,7 @@ public abstract class BankTransfer extends Transfer<Bank> {
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     @DisplayProperties(order = 1500000)
     public Currency getCurrency() {
-        return getSource().getCurrency();
+        return ((Bank) getSource()).getCurrency();
     }
 
     @DisplayProperties(order = 1510000)
@@ -158,7 +169,7 @@ public abstract class BankTransfer extends Transfer<Bank> {
     @DisplayProperties(order = 1620000)
     public Currency getDestinationCurrency() {
         if (getDestination() instanceof Bank) {
-            if (!getSource().getCurrency().equals(((Bank) getDestination()).getCurrency())) {
+            if (!((Bank) getSource()).getCurrency().equals(((Bank) getDestination()).getCurrency())) {
                 return ((Bank) getDestination()).getCurrency();
             }
         }
@@ -209,7 +220,7 @@ public abstract class BankTransfer extends Transfer<Bank> {
 
     @SetterProperties(localSourceMethod = "sourceOptions")
     public void setDestinationPeriod(Period destinationPeriod) {
-        if (!(getDestination() instanceof Bank)) {
+        if (!(getDestination() instanceof Bank || getDestination() instanceof Category)) {
             if (destinationPeriod != null) {
                 throw new IllegalArgumentException("Destination period can only be set in a bank to bank transfer");
             }
@@ -236,7 +247,7 @@ public abstract class BankTransfer extends Transfer<Bank> {
         this.destination.notifyChildLink(this);
 
         // Destination Period can only be maintained if its a Bank to Bank transfer
-        if (!(destination instanceof Bank)) {
+        if (!(destination instanceof Bank || destination instanceof Category)) {
             setDestinationPeriod(null);
         }
 
@@ -263,6 +274,17 @@ public abstract class BankTransfer extends Transfer<Bank> {
         }
         this.destinationValue = destinationValue_toSet;
         validateParents();
+    }
+
+    @Override
+    protected void setSource(Pool bank) {
+        if (!(bank instanceof Bank)) throw new IllegalArgumentException("Source is not a bank");
+        super.setSource(bank);
+
+        // Destination value can only be maintained if its a bank to bank transfer with different currencies
+        if (!(destination instanceof Bank && getDestinationCurrency() != null)) {
+            setDestinationValue(null);
+        }
     }
 
     //------------------------------------------------------------------------------------------------------------------

@@ -2,6 +2,8 @@ package com.ntankard.Tracking.Dispaly.Frames.MainFrame.Periods.IndividualPeriod;
 
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category;
+import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.Receipt;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
@@ -34,7 +36,9 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
     private Bank selectedBank = null;
 
     // The GUI components
-    private PeriodSummary_Table periodSummary_Table_panel;
+    private PeriodSummary_Table<Category> categorySummary_table;
+    private PeriodSummary_Table<Bank> bankSummary_table;
+    private PeriodSummary_Table<FundEvent> fundEventSummary_table;
 
     private Object_DisplayList<Bank_Summary> bankSummary_panel;
     private Object_DisplayList<FundEvent_Summary> fundEventSummary_panel;
@@ -61,23 +65,26 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
         this.removeAll();
         this.setLayout(new GridBagLayout());
 
-        // Main table --------------------------------------------------------------------------------------------------
+        // Category table ----------------------------------------------------------------------------------------------
 
-        periodSummary_Table_panel = new PeriodSummary_Table(period, true, this);
-        periodSummary_Table_panel.getModel().addCustomFormatter((dataObject, rendererObject) -> {
+        categorySummary_table = new PeriodSummary_Table<>(period, true, Category.class, this);
+        categorySummary_table.getModel().addCustomFormatter((dataObject, rendererObject) -> {
 
             if (dataObject instanceof HalfTransfer) {
-                if (((HalfTransfer) dataObject).getTransfer() instanceof BankTransfer) {
+                HalfTransfer halfTransfer = (HalfTransfer) dataObject;
+                if (halfTransfer.getTransfer() instanceof BankTransfer) {
 
                     // Check if its selected
                     boolean selected = false;
-                    BankTransfer transaction = (BankTransfer) ((HalfTransfer) dataObject).getTransfer();
+                    BankTransfer transaction = (BankTransfer) halfTransfer.getTransfer();
                     if (selectedBank != null) {
                         selected = transaction.getSource().equals(selectedBank);
                     }
 
-                    if (((HalfTransfer) dataObject).getTransfer() instanceof RecurringBankTransfer) {
-                        if (((HalfTransfer) dataObject).getTransfer().getChildren(Receipt.class).size() != 0) {
+                    if (!halfTransfer.getTransfer().getSourceTransfer().getPeriod().equals(period)) {
+                        rendererObject.background = new Color(230, 204, 255);
+                    } else if (halfTransfer.getTransfer() instanceof RecurringBankTransfer) {
+                        if (halfTransfer.getTransfer().getChildren(Receipt.class).size() != 0) {
                             // FixedRecurringTransfer with receipt
                             if (selected) {
                                 rendererObject.background = new Color(255, 102, 0);
@@ -93,7 +100,7 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
                             }
                         }
                     } else {
-                        if (((HalfTransfer) dataObject).getTransfer().getChildren(Receipt.class).size() != 0) {
+                        if (halfTransfer.getTransfer().getChildren(Receipt.class).size() != 0) {
                             // Regular with receipt
                             if (selected) {
                                 rendererObject.background = new Color(255, 0, 0);
@@ -106,13 +113,49 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
                             }
                         }
                     }
-                } else if (((HalfTransfer) dataObject).getTransfer() instanceof FundTransfer) {
-                    if (((HalfTransfer) dataObject).getTransfer() instanceof RePayFundTransfer) {
+                } else if (halfTransfer.getTransfer() instanceof FundTransfer) {
+                    if (halfTransfer.getTransfer() instanceof RePayFundTransfer) {
                         rendererObject.background = new Color(204, 238, 255);
                     }
                 }
             }
         });
+
+        // Bank table --------------------------------------------------------------------------------------------------
+
+        bankSummary_table = new PeriodSummary_Table<>(period, false, Bank.class, this);
+        bankSummary_table.getModel().addCustomFormatter((dataObject, rendererObject) -> {
+            if (dataObject instanceof HalfTransfer) {
+                HalfTransfer halfTransfer = (HalfTransfer) dataObject;
+            }
+        });
+
+        // Fund Event table --------------------------------------------------------------------------------------------
+
+        fundEventSummary_table = new PeriodSummary_Table<>(period, false, FundEvent.class, this);
+        fundEventSummary_table.getModel().addCustomFormatter((dataObject, rendererObject) -> {
+            if (dataObject instanceof HalfTransfer) {
+                HalfTransfer halfTransfer = (HalfTransfer) dataObject;
+            }
+        });
+
+        // Table combination -------------------------------------------------------------------------------------------
+
+        JScrollPane table_scroll = new JScrollPane();
+        JPanel full = new JPanel(new GridBagLayout());
+
+        GridBagConstraints table_scroll_C = new GridBagConstraints();
+        table_scroll_C.anchor = GridBagConstraints.WEST;
+        table_scroll_C.weightx = 1;
+        table_scroll_C.weighty = 1;
+
+        full.add(categorySummary_table, table_scroll_C);
+        table_scroll_C.gridy = 1;
+        full.add(bankSummary_table, table_scroll_C);
+        table_scroll_C.gridy = 2;
+        full.add(fundEventSummary_table, table_scroll_C);
+
+        table_scroll.setViewportView(full);
 
         // Transfers ---------------------------------------------------------------------------------------------------
 
@@ -143,7 +186,7 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
 
         summaryContainer_C.weighty = 2;
         summaryContainer_C.gridwidth = 3;
-        this.add(periodSummary_Table_panel, summaryContainer_C);
+        this.add(table_scroll, summaryContainer_C);
 
         JTabbedPane master = new JTabbedPane();
         JPanel bank = new JPanel(new BorderLayout());
@@ -202,7 +245,9 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
         bankCategoryTransfer_controller.setBank(selectedBank);
 
         // Update the UI
-        periodSummary_Table_panel.update();
+        categorySummary_table.update();
+        bankSummary_table.update();
+        fundEventSummary_table.update();
         bankCategoryTransfer_panel.update();
     }
 }

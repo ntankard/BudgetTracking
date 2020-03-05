@@ -3,7 +3,7 @@ package com.ntankard.Tracking.Dispaly.Frames.MainFrame.Funds.IndividualFund;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
-import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.FundTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfer.Transfer;
 import com.ntankard.Tracking.DataBase.Interface.Set.OneParent_Children_Set;
 import com.ntankard.Tracking.Dispaly.Util.Panels.DataObject_DisplayList;
 
@@ -15,7 +15,7 @@ public class FundTransactionList extends UpdatableJPanel {
     private FundEvent core;
 
     // The GUI components
-    private DataObject_DisplayList<FundTransfer> periodFundPanel;
+    private DataObject_DisplayList<Transfer> periodFundPanel;
 
     /**
      * Constructor
@@ -40,7 +40,7 @@ public class FundTransactionList extends UpdatableJPanel {
         summaryContainer_C.weighty = 1;
         summaryContainer_C.gridwidth = 1;
 
-        periodFundPanel = new DataObject_DisplayList<>(FundTransfer.class, new OneParent_Children_Set<>(FundTransfer.class, core), this);
+        periodFundPanel = new DataObject_DisplayList<>(Transfer.class, new OneParent_Children_Set<>(Transfer.class, core), this);
         this.add(periodFundPanel, summaryContainer_C);
 
         summaryContainer_C.gridx = 1;

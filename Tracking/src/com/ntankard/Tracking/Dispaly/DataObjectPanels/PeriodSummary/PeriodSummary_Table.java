@@ -1,23 +1,25 @@
 package com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary;
 
-import com.ntankard.DynamicGUI.Util.Update.UpdatableJScrollPane;
 import com.ntankard.DynamicGUI.Util.Table.TableColumnAdjuster;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
+import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
+import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class PeriodSummary_Table extends UpdatableJScrollPane {
+public class PeriodSummary_Table<P extends Pool> extends UpdatableJPanel {
 
     // Core Data
     private Period core;
     private boolean addTransfers;
+    private Class<P> columnClass;
 
     /**
      * The model driving the table
      */
-    private PeriodSummary_Model model;
+    private PeriodSummary_Model<P> model;
 
     /**
      * TableColumnAdjuster used to shrink the table
@@ -27,10 +29,11 @@ public class PeriodSummary_Table extends UpdatableJScrollPane {
     /**
      * Constructor
      */
-    public PeriodSummary_Table(Period core, boolean addTransfers, Updatable master) {
+    public PeriodSummary_Table(Period core, boolean addTransfers, Class<P> columnClass, Updatable master) {
         super(master);
         this.core = core;
         this.addTransfers = addTransfers;
+        this.columnClass = columnClass;
         createUIComponents();
         update();
     }
@@ -39,7 +42,9 @@ public class PeriodSummary_Table extends UpdatableJScrollPane {
      * Create the GUI components
      */
     private void createUIComponents() {
-        model = new PeriodSummary_Model(core, addTransfers);
+        this.removeAll();
+        this.setLayout(new BorderLayout());
+        model = new PeriodSummary_Model<P>(core, addTransfers, columnClass);
 
         JTable table = new JTable(model);
 
@@ -52,7 +57,7 @@ public class PeriodSummary_Table extends UpdatableJScrollPane {
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         tableColumnAdjuster = new TableColumnAdjuster(table);
 
-        this.setViewportView(table);
+        this.add(table, BorderLayout.CENTER);
     }
 
     /**
@@ -60,7 +65,7 @@ public class PeriodSummary_Table extends UpdatableJScrollPane {
      *
      * @return The model driving the table
      */
-    public PeriodSummary_Model getModel() {
+    public PeriodSummary_Model<P> getModel() {
         return model;
     }
 
@@ -70,5 +75,6 @@ public class PeriodSummary_Table extends UpdatableJScrollPane {
     @Override
     public void update() {
         model.update();
+        //tableColumnAdjuster.adjustColumns();
     }
 }

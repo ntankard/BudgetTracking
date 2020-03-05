@@ -9,6 +9,7 @@ import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePayFundTransfer;
 import com.ntankard.Tracking.DataBase.Database.ObjectFactory;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
+import com.ntankard.Tracking.DataBase.Interface.Set.Filter.SetFilter;
 import com.ntankard.Tracking.DataBase.Interface.Set.TwoParent_Children_Set;
 
 @ClassExtensionProperties(includeParent = true)
@@ -36,10 +37,10 @@ public class FixedRecurringPayment extends RecurringPayment {
      */
     public void regenerateChildren() {
         for (RecurringBankTransfer recurringBankTransfer : getChildren(RecurringBankTransfer.class)) {
-            if (recurringBankTransfer.getPeriod().getOrder() < getStart().getOrder()) {
+            if (recurringBankTransfer.getDestinationTransfer().getPeriod().getOrder() < getStart().getOrder()) {
                 recurringBankTransfer.remove();
             } else if (getEnd() != null) {
-                if (getEnd().getOrder() < recurringBankTransfer.getPeriod().getOrder()) {
+                if (getEnd().getOrder() < recurringBankTransfer.getDestinationTransfer().getPeriod().getOrder()) {
                     recurringBankTransfer.remove();
                 }
             }
@@ -52,12 +53,17 @@ public class FixedRecurringPayment extends RecurringPayment {
                         continue;
                     }
                 }
-                int size = new TwoParent_Children_Set<>(RecurringBankTransfer.class, period, this).get().size();
+                int size = new TwoParent_Children_Set<>(RecurringBankTransfer.class, period, this, new SetFilter<RecurringBankTransfer>(null) {
+                    @Override
+                    protected boolean shouldAdd_Impl(RecurringBankTransfer dataObject) {
+                        return dataObject.getDestinationTransfer().getPeriod().equals(period);
+                    }
+                }).get().size();
                 if (size > 1) {
-                    throw new RuntimeException("Duplicate payment");
+                    //throw new RuntimeException("Duplicate payment"); // @TODO need a better check for this, mby warning?
                 }
                 if (size == 0) {
-                    new RecurringBankTransfer(TrackingDatabase.get().getNextId(), period, getBank(), getValue(), null, getCategory(), null, this).add();
+                    new RecurringBankTransfer(TrackingDatabase.get().getNextId(), period, getBank(), -getValue(), null, getCategory(), null, this).add();
                 }
             }
         }

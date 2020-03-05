@@ -16,7 +16,7 @@ import com.ntankard.Tracking.DataBase.Database.ObjectFactory;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.Extended.Sum.Transfer_SumSet;
-import com.ntankard.Tracking.DataBase.Interface.Set.Filter.TransferType_HalfTransfer_Filter;
+import com.ntankard.Tracking.DataBase.Interface.Set.Filter.NotTransferType_HalfTransfer_Filter;
 import com.ntankard.Tracking.DataBase.Interface.Set.OneParent_Children_Set;
 import com.ntankard.Tracking.Dispaly.Util.Comparators.Ordered_Comparator;
 
@@ -103,7 +103,7 @@ public class FixedPeriodFundEvent extends FundEvent {
         if (!isChargeThisPeriod(period)) {
             return -0.0;
         }
-        return -new Transfer_SumSet(new OneParent_Children_Set<>(HalfTransfer.class, this, new TransferType_HalfTransfer_Filter(ManualFundTransfer.class)), this).getTotal() / duration;
+        return -new Transfer_SumSet(new OneParent_Children_Set<>(HalfTransfer.class, this, new NotTransferType_HalfTransfer_Filter(RePayFundTransfer.class)), this).getTotal() / duration;
     }
 
     /**

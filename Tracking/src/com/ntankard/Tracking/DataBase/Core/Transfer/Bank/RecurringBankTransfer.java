@@ -3,6 +3,7 @@ package com.ntankard.Tracking.DataBase.Core.Transfer.Bank;
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
+import com.ntankard.ClassExtension.SetterProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
@@ -77,4 +78,13 @@ public class RecurringBankTransfer extends BankTransfer {
     // 1800000----getDestinationTransfer
     // 2000000--getParents (Above)
     // 3000000--getChildren
+
+    //------------------------------------------------------------------------------------------------------------------
+    //#################################################### Setters #####################################################
+    //------------------------------------------------------------------------------------------------------------------
+
+    @SetterProperties(localSourceMethod = "sourceOptions")
+    public void setSource(Pool source) {
+        super.setSource(source);
+    }
 }

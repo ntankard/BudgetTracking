@@ -3,10 +3,13 @@ package com.ntankard.Tracking.DataBase.Core.Transfer;
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
+import com.ntankard.ClassExtension.SetterProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
+import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
@@ -18,11 +21,11 @@ import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
 import static com.ntankard.ClassExtension.MemberProperties.*;
 
 @ClassExtensionProperties(includeParent = true)
-public abstract class Transfer<Source extends Pool> extends DataObject implements CurrencyBound {
+public abstract class Transfer extends DataObject implements CurrencyBound {
 
     // My parents
     private Period period;
-    private Source source;
+    private Pool source;
 
     // My values
     private String description;
@@ -36,7 +39,7 @@ public abstract class Transfer<Source extends Pool> extends DataObject implement
      */
     @ParameterMap(shouldSave = false)
     public Transfer(Integer id, String description,
-                    Period period, Source source) {
+                    Period period, Pool source) {
         super(id);
         if (description == null) throw new IllegalArgumentException("Description is null");
         if (period == null) throw new IllegalArgumentException("Period is null");
@@ -81,6 +84,22 @@ public abstract class Transfer<Source extends Pool> extends DataObject implement
         super.remove_impl();
     }
 
+    /**
+     * {@inheritDoc
+     */
+    @Override
+    @SuppressWarnings("SuspiciousMethodCalls")
+    public <T extends DataObject> List<T> sourceOptions(Class<T> type, String fieldName) {
+        if (fieldName.equals("Source")) {
+            if (getDestination() instanceof Bank || getDestination() instanceof Category) {
+                List<T> toReturn = TrackingDatabase.get().get(type);
+                toReturn.remove(getDestination());
+                return toReturn;
+            }
+        }
+        return super.sourceOptions(type, fieldName);
+    }
+
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
@@ -97,9 +116,8 @@ public abstract class Transfer<Source extends Pool> extends DataObject implement
         return period;
     }
 
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
     @DisplayProperties(order = 1300000)
-    public Source getSource() {
+    public Pool getSource() {
         return source;
     }
 
@@ -135,6 +153,29 @@ public abstract class Transfer<Source extends Pool> extends DataObject implement
     public void setDescription(String description) {
         if (description == null) throw new IllegalArgumentException("Description is null");
         this.description = description;
+    }
+
+    @SetterProperties(localSourceMethod = "sourceOptions")
+    protected void setSource(Pool source) {
+        if (source == null) throw new IllegalArgumentException("Source is null");
+        if (source.equals(getDestination())) throw new IllegalArgumentException("Destination equals source");
+        this.source.notifyChildUnLink(this);
+        this.source = source;
+        this.source.notifyChildLink(this);
+
+        getSourceTransfer().setPool(getSource());
+        validateParents();
+    }
+
+    @SetterProperties(localSourceMethod = "sourceOptions")
+    public void setPeriod(Period period) {
+        if (period == null) throw new IllegalArgumentException("Source is null");
+        this.period.notifyChildUnLink(this);
+        this.period = period;
+        this.period.notifyChildLink(this);
+
+        getSourceTransfer().setPeriod(getPeriod());
+        validateParents();
     }
 
     //------------------------------------------------------------------------------------------------------------------

@@ -4,7 +4,7 @@ import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
-import com.ntankard.Tracking.DataBase.Core.Pool.Category;
+import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.ModelData.ModelData_Columns;
 import com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.ModelData.ModelData_Rows;
 import com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.ModelData.Rows.DataRows;
@@ -17,8 +17,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
-public class PeriodSummary_Model extends AbstractTableModel implements Updatable {
+public class PeriodSummary_Model<P extends Pool> extends AbstractTableModel implements Updatable {
 
     // External formatting
     public interface CustomFormatter {
@@ -43,16 +42,16 @@ public class PeriodSummary_Model extends AbstractTableModel implements Updatable
     private final static Color HIGHLIGHTED_TEXT = Color.RED;
 
     // Table data
-    private final ModelData_Columns columns;
-    private final ModelData_Rows rows;
+    private final ModelData_Columns<P> columns;
+    private final ModelData_Rows<P> rows;
 
     /**
      * Constructor
      */
-    public PeriodSummary_Model(Period core, boolean addTransfers) {
-        this.columns = new ModelData_Columns(core);
+    public PeriodSummary_Model(Period core, boolean addTransfers, Class<P> columnClass) {
+        this.columns = new ModelData_Columns<>(core, columnClass);
         this.columns.update();
-        this.rows = new ModelData_Rows(core, columns, addTransfers);
+        this.rows = new ModelData_Rows<>(core, columns, addTransfers);
 
         update();
     }
@@ -98,10 +97,10 @@ public class PeriodSummary_Model extends AbstractTableModel implements Updatable
         RendererObject value = new RendererObject();
 
         // Get information about the cell
-        DataRows dataRow = rows.getDataRow(rowIndex);
+        DataRows<P> dataRow = rows.getDataRow(rowIndex);
         int sectionIndex = rows.getSectionIndex(rowIndex);
         Currency currency = columns.getCurrency(columnIndex);
-        Category category = columns.getCategory(columnIndex);
+        P pool = columns.getCategory(columnIndex);
 
         if (dataRow instanceof DividerRow) {
             if (columns.isCenterTable(columnIndex)) {
@@ -118,7 +117,7 @@ public class PeriodSummary_Model extends AbstractTableModel implements Updatable
         } else if (sectionIndex == 1) { // Total
 
             if (columns.isCenter(columnIndex)) {
-                value.coreObject = dataRow.getTotal(category);
+                value.coreObject = dataRow.getTotal(pool);
                 value.foreground = HIGHLIGHTED_TEXT;
                 value.isBold = true;
                 //value.foreground = new Color(222, 149, 47);
@@ -138,7 +137,7 @@ public class PeriodSummary_Model extends AbstractTableModel implements Updatable
         } else if (sectionIndex == 3) { // Currency total
 
             if (columns.getCurrency(columnIndex) != null) {
-                value.coreObject = dataRow.getCurrencyTotal(category, currency);
+                value.coreObject = dataRow.getCurrencyTotal(pool, currency);
                 value.foreground = HIGHLIGHTED_TEXT;
                 value.background = HIGHLIGHTED_BACKGROUND;
                 value.bottom = STANDARD_LINE;
@@ -151,9 +150,9 @@ public class PeriodSummary_Model extends AbstractTableModel implements Updatable
             value.bottom = STANDARD_LINE;
 
         } else { // Data list
-            if (dataRow instanceof TransferRow) {
-                TransferRow transferRow = (TransferRow) dataRow;
-                DataObject obj = transferRow.getDataObject(category, sectionIndex - 5);
+            if (dataRow instanceof TransferRow<?>) {
+                TransferRow<P> transferRow = (TransferRow<P>) dataRow;
+                DataObject obj = transferRow.getDataObject(pool, sectionIndex - 5);
                 if (obj != null) {
                     for (CustomFormatter customFormatter : formatterList) {
                         customFormatter.doFormat(obj, value);
@@ -161,7 +160,7 @@ public class PeriodSummary_Model extends AbstractTableModel implements Updatable
                 }
             }
 
-            value.coreObject = dataRow.getValue(category, currency, sectionIndex - 5);
+            value.coreObject = dataRow.getValue(pool, currency, sectionIndex - 5);
 
             value.bottom = STANDARD_LINE;
             if (columns.isDescription(columnIndex)) {
