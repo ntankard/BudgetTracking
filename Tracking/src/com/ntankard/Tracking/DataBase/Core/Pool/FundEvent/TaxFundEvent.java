@@ -49,7 +49,7 @@ public class TaxFundEvent extends FundEvent {
      */
     @Override
     public Double getCharge(Period period) {
-        return Currency.round(new Period_Summary(period).getTaxableIncome() * percentage);
+        return -Currency.round(new Period_Summary(period).getTaxableIncome() * percentage);
     }
 
     /**

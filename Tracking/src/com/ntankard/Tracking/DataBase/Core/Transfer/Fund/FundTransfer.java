@@ -11,7 +11,6 @@ import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Transfer;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
-import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +58,7 @@ public abstract class FundTransfer extends Transfer {
     public <T extends DataObject> List<T> sourceOptions(Class<T> type, String fieldName) {
         if (fieldName.equals("Source")) {
             List<T> toReturn = new ArrayList<>();
-            for (FundEvent fundEvent : TrackingDatabase.get().get(FundEvent.class)) {
+            for (FundEvent fundEvent : super.sourceOptions(FundEvent.class, fieldName)) {
                 toReturn.add((T) fundEvent);
             }
             return toReturn;
@@ -105,13 +104,20 @@ public abstract class FundTransfer extends Transfer {
     //#################################################### Setters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
+    @Override
+    protected void setSource(Pool fund) {
+        if (!(fund instanceof FundEvent)) throw new IllegalArgumentException("Source is not a fundEvent");
+        super.setSource(fund);
+    }
+
     public void setDestination() {
         Pool destination = ((FundEvent) getSource()).getCategory();
         if (destination == null) throw new IllegalArgumentException("Destination is null");
         this.destination.notifyChildUnLink(this);
         this.destination = destination;
         this.destination.notifyChildLink(this);
-        getDestinationTransfer().setPool(getPool(false));
+
+        updateHalfTransfer();
         validateParents();
     }
 
@@ -121,14 +127,8 @@ public abstract class FundTransfer extends Transfer {
         this.currency.notifyChildUnLink(this);
         this.currency = currency;
         this.currency.notifyChildLink(this);
-        getSourceTransfer().setCurrency(getCurrency(true));
-        getDestinationTransfer().setCurrency(getCurrency(false));
-        validateParents();
-    }
 
-    @Override
-    @SetterProperties(localSourceMethod = "sourceOptions")
-    public void setSource(Pool source) {
-        super.setSource(source);
+        updateHalfTransfer();
+        validateParents();
     }
 }

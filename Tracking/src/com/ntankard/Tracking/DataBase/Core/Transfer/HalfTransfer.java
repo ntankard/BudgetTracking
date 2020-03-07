@@ -119,6 +119,7 @@ public class HalfTransfer extends DataObject implements CurrencyBound {
 
     @SetterProperties(localSourceMethod = "sourceOptions", displaySet = false)
     public void setPeriod(Period period) {
+        if (period == null) throw new IllegalArgumentException("Period is null");
         this.period.notifyChildUnLink(this);
         this.period = period;
         this.period.notifyChildLink(this);
@@ -127,6 +128,7 @@ public class HalfTransfer extends DataObject implements CurrencyBound {
 
     @SetterProperties(localSourceMethod = "sourceOptions", displaySet = false)
     public void setPool(Pool pool) {
+        if (pool == null) throw new IllegalArgumentException("Pool is null");
         this.pool.notifyChildUnLink(this);
         this.pool = pool;
         this.pool.notifyChildLink(this);
@@ -135,6 +137,7 @@ public class HalfTransfer extends DataObject implements CurrencyBound {
 
     @SetterProperties(localSourceMethod = "sourceOptions", displaySet = false)
     public void setCurrency(Currency currency) {
+        if (currency == null) throw new IllegalArgumentException("Currency is null");
         this.currency.notifyChildUnLink(this);
         this.currency = currency;
         this.currency.notifyChildLink(this);

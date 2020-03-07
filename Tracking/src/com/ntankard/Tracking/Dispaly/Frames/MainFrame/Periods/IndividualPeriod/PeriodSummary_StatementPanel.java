@@ -11,6 +11,7 @@ import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.BankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.RecurringBankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.FundTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.ManualFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePayFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.HalfTransfer;
 import com.ntankard.Tracking.DataBase.Interface.Set.OneParent_Children_Set;
@@ -47,7 +48,7 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
     private TwoParent_Children_Set<BankTransfer, Period, Bank> bankCategoryTransfer_set;
     private DataObject_DisplayList<BankTransfer> bankCategoryTransfer_panel;
 
-    private DataObject_DisplayList<FundTransfer> periodFundTransfer_panel;
+    private DataObject_DisplayList<ManualFundTransfer> periodFundTransfer_panel;
 
     /**
      * Constructor
@@ -127,6 +128,28 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
         bankSummary_table.getModel().addCustomFormatter((dataObject, rendererObject) -> {
             if (dataObject instanceof HalfTransfer) {
                 HalfTransfer halfTransfer = (HalfTransfer) dataObject;
+                BankTransfer transaction = (BankTransfer) halfTransfer.getTransfer();
+
+                boolean amSource = halfTransfer.equals(transaction.getSourceTransfer());
+                boolean sourceSelected = false;
+                boolean destinationSelected = false;
+                if (selectedBank != null) {
+                    sourceSelected = transaction.getSourceTransfer().getPool().equals(selectedBank);
+                }
+                if (selectedBank != null) {
+                    destinationSelected = transaction.getDestinationTransfer().getPool().equals(selectedBank);
+                }
+
+
+                if (transaction.getDestinationPeriod() != null) {
+                    rendererObject.background = new Color(230, 204, 255);
+                } else {
+                    if (amSource && sourceSelected || !amSource && destinationSelected) {
+                        rendererObject.background = new Color(255, 255, 0);
+                    } else if (sourceSelected || destinationSelected) {
+                        rendererObject.background = new Color(255, 102, 0);
+                    }
+                }
             }
         });
 
@@ -156,10 +179,12 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
         full.add(fundEventSummary_table, table_scroll_C);
 
         table_scroll.setViewportView(full);
+        table_scroll.getVerticalScrollBar().setUnitIncrement(12);
+        table_scroll.getHorizontalScrollBar().setUnitIncrement(12);
 
         // Transfers ---------------------------------------------------------------------------------------------------
 
-        periodFundTransfer_panel = new DataObject_DisplayList<>(FundTransfer.class, new OneParent_Children_Set<>(FundTransfer.class, period), false, this);
+        periodFundTransfer_panel = new DataObject_DisplayList<>(ManualFundTransfer.class, new OneParent_Children_Set<>(ManualFundTransfer.class, period), false, this);
         periodFundTransfer_panel.addControlButtons(new ManualFundTransfer_ElementController(period, this));
 
         // Statement summary -------------------------------------------------------------------------------------------

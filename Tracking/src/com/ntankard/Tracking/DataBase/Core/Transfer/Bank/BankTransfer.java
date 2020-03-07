@@ -13,7 +13,6 @@ import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Transfer;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
-import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,30 +42,21 @@ public abstract class BankTransfer extends Transfer {
         super(id, description, period, source);
         if (value == null) throw new IllegalArgumentException("Value is null");
         if (destination == null) throw new IllegalArgumentException("Destination is null");
+        if (destination == source) throw new IllegalArgumentException("Source equals Destination");
+        if (period == destinationPeriod) throw new IllegalArgumentException("Source Period equals Destination Period");
+
         this.destination = destination;
         this.value = value;
         this.destinationPeriod = destinationPeriod;
         this.destinationValue = destinationValue;
 
-        // Check that custom destination values can only be set if the bank is another currency
-        if (destination instanceof Bank) {
-            if (((Bank) getSource()).getCurrency().equals(((Bank) getDestination()).getCurrency())) {
-                if (destinationValue != null) {
-                    throw new IllegalArgumentException("Trying to set a destination value when not supported");
-                }
-            }
-        } else {
-            if (!(destination instanceof Category)) {
-                // Check that any other type of transfer cannot have a destination period
-                if (destinationPeriod != null) {
-                    throw new RuntimeException("Trying to set a destination period when its not supported");
-                }
-            }
-            // Check that any other type of transfer cannot have a destination value
-            if (destinationValue != null) {
-                throw new IllegalArgumentException("Trying to set a destination value when not supported");
-            }
-        }
+        // Is a custom value supported?
+        if (destinationValue != null && !doseSupportDestinationValue())
+            throw new IllegalArgumentException("Trying to set a destination value when not supported");
+
+        // Is a custom period supported?
+        if (destinationPeriod != null && !doseSupportDestinationPeriod())
+            throw new RuntimeException("Trying to set a destination period when its not supported");
     }
 
     /**
@@ -92,8 +82,8 @@ public abstract class BankTransfer extends Transfer {
     public <T extends DataObject> List<T> sourceOptions(Class<T> type, String fieldName) {
         switch (fieldName) {
             case "DestinationPeriod":
-                if (getDestination() instanceof Bank || getDestination() instanceof Category) {
-                    List<T> toReturn = TrackingDatabase.get().get(type);
+                if (doseSupportDestinationPeriod()) {
+                    List<T> toReturn = super.sourceOptions(type, fieldName);
                     toReturn.add(null);
                     toReturn.remove(getPeriod());
                     return toReturn;
@@ -104,19 +94,51 @@ public abstract class BankTransfer extends Transfer {
                 }
             case "Destination":
             case "Bank": {
-                List<T> toReturn = TrackingDatabase.get().get(type);
+                List<T> toReturn = super.sourceOptions(type, fieldName);
                 toReturn.remove(getSource());
                 return toReturn;
             }
             case "Source": {
                 List<T> toReturn = new ArrayList<>();
-                for (Bank bank : TrackingDatabase.get().get(Bank.class)) {
+                for (Bank bank : super.sourceOptions(Bank.class, fieldName)) {
                     toReturn.add((T) bank);
                 }
                 return toReturn;
             }
         }
         return super.sourceOptions(type, fieldName);
+    }
+
+    /**
+     * Dose this object, in its current state support setting a destination value?
+     *
+     * @return True if it supports setting a destination value
+     */
+    boolean doseSupportDestinationValue() {
+        return doseSupportDestinationCurrency();
+    }
+
+    /**
+     * Dose this object, in its current state support setting a destination currency?
+     *
+     * @return True if it supports setting a destination currency
+     */
+    boolean doseSupportDestinationCurrency() {
+        if (getDestination() instanceof Bank) {
+            Currency sourceCurrency = ((Bank) getSource()).getCurrency();
+            Currency destinationCurrency = ((Bank) getDestination()).getCurrency();
+            return !sourceCurrency.equals(destinationCurrency);
+        }
+        return false;
+    }
+
+    /**
+     * Dose this object, in its current state support setting a destination period?
+     *
+     * @return True if it supports setting a destination period
+     */
+    boolean doseSupportDestinationPeriod() {
+        return getDestination() instanceof Bank || getDestination() instanceof Category;
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -168,10 +190,8 @@ public abstract class BankTransfer extends Transfer {
 
     @DisplayProperties(order = 1620000)
     public Currency getDestinationCurrency() {
-        if (getDestination() instanceof Bank) {
-            if (!((Bank) getSource()).getCurrency().equals(((Bank) getDestination()).getCurrency())) {
-                return ((Bank) getDestination()).getCurrency();
-            }
+        if (doseSupportDestinationCurrency()) {
+            return ((Bank) getDestination()).getCurrency();
         }
         return null;
     }
@@ -216,17 +236,17 @@ public abstract class BankTransfer extends Transfer {
     public void setValue(Double value) {
         if (value == null) throw new IllegalArgumentException("Value is null");
         this.value = value;
+
+        updateHalfTransfer();
     }
 
     @SetterProperties(localSourceMethod = "sourceOptions")
     public void setDestinationPeriod(Period destinationPeriod) {
-        if (!(getDestination() instanceof Bank || getDestination() instanceof Category)) {
-            if (destinationPeriod != null) {
-                throw new IllegalArgumentException("Destination period can only be set in a bank to bank transfer");
-            }
-        }
-        if (destinationPeriod != null && destinationPeriod.equals(getPeriod()))
+        if (destinationPeriod != null && !doseSupportDestinationPeriod())
+            throw new IllegalArgumentException("Destination period can only be set in a bank to bank transfer");
+        if (getPeriod().equals(destinationPeriod))
             throw new IllegalArgumentException("Can not set the destination period to be the same as the source (this is the default)");
+
         if (this.destinationPeriod != null) {
             this.destinationPeriod.notifyChildUnLink(this);
         }
@@ -234,31 +254,31 @@ public abstract class BankTransfer extends Transfer {
         if (this.destinationPeriod != null) {
             this.destinationPeriod.notifyChildLink(this);
         }
-        getDestinationTransfer().setPeriod(getPeriod(false));
+
+        updateHalfTransfer();
         validateParents();
     }
 
     @SetterProperties(localSourceMethod = "sourceOptions")
     public void setDestination(Pool destination) {
         if (destination == null) throw new IllegalArgumentException("Destination is null");
-        if (getSource().equals(destination)) throw new IllegalArgumentException("Destination equals source");
+        if (getSource().equals(destination)) throw new IllegalArgumentException("Source equals Destination");
+
         this.destination.notifyChildUnLink(this);
         this.destination = destination;
         this.destination.notifyChildLink(this);
 
         // Destination Period can only be maintained if its a Bank to Bank transfer
-        if (!(destination instanceof Bank || destination instanceof Category)) {
+        if (!doseSupportDestinationPeriod()) {
             setDestinationPeriod(null);
         }
 
         // Destination value can only be maintained if its a bank to bank transfer with different currencies
-        if (!(destination instanceof Bank && getDestinationCurrency() != null)) {
+        if (!doseSupportDestinationValue()) {
             setDestinationValue(null);
         }
 
-        getDestinationTransfer().setPeriod(getPeriod(false));
-        getDestinationTransfer().setPool(getPool(false));
-        getDestinationTransfer().setCurrency(getCurrency(false));
+        updateHalfTransfer();
         validateParents();
     }
 
@@ -266,13 +286,15 @@ public abstract class BankTransfer extends Transfer {
         Double destinationValue_toSet = destinationValue;
 
         // Destination value can only be maintained if its a bank to bank transfer with different currencies
-        if (!(getDestination() instanceof Bank && getDestinationCurrency() != null)) {
+        if (!doseSupportDestinationValue()) {
             destinationValue_toSet = null;
         }
         if (destinationValue != null && destinationValue.equals(0.0)) {
             destinationValue_toSet = null;
         }
         this.destinationValue = destinationValue_toSet;
+
+        updateHalfTransfer();
         validateParents();
     }
 
@@ -285,6 +307,9 @@ public abstract class BankTransfer extends Transfer {
         if (!(destination instanceof Bank && getDestinationCurrency() != null)) {
             setDestinationValue(null);
         }
+
+        updateHalfTransfer();
+        validateParents();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -326,12 +351,12 @@ public abstract class BankTransfer extends Transfer {
     @Override
     protected Double getValue(boolean isSource) {
         if (isSource) {
-            return getValue();
+            return -getValue();
         } else {
             if (getDestinationValue() != null) {
                 return getDestinationValue();
             } else {
-                return -getValue();
+                return getValue();
             }
         }
     }

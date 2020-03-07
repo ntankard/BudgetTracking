@@ -103,7 +103,7 @@ public class FixedPeriodFundEvent extends FundEvent {
         if (!isChargeThisPeriod(period)) {
             return -0.0;
         }
-        return -new Transfer_SumSet(new OneParent_Children_Set<>(HalfTransfer.class, this, new NotTransferType_HalfTransfer_Filter(RePayFundTransfer.class)), this).getTotal() / duration;
+        return new Transfer_SumSet(new OneParent_Children_Set<>(HalfTransfer.class, this, new NotTransferType_HalfTransfer_Filter(RePayFundTransfer.class)), this).getTotal() / duration;
     }
 
     /**

@@ -2,9 +2,11 @@ package com.ntankard.Tracking.DataBase.Core.Transfer.Fund;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
+import com.ntankard.ClassExtension.SetterProperties;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
+import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
@@ -55,5 +57,13 @@ public class ManualFundTransfer extends FundTransfer {
     public void setValue(Double value) {
         if (value == null) throw new IllegalArgumentException("Value is null");
         this.value = value;
+
+        updateHalfTransfer();
+    }
+
+    @Override
+    @SetterProperties(localSourceMethod = "sourceOptions")
+    public void setSource(Pool source) {
+        super.setSource(source);
     }
 }

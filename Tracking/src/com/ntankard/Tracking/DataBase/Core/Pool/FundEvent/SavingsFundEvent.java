@@ -42,7 +42,7 @@ public class SavingsFundEvent extends FundEvent {
      */
     @Override
     public Double getCharge(Period period) {
-        return -new Period_Summary(period).getNonSaveCategoryDelta();
+        return new Period_Summary(period).getNonSaveCategoryDelta();
     }
 
     /**

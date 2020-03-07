@@ -189,7 +189,7 @@ public abstract class RecurringPayment extends NamedDataObject implements Curren
 
     @SetterProperties(localSourceMethod = "sourceOptions")
     public void setEnd(ExistingPeriod end) {
-        if (end != null && (getStart().getOrder() >= getEnd().getOrder())) {
+        if (end != null && (getStart().getOrder() >= end.getOrder())) {
             throw new IllegalArgumentException("Setting an end date before the start");
         }
         if (this.end != null) {

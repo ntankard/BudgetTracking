@@ -9,7 +9,6 @@ import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
-import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
@@ -18,7 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
-import static com.ntankard.ClassExtension.MemberProperties.*;
+import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
+import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
 public abstract class Transfer extends DataObject implements CurrencyBound {
@@ -31,8 +31,8 @@ public abstract class Transfer extends DataObject implements CurrencyBound {
     private String description;
 
     // Not parents on purpose
-    private HalfTransfer sourceTransfer;
-    private HalfTransfer destinationTransfer;
+    private HalfTransfer sourceTransfer = null;
+    private HalfTransfer destinationTransfer = null;
 
     /**
      * Constructor
@@ -67,6 +67,8 @@ public abstract class Transfer extends DataObject implements CurrencyBound {
      */
     @Override
     public void add() {
+        if (sourceTransfer != null) throw new IllegalStateException("This object has already been added");
+        if (destinationTransfer != null) throw new IllegalStateException("This object has already been added");
         super.add();
         sourceTransfer = new HalfTransfer(TrackingDatabase.get().getNextId(), getPeriod(true), getPool(true), getCurrency(true), this);
         sourceTransfer.add();
@@ -79,9 +81,24 @@ public abstract class Transfer extends DataObject implements CurrencyBound {
      */
     @Override
     public void remove() {
+        if (sourceTransfer == null) throw new IllegalStateException("This object has already been removed");
+        if (destinationTransfer == null) throw new IllegalStateException("This object has already been removed");
         sourceTransfer.remove();
         destinationTransfer.remove();
         super.remove_impl();
+    }
+
+    /**
+     * Update the values of the 2 half transfers, call in any set
+     */
+    protected void updateHalfTransfer() {
+        getSourceTransfer().setPeriod(getPeriod(true));
+        getSourceTransfer().setPool(getPool(true));
+        getSourceTransfer().setCurrency(getCurrency(true));
+
+        getDestinationTransfer().setPeriod(getPeriod(false));
+        getDestinationTransfer().setPool(getPool(false));
+        getDestinationTransfer().setCurrency(getCurrency(false));
     }
 
     /**
@@ -91,8 +108,8 @@ public abstract class Transfer extends DataObject implements CurrencyBound {
     @SuppressWarnings("SuspiciousMethodCalls")
     public <T extends DataObject> List<T> sourceOptions(Class<T> type, String fieldName) {
         if (fieldName.equals("Source")) {
-            if (getDestination() instanceof Bank || getDestination() instanceof Category) {
-                List<T> toReturn = TrackingDatabase.get().get(type);
+            if (getDestination() instanceof Bank) {
+                List<T> toReturn = super.sourceOptions(type, fieldName);
                 toReturn.remove(getDestination());
                 return toReturn;
             }
@@ -153,6 +170,8 @@ public abstract class Transfer extends DataObject implements CurrencyBound {
     public void setDescription(String description) {
         if (description == null) throw new IllegalArgumentException("Description is null");
         this.description = description;
+
+        updateHalfTransfer();
     }
 
     @SetterProperties(localSourceMethod = "sourceOptions")
@@ -163,18 +182,18 @@ public abstract class Transfer extends DataObject implements CurrencyBound {
         this.source = source;
         this.source.notifyChildLink(this);
 
-        getSourceTransfer().setPool(getSource());
+        updateHalfTransfer();
         validateParents();
     }
 
     @SetterProperties(localSourceMethod = "sourceOptions")
     public void setPeriod(Period period) {
-        if (period == null) throw new IllegalArgumentException("Source is null");
+        if (period == null) throw new IllegalArgumentException("Period is null");
         this.period.notifyChildUnLink(this);
         this.period = period;
         this.period.notifyChildLink(this);
 
-        getSourceTransfer().setPeriod(getPeriod());
+        updateHalfTransfer();
         validateParents();
     }
 
@@ -214,9 +233,9 @@ public abstract class Transfer extends DataObject implements CurrencyBound {
      */
     protected Double getValue(boolean isSource) {
         if (isSource) {
-            return getValue();
-        } else {
             return -getValue();
+        } else {
+            return getValue();
         }
     }
 

@@ -551,7 +551,7 @@ public class TrackingDatabase_Reader {
             } catch (NoSuchMethodException e) {
                 throw new RuntimeException("\n" + "Class: " + dataObject.getClass().getSimpleName() + " Method:" + constructorParameter.name + "\n" + e);
             }
-            if (!getter.getReturnType().equals(constructorParameter.type))
+            if (!getter.getReturnType().isAssignableFrom(constructorParameter.type))
                 throw new RuntimeException("Class:" + dataObject.getClass().getSimpleName() + " Method:" + constructorParameter.name + " Getter provided by ParameterMap dose not match the parameter in the constructor. Could save but would not be able to load. Aborting save");
 
             // Execute the getter

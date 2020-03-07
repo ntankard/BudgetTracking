@@ -190,7 +190,7 @@ class FixedPeriodFundEventTest {
         FixedPeriodFundEvent fixedPeriodFundEvent = new FixedPeriodFundEvent(-1, "", category, (ExistingPeriod) periods.get(period + 1), 1);
         fixedPeriodFundEvent.add();
         assertEquals(-0.0, fixedPeriodFundEvent.getCharge(periods.get(period)));
-        assertEquals(-0.0, fixedPeriodFundEvent.getCharge(periods.get(period + 1)));
+        assertEquals(0.0, fixedPeriodFundEvent.getCharge(periods.get(period + 1)));
         assertEquals(-0.0, fixedPeriodFundEvent.getCharge(periods.get(period + 2)));
         assertEquals(-0.0, fixedPeriodFundEvent.getCharge(periods.get(period + 3)));
 

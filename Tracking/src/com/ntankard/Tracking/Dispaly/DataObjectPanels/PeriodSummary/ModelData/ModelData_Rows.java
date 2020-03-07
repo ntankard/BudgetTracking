@@ -38,8 +38,10 @@ public class ModelData_Rows<P extends Pool> {
     private void addSections() {
         this.sections.clear();
 
-        addSection(new SummaryRows<>(core, columns));
-        addSection(new DividerRow<>("Transaction", core, columns));
+        if (addTransfers) {
+            addSection(new SummaryRows<>(core, columns));
+            addSection(new DividerRow<>("Transaction", core, columns));
+        }
         addSection(new TransferRow<>(core, columns, BankTransfer.class));
         if (addTransfers) {
             addSection(new DividerRow<>("External", core, columns));
