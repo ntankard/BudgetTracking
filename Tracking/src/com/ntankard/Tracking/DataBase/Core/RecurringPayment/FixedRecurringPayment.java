@@ -63,7 +63,7 @@ public class FixedRecurringPayment extends RecurringPayment {
                     //throw new RuntimeException("Duplicate payment"); // @TODO need a better check for this, mby warning?
                 }
                 if (size == 0) {
-                    new RecurringBankTransfer(TrackingDatabase.get().getNextId(), period, getBank(), -getValue(), null, getCategory(), null, this).add();
+                    new RecurringBankTransfer(TrackingDatabase.get().getNextId(), period, getBank(), getValue(), null, getCategory(), null, this).add();
                 }
             }
         }
