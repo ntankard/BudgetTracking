@@ -88,12 +88,22 @@ public abstract class RecurringPayment extends NamedDataObject implements Curren
     @SuppressWarnings("SuspiciousMethodCalls")
     @Override
     public <T extends DataObject> List<T> sourceOptions(Class<T> type, String fieldName) {
-        if (fieldName.equals("End")) {
+        if (fieldName.equals("Start")) {
+            List<T> all = super.sourceOptions(type, fieldName);
+            if (getEnd() != null) {
+                all.removeIf(t -> {
+                    ExistingPeriod existingPeriod = (ExistingPeriod) t;
+                    return existingPeriod.getOrder() >= getEnd().getOrder();
+                });
+            }
+            all.remove(getEnd());
+            return all;
+        } else if (fieldName.equals("End")) {
             List<T> all = super.sourceOptions(type, fieldName);
             all.remove(getStart());
             all.removeIf(t -> {
                 ExistingPeriod existingPeriod = (ExistingPeriod) t;
-                return existingPeriod.getOrder() <= start.getOrder();
+                return existingPeriod.getOrder() <= getStart().getOrder();
             });
             all.add(null);
             return all;
@@ -172,6 +182,12 @@ public abstract class RecurringPayment extends NamedDataObject implements Curren
     @SetterProperties(localSourceMethod = "sourceOptions")
     public void setStart(ExistingPeriod start) {
         if (start == null) throw new IllegalArgumentException("Start is null");
+        if (start == getEnd()) {
+            throw new IllegalArgumentException("Start cannot equal End");
+        }
+        if (getEnd() != null && (start.getOrder() >= getEnd().getOrder())) {
+            throw new IllegalArgumentException("Setting an end date before the start");
+        }
 
         this.start.notifyChildUnLink(this);
         this.start = start;
@@ -189,6 +205,7 @@ public abstract class RecurringPayment extends NamedDataObject implements Curren
 
     @SetterProperties(localSourceMethod = "sourceOptions")
     public void setEnd(ExistingPeriod end) {
+        if (getStart() == end) throw new IllegalArgumentException("Start cannot equal End");
         if (end != null && (getStart().getOrder() >= end.getOrder())) {
             throw new IllegalArgumentException("Setting an end date before the start");
         }

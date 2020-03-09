@@ -3,6 +3,7 @@ package com.ntankard.Tracking.DataBase.Core;
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
+import com.ntankard.ClassExtension.SetterProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.BankTransfer;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
@@ -81,4 +82,16 @@ public class Receipt extends DataObject {
     // 1300000----isFirstFile (Above)
     // 2000000--getParents (Above)
     // 3000000--getChildren
+
+    //------------------------------------------------------------------------------------------------------------------
+    //#################################################### Setters #####################################################
+    //------------------------------------------------------------------------------------------------------------------
+
+    @SetterProperties(localSourceMethod = "sourceOptions", displaySet = false)
+    public void setBankTransfer(BankTransfer bankTransfer) {
+        if (bankTransfer == null) throw new IllegalArgumentException("BankTransfer is null");
+        this.bankTransfer.notifyChildUnLink(this);
+        this.bankTransfer = bankTransfer;
+        this.bankTransfer.notifyChildLink(this);
+    }
 }
