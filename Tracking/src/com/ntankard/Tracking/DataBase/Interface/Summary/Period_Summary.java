@@ -210,7 +210,7 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
 
     @DisplayProperties(order = 14, dataContext = NOT_FALSE)
     public Boolean isValid() {
-        return isAllSummaryValid() && isCategoryClear() && isValueConserved() && isExchangeRateAcceptable();
+        return isAllSummaryValid() && isCategoryClear() && isExchangeRateAcceptable(); //  && isValueConserved() Removed as we don't have a way to account for intra period
     }
 
     //------------------------------------------------------------------------------------------------------------------
