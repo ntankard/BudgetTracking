@@ -201,11 +201,7 @@ public class ExistingReceiptPanel extends UpdatableJPanel {
             // Update the image
             selectedReceipt = receiptDisplayedData.get(receipt_table.getSelectionModel().getMaxSelectionIndex());
             ImageIcon baseImage;
-            if (selectedReceipt.isFirstFile()) {
-                baseImage = new ImageIcon(TrackingDatabase.get().getNewImagePath() + selectedReceipt.getFileName());
-            } else {
-                baseImage = new ImageIcon(TrackingDatabase.get().getSavedImagePath() + selectedReceipt.getFileName());
-            }
+            baseImage = new ImageIcon(TrackingDatabase.get().getImagePath() + selectedReceipt.getFileName());
             imageJPanel.setBaseImage(baseImage);
 
             // Update the selection panel

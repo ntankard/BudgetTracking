@@ -36,31 +36,9 @@ class ReceiptTest {
         assertThrows(IllegalArgumentException.class, () -> new Receipt(0, "", null));
     }
 
-    /**
-     * Test setFirstFile parameters
-     */
-    @Test
-    void setFirstFile() {
-        BankTransfer bankCategoryTransfer = getObject(BankTransfer.class, 0);
-
-        Receipt receipt = new Receipt(0, "", bankCategoryTransfer);
-        assertDoesNotThrow(() -> receipt.setFirstFile(true));
-        assertThrows(IllegalArgumentException.class, () -> receipt.setFirstFile(null));
-    }
-
     //------------------------------------------------------------------------------------------------------------------
     //########################## Implementation Tests (all declared objects in isolation) ##############################
     //------------------------------------------------------------------------------------------------------------------
-
-    /**
-     * Test isFirstFile values
-     */
-    @Test
-    void isFirstFile() {
-        for (Receipt receipt : TrackingDatabase.get().get(Receipt.class)) {
-            assertNotNull(receipt.isFirstFile());
-        }
-    }
 
     /**
      * Test getFileName values

@@ -22,9 +22,6 @@ public class Receipt extends DataObject {
     // My values
     private String fileName;
 
-    // Non save values
-    private Boolean firstFile = false;
-
     /**
      * Constructor
      */
@@ -47,20 +44,6 @@ public class Receipt extends DataObject {
         List<DataObject> toReturn = new ArrayList<>();
         toReturn.add(getBankTransfer());
         return toReturn;
-    }
-
-    //------------------------------------------------------------------------------------------------------------------
-    //############################################### Non save members #################################################
-    //------------------------------------------------------------------------------------------------------------------
-
-    @DisplayProperties(order = 1300000)
-    public Boolean isFirstFile() {
-        return firstFile;
-    }
-
-    public void setFirstFile(Boolean firstFile) {
-        if (firstFile == null) throw new IllegalArgumentException("firstFile is null");
-        this.firstFile = firstFile;
     }
 
     //------------------------------------------------------------------------------------------------------------------

@@ -64,7 +64,6 @@ class TrackingDatabase_ReaderTest {
 
         new File(testPath).mkdir();
         new File(testPath + ROOT_DATA_PATH).mkdir();
-        new File(testPath + ROOT_NEW_IMAGE_PATH).mkdir();
         new File(testPath + ROOT_FILE_PATH).mkdir();
         save(TrackingDatabase.get(), testPath);
 

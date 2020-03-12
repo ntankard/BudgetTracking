@@ -62,7 +62,7 @@ public class ImageToTransferPanel extends UpdatableJPanel implements ListSelecti
         this.setLayout(new BorderLayout());
 
         // Load the image
-        ImageIcon baseImage = new ImageIcon(TrackingDatabase.get().getNewImagePath() + imagePath);
+        ImageIcon baseImage = new ImageIcon(TrackingDatabase.get().getImagePath() + imagePath);
         this.add(new ImageJPanel(baseImage), BorderLayout.CENTER);
 
         // Create Transfer Table
@@ -219,10 +219,7 @@ public class ImageToTransferPanel extends UpdatableJPanel implements ListSelecti
         BankTransfer transfer = displayedData.get(index);
 
         Receipt receipt = new Receipt(TrackingDatabase.get().getNextId(), imagePath, transfer);
-        receipt.setFirstFile(true);
         receipt.add();
-
-        TrackingDatabase.get().getPossibleImages().remove(imagePath);
 
         notifyUpdate();
     }
@@ -244,10 +241,7 @@ public class ImageToTransferPanel extends UpdatableJPanel implements ListSelecti
         manualBankTransferN.add();
 
         Receipt receipt = new Receipt(TrackingDatabase.get().getNextId(), imagePath, manualBankTransferN);
-        receipt.setFirstFile(true);
         receipt.add();
-
-        TrackingDatabase.get().getPossibleImages().remove(imagePath);
 
         notifyUpdate();
 

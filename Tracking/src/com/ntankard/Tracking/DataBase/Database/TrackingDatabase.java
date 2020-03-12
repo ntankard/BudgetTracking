@@ -12,25 +12,19 @@ import java.util.Set;
 public class TrackingDatabase {
 
     // Core data objects
-    private List<Container> containers = new ArrayList<>();
+    private List<Container<?, ?>> containers = new ArrayList<>();
     private DefaultObjectMap defaultObjectMap = new DefaultObjectMap();
     private SpecialValuesMap specialValuesMap = new SpecialValuesMap();
     private DataObjectContainer masterMap = new DataObjectContainer();
     private DataObjectClassTree dataObjectClassTree = new DataObjectClassTree();
 
     // Paths where images can be found
-    private String newImagePath;
-    private String savedImagePath;
+    private String imagePath;
 
     /**
      * The lowest ID of the loaded objects, this is stored because new objects can be created while they are loading in
      */
     private Integer IDFloor;
-
-    /**
-     * New images to be loaded
-     */
-    private List<String> possibleImages;
 
     //------------------------------------------------------------------------------------------------------------------
     //############################################### Constructor ######################################################
@@ -129,7 +123,6 @@ public class TrackingDatabase {
      * @param <T>  The data type to return (same as type)
      * @return The element of the Database
      */
-    @SuppressWarnings("unchecked")
     public <T extends DataObject> T get(Class<T> type, Integer id) {
         return masterMap.get(type, id);
     }
@@ -141,7 +134,6 @@ public class TrackingDatabase {
      * @param <T>  The data type to return (same as type)
      * @return A unmodifiableList of all elements of that type
      */
-    @SuppressWarnings("unchecked")
     public <T extends DataObject> List<T> get(Class<T> type) {
         return masterMap.get(type);
     }
@@ -199,27 +191,11 @@ public class TrackingDatabase {
     //############################################### Image access #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    public List<String> getPossibleImages() {
-        return possibleImages;
+    public String getImagePath() {
+        return imagePath;
     }
 
-    public void setPossibleImages(List<String> possibleImages) {
-        this.possibleImages = possibleImages;
-    }
-
-    public String getNewImagePath() {
-        return newImagePath;
-    }
-
-    public void setNewImagePath(String newImagePath) {
-        this.newImagePath = newImagePath;
-    }
-
-    public String getSavedImagePath() {
-        return savedImagePath;
-    }
-
-    public void setSavedImagePath(String savedImagePath) {
-        this.savedImagePath = savedImagePath;
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 }
