@@ -12,8 +12,8 @@ import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
-import static com.ntankard.ClassExtension.MemberProperties.TRACE_DISPLAY;
+import static com.ntankard.ClassExtension.MemberProperties.*;
+import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
 public class Category extends Pool implements HasDefault, SpecialValues, Ordered {
@@ -25,21 +25,27 @@ public class Category extends Pool implements HasDefault, SpecialValues, Ordered
     private Boolean isDefault;
     private Boolean isSavings;
     private Boolean isTaxable;
+    private Integer set;
+    private String setName;
     private Integer order;
 
     /**
      * Constructor
      */
-    @ParameterMap(parameterGetters = {"getId", "getName", "getOrder", "isDefault", "isSavings", "isTaxable"})
-    public Category(Integer id, String name, Integer order, Boolean isDefault, Boolean isSavings, Boolean isTaxable) {
+    @ParameterMap(parameterGetters = {"getId", "getName", "getOrder", "isDefault", "isSavings", "isTaxable", "getSet", "getSetName"})
+    public Category(Integer id, String name, Integer order, Boolean isDefault, Boolean isSavings, Boolean isTaxable, Integer set, String setName) {
         super(id, name);
         if (isDefault == null) throw new IllegalArgumentException("IsDefault is null");
         if (isSavings == null) throw new IllegalArgumentException("IsSaving is null");
         if (isTaxable == null) throw new IllegalArgumentException("IsTaxable is null");
         if (order == null) throw new IllegalArgumentException("Order is null");
+        if (set == null) throw new IllegalArgumentException("Set is null");
+        if (setName == null) throw new IllegalArgumentException("SetLeader is null");
         this.isDefault = isDefault;
         this.isSavings = isSavings;
         this.isTaxable = isTaxable;
+        this.set = set;
+        this.setName = setName;
         this.order = order;
     }
 
@@ -105,9 +111,21 @@ public class Category extends Pool implements HasDefault, SpecialValues, Ordered
         return isTaxable;
     }
 
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    @DisplayProperties(order = 1104000)
+    public Integer getSet() {
+        return set;
+    }
+
+    @MemberProperties(verbosityLevel = INFO_DISPLAY)
+    @DisplayProperties(order = 1105000)
+    public String getSetName() {
+        return setName;
+    }
+
     @Override
     @MemberProperties(verbosityLevel = TRACE_DISPLAY)
-    @DisplayProperties(order = 1104000)
+    @DisplayProperties(order = 1106000)
     public Integer getOrder() {
         return order;
     }

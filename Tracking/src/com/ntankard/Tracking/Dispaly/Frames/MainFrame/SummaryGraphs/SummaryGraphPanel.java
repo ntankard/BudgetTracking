@@ -11,6 +11,7 @@ public class SummaryGraphPanel extends UpdatableJPanel {
     // The GUI components
     private SavingsGraph savingsGraph;
     private CategoryGraph categoryGraph;
+    private SetCategoryGraph setCategoryGraph;
 
     private JTabbedPane master_tPanel;
 
@@ -31,10 +32,12 @@ public class SummaryGraphPanel extends UpdatableJPanel {
 
         savingsGraph = new SavingsGraph(this);
         categoryGraph = new CategoryGraph(this);
+        setCategoryGraph = new SetCategoryGraph(this);
 
         master_tPanel = new JTabbedPane();
         master_tPanel.addTab("Savings", savingsGraph);
         master_tPanel.addTab("Category", categoryGraph);
+        master_tPanel.addTab("SetCategory", setCategoryGraph);
 
         this.add(master_tPanel);
     }
@@ -45,5 +48,7 @@ public class SummaryGraphPanel extends UpdatableJPanel {
     @Override
     public void update() {
         savingsGraph.update();
+        categoryGraph.update();
+        setCategoryGraph.update();
     }
 }

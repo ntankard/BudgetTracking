@@ -2,21 +2,22 @@ package com.ntankard.Tracking.Dispaly.Frames.MainFrame.Periods.IndividualPeriod;
 
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
-import com.ntankard.Tracking.DataBase.Core.Pool.Category;
-import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
-import com.ntankard.Tracking.DataBase.Core.Receipt;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category;
+import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
+import com.ntankard.Tracking.DataBase.Core.Receipt;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.BankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.RecurringBankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.FundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.ManualFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePayFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.HalfTransfer;
-import com.ntankard.Tracking.DataBase.Interface.Set.OneParent_Children_Set;
 import com.ntankard.Tracking.DataBase.Interface.Set.Factory.PoolSummary.BankSummary_Set;
 import com.ntankard.Tracking.DataBase.Interface.Set.Factory.PoolSummary.FundEventSummary_Set;
+import com.ntankard.Tracking.DataBase.Interface.Set.Filter.SetFilter;
+import com.ntankard.Tracking.DataBase.Interface.Set.OneParent_Children_Set;
 import com.ntankard.Tracking.DataBase.Interface.Set.TwoParent_Children_Set;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Bank_Summary;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.FundEvent_Summary;
@@ -29,6 +30,9 @@ import com.ntankard.Tracking.Dispaly.Util.Panels.Object_DisplayList;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+
+import static com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.PeriodSummary_Model.CustomFormatter;
+import static java.awt.GridBagConstraints.BOTH;
 
 public class PeriodSummary_StatementPanel extends UpdatableJPanel {
 
@@ -43,6 +47,10 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
 
     private Object_DisplayList<Bank_Summary> bankSummary_panel;
     private Object_DisplayList<FundEvent_Summary> fundEventSummary_panel;
+
+    private ManualBankTransfer_ElementController bankCategoryTransferAll_controller;
+    private TwoParent_Children_Set<BankTransfer, Period, Bank> bankCategoryTransferAll_set;
+    private DataObject_DisplayList<BankTransfer> bankCategoryTransferAll_panel;
 
     private ManualBankTransfer_ElementController bankCategoryTransfer_controller;
     private TwoParent_Children_Set<BankTransfer, Period, Bank> bankCategoryTransfer_set;
@@ -66,11 +74,9 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
         this.removeAll();
         this.setLayout(new GridBagLayout());
 
-        // Category table ----------------------------------------------------------------------------------------------
+        // Formatter ---------------------------------------------------------------------------------------------------
 
-        categorySummary_table = new PeriodSummary_Table<>(period, true, Category.class, this);
-        categorySummary_table.getModel().addCustomFormatter((dataObject, rendererObject) -> {
-
+        CustomFormatter bankTransferFormatter = (dataObject, rendererObject) -> {
             if (dataObject instanceof HalfTransfer) {
                 HalfTransfer halfTransfer = (HalfTransfer) dataObject;
                 if (halfTransfer.getTransfer() instanceof BankTransfer) {
@@ -120,12 +126,9 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
                     }
                 }
             }
-        });
+        };
 
-        // Bank table --------------------------------------------------------------------------------------------------
-
-        bankSummary_table = new PeriodSummary_Table<>(period, false, Bank.class, this);
-        bankSummary_table.getModel().addCustomFormatter((dataObject, rendererObject) -> {
+        CustomFormatter bankBankTransferFormatter = (dataObject, rendererObject) -> {
             if (dataObject instanceof HalfTransfer) {
                 HalfTransfer halfTransfer = (HalfTransfer) dataObject;
                 BankTransfer transaction = (BankTransfer) halfTransfer.getTransfer();
@@ -151,16 +154,23 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
                     }
                 }
             }
-        });
+        };
+
+        // Category table ----------------------------------------------------------------------------------------------
+
+        categorySummary_table = new PeriodSummary_Table<>(period, true, Category.class, this);
+        categorySummary_table.getModel().addCustomFormatter(bankTransferFormatter);
+
+
+        // Bank table --------------------------------------------------------------------------------------------------
+
+        bankSummary_table = new PeriodSummary_Table<>(period, false, Bank.class, this);
+        bankSummary_table.getModel().addCustomFormatter(bankBankTransferFormatter);
 
         // Fund Event table --------------------------------------------------------------------------------------------
 
         fundEventSummary_table = new PeriodSummary_Table<>(period, false, FundEvent.class, this);
-        fundEventSummary_table.getModel().addCustomFormatter((dataObject, rendererObject) -> {
-            if (dataObject instanceof HalfTransfer) {
-                HalfTransfer halfTransfer = (HalfTransfer) dataObject;
-            }
-        });
+        fundEventSummary_table.getModel().addCustomFormatter(bankTransferFormatter);
 
         // Table combination -------------------------------------------------------------------------------------------
 
@@ -198,40 +208,66 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
 
         // Statement transactions --------------------------------------------------------------------------------------
 
-        bankCategoryTransfer_set = new TwoParent_Children_Set<>(BankTransfer.class, period, null);
+        bankCategoryTransfer_set = new TwoParent_Children_Set<>(BankTransfer.class, period, null, new SetFilter<BankTransfer>(null) {
+            @Override
+            protected boolean shouldAdd_Impl(BankTransfer dataObject) {
+                if (selectedBank != null) {
+                    if (!dataObject.getSource().equals(selectedBank)) {
+                        return false;
+                    }
+                }
+                return dataObject.getPeriod().equals(period);
+            }
+        });
         bankCategoryTransfer_controller = new ManualBankTransfer_ElementController(period, this);
         bankCategoryTransfer_panel = new DataObject_DisplayList<>(BankTransfer.class, bankCategoryTransfer_set, false, this);
         bankCategoryTransfer_panel.addControlButtons(bankCategoryTransfer_controller);
 
+        bankCategoryTransferAll_set = new TwoParent_Children_Set<>(BankTransfer.class, period, null);
+        bankCategoryTransferAll_controller = new ManualBankTransfer_ElementController(period, this);
+        bankCategoryTransferAll_panel = new DataObject_DisplayList<>(BankTransfer.class, bankCategoryTransferAll_set, false, this);
+        bankCategoryTransferAll_panel.addControlButtons(bankCategoryTransferAll_controller);
+
         // Main layout -------------------------------------------------------------------------------------------------
 
-        GridBagConstraints summaryContainer_C = new GridBagConstraints();
-        summaryContainer_C.fill = GridBagConstraints.BOTH;
-        summaryContainer_C.weightx = 1;
+        GridBagConstraints masterContainer_C = new GridBagConstraints();
+        masterContainer_C.fill = BOTH;
+        masterContainer_C.weightx = 1;
 
-        summaryContainer_C.weighty = 2;
-        summaryContainer_C.gridwidth = 3;
-        this.add(table_scroll, summaryContainer_C);
+        masterContainer_C.weighty = 2;
+        masterContainer_C.gridwidth = 3;
+        this.add(table_scroll, masterContainer_C);
 
-        JTabbedPane master = new JTabbedPane();
-        JPanel bank = new JPanel(new BorderLayout());
-        JPanel fund = new JPanel(new BorderLayout());
+        JPanel bankPanel = new JPanel(new GridBagLayout());
+        JPanel fundPanel = new JPanel(new BorderLayout());
 
+        GridBagConstraints bankPanel_C = new GridBagConstraints();
+        bankPanel_C.weightx = 1;
+        bankPanel_C.weighty = 1;
+        bankPanel_C.fill = BOTH;
+
+
+        bankPanel_C.gridx = 1;
         if (bankSummary_panel != null) {
-            bank.add(bankSummary_panel, BorderLayout.WEST);
+            bankPanel.add(bankSummary_panel, bankPanel_C);
         }
-        bank.add(bankCategoryTransfer_panel, BorderLayout.CENTER);
+        bankPanel_C.gridx = 2;
+        JTabbedPane bankTrans = new JTabbedPane();
+        bankTrans.addTab("All", bankCategoryTransferAll_panel);
+        bankTrans.addTab("Me", bankCategoryTransfer_panel);
+        bankPanel.add(bankTrans, bankPanel_C);
 
-        fund.add(fundEventSummary_panel, BorderLayout.WEST);
-        fund.add(periodFundTransfer_panel, BorderLayout.CENTER);
+        fundPanel.add(fundEventSummary_panel, BorderLayout.WEST);
+        fundPanel.add(periodFundTransfer_panel, BorderLayout.CENTER);
 
-        master.addTab("Bank", bank);
-        master.addTab("Fund", fund);
+        JTabbedPane transferPanel = new JTabbedPane();
+        transferPanel.addTab("Bank", bankPanel);
+        transferPanel.addTab("Fund", fundPanel);
 
-        summaryContainer_C.weighty = 1;
-        summaryContainer_C.gridwidth = 1;
-        summaryContainer_C.gridy = 1;
-        this.add(master, summaryContainer_C);
+        masterContainer_C.weighty = 1;
+        masterContainer_C.gridwidth = 1;
+        masterContainer_C.gridy = 1;
+        this.add(transferPanel, masterContainer_C);
     }
 
     /**
@@ -268,11 +304,14 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
         // Update children on the selection
         bankCategoryTransfer_set.setSecondaryParent(selectedBank);
         bankCategoryTransfer_controller.setBank(selectedBank);
+        bankCategoryTransferAll_set.setSecondaryParent(selectedBank);
+        bankCategoryTransferAll_controller.setBank(selectedBank);
 
         // Update the UI
         categorySummary_table.update();
         bankSummary_table.update();
         fundEventSummary_table.update();
         bankCategoryTransfer_panel.update();
+        bankCategoryTransferAll_panel.update();
     }
 }
