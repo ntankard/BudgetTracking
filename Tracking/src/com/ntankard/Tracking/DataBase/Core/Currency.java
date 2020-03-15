@@ -4,6 +4,7 @@ import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.HasDefault;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.NamedDataObject;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
@@ -28,30 +29,33 @@ public class Currency extends NamedDataObject implements HasDefault {
         return Math.round(value * 100.0) / 100.0;
     }
 
-    // My values
-    private Boolean isDefault;
-    private Double toPrimary;
-    private String language;
-    private String country;
 
     // Generated value
     private NumberFormat numberFormat;
+
+    //------------------------------------------------------------------------------------------------------------------
+    //################################################### Constructor ##################################################
+    //------------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Get all the fields for this object
+     */
+    public static List<Field<?>> getFields(Integer id, String name, Boolean isDefault, Double toPrimary, String language, String country, DataObject container) {
+        List<Field<?>> toReturn = NamedDataObject.getFields(id, name, container);
+        toReturn.add(new Field<>("isDefault", Boolean.class, isDefault, container));
+        toReturn.add(new Field<>("toPrimary", Double.class, toPrimary, container));
+        toReturn.add(new Field<>("language", String.class, language, container));
+        toReturn.add(new Field<>("country", String.class, country, container));
+        return toReturn;
+    }
 
     /**
      * Constructor
      */
     @ParameterMap(parameterGetters = {"getId", "getName", "isDefault", "getToPrimary", "getLanguage", "getCountry"})
     public Currency(Integer id, String name, Boolean isDefault, Double toPrimary, String language, String country) {
-        super(id, name);
-        if (isDefault == null) throw new IllegalArgumentException("isDefault is null");
-        if (toPrimary == null) throw new IllegalArgumentException("toPrimary is null");
-        if (language == null) throw new IllegalArgumentException("language is null");
-        if (country == null) throw new IllegalArgumentException("country is null");
-        this.isDefault = isDefault;
-        this.toPrimary = toPrimary;
-        this.language = language;
-        this.country = country;
-
+        super();
+        setFields(getFields(id, name, isDefault, toPrimary, language, country, this));
         this.numberFormat = NumberFormat.getCurrencyInstance(new Locale(language, country));
     }
 
@@ -86,24 +90,24 @@ public class Currency extends NamedDataObject implements HasDefault {
     @Override
     @DisplayProperties(order = 1110000)
     public Boolean isDefault() {
-        return isDefault;
+        return get("isDefault");
     }
 
     @DisplayProperties(order = 1120000)
     public Double getToPrimary() {
-        return toPrimary;
+        return get("toPrimary");
     }
 
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     @DisplayProperties(order = 1130000)
     public String getLanguage() {
-        return language;
+        return get("language");
     }
 
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     @DisplayProperties(order = 1140000)
     public String getCountry() {
-        return country;
+        return get("country");
     }
 
     // 1150000------getNumberFormat (Above)

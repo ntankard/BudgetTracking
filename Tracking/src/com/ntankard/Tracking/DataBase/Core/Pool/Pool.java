@@ -1,18 +1,24 @@
 package com.ntankard.Tracking.DataBase.Core.Pool;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.NamedDataObject;
-import com.ntankard.Tracking.DataBase.Database.ParameterMap;
+
+import java.util.List;
 
 @ClassExtensionProperties(includeParent = true)
 public abstract class Pool extends NamedDataObject {
 
+    //------------------------------------------------------------------------------------------------------------------
+    //################################################### Constructor ##################################################
+    //------------------------------------------------------------------------------------------------------------------
+
     /**
-     * Constructor
+     * Get all the fields for this object
      */
-    @ParameterMap(shouldSave = false)
-    public Pool(Integer id, String name) {
-        super(id, name);
+    public static List<Field<?>> getFields(Integer id, String name, DataObject container) {
+        return NamedDataObject.getFields(id, name, container);
     }
 
     //------------------------------------------------------------------------------------------------------------------

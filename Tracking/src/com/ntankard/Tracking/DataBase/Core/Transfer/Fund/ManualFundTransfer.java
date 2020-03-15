@@ -3,19 +3,34 @@ package com.ntankard.Tracking.DataBase.Core.Transfer.Fund;
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.SetterProperties;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
+import java.util.List;
+
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
 
 @ClassExtensionProperties(includeParent = true)
 public class ManualFundTransfer extends FundTransfer {
 
-    // My values
-    private Double value;
+    //------------------------------------------------------------------------------------------------------------------
+    //################################################### Constructor ##################################################
+    //------------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Get all the fields for this object
+     */
+    public static List<Field<?>> getFields(Integer id, String description,
+                                           Period period, FundEvent source, Double value, Currency currency, DataObject container) {
+        List<Field<?>> toReturn = FundTransfer.getFields(id, description, period, source, currency, container);
+        toReturn.add(new Field<>("value", Double.class, value, container));
+        return toReturn;
+    }
 
     /**
      * Constructor
@@ -23,9 +38,8 @@ public class ManualFundTransfer extends FundTransfer {
     @ParameterMap(parameterGetters = {"getId", "getDescription", "getPeriod", "getSource", "getValue", "getCurrency"})
     public ManualFundTransfer(Integer id, String description,
                               Period period, FundEvent source, Double value, Currency currency) {
-        super(id, description, period, source, currency);
-        if (value == null) throw new IllegalArgumentException("Value is null");
-        this.value = value;
+        super();
+        setFields(getFields(id, description, period, source, value, currency, this));
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -40,7 +54,7 @@ public class ManualFundTransfer extends FundTransfer {
     @Override
     @DisplayProperties(order = 1400000, dataType = CURRENCY)
     public Double getValue() {
-        return value;
+        return get("value");
     }
 
     // 1500000----getCurrency
@@ -55,9 +69,7 @@ public class ManualFundTransfer extends FundTransfer {
     //------------------------------------------------------------------------------------------------------------------
 
     public void setValue(Double value) {
-        if (value == null) throw new IllegalArgumentException("Value is null");
-        this.value = value;
-
+        set("value", value);
         updateHalfTransfer();
     }
 

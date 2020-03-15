@@ -1,7 +1,7 @@
 package com.ntankard.Tracking.DataBase.Interface.Set.Factory.PoolSummary;
 
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
-import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
+import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Bank_Summary;
 
 public class BankSummary_Set extends Summary_Set<Bank_Summary, Bank, ExistingPeriod> {

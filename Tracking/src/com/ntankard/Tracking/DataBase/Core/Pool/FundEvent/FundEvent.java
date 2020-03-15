@@ -2,8 +2,9 @@ package com.ntankard.Tracking.DataBase.Core.Pool.FundEvent;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
-import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.DataObject_Field;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
@@ -11,67 +12,27 @@ import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePayFundTransfer;
 import com.ntankard.Tracking.DataBase.Database.ObjectFactory;
-import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.OneParent_Children_Set;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
 @ObjectFactory(builtObjects = {RePayFundTransfer.class})
 public abstract class FundEvent extends Pool {
 
-    // My parent
-    protected Category category;
+    //------------------------------------------------------------------------------------------------------------------
+    //################################################### Constructor ##################################################
+    //------------------------------------------------------------------------------------------------------------------
 
     /**
-     * Constructor
+     * Get all the fields for this object
      */
-    @ParameterMap(shouldSave = false)
-    public FundEvent(Integer id, String name, Category category) {
-        super(id, name);
-        if (category == null) throw new IllegalArgumentException("Category is null");
-        this.category = category;
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 2000000)
-    public List<DataObject> getParents() {
-        List<DataObject> toReturn = new ArrayList<>();
-        toReturn.add(getCategory());
+    public static List<Field<?>> getFields(Integer id, String name, Category category, DataObject container) {
+        List<Field<?>> toReturn = Pool.getFields(id, name, container);
+        toReturn.add(new DataObject_Field<>("category", Category.class, category, container));
         return toReturn;
     }
-
-    /**
-     * Is this fund event active in this period?
-     *
-     * @param period The period to check
-     * @return True if its active at this time
-     */
-    public abstract Boolean isActiveThisPeriod(Period period);
-
-    /**
-     * Will there be a charge this period?
-     *
-     * @param period The period to test
-     * @return True if there needs to be a charge for this period
-     */
-    public abstract Boolean isChargeThisPeriod(Period period);
-
-    /**
-     * Get the required charge amount for a specific period
-     *
-     * @param period The period to get
-     * @return The required charge
-     */
-    public abstract Double getCharge(Period period);
 
     /**
      * {@inheritDoc
@@ -110,6 +71,34 @@ public abstract class FundEvent extends Pool {
     }
 
     //------------------------------------------------------------------------------------------------------------------
+    //################################################### Speciality ###################################################
+    //------------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Is this fund event active in this period?
+     *
+     * @param period The period to check
+     * @return True if its active at this time
+     */
+    public abstract Boolean isActiveThisPeriod(Period period);
+
+    /**
+     * Will there be a charge this period?
+     *
+     * @param period The period to test
+     * @return True if there needs to be a charge for this period
+     */
+    public abstract Boolean isChargeThisPeriod(Period period);
+
+    /**
+     * Get the required charge amount for a specific period
+     *
+     * @param period The period to get
+     * @return The required charge
+     */
+    public abstract Double getCharge(Period period);
+
+    //------------------------------------------------------------------------------------------------------------------
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
@@ -118,7 +107,7 @@ public abstract class FundEvent extends Pool {
 
     @DisplayProperties(order = 1101000)
     public Category getCategory() {
-        return category;
+        return get("category");
     }
 
     // 2000000--getParents (Above)

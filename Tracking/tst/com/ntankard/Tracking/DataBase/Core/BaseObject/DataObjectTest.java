@@ -262,13 +262,14 @@ class DataObjectTest {
         private DataObject parent;
 
         DataObject_Inst(Integer id, DataObject parent) {
-            super(id);
+            super();
+            setFields(getFields(id, this));
             this.parent = parent;
         }
 
         @Override
         public List<DataObject> getParents() {
-            List<DataObject> toReturn = new ArrayList<>();
+            List<DataObject> toReturn = super.getParents();
             toReturn.add(parent);
             return toReturn;
         }

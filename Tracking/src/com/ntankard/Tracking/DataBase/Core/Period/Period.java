@@ -1,37 +1,29 @@
 package com.ntankard.Tracking.DataBase.Core.Period;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
-import com.ntankard.ClassExtension.DisplayProperties;
-import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
-import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
 public abstract class Period extends DataObject implements Ordered {
 
-    /**
-     * Constructor
-     */
-    @ParameterMap(shouldSave = false)
-    public Period(Integer id) {
-        super(id);
-    }
+    //------------------------------------------------------------------------------------------------------------------
+    //################################################### Constructor ##################################################
+    //------------------------------------------------------------------------------------------------------------------
 
     /**
-     * {@inheritDoc
+     * Get all the fields for this object
      */
-    @Override
-    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 2000000)
-    public List<DataObject> getParents() {
-        return new ArrayList<>();
+    public static List<Field<?>> getFields(Integer id, DataObject container) {
+        return DataObject.getFields(id, container);
     }
+
+    //------------------------------------------------------------------------------------------------------------------
+    //################################################### Speciality ###################################################
+    //------------------------------------------------------------------------------------------------------------------
 
     /**
      * Dose this period exist within this range of time?

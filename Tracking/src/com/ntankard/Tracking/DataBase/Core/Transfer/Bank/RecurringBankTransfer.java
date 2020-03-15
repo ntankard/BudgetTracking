@@ -2,24 +2,37 @@ package com.ntankard.Tracking.DataBase.Core.Transfer.Bank;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
-import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.ClassExtension.SetterProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.DataObject_Field;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
-import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
+import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Core.RecurringPayment.FixedRecurringPayment;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
 import java.util.List;
 
-import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
-
 @ClassExtensionProperties(includeParent = true)
 public class RecurringBankTransfer extends BankTransfer {
 
-    // My parents
-    private FixedRecurringPayment parentPayment;
+    //------------------------------------------------------------------------------------------------------------------
+    //################################################### Constructor ##################################################
+    //------------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Get all the fields for this object
+     */
+    public static List<Field<?>> getFields(Integer id,
+                                           Period period, Bank source, Double value,
+                                           Period destinationPeriod, Pool destination, Double destinationValue,
+                                           FixedRecurringPayment parentPayment,
+                                           DataObject container) {
+        List<Field<?>> toReturn = BankTransfer.getFields(id, "NOT USED", period, source, value, destinationPeriod, destination, destinationValue, container);
+        toReturn.add(new DataObject_Field<>("parentPayment", FixedRecurringPayment.class, parentPayment, container));
+        return toReturn;
+    }
 
     /**
      * Constructor
@@ -29,20 +42,8 @@ public class RecurringBankTransfer extends BankTransfer {
                                  Period period, Bank source, Double value,
                                  Period destinationPeriod, Pool destination, Double destinationValue,
                                  FixedRecurringPayment parentPayment) {
-        super(id, "NOT USED", period, source, value, destinationPeriod, destination, destinationValue);
-        this.parentPayment = parentPayment;
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 2000000)
-    public List<DataObject> getParents() {
-        List<DataObject> toReturn = super.getParents();
-        toReturn.add(getParentPayment());
-        return toReturn;
+        super();
+        setFields(getFields(id, period, source, value, destinationPeriod, destination, destinationValue, parentPayment, this));
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -54,7 +55,7 @@ public class RecurringBankTransfer extends BankTransfer {
     @Override
     @DisplayProperties(order = 1100000)
     public String getDescription() {
-        return parentPayment.getName();
+        return getParentPayment().getName();
     }
 
     // 1200000----getPeriod
@@ -71,7 +72,7 @@ public class RecurringBankTransfer extends BankTransfer {
 
     @DisplayProperties(order = 1621000)
     public FixedRecurringPayment getParentPayment() {
-        return parentPayment;
+        return get("parentPayment");
     }
 
     // 1700000----getSourceTransfer

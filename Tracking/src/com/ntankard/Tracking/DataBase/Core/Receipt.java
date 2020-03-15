@@ -2,48 +2,44 @@ package com.ntankard.Tracking.DataBase.Core;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
-import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.ClassExtension.SetterProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.DataObject_Field;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.BankTransfer;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
 public class Receipt extends DataObject {
 
-    // My parents
-    private BankTransfer bankTransfer;
+    //------------------------------------------------------------------------------------------------------------------
+    //################################################### Constructor ##################################################
+    //------------------------------------------------------------------------------------------------------------------
 
-    // My values
-    private String fileName;
+    /**
+     * Get all the fields for this object
+     */
+    public static List<Field<?>> getFields(Integer id, String fileName, BankTransfer bankTransfer, DataObject container) {
+        List<Field<?>> toReturn = DataObject.getFields(id, container);
+        toReturn.add(new Field<>("fileName", String.class, fileName, container));
+        toReturn.add(new DataObject_Field<>("bankTransfer", BankTransfer.class, bankTransfer, container));
+        return toReturn;
+    }
 
     /**
      * Constructor
      */
     @ParameterMap(parameterGetters = {"getId", "getFileName", "getBankTransfer"})
     public Receipt(Integer id, String fileName, BankTransfer bankTransfer) {
-        super(id);
-        if (fileName == null) throw new IllegalArgumentException("FileName is null");
-        if (bankTransfer == null) throw new IllegalArgumentException("BankCategoryTransfer is null");
-        this.fileName = fileName;
-        this.bankTransfer = bankTransfer;
+        super();
+        setFields(getFields(id, fileName, bankTransfer, this));
     }
 
-    /**
-     * {@inheritDoc
-     */
     @Override
-    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 2000000)
-    public List<DataObject> getParents() {
-        List<DataObject> toReturn = new ArrayList<>();
-        toReturn.add(getBankTransfer());
-        return toReturn;
+    public void remove() {
+        super.remove_impl();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -54,12 +50,12 @@ public class Receipt extends DataObject {
 
     @DisplayProperties(order = 1100000)
     public BankTransfer getBankTransfer() {
-        return bankTransfer;
+        return get("bankTransfer");
     }
 
     @DisplayProperties(order = 1200000)
     public String getFileName() {
-        return fileName;
+        return get("fileName");
     }
 
     // 1300000----isFirstFile (Above)
@@ -72,9 +68,6 @@ public class Receipt extends DataObject {
 
     @SetterProperties(localSourceMethod = "sourceOptions", displaySet = false)
     public void setBankTransfer(BankTransfer bankTransfer) {
-        if (bankTransfer == null) throw new IllegalArgumentException("BankTransfer is null");
-        this.bankTransfer.notifyChildUnLink(this);
-        this.bankTransfer = bankTransfer;
-        this.bankTransfer.notifyChildLink(this);
+        set("bankTransfer", bankTransfer);
     }
 }

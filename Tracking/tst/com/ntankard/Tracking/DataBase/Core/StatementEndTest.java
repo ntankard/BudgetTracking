@@ -3,10 +3,13 @@ package com.ntankard.Tracking.DataBase.Core;
 import com.ntankard.TestUtil.DataAccessUntil;
 import com.ntankard.TestUtil.DataObjectTestUtil;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
-import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
+import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -73,7 +76,9 @@ class StatementEndTest {
      */
     @Test
     void getParents() {
-        DataObjectTestUtil.testStandardParents(StatementEnd.class);
+        List<String> exclude = new ArrayList<>();
+        exclude.add("Currency");
+        DataObjectTestUtil.testStandardParents(StatementEnd.class, exclude);
     }
 
     /**

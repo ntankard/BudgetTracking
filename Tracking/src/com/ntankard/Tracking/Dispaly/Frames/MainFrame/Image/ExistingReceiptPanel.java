@@ -5,7 +5,7 @@ import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
-import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
+import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Core.Receipt;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.BankTransfer;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;

@@ -5,72 +5,41 @@ import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.ClassExtension.SetterProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.DataObject_Field;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
-import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
+import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Transfer;
-import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
-import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
 public abstract class BankTransfer extends Transfer {
 
-    // My parents
-    private Pool destination;
-    private Period destinationPeriod;
-
-    // My values
-    private Double value;
-    private Double destinationValue;
+    //------------------------------------------------------------------------------------------------------------------
+    //################################################### Constructor ##################################################
+    //------------------------------------------------------------------------------------------------------------------
 
     /**
-     * Constructor
+     * Get all the fields for this object
      */
-    @ParameterMap(shouldSave = false)
-    public BankTransfer(Integer id, String description,
-                        Period period, Bank source, Double value,
-                        Period destinationPeriod, Pool destination, Double destinationValue) {
-        super(id, description, period, source);
-        if (value == null) throw new IllegalArgumentException("Value is null");
-        if (destination == null) throw new IllegalArgumentException("Destination is null");
-        if (destination == source) throw new IllegalArgumentException("Source equals Destination");
-        if (period == destinationPeriod) throw new IllegalArgumentException("Source Period equals Destination Period");
-
-        this.destination = destination;
-        this.value = value;
-        this.destinationPeriod = destinationPeriod;
-        this.destinationValue = destinationValue;
-
-        // Is a custom value supported?
-        if (destinationValue != null && !doseSupportDestinationValue())
-            throw new IllegalArgumentException("Trying to set a destination value when not supported");
-
-        // Is a custom period supported?
-        if (destinationPeriod != null && !doseSupportDestinationPeriod())
-            throw new RuntimeException("Trying to set a destination period when its not supported");
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 2000000)
-    public List<DataObject> getParents() {
-        List<DataObject> toReturn = super.getParents();
-        toReturn.add(getDestination());
-        if (getDestinationPeriod() != null) {
-            toReturn.add(getDestinationPeriod());
-        }
+    public static List<Field<?>> getFields(Integer id, String description,
+                                           Period period, Bank source, Double value,
+                                           Period destinationPeriod, Pool destination, Double destinationValue,
+                                           DataObject container) {
+        List<Field<?>> toReturn = Transfer.getFields(id, description, period, source, container);
+        toReturn.add(new Field<>("value", Double.class, value, container));
+        toReturn.add(new DataObject_Field<>("destinationPeriod", Period.class, destinationPeriod, true, container));
+        toReturn.add(new DataObject_Field<>("destination", Pool.class, destination, container));
+        toReturn.add(new Field<>("destinationValue", Double.class, destinationValue, true, container));
         return toReturn;
     }
 
@@ -158,7 +127,7 @@ public abstract class BankTransfer extends Transfer {
     @Override
     @DisplayProperties(order = 1400000, dataType = CURRENCY)
     public Double getValue() {
-        return value;
+        return get("value");
     }
 
     @Override
@@ -170,7 +139,7 @@ public abstract class BankTransfer extends Transfer {
 
     @DisplayProperties(order = 1510000)
     public Period getDestinationPeriod() {
-        return destinationPeriod;
+        return get("destinationPeriod");
     }
 
     // 1520000----getCategory   (Below)
@@ -180,12 +149,12 @@ public abstract class BankTransfer extends Transfer {
     @Override
     @DisplayProperties(order = 1600000)
     public Pool getDestination() {
-        return destination;
+        return get("destination");
     }
 
     @DisplayProperties(order = 1610000, dataType = CURRENCY)
     public Double getDestinationValue() {
-        return destinationValue;
+        return get("destinationValue");
     }
 
     @DisplayProperties(order = 1620000)
@@ -234,9 +203,7 @@ public abstract class BankTransfer extends Transfer {
     //------------------------------------------------------------------------------------------------------------------
 
     public void setValue(Double value) {
-        if (value == null) throw new IllegalArgumentException("Value is null");
-        this.value = value;
-
+        set("value", value);
         updateHalfTransfer();
     }
 
@@ -247,26 +214,16 @@ public abstract class BankTransfer extends Transfer {
         if (getPeriod().equals(destinationPeriod))
             throw new IllegalArgumentException("Can not set the destination period to be the same as the source (this is the default)");
 
-        if (this.destinationPeriod != null) {
-            this.destinationPeriod.notifyChildUnLink(this);
-        }
-        this.destinationPeriod = destinationPeriod;
-        if (this.destinationPeriod != null) {
-            this.destinationPeriod.notifyChildLink(this);
-        }
-
+        set("destinationPeriod", destinationPeriod);
         updateHalfTransfer();
         validateParents();
     }
 
     @SetterProperties(localSourceMethod = "sourceOptions")
     public void setDestination(Pool destination) {
-        if (destination == null) throw new IllegalArgumentException("Destination is null");
         if (getSource().equals(destination)) throw new IllegalArgumentException("Source equals Destination");
 
-        this.destination.notifyChildUnLink(this);
-        this.destination = destination;
-        this.destination.notifyChildLink(this);
+        set("destination", destination);
 
         // Destination Period can only be maintained if its a Bank to Bank transfer
         if (!doseSupportDestinationPeriod()) {
@@ -292,7 +249,7 @@ public abstract class BankTransfer extends Transfer {
         if (destinationValue != null && destinationValue.equals(0.0)) {
             destinationValue_toSet = null;
         }
-        this.destinationValue = destinationValue_toSet;
+        set("destinationValue", destinationValue_toSet);
 
         updateHalfTransfer();
         validateParents();
@@ -304,7 +261,7 @@ public abstract class BankTransfer extends Transfer {
         super.setSource(bank);
 
         // Destination value can only be maintained if its a bank to bank transfer with different currencies
-        if (!(destination instanceof Bank && getDestinationCurrency() != null)) {
+        if (!(getDestination() instanceof Bank && getDestinationCurrency() != null)) {
             setDestinationValue(null);
         }
 

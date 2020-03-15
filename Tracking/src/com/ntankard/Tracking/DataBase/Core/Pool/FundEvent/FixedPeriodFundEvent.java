@@ -2,9 +2,11 @@ package com.ntankard.Tracking.DataBase.Core.Pool.FundEvent;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
-import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.ClassExtension.SetterProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.DataObject_Field;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Filter.IntegerRange_FieldFilter;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
@@ -23,42 +25,45 @@ import com.ntankard.Tracking.Dispaly.Util.Comparators.Ordered_Comparator;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
-
 @ClassExtensionProperties(includeParent = true)
 @ObjectFactory(builtObjects = {RePayFundTransfer.class})
 public class FixedPeriodFundEvent extends FundEvent {
 
-    // My parents
-    private ExistingPeriod start;
+    //------------------------------------------------------------------------------------------------------------------
+    //################################################### Constructor ##################################################
+    //------------------------------------------------------------------------------------------------------------------
 
-    // My values
-    private Integer duration;
+    /**
+     * Get all the fields for this object
+     */
+    public static List<Field<?>> getFields(Integer id, String name, Category category, ExistingPeriod start, Integer duration, DataObject container) {
+        List<Field<?>> toReturn = FundEvent.getFields(id, name, category, container);
+        toReturn.add(new DataObject_Field<>("start", ExistingPeriod.class, start, container));
+        toReturn.add(new Field<>("duration", Integer.class, duration, container).addFilter(new IntegerRange_FieldFilter(1, null)));
+        return toReturn;
+    }
 
     /**
      * Constructor
      */
     @ParameterMap(parameterGetters = {"getId", "getName", "getCategory", "getStart", "getDuration"})
     public FixedPeriodFundEvent(Integer id, String name, Category category, ExistingPeriod start, Integer duration) {
-        super(id, name, category);
-        if (start == null) throw new IllegalArgumentException("Start was null");
-        if (duration == null) throw new IllegalArgumentException("Duration is null");
-        if (duration < 1) throw new IllegalArgumentException("Duration is less than 1");
-        this.start = start;
-        this.duration = duration;
+        super();
+        setFields(getFields(id, name, category, start, duration, this));
     }
+
 
     /**
      * {@inheritDoc
      */
     @Override
-    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 2000000)
-    public List<DataObject> getParents() {
-        List<DataObject> toReturn = super.getParents();
-        toReturn.add(getStart());
-        return toReturn;
+    public void add() {
+        super.add();
     }
+
+    //------------------------------------------------------------------------------------------------------------------
+    //################################################### Speciality ###################################################
+    //------------------------------------------------------------------------------------------------------------------
 
     /**
      * {@inheritDoc
@@ -92,7 +97,7 @@ public class FixedPeriodFundEvent extends FundEvent {
      */
     @Override
     public Boolean isChargeThisPeriod(Period period) {
-        return period.isWithin(start, duration);
+        return period.isWithin(getStart(), getDuration());
     }
 
     /**
@@ -103,15 +108,7 @@ public class FixedPeriodFundEvent extends FundEvent {
         if (!isChargeThisPeriod(period)) {
             return -0.0;
         }
-        return new Transfer_SumSet(new OneParent_Children_Set<>(HalfTransfer.class, this, new NotTransferType_HalfTransfer_Filter(RePayFundTransfer.class)), this).getTotal() / duration;
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public void add() {
-        super.add();
+        return new Transfer_SumSet<>(new OneParent_Children_Set<>(HalfTransfer.class, this, new NotTransferType_HalfTransfer_Filter(RePayFundTransfer.class)), this).getTotal() / getDuration();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -124,12 +121,12 @@ public class FixedPeriodFundEvent extends FundEvent {
 
     @DisplayProperties(order = 1101100)
     public ExistingPeriod getStart() {
-        return start;
+        return get("start");
     }
 
     @DisplayProperties(order = 1101200)
     public Integer getDuration() {
-        return duration;
+        return get("duration");
     }
 
     // 1110000------getOrder
@@ -142,10 +139,7 @@ public class FixedPeriodFundEvent extends FundEvent {
 
     @SetterProperties(localSourceMethod = "sourceOptions")
     public void setCategory(Category category) {
-        if (category == null) throw new IllegalArgumentException("Category is null");
-        this.category.notifyChildUnLink(this);
-        this.category = category;
-        this.category.notifyChildLink(this);
+        set("category", category);
 
         for (FundTransfer fundTransfer : TrackingDatabase.get().get(FundTransfer.class)) {
             fundTransfer.setDestination();
@@ -156,18 +150,13 @@ public class FixedPeriodFundEvent extends FundEvent {
 
     @SetterProperties(localSourceMethod = "sourceOptions")
     public void setStart(ExistingPeriod start) {
-        if (start == null) throw new IllegalArgumentException("Start was null");
-        this.start.notifyChildUnLink(this);
-        this.start = start;
-        this.start.notifyChildLink(this);
+        set("start", start);
         recreateRePay();
         validateParents();
     }
 
     public void setDuration(Integer duration) {
-        if (duration == null) throw new IllegalArgumentException("Duration is null");
-        if (duration < 1) throw new IllegalArgumentException("Duration is less than 1");
-        this.duration = duration;
+        set("duration", duration);
         recreateRePay();
         validateParents();
     }

@@ -2,23 +2,29 @@ package com.ntankard.Tracking.DataBase.Core.BaseObject;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
-import com.ntankard.Tracking.DataBase.Database.ParameterMap;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
+
+import java.util.List;
 
 @ClassExtensionProperties(includeParent = true)
 public abstract class NamedDataObject extends DataObject {
 
-    // My values
-    private String name;
+    //------------------------------------------------------------------------------------------------------------------
+    //################################################### Constructor ##################################################
+    //------------------------------------------------------------------------------------------------------------------
 
     /**
-     * Constructor
+     * Get all the fields for this object
      */
-    @ParameterMap(shouldSave = false)
-    public NamedDataObject(Integer id, String name) {
-        super(id);
-        if (name == null) throw new IllegalArgumentException("Name is null");
-        this.name = name;
+    public static List<Field<?>> getFields(Integer id, String name, DataObject container) {
+        List<Field<?>> toReturn = DataObject.getFields(id, container);
+        toReturn.add(new Field<>("name", String.class, name, container));
+        return toReturn;
     }
+
+    //------------------------------------------------------------------------------------------------------------------
+    //#################################################### General #####################################################
+    //------------------------------------------------------------------------------------------------------------------
 
     /**
      * {@inheritDoc
@@ -36,7 +42,7 @@ public abstract class NamedDataObject extends DataObject {
 
     @DisplayProperties(order = 1100000)
     public String getName() {
-        return name;
+        return get("name");
     }
 
     // 2000000--getParents
@@ -47,7 +53,6 @@ public abstract class NamedDataObject extends DataObject {
     //------------------------------------------------------------------------------------------------------------------
 
     public void setName(String name) {
-        if (name == null) throw new IllegalArgumentException("ID can not be null");
-        this.name = name;
+        set("name", name);
     }
 }

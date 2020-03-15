@@ -3,6 +3,8 @@ package com.ntankard.Tracking.DataBase.Interface.Summary.Pool;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.DataObject_Field;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
@@ -19,16 +21,27 @@ import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
 public abstract class PoolSummary<PoolType extends Pool> extends DataObject implements CurrencyBound {
 
-    private Period period;
-    private PoolType pool;
+    //------------------------------------------------------------------------------------------------------------------
+    //################################################### Constructor ##################################################
+    //------------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Get all the fields for this object
+     */
+    public static List<Field<?>> getFields(Period period, Pool pool, DataObject container) {
+        List<Field<?>> toReturn = DataObject.getFields(-1, container);
+        toReturn.add(new DataObject_Field<>("period", Period.class, period, container));
+        toReturn.add(new DataObject_Field<>("pool", Pool.class, pool, container));
+        return toReturn;
+    }
 
     /**
      * Constructor
      */
     protected PoolSummary(Period period, PoolType pool) {
-        super(-1);
-        this.period = period;
-        this.pool = pool;
+        super();
+        setFields(getFields(period, pool, this));
+
     }
 
     /**
@@ -88,11 +101,11 @@ public abstract class PoolSummary<PoolType extends Pool> extends DataObject impl
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     @DisplayProperties(order = 2)
     public Period getPeriod() {
-        return period;
+        return get("period");
     }
 
     @DisplayProperties(order = 3)
     public PoolType getPool() {
-        return pool;
+        return get("pool");
     }
 }

@@ -3,8 +3,10 @@ package com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.Currency;
-import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
+import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.RecurringPayment.FixedRecurringPayment;
 import com.ntankard.Tracking.DataBase.Core.StatementEnd;
@@ -15,49 +17,34 @@ import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.TwoParent_Children_Set;
 
+import java.util.List;
+
 @ClassExtensionProperties(includeParent = true)
 @ObjectFactory(builtObjects = {StatementEnd.class, RePayFundTransfer.class, RecurringBankTransfer.class})
 public class ExistingPeriod extends Period {
 
-    // My values
-    private Integer month;
-    private Integer year;
+    //------------------------------------------------------------------------------------------------------------------
+    //################################################### Constructor ##################################################
+    //------------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Get all the fields for this object
+     */
+    public static List<Field<?>> getFields(Integer id, Integer month, Integer year, DataObject container) {
+        List<Field<?>> toReturn = Period.getFields(id, container);
+        toReturn.add(new Field<>("month", Integer.class, month, container));
+        toReturn.add(new Field<>("year", Integer.class, year, container));
+        return toReturn;
+    }
 
     /**
      * Constructor
      */
     @ParameterMap(parameterGetters = {"getId", "getMonth", "getYear"})
     public ExistingPeriod(Integer id, Integer month, Integer year) {
-        super(id);
-        if (month == null) throw new IllegalArgumentException("Month is null");
-        if (year == null) throw new IllegalArgumentException("Year is null");
-        this.month = month;
-        this.year = year;
-    }
+        super();
+        setFields(getFields(id, month, year, this));
 
-    /**
-     * Generate a new period that comes after this one
-     *
-     * @return A new period that comes after this one
-     */
-    public ExistingPeriod generateNext() {
-        int nextMonth = month;
-        int nextYear = year;
-        nextMonth++;
-        if (nextMonth > 12) {
-            nextMonth -= 12;
-            nextYear++;
-        }
-
-        return new ExistingPeriod(TrackingDatabase.get().getNextId(), nextMonth, nextYear);
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public String toString() {
-        return year + "-" + month;
     }
 
     /**
@@ -92,6 +79,35 @@ public class ExistingPeriod extends Period {
     }
 
     //------------------------------------------------------------------------------------------------------------------
+    //################################################### Speciality ###################################################
+    //------------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Generate a new period that comes after this one
+     *
+     * @return A new period that comes after this one
+     */
+    public ExistingPeriod generateNext() {
+        int nextMonth = getMonth();
+        int nextYear = getYear();
+        nextMonth++;
+        if (nextMonth > 12) {
+            nextMonth -= 12;
+            nextYear++;
+        }
+
+        return new ExistingPeriod(TrackingDatabase.get().getNextId(), nextMonth, nextYear);
+    }
+
+    /**
+     * {@inheritDoc
+     */
+    @Override
+    public String toString() {
+        return getYear() + "-" + getMonth();
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
@@ -99,12 +115,12 @@ public class ExistingPeriod extends Period {
 
     @DisplayProperties(order = 1010000)
     public Integer getMonth() {
-        return month;
+        return get("month");
     }
 
     @DisplayProperties(order = 1020000)
     public Integer getYear() {
-        return year;
+        return get("year");
     }
 
     @Override

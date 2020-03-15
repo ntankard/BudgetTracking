@@ -3,6 +3,7 @@ package com.ntankard.Tracking.DataBase.Core.Transfer.Fund;
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
@@ -16,13 +17,26 @@ import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
 @ClassExtensionProperties(includeParent = true)
 public class RePayFundTransfer extends FundTransfer {
 
+    //------------------------------------------------------------------------------------------------------------------
+    //################################################### Constructor ##################################################
+    //------------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Get all the fields for this object
+     */
+    public static List<Field<?>> getFields(Integer id, String description,
+                                           Period period, FundEvent source, Currency currency, DataObject container) {
+        return FundTransfer.getFields(id, description, period, source, currency, container);
+    }
+
     /**
      * Constructor
      */
     @ParameterMap(shouldSave = false)
     public RePayFundTransfer(Integer id, Period period,
                              FundEvent source, Currency currency) {
-        super(id, "NOT USED", period, source, currency);
+        super();
+        setFields(getFields(id, "Not used", period, source, currency, this));
     }
 
     /**

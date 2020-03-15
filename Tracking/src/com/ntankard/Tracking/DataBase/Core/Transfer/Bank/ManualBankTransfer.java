@@ -1,13 +1,31 @@
 package com.ntankard.Tracking.DataBase.Core.Transfer.Bank;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
-import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
+import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
+import java.util.List;
+
 @ClassExtensionProperties(includeParent = true)
 public class ManualBankTransfer extends BankTransfer {
+
+    //------------------------------------------------------------------------------------------------------------------
+    //################################################### Constructor ##################################################
+    //------------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Get all the fields for this object
+     */
+    public static List<Field<?>> getFields(Integer id, String description,
+                                           Period period, Bank source, Double value,
+                                           Period destinationPeriod, Pool destination, Double destinationValue,
+                                           DataObject container) {
+        return BankTransfer.getFields(id, description, period, source, value, destinationPeriod, destination, destinationValue, container);
+    }
 
     /**
      * Constructor
@@ -16,7 +34,8 @@ public class ManualBankTransfer extends BankTransfer {
     public ManualBankTransfer(Integer id, String description,
                               Period period, Bank source, Double value,
                               Period destinationPeriod, Pool destination, Double destinationValue) {
-        super(id, description, period, source, value, destinationPeriod, destination, destinationValue);
+        super();
+        setFields(getFields(id, description, period, source, value, destinationPeriod, destination, destinationValue, this));
     }
 
     //------------------------------------------------------------------------------------------------------------------

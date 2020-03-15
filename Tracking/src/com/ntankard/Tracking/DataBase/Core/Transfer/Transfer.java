@@ -5,15 +5,16 @@ import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.ClassExtension.SetterProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.DataObject_Field;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
-import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
+import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
-import com.ntankard.Tracking.DataBase.Database.ParameterMap;
+import com.ntankard.Tracking.DataBase.Core.Receipt;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
@@ -23,42 +24,22 @@ import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 @ClassExtensionProperties(includeParent = true)
 public abstract class Transfer extends DataObject implements CurrencyBound {
 
-    // My parents
-    private Period period;
-    private Pool source;
-
-    // My values
-    private String description;
-
     // Not parents on purpose
     private HalfTransfer sourceTransfer = null;
     private HalfTransfer destinationTransfer = null;
 
-    /**
-     * Constructor
-     */
-    @ParameterMap(shouldSave = false)
-    public Transfer(Integer id, String description,
-                    Period period, Pool source) {
-        super(id);
-        if (description == null) throw new IllegalArgumentException("Description is null");
-        if (period == null) throw new IllegalArgumentException("Period is null");
-        if (source == null) throw new IllegalArgumentException("Source is null");
-        this.description = description;
-        this.source = source;
-        this.period = period;
-    }
+    //------------------------------------------------------------------------------------------------------------------
+    //################################################### Constructor ##################################################
+    //------------------------------------------------------------------------------------------------------------------
 
     /**
-     * {@inheritDoc
+     * Get all the fields for this object
      */
-    @Override
-    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 2000000)
-    public List<DataObject> getParents() {
-        List<DataObject> toReturn = new ArrayList<>();
-        toReturn.add(getPeriod());
-        toReturn.add(getSource());
+    public static List<Field<?>> getFields(Integer id, String description, Period period, Pool source, DataObject container) {
+        List<Field<?>> toReturn = DataObject.getFields(id, container);
+        toReturn.add(new Field<>("description", String.class, description, container));
+        toReturn.add(new DataObject_Field<>("period", Period.class, period, container));
+        toReturn.add(new DataObject_Field<>("source", Pool.class, source, container));
         return toReturn;
     }
 
@@ -85,6 +66,9 @@ public abstract class Transfer extends DataObject implements CurrencyBound {
         if (destinationTransfer == null) throw new IllegalStateException("This object has already been removed");
         sourceTransfer.remove();
         destinationTransfer.remove();
+        if (getChildren(Receipt.class).size() != 0) {
+            getChildren(Receipt.class).get(0).remove();
+        }
         super.remove_impl();
     }
 
@@ -125,17 +109,17 @@ public abstract class Transfer extends DataObject implements CurrencyBound {
 
     @DisplayProperties(order = 1100000)
     public String getDescription() {
-        return description;
+        return get("description");
     }
 
     @DisplayProperties(order = 1200000)
     public Period getPeriod() {
-        return period;
+        return get("period");
     }
 
     @DisplayProperties(order = 1300000)
     public Pool getSource() {
-        return source;
+        return get("source");
     }
 
     @DisplayProperties(order = 1400000, dataType = CURRENCY)
@@ -168,31 +152,20 @@ public abstract class Transfer extends DataObject implements CurrencyBound {
     //------------------------------------------------------------------------------------------------------------------
 
     public void setDescription(String description) {
-        if (description == null) throw new IllegalArgumentException("Description is null");
-        this.description = description;
-
+        set("description", description);
         updateHalfTransfer();
     }
 
     @SetterProperties(localSourceMethod = "sourceOptions")
     protected void setSource(Pool source) {
-        if (source == null) throw new IllegalArgumentException("Source is null");
-        if (source.equals(getDestination())) throw new IllegalArgumentException("Destination equals source");
-        this.source.notifyChildUnLink(this);
-        this.source = source;
-        this.source.notifyChildLink(this);
-
+        set("source", source);
         updateHalfTransfer();
         validateParents();
     }
 
     @SetterProperties(localSourceMethod = "sourceOptions")
     public void setPeriod(Period period) {
-        if (period == null) throw new IllegalArgumentException("Period is null");
-        this.period.notifyChildUnLink(this);
-        this.period = period;
-        this.period.notifyChildLink(this);
-
+        set("period", period);
         updateHalfTransfer();
         validateParents();
     }

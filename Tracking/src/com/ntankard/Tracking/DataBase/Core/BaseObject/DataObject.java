@@ -2,33 +2,58 @@ package com.ntankard.Tracking.DataBase.Core.BaseObject;
 
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
-import com.ntankard.Tracking.DataBase.Database.ParameterMap;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.DataObject_Field;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Database.SubContainers.DataObjectContainer;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 import static com.ntankard.ClassExtension.MemberProperties.TRACE_DISPLAY;
 
 public abstract class DataObject {
 
-    // My values
-    private Integer id;
+    /**
+     * The fields for this DataObject
+     */
+    private Map<String, Field<?>> fieldMap = new HashMap<>();
 
     /**
      * All my children
      */
     private DataObjectContainer children = new DataObjectContainer();
 
+    //------------------------------------------------------------------------------------------------------------------
+    //################################################### Constructor ##################################################
+    //------------------------------------------------------------------------------------------------------------------
+
     /**
-     * Constructor
+     * Get all the fields for this object
      */
-    @ParameterMap(shouldSave = false)
-    public DataObject(Integer id) {
-        if (id == null) throw new IllegalArgumentException("ID is null");
-        this.id = id;
+    public static List<Field<?>> getFields(Integer id, DataObject container) {
+        List<Field<?>> toReturn = new ArrayList<>();
+        toReturn.add(new Field<>("id", Integer.class, id, container));
+        return toReturn;
     }
+
+    /**
+     * Set all the fields for this object, should be called by a solid object constructor
+     *
+     * @param fields The fields to set
+     */
+    protected void setFields(List<Field<?>> fields) {
+        for (Field<?> field : fields) {
+            fieldMap.put(field.getName(), field);
+        }
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    //#################################################### General #####################################################
+    //------------------------------------------------------------------------------------------------------------------
 
     /**
      * Get the unique identifier for this data object
@@ -38,7 +63,7 @@ public abstract class DataObject {
     @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
     @DisplayProperties(order = 1000000)
     public Integer getId() {
-        return id;
+        return get("id");
     }
 
     /**
@@ -111,7 +136,17 @@ public abstract class DataObject {
      */
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
     @DisplayProperties(order = 2000000)
-    public abstract List<DataObject> getParents();
+    public List<DataObject> getParents() {
+        List<DataObject> toReturn = new ArrayList<>();
+        for (Map.Entry<String, Field<?>> field : fieldMap.entrySet()) {
+            if (field.getValue().get() != null) {
+                if (DataObject_Field.class.isAssignableFrom(field.getValue().getClass())) {
+                    toReturn.add((DataObject) field.getValue().get());
+                }
+            }
+        }
+        return toReturn;
+    }
 
     /**
      * Notify that a child has linked to this object as its parent
@@ -166,8 +201,37 @@ public abstract class DataObject {
     }
 
     //------------------------------------------------------------------------------------------------------------------
+    //#################################################### Getters #####################################################
+    //------------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Get the value from a specific field
+     *
+     * @param field The Field to get
+     * @param <T>   The type of the Field
+     * @return The value of the field
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T get(String field) {
+        return (T) fieldMap.get(field).get();
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
     //#################################################### Setters #####################################################
     //------------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Set the value from a specific field
+     *
+     * @param field The field to set
+     * @param value THe value to set
+     * @param <T>   The type of the Field
+     */
+    @SuppressWarnings("unchecked")
+    public <T> void set(String field, T value) {
+        ((Field<T>) fieldMap.get(field)).set(value);
+    }
+
 
     /**
      * Get possible options that a field will accept
@@ -183,7 +247,7 @@ public abstract class DataObject {
     /**
      * Check that all parents are linked properly
      */
-    protected void validateParents() {
+    public void validateParents() {
         for (DataObject dataObject : getParents()) {
             if (!dataObject.getChildren().contains(this)) {
                 throw new RuntimeException("Not registered with a parent");

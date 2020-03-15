@@ -1,8 +1,10 @@
 package com.ntankard.Tracking.DataBase.Core.RecurringPayment;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.*;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
-import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
+import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.RecurringBankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePayFundTransfer;
@@ -12,16 +14,30 @@ import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.Filter.SetFilter;
 import com.ntankard.Tracking.DataBase.Interface.Set.TwoParent_Children_Set;
 
+import java.util.List;
+
 @ClassExtensionProperties(includeParent = true)
 @ObjectFactory(builtObjects = {RePayFundTransfer.class})
 public class FixedRecurringPayment extends RecurringPayment {
+
+    //------------------------------------------------------------------------------------------------------------------
+    //################################################### Constructor ##################################################
+    //------------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Get all the fields for this object
+     */
+    public static List<Field<?>> getFields(Integer id, String name, Double value, ExistingPeriod start, ExistingPeriod end, Bank bank, Category category, DataObject container) {
+        return RecurringPayment.getFields(id, name, value, start, end, bank, category, container);
+    }
 
     /**
      * Constructor
      */
     @ParameterMap(parameterGetters = {"getId", "getName", "getValue", "getStart", "getEnd", "getBank", "getCategory"})
     public FixedRecurringPayment(Integer id, String name, Double value, ExistingPeriod start, ExistingPeriod end, Bank bank, Category category) {
-        super(id, name, value, start, end, bank, category);
+        super();
+        setFields(getFields(id, name, value, start, end, bank, category, this));
     }
 
     /**

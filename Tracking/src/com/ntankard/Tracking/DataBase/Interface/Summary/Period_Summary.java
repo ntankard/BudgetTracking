@@ -4,12 +4,14 @@ import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.DataObject_Field;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
-import com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank;
+import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.SavingsFundEvent;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.BankTransfer;
@@ -17,12 +19,15 @@ import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePayFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.HalfTransfer;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
-import com.ntankard.Tracking.DataBase.Interface.Set.*;
+import com.ntankard.Tracking.DataBase.Interface.Set.Array_Set;
 import com.ntankard.Tracking.DataBase.Interface.Set.Extended.Sum.Transfer_SumSet;
 import com.ntankard.Tracking.DataBase.Interface.Set.Factory.PoolSummary.BankSummary_Set;
 import com.ntankard.Tracking.DataBase.Interface.Set.Factory.PoolSummary.CategorySummary_Set;
 import com.ntankard.Tracking.DataBase.Interface.Set.Factory.PoolSummary.FundEventSummary_Set;
 import com.ntankard.Tracking.DataBase.Interface.Set.Filter.TransferType_HalfTransfer_Filter;
+import com.ntankard.Tracking.DataBase.Interface.Set.ObjectSet;
+import com.ntankard.Tracking.DataBase.Interface.Set.OneParent_Children_Set;
+import com.ntankard.Tracking.DataBase.Interface.Set.TwoParent_Children_Set;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Bank_Summary;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Category_Summary;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.FundEvent_Summary;
@@ -37,18 +42,26 @@ import static com.ntankard.ClassExtension.MemberProperties.TRACE_DISPLAY;
 @ClassExtensionProperties(includeParent = true)
 public class Period_Summary extends DataObject implements CurrencyBound, Ordered {
 
+    //------------------------------------------------------------------------------------------------------------------
+    //################################################### Constructor ##################################################
+    //------------------------------------------------------------------------------------------------------------------
+
     /**
-     * The period to summarise
+     * Get all the fields for this object
      */
-    private Period period;
+    public static List<Field<?>> getFields(Period period, DataObject container) {
+        List<Field<?>> toReturn = DataObject.getFields(-1, container);
+        toReturn.add(new DataObject_Field<>("period", Period.class, period, container));
+        return toReturn;
+    }
 
     /**
      * Constructor
      */
     @ParameterMap(shouldSave = false)
     public Period_Summary(Period period) {
-        super(-1);
-        this.period = period;
+        super();
+        setFields(getFields(period, this));
     }
 
     /**
@@ -78,9 +91,9 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
     @DisplayProperties(order = 3, dataType = CURRENCY)
     public Double getBankStart() {
-        if (period instanceof ExistingPeriod) {
+        if (getPeriod() instanceof ExistingPeriod) {
             double value = 0.0;
-            for (Bank_Summary bank_summary : new BankSummary_Set((ExistingPeriod) period).get()) {
+            for (Bank_Summary bank_summary : new BankSummary_Set((ExistingPeriod) getPeriod()).get()) {
                 value += bank_summary.getStart() * bank_summary.getCurrency().getToPrimary();
             }
             return Currency.round(value);
@@ -90,9 +103,9 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
 
     @DisplayProperties(order = 4, dataType = CURRENCY)
     public Double getBankEnd() {
-        if (period instanceof ExistingPeriod) {
+        if (getPeriod() instanceof ExistingPeriod) {
             double value = 0.0;
-            for (Bank_Summary bank_summary : new BankSummary_Set((ExistingPeriod) period).get()) {
+            for (Bank_Summary bank_summary : new BankSummary_Set((ExistingPeriod) getPeriod()).get()) {
                 value += bank_summary.getEnd() * bank_summary.getCurrency().getToPrimary();
             }
             return Currency.round(value);
@@ -109,7 +122,7 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
     @DisplayProperties(order = 6, dataType = CURRENCY, dataContext = ZERO_TARGET)
     public Double getCategoryDelta() {
         double value = 0.0;
-        for (Category_Summary category_summary : new CategorySummary_Set(period).get()) {
+        for (Category_Summary category_summary : new CategorySummary_Set(getPeriod()).get()) {
             value += category_summary.getTransferSum();
         }
         return Currency.round(value);
@@ -119,7 +132,7 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
     @DisplayProperties(order = 7, dataType = CURRENCY)
     public Double getFundEventStart() {
         double value = 0.0;
-        for (FundEvent_Summary fundEvent_summary : new FundEventSummary_Set(period).get()) {
+        for (FundEvent_Summary fundEvent_summary : new FundEventSummary_Set(getPeriod()).get()) {
             value += fundEvent_summary.getStart() * fundEvent_summary.getCurrency().getToPrimary();
         }
         return Currency.round(value);
@@ -129,7 +142,7 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
     @DisplayProperties(order = 8, dataType = CURRENCY)
     public Double getFundEventEnd() {
         double value = 0.0;
-        for (FundEvent_Summary fundEvent_summary : new FundEventSummary_Set(period).get()) {
+        for (FundEvent_Summary fundEvent_summary : new FundEventSummary_Set(getPeriod()).get()) {
             value += fundEvent_summary.getEnd() * fundEvent_summary.getCurrency().getToPrimary();
         }
         return value;
@@ -147,27 +160,27 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
     @DisplayProperties(order = 10, dataContext = NOT_FALSE)
     public Boolean isAllSummaryValid() {
-        if (period instanceof ExistingPeriod) {
-            for (Bank_Summary summary : new BankSummary_Set((ExistingPeriod) period).get()) {
+        if (getPeriod() instanceof ExistingPeriod) {
+            for (Bank_Summary summary : new BankSummary_Set((ExistingPeriod) getPeriod()).get()) {
                 if (!summary.isValid()) {
                     return false;
                 }
             }
         }
 
-        for (Category_Summary summary : new CategorySummary_Set(period).get()) {
+        for (Category_Summary summary : new CategorySummary_Set(getPeriod()).get()) {
             if (!summary.isValid()) {
                 return false;
             }
         }
 
-        for (FundEvent_Summary summary : new FundEventSummary_Set(period).get()) {
+        for (FundEvent_Summary summary : new FundEventSummary_Set(getPeriod()).get()) {
             if (!summary.isValid()) {
                 return false;
             }
         }
 
-        for (FundEvent_Summary summary : new FundEventSummary_Set(period).get()) {
+        for (FundEvent_Summary summary : new FundEventSummary_Set(getPeriod()).get()) {
             if (!summary.isValid()) {
                 return false;
             }
@@ -193,12 +206,12 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
         for (Currency currency1 : TrackingDatabase.get().get(Currency.class)) {
             for (Currency currency2 : TrackingDatabase.get().get(Currency.class)) {
                 if (!currency1.equals(currency2)) {
-                    Double expectRate = currency2.getToPrimary() / currency1.getToPrimary();
+                    double expectRate = currency2.getToPrimary() / currency1.getToPrimary();
                     Double rate = getExchangeRate(currency1, currency2);
                     if (rate == 0.0) {
                         continue;
                     }
-                    Double delta = Math.abs(expectRate - rate);
+                    double delta = Math.abs(expectRate - rate);
                     if (delta > expectRate * 0.1) {
                         return false;
                     }
@@ -227,7 +240,7 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
         double sum = 0.0;
         for (Category category : TrackingDatabase.get().get(Category.class)) {
 
-            ObjectSet<HalfTransfer> set = new TwoParent_Children_Set<>(HalfTransfer.class, period, category);
+            ObjectSet<HalfTransfer> set = new TwoParent_Children_Set<>(HalfTransfer.class, getPeriod(), category);
             List<HalfTransfer> data = set.get();
             Object toRemove = null;
             for (HalfTransfer transfer : data) {
@@ -259,7 +272,7 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
     @DisplayProperties(order = 16, dataType = CURRENCY)
     public Double getTaxableIncome() {
         Category category = TrackingDatabase.get().getSpecialValue(Category.class, Category.TAXABLE);
-        ObjectSet<HalfTransfer> objectSet = new TwoParent_Children_Set<>(HalfTransfer.class, period, category, new TransferType_HalfTransfer_Filter(BankTransfer.class));
+        ObjectSet<HalfTransfer> objectSet = new TwoParent_Children_Set<>(HalfTransfer.class, getPeriod(), category, new TransferType_HalfTransfer_Filter(BankTransfer.class));
         return Currency.round(new Transfer_SumSet<>(objectSet, category).getTotal());
     }
 
@@ -272,7 +285,7 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
     @DisplayProperties(order = 17, dataType = CURRENCY)
     public Double getCurrencyValueLoss() {
         double value = 0.0;
-        for (BankTransfer bankTransfer : period.getChildren(BankTransfer.class)) {
+        for (BankTransfer bankTransfer : getPeriod().getChildren(BankTransfer.class)) {
             HalfTransfer halfSource = bankTransfer.getSourceTransfer();
             HalfTransfer halfDestination = bankTransfer.getDestinationTransfer();
             double source = halfSource.getValue() * halfSource.getCurrency().getToPrimary();
@@ -292,7 +305,7 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
     public Double getExchangeRate(Currency currency1, Currency currency2) {
         double primarySum = 0.0;
         double secondarySum = 0.0;
-        for (BankTransfer bankTransfer : period.getChildren(BankTransfer.class)) {
+        for (BankTransfer bankTransfer : getPeriod().getChildren(BankTransfer.class)) {
             HalfTransfer halfSource = bankTransfer.getSourceTransfer();
             HalfTransfer halfDestination = bankTransfer.getDestinationTransfer();
 
@@ -319,10 +332,10 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
      * @return The end balance of all banks with the listed currency
      */
     public Double getBankEnd(Currency currency) {
-        if (period instanceof ExistingPeriod) {
+        if (getPeriod() instanceof ExistingPeriod) {
             double value = 0.0;
             for (Bank bank : new OneParent_Children_Set<>(Bank.class, currency).get()) {
-                Bank_Summary summary = new Bank_Summary((ExistingPeriod) period, bank);
+                Bank_Summary summary = new Bank_Summary((ExistingPeriod) getPeriod(), bank);
                 value += summary.getEnd() * summary.getCurrency().getToPrimary();
             }
             return value;
@@ -336,7 +349,7 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
 
     @DisplayProperties(order = 2)
     public Period getPeriod() {
-        return period;
+        return get("period");
     }
 
     @MemberProperties(verbosityLevel = TRACE_DISPLAY)

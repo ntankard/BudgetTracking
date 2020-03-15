@@ -5,6 +5,7 @@ import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -63,12 +64,13 @@ class NamedDataObjectTest {
     private static class NamedDataObject_Inst extends NamedDataObject {
 
         NamedDataObject_Inst(Integer id, String name) {
-            super(id, name);
+            super();
+            setFields(getFields(id, name, this));
         }
 
         @Override
         public List<DataObject> getParents() {
-            return null;
+            return new ArrayList<>();
         }
     }
 }

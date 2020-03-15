@@ -165,7 +165,8 @@ class DataObjectContainerTest {
 
     private static class Layer1_ALT_DataObject_New extends DataObject {
         Layer1_ALT_DataObject_New(Integer id) {
-            super(id);
+            super();
+            setFields(getFields(id, this));
         }
 
         @Override
@@ -176,7 +177,8 @@ class DataObjectContainerTest {
 
     private static class Layer1_DataObject_New extends DataObject {
         Layer1_DataObject_New(Integer id) {
-            super(id);
+            super();
+            setFields(getFields(id, this));
         }
 
         @Override

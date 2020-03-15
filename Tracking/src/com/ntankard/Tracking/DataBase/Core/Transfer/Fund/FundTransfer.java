@@ -5,48 +5,35 @@ import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.ClassExtension.SetterProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.DataObject_Field;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Transfer;
-import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
 public abstract class FundTransfer extends Transfer {
 
-    // My parents
-    private Pool destination;
-    private Currency currency;
+    //------------------------------------------------------------------------------------------------------------------
+    //################################################### Constructor ##################################################
+    //------------------------------------------------------------------------------------------------------------------
 
     /**
-     * Constructor
+     * Get all the fields for this object
      */
-    @ParameterMap(shouldSave = false)
-    public FundTransfer(Integer id, String description,
-                        Period period, FundEvent source, Currency currency) {
-        super(id, description, period, source);
-        if (currency == null) throw new IllegalArgumentException("Currency is null");
-        this.destination = source.getCategory();
-        this.currency = currency;
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 2000000)
-    public List<DataObject> getParents() {
-        List<DataObject> toReturn = super.getParents();
-        toReturn.add(getCurrency());
-        toReturn.add(getDestination());
+    public static List<Field<?>> getFields(Integer id, String description,
+                                           Period period, FundEvent source, Currency currency, DataObject container) {
+        List<Field<?>> toReturn = Transfer.getFields(id, description, period, source, container);
+        toReturn.add(new Field<>("description", String.class, description, container));
+        toReturn.add(new DataObject_Field<>("destination", Pool.class, source.getCategory(), container));
+        toReturn.add(new DataObject_Field<>("currency", Currency.class, currency, container));
         return toReturn;
     }
 
@@ -86,13 +73,13 @@ public abstract class FundTransfer extends Transfer {
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     @DisplayProperties(order = 1500000)
     public Currency getCurrency() {
-        return currency;
+        return get("currency");
     }
 
     @Override
     @DisplayProperties(order = 1600000)
     public Pool getDestination() {
-        return destination;
+        return get("destination");
     }
 
     // 1700000----getSourceTransfer
@@ -112,22 +99,14 @@ public abstract class FundTransfer extends Transfer {
 
     public void setDestination() {
         Pool destination = ((FundEvent) getSource()).getCategory();
-        if (destination == null) throw new IllegalArgumentException("Destination is null");
-        this.destination.notifyChildUnLink(this);
-        this.destination = destination;
-        this.destination.notifyChildLink(this);
-
+        set("destination", destination);
         updateHalfTransfer();
         validateParents();
     }
 
     @SetterProperties(localSourceMethod = "sourceOptions")
     public void setCurrency(Currency currency) {
-        if (currency == null) throw new IllegalArgumentException("Currency is null");
-        this.currency.notifyChildUnLink(this);
-        this.currency = currency;
-        this.currency.notifyChildLink(this);
-
+        set("currency", currency);
         updateHalfTransfer();
         validateParents();
     }

@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
-import static com.ntankard.TestUtil.ClassInspectionUtil.getAllClasses;
+import static com.ntankard.TestUtil.ClassInspectionUtil.getSolidClasses;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ParameterMapTest {
@@ -18,7 +18,7 @@ public class ParameterMapTest {
     @SuppressWarnings("rawtypes")
     @Test
     void parameterMapUse() {
-        for (Class<? extends DataObject> aClass : getAllClasses()) {
+        for (Class<? extends DataObject> aClass : getSolidClasses()) {
 
             // Get the constructor
             Constructor[] constructors = aClass.getConstructors();

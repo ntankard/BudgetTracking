@@ -1,6 +1,8 @@
 package com.ntankard.Tracking.DataBase.Core.Pool.FundEvent;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
@@ -9,17 +11,43 @@ import com.ntankard.Tracking.DataBase.Database.ObjectFactory;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Period_Summary;
 
+import java.util.List;
+
 @ClassExtensionProperties(includeParent = true)
 @ObjectFactory(builtObjects = {RePayFundTransfer.class})
 public class SavingsFundEvent extends FundEvent {
+
+    //------------------------------------------------------------------------------------------------------------------
+    //################################################### Constructor ##################################################
+    //------------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Get all the fields for this object
+     */
+    public static List<Field<?>> getFields(Integer id, String name, Category category, DataObject container) {
+        return FundEvent.getFields(id, name, category, container);
+    }
 
     /**
      * Constructor
      */
     @ParameterMap(parameterGetters = {"getId", "getCategory"})
     public SavingsFundEvent(Integer id, Category category) {
-        super(id, "Savings", category);
+        super();
+        setFields(getFields(id, "Saving", category, this));
     }
+
+    /**
+     * {@inheritDoc
+     */
+    @Override
+    public void add() {
+        super.add();
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    //################################################### Speciality ###################################################
+    //------------------------------------------------------------------------------------------------------------------
 
     /**
      * {@inheritDoc
@@ -43,14 +71,6 @@ public class SavingsFundEvent extends FundEvent {
     @Override
     public Double getCharge(Period period) {
         return new Period_Summary(period).getNonSaveCategoryDelta();
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public void add() {
-        super.add();
     }
 
     //------------------------------------------------------------------------------------------------------------------
