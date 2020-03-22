@@ -32,7 +32,6 @@ public class SavingsFundEvent extends FundEvent {
     /**
      * Create a new SavingsFundEvent object
      */
-    @SuppressWarnings("unchecked")
     public static SavingsFundEvent make(Integer id, Category category) {
         return assembleDataObject(SavingsFundEvent.getFields(), new SavingsFundEvent()
                 , "getId", id

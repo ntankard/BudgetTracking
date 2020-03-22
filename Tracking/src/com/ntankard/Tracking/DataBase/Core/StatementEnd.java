@@ -6,6 +6,7 @@ import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.DataObject_Field;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.SourceDriver.DataObjectField_SourceDriver;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
@@ -30,8 +31,10 @@ public class StatementEnd extends DataObject implements CurrencyBound, Ordered {
     public static List<Field<?>> getFields() {
         List<Field<?>> toReturn = DataObject.getFields();
         toReturn.add(new DataObject_Field<>("getPeriod", ExistingPeriod.class));
-        toReturn.add(new DataObject_Field<>("getBank", Bank.class));
+        DataObject_Field<?> bank = new DataObject_Field<>("getBank", Bank.class);
+        toReturn.add(bank);
         toReturn.add(new Field<>("getEnd", Double.class));
+        toReturn.add(new Field<>("getCurrency", Currency.class).addSourceDriver(new DataObjectField_SourceDriver<>(bank, "getCurrency")));
         return toReturn;
     }
 
@@ -72,7 +75,7 @@ public class StatementEnd extends DataObject implements CurrencyBound, Ordered {
     @Override
     @DisplayProperties(order = 1400000)
     public Currency getCurrency() {
-        return getBank().getCurrency();
+        return get("getCurrency");
     }
 
     @Override

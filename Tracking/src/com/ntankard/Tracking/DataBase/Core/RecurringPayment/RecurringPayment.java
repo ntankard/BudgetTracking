@@ -8,6 +8,7 @@ import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.DataObject_Field;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Filter.Ordered_FieldFilter;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.SourceDriver.DataObjectField_SourceDriver;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.NamedDataObject;
 import com.ntankard.Tracking.DataBase.Core.Currency;
@@ -36,8 +37,10 @@ public abstract class RecurringPayment extends NamedDataObject implements Curren
     public static List<Field<?>> getFields() {
         List<Field<?>> toReturn = NamedDataObject.getFields();
         toReturn.add(new Field<>("getValue", Double.class));
-        toReturn.add(new DataObject_Field<>("getBank", Bank.class));
+        DataObject_Field<?> bank = new DataObject_Field<>("getBank", Bank.class);
+        toReturn.add(bank);
         toReturn.add(new DataObject_Field<>("getCategory", Category.class));
+        toReturn.add(new Field<>("getCurrency", Currency.class).addSourceDriver(new DataObjectField_SourceDriver<>(bank, "getCurrency")));
 
         Field<ExistingPeriod> startField = new DataObject_Field<>("getStart", ExistingPeriod.class);
         Field<ExistingPeriod> endField = new DataObject_Field<>("getEnd", ExistingPeriod.class, true);
@@ -100,7 +103,7 @@ public abstract class RecurringPayment extends NamedDataObject implements Curren
     @DisplayProperties(order = 1160000)
     @Override
     public Currency getCurrency() {
-        return getBank().getCurrency();
+        return get("getCurrency");
     }
 
     // 2000000--getParents (Above)
