@@ -5,6 +5,7 @@ import com.ntankard.ClassExtension.MemberClass;
 import com.ntankard.ClassExtension.SetterProperties;
 import com.ntankard.TestUtil.ClassInspectionUtil;
 import com.ntankard.TestUtil.DataAccessUntil;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -79,7 +80,8 @@ class DataObjectTest {
      */
     @Test
     void notifyParentUnLink() {
-        DataObject_Inst parent = new DataObject_Inst(0, null);
+        DataObject_Inst_NoParent parent = new DataObject_Inst_NoParent(0);
+        parent.add();
 
         DataObject_Inst child1 = new DataObject_Inst(1, parent);
         DataObject_Inst child2 = new DataObject_Inst(2, parent);
@@ -257,13 +259,29 @@ class DataObjectTest {
     //################################################ Special Objects #################################################
     //------------------------------------------------------------------------------------------------------------------
 
+    private static class DataObject_Inst_NoParent extends DataObject {
+
+        @SuppressWarnings("unchecked")
+        DataObject_Inst_NoParent(Integer id) {
+            super();
+            List<Field<?>> fields = DataObject.getFields();
+            fields.forEach(field -> field.setContainer(this));
+            ((Field<Integer>) makeFieldMap(fields).get("getId")).initialSet(id);
+            setFields(fields);
+        }
+    }
+
     private static class DataObject_Inst extends DataObject {
 
         private DataObject parent;
 
+        @SuppressWarnings("unchecked")
         DataObject_Inst(Integer id, DataObject parent) {
             super();
-            setFields(getFields(id, this));
+            List<Field<?>> fields = DataObject.getFields();
+            fields.forEach(field -> field.setContainer(this));
+            ((Field<Integer>) makeFieldMap(fields).get("getId")).initialSet(id);
+            setFields(fields);
             this.parent = parent;
         }
 

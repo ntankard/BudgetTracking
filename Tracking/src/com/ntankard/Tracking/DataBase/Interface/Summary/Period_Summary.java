@@ -39,6 +39,7 @@ import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
 import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
 import static com.ntankard.ClassExtension.MemberProperties.TRACE_DISPLAY;
 
+@ParameterMap(shouldSave = false)
 @ClassExtensionProperties(includeParent = true)
 public class Period_Summary extends DataObject implements CurrencyBound, Ordered {
 
@@ -49,19 +50,20 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields(Period period, DataObject container) {
-        List<Field<?>> toReturn = DataObject.getFields(-1, container);
-        toReturn.add(new DataObject_Field<>("period", Period.class, period, container));
+    public static List<Field<?>> getFields() {
+        List<Field<?>> toReturn = DataObject.getFields();
+        toReturn.add(new DataObject_Field<>("getPeriod", Period.class));
         return toReturn;
     }
 
     /**
-     * Constructor
+     * Create a new StatementEnd object
      */
-    @ParameterMap(shouldSave = false)
-    public Period_Summary(Period period) {
-        super();
-        setFields(getFields(period, this));
+    public static Period_Summary make(Period period) {
+        return assembleDataObject(Period_Summary.getFields(), new Period_Summary()
+                , "getId", -1
+                , "getPeriod", period
+        );
     }
 
     /**
@@ -335,7 +337,7 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
         if (getPeriod() instanceof ExistingPeriod) {
             double value = 0.0;
             for (Bank bank : new OneParent_Children_Set<>(Bank.class, currency).get()) {
-                Bank_Summary summary = new Bank_Summary((ExistingPeriod) getPeriod(), bank);
+                Bank_Summary summary = Bank_Summary.make((ExistingPeriod) getPeriod(), bank);
                 value += summary.getEnd() * summary.getCurrency().getToPrimary();
             }
             return value;
@@ -349,7 +351,7 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
 
     @DisplayProperties(order = 2)
     public Period getPeriod() {
-        return get("period");
+        return get("getPeriod");
     }
 
     @MemberProperties(verbosityLevel = TRACE_DISPLAY)

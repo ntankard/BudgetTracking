@@ -1,7 +1,6 @@
 package com.ntankard.Tracking.DataBase.Core.RecurringPayment;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.*;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
@@ -9,7 +8,6 @@ import com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.RecurringBankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePayFundTransfer;
 import com.ntankard.Tracking.DataBase.Database.ObjectFactory;
-import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.Filter.SetFilter;
 import com.ntankard.Tracking.DataBase.Interface.Set.TwoParent_Children_Set;
@@ -27,17 +25,23 @@ public class FixedRecurringPayment extends RecurringPayment {
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields(Integer id, String name, Double value, ExistingPeriod start, ExistingPeriod end, Bank bank, Category category, DataObject container) {
-        return RecurringPayment.getFields(id, name, value, start, end, bank, category, container);
+    public static List<Field<?>> getFields() {
+        return RecurringPayment.getFields();
     }
 
     /**
-     * Constructor
+     * Create a new FixedRecurringPayment object
      */
-    @ParameterMap(parameterGetters = {"getId", "getName", "getValue", "getStart", "getEnd", "getBank", "getCategory"})
-    public FixedRecurringPayment(Integer id, String name, Double value, ExistingPeriod start, ExistingPeriod end, Bank bank, Category category) {
-        super();
-        setFields(getFields(id, name, value, start, end, bank, category, this));
+    public static FixedRecurringPayment make(Integer id, String name, Double value, ExistingPeriod start, ExistingPeriod end, Bank bank, Category category) {
+        return assembleDataObject(FixedRecurringPayment.getFields(), new FixedRecurringPayment()
+                , "getId", id
+                , "getName", name
+                , "getValue", value
+                , "getStart", start
+                , "getEnd", end
+                , "getBank", bank
+                , "getCategory", category
+        );
     }
 
     /**
@@ -79,7 +83,7 @@ public class FixedRecurringPayment extends RecurringPayment {
                     //throw new RuntimeException("Duplicate payment"); // @TODO need a better check for this, mby warning?
                 }
                 if (size == 0) {
-                    new RecurringBankTransfer(TrackingDatabase.get().getNextId(), period, getBank(), getValue(), null, getCategory(), null, this).add();
+                    RecurringBankTransfer.make(TrackingDatabase.get().getNextId(), period, getBank(), getValue(), null, getCategory(), null, this).add();
                 }
             }
         }

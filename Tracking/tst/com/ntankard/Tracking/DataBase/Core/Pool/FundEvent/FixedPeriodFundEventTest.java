@@ -37,11 +37,11 @@ class FixedPeriodFundEventTest {
         ExistingPeriod period = TrackingDatabase.get().get(ExistingPeriod.class).get(0);
         Category category = TrackingDatabase.get().get(Category.class).get(0);
 
-        assertThrows(IllegalArgumentException.class, () -> new FixedPeriodFundEvent(-1, "", null, period, 1));
-        assertThrows(IllegalArgumentException.class, () -> new FixedPeriodFundEvent(-1, "", category, null, 1));
-        assertThrows(IllegalArgumentException.class, () -> new FixedPeriodFundEvent(-1, "", category, period, 0));
-        assertThrows(IllegalArgumentException.class, () -> new FixedPeriodFundEvent(-1, "", category, period, -1));
-        assertDoesNotThrow(() -> new FixedPeriodFundEvent(-1, "", category, period, 1));
+        assertThrows(IllegalArgumentException.class, () -> FixedPeriodFundEvent.make(-1, "", null, period, 1));
+        assertThrows(IllegalArgumentException.class, () -> FixedPeriodFundEvent.make(-1, "", category, null, 1));
+        assertThrows(IllegalArgumentException.class, () -> FixedPeriodFundEvent.make(-1, "", category, period, 0));
+        assertThrows(IllegalArgumentException.class, () -> FixedPeriodFundEvent.make(-1, "", category, period, -1));
+        assertDoesNotThrow(() -> FixedPeriodFundEvent.make(-1, "", category, period, 1));
     }
 
     @Test
@@ -54,7 +54,7 @@ class FixedPeriodFundEventTest {
         int end = 5;
         Category category = TrackingDatabase.get().get(Category.class).get(0);
 
-        FixedPeriodFundEvent fixedPeriodFundEvent = new FixedPeriodFundEvent(-1, "", category, (ExistingPeriod) periods.get(start), 2);
+        FixedPeriodFundEvent fixedPeriodFundEvent = FixedPeriodFundEvent.make(-1, "", category, (ExistingPeriod) periods.get(start), 2);
         fixedPeriodFundEvent.notifyParentLink();
 
         assertFalse(fixedPeriodFundEvent.isActiveThisPeriod(periods.get(start - 2)));
@@ -65,7 +65,7 @@ class FixedPeriodFundEventTest {
         assertFalse(fixedPeriodFundEvent.isActiveThisPeriod(periods.get(end + 1)));
         assertFalse(fixedPeriodFundEvent.isActiveThisPeriod(periods.get(end + 2)));
 
-        ManualFundTransfer useCategoryFundTransfer1 = new ManualFundTransfer(-2, "", periods.get(start), fixedPeriodFundEvent, 50.0, TrackingDatabase.get().getDefault(Currency.class));
+        ManualFundTransfer useCategoryFundTransfer1 = ManualFundTransfer.make(-2, "", periods.get(start), fixedPeriodFundEvent, 50.0, TrackingDatabase.get().getDefault(Currency.class));
         useCategoryFundTransfer1.notifyParentLink();
         assertFalse(fixedPeriodFundEvent.isActiveThisPeriod(periods.get(start - 2)));
         assertFalse(fixedPeriodFundEvent.isActiveThisPeriod(periods.get(start - 1)));
@@ -76,7 +76,7 @@ class FixedPeriodFundEventTest {
         assertFalse(fixedPeriodFundEvent.isActiveThisPeriod(periods.get(end + 2)));
         useCategoryFundTransfer1.notifyParentUnLink();
 
-        ManualFundTransfer useCategoryFundTransfer2 = new ManualFundTransfer(-2, "", periods.get(start + 1), fixedPeriodFundEvent, 50.0, TrackingDatabase.get().getDefault(Currency.class));
+        ManualFundTransfer useCategoryFundTransfer2 = ManualFundTransfer.make(-2, "", periods.get(start + 1), fixedPeriodFundEvent, 50.0, TrackingDatabase.get().getDefault(Currency.class));
         useCategoryFundTransfer2.notifyParentLink();
         assertFalse(fixedPeriodFundEvent.isActiveThisPeriod(periods.get(start - 2)));
         assertFalse(fixedPeriodFundEvent.isActiveThisPeriod(periods.get(start - 1)));
@@ -87,7 +87,7 @@ class FixedPeriodFundEventTest {
         assertFalse(fixedPeriodFundEvent.isActiveThisPeriod(periods.get(end + 2)));
         useCategoryFundTransfer2.notifyParentUnLink();
 
-        ManualFundTransfer useCategoryFundTransfer3 = new ManualFundTransfer(-2, "", periods.get(start - 2), fixedPeriodFundEvent, 50.0, TrackingDatabase.get().getDefault(Currency.class));
+        ManualFundTransfer useCategoryFundTransfer3 = ManualFundTransfer.make(-2, "", periods.get(start - 2), fixedPeriodFundEvent, 50.0, TrackingDatabase.get().getDefault(Currency.class));
         useCategoryFundTransfer3.notifyParentLink();
         assertTrue(fixedPeriodFundEvent.isActiveThisPeriod(periods.get(start - 2)));
         assertTrue(fixedPeriodFundEvent.isActiveThisPeriod(periods.get(start - 1)));
@@ -98,7 +98,7 @@ class FixedPeriodFundEventTest {
         assertFalse(fixedPeriodFundEvent.isActiveThisPeriod(periods.get(end + 2)));
         useCategoryFundTransfer3.notifyParentUnLink();
 
-        ManualFundTransfer useCategoryFundTransfer4 = new ManualFundTransfer(-2, "", periods.get(start - 1), fixedPeriodFundEvent, 50.0, TrackingDatabase.get().getDefault(Currency.class));
+        ManualFundTransfer useCategoryFundTransfer4 = ManualFundTransfer.make(-2, "", periods.get(start - 1), fixedPeriodFundEvent, 50.0, TrackingDatabase.get().getDefault(Currency.class));
         useCategoryFundTransfer4.notifyParentLink();
         assertFalse(fixedPeriodFundEvent.isActiveThisPeriod(periods.get(start - 2)));
         assertTrue(fixedPeriodFundEvent.isActiveThisPeriod(periods.get(start - 1)));
@@ -109,7 +109,7 @@ class FixedPeriodFundEventTest {
         assertFalse(fixedPeriodFundEvent.isActiveThisPeriod(periods.get(end + 2)));
         useCategoryFundTransfer4.notifyParentUnLink();
 
-        ManualFundTransfer useCategoryFundTransfer5 = new ManualFundTransfer(-2, "", periods.get(end + 1), fixedPeriodFundEvent, 50.0, TrackingDatabase.get().getDefault(Currency.class));
+        ManualFundTransfer useCategoryFundTransfer5 = ManualFundTransfer.make(-2, "", periods.get(end + 1), fixedPeriodFundEvent, 50.0, TrackingDatabase.get().getDefault(Currency.class));
         useCategoryFundTransfer5.notifyParentLink();
         assertFalse(fixedPeriodFundEvent.isActiveThisPeriod(periods.get(start - 2)));
         assertFalse(fixedPeriodFundEvent.isActiveThisPeriod(periods.get(start - 1)));
@@ -120,7 +120,7 @@ class FixedPeriodFundEventTest {
         assertFalse(fixedPeriodFundEvent.isActiveThisPeriod(periods.get(end + 2)));
         useCategoryFundTransfer5.notifyParentUnLink();
 
-        ManualFundTransfer useCategoryFundTransfer6 = new ManualFundTransfer(-2, "", periods.get(end), fixedPeriodFundEvent, 50.0, TrackingDatabase.get().getDefault(Currency.class));
+        ManualFundTransfer useCategoryFundTransfer6 = ManualFundTransfer.make(-2, "", periods.get(end), fixedPeriodFundEvent, 50.0, TrackingDatabase.get().getDefault(Currency.class));
         useCategoryFundTransfer6.notifyParentLink();
         assertFalse(fixedPeriodFundEvent.isActiveThisPeriod(periods.get(start - 2)));
         assertFalse(fixedPeriodFundEvent.isActiveThisPeriod(periods.get(start - 1)));
@@ -141,10 +141,10 @@ class FixedPeriodFundEventTest {
         int period = 0;
         Category category = TrackingDatabase.get().get(Category.class).get(0);
 
-        FixedPeriodFundEvent fixedPeriodFundEvent = new FixedPeriodFundEvent(-1, "", category, (ExistingPeriod) periods.get(period + 1), 1);
+        FixedPeriodFundEvent fixedPeriodFundEvent = FixedPeriodFundEvent.make(-1, "", category, (ExistingPeriod) periods.get(period + 1), 1);
         fixedPeriodFundEvent.notifyParentLink();
 
-        ManualFundTransfer useCategoryFundTransfer = new ManualFundTransfer(-2, "", periods.get(period), fixedPeriodFundEvent, 50.0, TrackingDatabase.get().getDefault(Currency.class));
+        ManualFundTransfer useCategoryFundTransfer = ManualFundTransfer.make(-2, "", periods.get(period), fixedPeriodFundEvent, 50.0, TrackingDatabase.get().getDefault(Currency.class));
         useCategoryFundTransfer.notifyParentLink();
         assertFalse(fixedPeriodFundEvent.isChargeThisPeriod(periods.get(period)));
         assertTrue(fixedPeriodFundEvent.isChargeThisPeriod(periods.get(period + 1)));
@@ -187,7 +187,7 @@ class FixedPeriodFundEventTest {
         int period = 0;
         Category category = TrackingDatabase.get().get(Category.class).get(0);
 
-        FixedPeriodFundEvent fixedPeriodFundEvent = new FixedPeriodFundEvent(-1, "", category, (ExistingPeriod) periods.get(period + 1), 1);
+        FixedPeriodFundEvent fixedPeriodFundEvent = FixedPeriodFundEvent.make(-1, "", category, (ExistingPeriod) periods.get(period + 1), 1);
         fixedPeriodFundEvent.add();
         assertEquals(-0.0, fixedPeriodFundEvent.getCharge(periods.get(period)));
         assertEquals(0.0, fixedPeriodFundEvent.getCharge(periods.get(period + 1)));
@@ -195,7 +195,7 @@ class FixedPeriodFundEventTest {
         assertEquals(-0.0, fixedPeriodFundEvent.getCharge(periods.get(period + 3)));
 
         double testValue = 500.0;
-        ManualFundTransfer useCategoryFundTransfer = new ManualFundTransfer(-2, "", periods.get(period), fixedPeriodFundEvent, testValue, TrackingDatabase.get().getDefault(Currency.class));
+        ManualFundTransfer useCategoryFundTransfer = ManualFundTransfer.make(-2, "", periods.get(period), fixedPeriodFundEvent, testValue, TrackingDatabase.get().getDefault(Currency.class));
         useCategoryFundTransfer.add();
         assertEquals(-0.0, fixedPeriodFundEvent.getCharge(periods.get(period)));
         assertEquals(-testValue, fixedPeriodFundEvent.getCharge(periods.get(period + 1)));
@@ -239,7 +239,7 @@ class FixedPeriodFundEventTest {
         Category category1 = TrackingDatabase.get().get(Category.class).get(0);
         Category category2 = TrackingDatabase.get().get(Category.class).get(0);
 
-        FixedPeriodFundEvent fixedPeriodFundEvent = new FixedPeriodFundEvent(-1, "", category1, (ExistingPeriod) period, 1);
+        FixedPeriodFundEvent fixedPeriodFundEvent = FixedPeriodFundEvent.make(-1, "", category1, (ExistingPeriod) period, 1);
         fixedPeriodFundEvent.notifyParentLink();
 
         assertThrows(IllegalArgumentException.class, () -> fixedPeriodFundEvent.setCategory(null));
@@ -254,7 +254,7 @@ class FixedPeriodFundEventTest {
         Period period = TrackingDatabase.get().get(Period.class).get(1);
         Category category = TrackingDatabase.get().get(Category.class).get(0);
 
-        FixedPeriodFundEvent fixedPeriodFundEvent = new FixedPeriodFundEvent(-1, "", category, (ExistingPeriod) period, 1);
+        FixedPeriodFundEvent fixedPeriodFundEvent = FixedPeriodFundEvent.make(-1, "", category, (ExistingPeriod) period, 1);
         fixedPeriodFundEvent.notifyParentLink();
 
         assertThrows(IllegalArgumentException.class, () -> fixedPeriodFundEvent.setDuration(-1));
@@ -270,7 +270,7 @@ class FixedPeriodFundEventTest {
         Period period = TrackingDatabase.get().get(Period.class).get(2);
         Category category = TrackingDatabase.get().get(Category.class).get(0);
 
-        FixedPeriodFundEvent fixedPeriodFundEvent = new FixedPeriodFundEvent(-1, "", category, (ExistingPeriod) period, 1);
+        FixedPeriodFundEvent fixedPeriodFundEvent = FixedPeriodFundEvent.make(-1, "", category, (ExistingPeriod) period, 1);
         fixedPeriodFundEvent.notifyParentLink();
 
         assertThrows(IllegalArgumentException.class, () -> fixedPeriodFundEvent.setStart(null));

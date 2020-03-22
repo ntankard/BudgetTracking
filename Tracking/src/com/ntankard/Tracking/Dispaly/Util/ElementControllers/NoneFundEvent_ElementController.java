@@ -20,7 +20,7 @@ public class NoneFundEvent_ElementController extends TrackingDatabase_ElementCon
      */
     @Override
     public NoneFundEvent newElement() {
-        return new NoneFundEvent(TrackingDatabase.get().getNextId(),
+        return NoneFundEvent.make(TrackingDatabase.get().getNextId(),
                 "",
                 TrackingDatabase.get().getDefault(Category.class));
     }

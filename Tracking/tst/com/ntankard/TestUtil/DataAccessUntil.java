@@ -14,7 +14,7 @@ public class DataAccessUntil {
     public static void loadDatabase() {
         TrackingDatabase.reset();
         String savePath = "C:\\Users\\Nicholas\\Google Drive\\BudgetTrackingData";
-        TrackingDatabase_Reader.read(TrackingDatabase.get(), savePath);
+        TrackingDatabase_Reader.read(savePath);
         TrackingDatabase.get().finalizeCore();
     }
 

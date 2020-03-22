@@ -3,9 +3,7 @@ package com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
-import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
 import java.util.List;
 
@@ -19,20 +17,22 @@ public class VirtualPeriod extends Period {
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields(Integer id, String name, Integer order, DataObject container) {
-        List<Field<?>> toReturn = Period.getFields(id, container);
-        toReturn.add(new Field<>("name", String.class, name, container));
-        toReturn.add(new Field<>("order", Integer.class, order, container));
+    public static List<Field<?>> getFields() {
+        List<Field<?>> toReturn = Period.getFields();
+        toReturn.add(new Field<>("getName", String.class));
+        toReturn.add(new Field<>("getOrder", Integer.class));
         return toReturn;
     }
 
     /**
-     * Constructor
+     * Create a new VirtualPeriod object
      */
-    @ParameterMap(parameterGetters = {"getId", "toString", "getOrder"})
-    public VirtualPeriod(Integer id, String name, Integer order) {
-        super();
-        setFields(getFields(id, name, order, this));
+    public static VirtualPeriod make(Integer id, String name, Integer order) {
+        return assembleDataObject(VirtualPeriod.getFields(), new VirtualPeriod()
+                , "getId", id
+                , "getName", name
+                , "getOrder", order
+        );
     }
 
     /**
@@ -51,14 +51,14 @@ public class VirtualPeriod extends Period {
 
     @DisplayProperties(order = 1010000)
     public String getName() {
-        return get("name");
+        return get("getName");
     }
 
     @Override
     @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
     @DisplayProperties(order = 1020000)
     public Integer getOrder() {
-        return get("order");
+        return get("getOrder");
     }
 
     // 2000000--getParents (Above)

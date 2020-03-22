@@ -61,7 +61,7 @@ public class Master_Frame extends JPanel implements Updatable {
 
         JButton save_btn = new JButton("Save");
         save_btn.addActionListener(e -> {
-            TrackingDatabase_Reader.save(TrackingDatabase.get(), savePath);
+            TrackingDatabase_Reader.save(savePath);
         });
 
         JButton update_btn = new JButton("Update");

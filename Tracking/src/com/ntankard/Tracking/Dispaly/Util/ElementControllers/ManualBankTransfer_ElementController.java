@@ -39,7 +39,7 @@ public class ManualBankTransfer_ElementController extends TrackingDatabase_Eleme
      */
     @Override
     public BankTransfer newElement() {
-        return new ManualBankTransfer(TrackingDatabase.get().getNextId(), "",
+        return ManualBankTransfer.make(TrackingDatabase.get().getNextId(), "",
                 core, bank, 0.0,
                 null, TrackingDatabase.get().getDefault(Category.class), null);
     }

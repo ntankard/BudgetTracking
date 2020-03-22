@@ -29,8 +29,8 @@ class NoneFundEventTest {
 
         Category category = TrackingDatabase.get().get(Category.class).get(0);
 
-        assertThrows(IllegalArgumentException.class, () -> new NoneFundEvent(-1, "", null));
-        assertDoesNotThrow(() -> new NoneFundEvent(-1, "", category));
+        assertThrows(IllegalArgumentException.class, () -> NoneFundEvent.make(-1, "", null));
+        assertDoesNotThrow(() -> NoneFundEvent.make(-1, "", category));
     }
 
     //------------------------------------------------------------------------------------------------------------------

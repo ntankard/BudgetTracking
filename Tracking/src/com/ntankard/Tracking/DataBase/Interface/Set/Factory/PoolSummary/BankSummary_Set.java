@@ -23,6 +23,6 @@ public class BankSummary_Set extends Summary_Set<Bank_Summary, Bank, ExistingPer
      */
     @Override
     protected Bank_Summary getSummary(ExistingPeriod period, Bank pool) {
-        return new Bank_Summary(period, pool);
+        return Bank_Summary.make(period, pool);
     }
 }

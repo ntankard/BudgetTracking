@@ -23,6 +23,6 @@ public class CategorySummary_Set extends Summary_Set<Category_Summary, Category,
      */
     @Override
     protected Category_Summary getSummary(Period period, Category pool) {
-        return new Category_Summary(period, pool);
+        return Category_Summary.make(period, pool);
     }
 }

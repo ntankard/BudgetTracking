@@ -31,15 +31,16 @@ public abstract class BankTransfer extends Transfer {
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields(Integer id, String description,
-                                           Period period, Bank source, Double value,
-                                           Period destinationPeriod, Pool destination, Double destinationValue,
-                                           DataObject container) {
-        List<Field<?>> toReturn = Transfer.getFields(id, description, period, source, container);
-        toReturn.add(new Field<>("value", Double.class, value, container));
-        toReturn.add(new DataObject_Field<>("destinationPeriod", Period.class, destinationPeriod, true, container));
-        toReturn.add(new DataObject_Field<>("destination", Pool.class, destination, container));
-        toReturn.add(new Field<>("destinationValue", Double.class, destinationValue, true, container));
+    public static List<Field<?>> getFields() {
+        List<Field<?>> toReturn = Transfer.getFields();
+
+        toReturn.remove(makeFieldMap(toReturn).get("getSource"));
+        toReturn.add(new DataObject_Field<>("getSource", Bank.class));
+
+        toReturn.add(new Field<>("getValue", Double.class));
+        toReturn.add(new DataObject_Field<>("getDestinationPeriod", Period.class, true));
+        toReturn.add(new DataObject_Field<>("getDestination", Pool.class));
+        toReturn.add(new Field<>("getDestinationValue", Double.class, true));
         return toReturn;
     }
 
@@ -127,7 +128,7 @@ public abstract class BankTransfer extends Transfer {
     @Override
     @DisplayProperties(order = 1400000, dataType = CURRENCY)
     public Double getValue() {
-        return get("value");
+        return get("getValue");
     }
 
     @Override
@@ -139,7 +140,7 @@ public abstract class BankTransfer extends Transfer {
 
     @DisplayProperties(order = 1510000)
     public Period getDestinationPeriod() {
-        return get("destinationPeriod");
+        return get("getDestinationPeriod");
     }
 
     // 1520000----getCategory   (Below)
@@ -149,12 +150,12 @@ public abstract class BankTransfer extends Transfer {
     @Override
     @DisplayProperties(order = 1600000)
     public Pool getDestination() {
-        return get("destination");
+        return get("getDestination");
     }
 
     @DisplayProperties(order = 1610000, dataType = CURRENCY)
     public Double getDestinationValue() {
-        return get("destinationValue");
+        return get("getDestinationValue");
     }
 
     @DisplayProperties(order = 1620000)
@@ -203,7 +204,7 @@ public abstract class BankTransfer extends Transfer {
     //------------------------------------------------------------------------------------------------------------------
 
     public void setValue(Double value) {
-        set("value", value);
+        set("getValue", value);
         updateHalfTransfer();
     }
 
@@ -214,7 +215,7 @@ public abstract class BankTransfer extends Transfer {
         if (getPeriod().equals(destinationPeriod))
             throw new IllegalArgumentException("Can not set the destination period to be the same as the source (this is the default)");
 
-        set("destinationPeriod", destinationPeriod);
+        set("getDestinationPeriod", destinationPeriod);
         updateHalfTransfer();
         validateParents();
     }
@@ -223,7 +224,7 @@ public abstract class BankTransfer extends Transfer {
     public void setDestination(Pool destination) {
         if (getSource().equals(destination)) throw new IllegalArgumentException("Source equals Destination");
 
-        set("destination", destination);
+        set("getDestination", destination);
 
         // Destination Period can only be maintained if its a Bank to Bank transfer
         if (!doseSupportDestinationPeriod()) {
@@ -249,7 +250,7 @@ public abstract class BankTransfer extends Transfer {
         if (destinationValue != null && destinationValue.equals(0.0)) {
             destinationValue_toSet = null;
         }
-        set("destinationValue", destinationValue_toSet);
+        set("getDestinationValue", destinationValue_toSet);
 
         updateHalfTransfer();
         validateParents();

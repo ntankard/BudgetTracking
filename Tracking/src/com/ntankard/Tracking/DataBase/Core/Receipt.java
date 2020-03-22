@@ -7,7 +7,6 @@ import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.DataObject_Field;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.BankTransfer;
-import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
 import java.util.List;
 
@@ -21,22 +20,27 @@ public class Receipt extends DataObject {
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields(Integer id, String fileName, BankTransfer bankTransfer, DataObject container) {
-        List<Field<?>> toReturn = DataObject.getFields(id, container);
-        toReturn.add(new Field<>("fileName", String.class, fileName, container));
-        toReturn.add(new DataObject_Field<>("bankTransfer", BankTransfer.class, bankTransfer, container));
+    public static List<Field<?>> getFields() {
+        List<Field<?>> toReturn = DataObject.getFields();
+        toReturn.add(new Field<>("getFileName", String.class));
+        toReturn.add(new DataObject_Field<>("getBankTransfer", BankTransfer.class));
         return toReturn;
     }
 
     /**
-     * Constructor
+     * Create a new Receipt object
      */
-    @ParameterMap(parameterGetters = {"getId", "getFileName", "getBankTransfer"})
-    public Receipt(Integer id, String fileName, BankTransfer bankTransfer) {
-        super();
-        setFields(getFields(id, fileName, bankTransfer, this));
+    public static Receipt make(Integer id, String fileName, BankTransfer bankTransfer) {
+        return assembleDataObject(Receipt.getFields(), new Receipt()
+                , "getId", id
+                , "getFileName", fileName
+                , "getBankTransfer", bankTransfer
+        );
     }
 
+    /**
+     * {@inheritDoc
+     */
     @Override
     public void remove() {
         super.remove_impl();
@@ -50,12 +54,12 @@ public class Receipt extends DataObject {
 
     @DisplayProperties(order = 1100000)
     public BankTransfer getBankTransfer() {
-        return get("bankTransfer");
+        return get("getBankTransfer");
     }
 
     @DisplayProperties(order = 1200000)
     public String getFileName() {
-        return get("fileName");
+        return get("getFileName");
     }
 
     // 1300000----isFirstFile (Above)
@@ -68,6 +72,6 @@ public class Receipt extends DataObject {
 
     @SetterProperties(localSourceMethod = "sourceOptions", displaySet = false)
     public void setBankTransfer(BankTransfer bankTransfer) {
-        set("bankTransfer", bankTransfer);
+        set("getBankTransfer", bankTransfer);
     }
 }

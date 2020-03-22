@@ -2,12 +2,8 @@ package com.ntankard.Tracking.DataBase.Core.Pool.FundEvent;
 
 import com.ntankard.TestUtil.DataAccessUntil;
 import com.ntankard.TestUtil.DataObjectTestUtil;
-import com.ntankard.Tracking.DataBase.Core.Pool.Category;
-import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class TaxFundEventTest {
 
@@ -22,16 +18,6 @@ class TaxFundEventTest {
     //------------------------------------------------------------------------------------------------------------------
     //################################### Unit Tests (any instance of an object) #######################################
     //------------------------------------------------------------------------------------------------------------------
-
-    @Test
-    void constructor() {
-        assertNotEquals(0, TrackingDatabase.get().get(Category.class).size());
-
-        Category category = TrackingDatabase.get().get(Category.class).get(0);
-
-        assertThrows(IllegalArgumentException.class, () -> new TaxFundEvent(-1, "", null, 0.05));
-        assertDoesNotThrow(() -> new TaxFundEvent(-1, "", category, 0.05));
-    }
 
     //------------------------------------------------------------------------------------------------------------------
     //########################## Implementation Tests (all declared objects in isolation) ##############################

@@ -3,12 +3,10 @@ package com.ntankard.Tracking.DataBase.Core.Pool;
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.HasDefault;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.SpecialValues;
-import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,26 +26,16 @@ public class Category extends Pool implements HasDefault, SpecialValues, Ordered
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields(Integer id, String name, Integer order, Boolean isDefault, Boolean isSavings, Boolean isTaxable, Integer set, String setName, DataObject container) {
-        List<Field<?>> toReturn = Pool.getFields(id, name, container);
-        toReturn.add(new Field<>("order", Integer.class, order, container));
-        toReturn.add(new Field<>("isDefault", Boolean.class, isDefault, container));
-        toReturn.add(new Field<>("isSavings", Boolean.class, isSavings, container));
-        toReturn.add(new Field<>("isTaxable", Boolean.class, isTaxable, container));
-        toReturn.add(new Field<>("set", Integer.class, set, container));
-        toReturn.add(new Field<>("setName", String.class, setName, container));
+    public static List<Field<?>> getFields() {
+        List<Field<?>> toReturn = Pool.getFields();
+        toReturn.add(new Field<>("getOrder", Integer.class));
+        toReturn.add(new Field<>("isDefault", Boolean.class));
+        toReturn.add(new Field<>("isSavings", Boolean.class));
+        toReturn.add(new Field<>("isTaxable", Boolean.class));
+        toReturn.add(new Field<>("getSet", Integer.class));
+        toReturn.add(new Field<>("getSetName", String.class));
         return toReturn;
     }
-
-    /**
-     * Constructor
-     */
-    @ParameterMap(parameterGetters = {"getId", "getName", "getOrder", "isDefault", "isSavings", "isTaxable", "getSet", "getSetName"})
-    public Category(Integer id, String name, Integer order, Boolean isDefault, Boolean isSavings, Boolean isTaxable, Integer set, String setName) {
-        super();
-        setFields(getFields(id, name, order, isDefault, isSavings, isTaxable, set, setName, this));
-    }
-
 
     //------------------------------------------------------------------------------------------------------------------
     //################################################# Implementations ################################################
@@ -108,20 +96,20 @@ public class Category extends Pool implements HasDefault, SpecialValues, Ordered
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     @DisplayProperties(order = 1104000)
     public Integer getSet() {
-        return get("set");
+        return get("getSet");
     }
 
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     @DisplayProperties(order = 1105000)
     public String getSetName() {
-        return get("setName");
+        return get("getSetName");
     }
 
     @Override
     @MemberProperties(verbosityLevel = TRACE_DISPLAY)
     @DisplayProperties(order = 1106000)
     public Integer getOrder() {
-        return get("order");
+        return get("getOrder");
     }
 
     // 1107000--------getKeys (Above)

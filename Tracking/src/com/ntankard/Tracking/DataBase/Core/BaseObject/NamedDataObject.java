@@ -16,9 +16,9 @@ public abstract class NamedDataObject extends DataObject {
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields(Integer id, String name, DataObject container) {
-        List<Field<?>> toReturn = DataObject.getFields(id, container);
-        toReturn.add(new Field<>("name", String.class, name, container));
+    public static List<Field<?>> getFields() {
+        List<Field<?>> toReturn = DataObject.getFields();
+        toReturn.add(new Field<>("getName", String.class));
         return toReturn;
     }
 
@@ -42,7 +42,7 @@ public abstract class NamedDataObject extends DataObject {
 
     @DisplayProperties(order = 1100000)
     public String getName() {
-        return get("name");
+        return get("getName");
     }
 
     // 2000000--getParents
@@ -53,6 +53,6 @@ public abstract class NamedDataObject extends DataObject {
     //------------------------------------------------------------------------------------------------------------------
 
     public void setName(String name) {
-        set("name", name);
+        set("getName", name);
     }
 }

@@ -1,6 +1,7 @@
 package com.ntankard.Tracking.DataBase.Core.BaseObject;
 
 import com.ntankard.TestUtil.DataAccessUntil;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -63,9 +64,14 @@ class NamedDataObjectTest {
 
     private static class NamedDataObject_Inst extends NamedDataObject {
 
+        @SuppressWarnings("unchecked")
         NamedDataObject_Inst(Integer id, String name) {
             super();
-            setFields(getFields(id, name, this));
+            List<Field<?>> fields = NamedDataObject.getFields();
+            fields.forEach(field -> field.setContainer(this));
+            ((Field<Integer>) makeFieldMap(fields).get("getId")).set(id);
+            ((Field<String>) makeFieldMap(fields).get("getName")).set(name);
+            setFields(fields);
         }
 
         @Override

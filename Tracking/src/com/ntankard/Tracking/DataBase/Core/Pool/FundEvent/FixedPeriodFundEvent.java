@@ -3,7 +3,6 @@ package com.ntankard.Tracking.DataBase.Core.Pool.FundEvent;
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.SetterProperties;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.DataObject_Field;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Filter.IntegerRange_FieldFilter;
@@ -15,7 +14,6 @@ import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.ManualFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePayFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.HalfTransfer;
 import com.ntankard.Tracking.DataBase.Database.ObjectFactory;
-import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.Extended.Sum.Transfer_SumSet;
 import com.ntankard.Tracking.DataBase.Interface.Set.Filter.NotTransferType_HalfTransfer_Filter;
@@ -36,22 +34,25 @@ public class FixedPeriodFundEvent extends FundEvent {
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields(Integer id, String name, Category category, ExistingPeriod start, Integer duration, DataObject container) {
-        List<Field<?>> toReturn = FundEvent.getFields(id, name, category, container);
-        toReturn.add(new DataObject_Field<>("start", ExistingPeriod.class, start, container));
-        toReturn.add(new Field<>("duration", Integer.class, duration, container).addFilter(new IntegerRange_FieldFilter(1, null)));
+    public static List<Field<?>> getFields() {
+        List<Field<?>> toReturn = FundEvent.getFields();
+        toReturn.add(new DataObject_Field<>("getStart", ExistingPeriod.class));
+        toReturn.add(new Field<>("getDuration", Integer.class).addFilter(new IntegerRange_FieldFilter(1, null)));
         return toReturn;
     }
 
     /**
-     * Constructor
+     * Create a new FixedPeriodFundEvent object
      */
-    @ParameterMap(parameterGetters = {"getId", "getName", "getCategory", "getStart", "getDuration"})
-    public FixedPeriodFundEvent(Integer id, String name, Category category, ExistingPeriod start, Integer duration) {
-        super();
-        setFields(getFields(id, name, category, start, duration, this));
+    public static FixedPeriodFundEvent make(Integer id, String name, Category category, ExistingPeriod start, Integer duration) {
+        return assembleDataObject(FixedPeriodFundEvent.getFields(), new FixedPeriodFundEvent()
+                , "getId", id
+                , "getName", name
+                , "getCategory", category
+                , "getStart", start
+                , "getDuration", duration
+        );
     }
-
 
     /**
      * {@inheritDoc
@@ -121,12 +122,12 @@ public class FixedPeriodFundEvent extends FundEvent {
 
     @DisplayProperties(order = 1101100)
     public ExistingPeriod getStart() {
-        return get("start");
+        return get("getStart");
     }
 
     @DisplayProperties(order = 1101200)
     public Integer getDuration() {
-        return get("duration");
+        return get("getDuration");
     }
 
     // 1110000------getOrder
@@ -139,7 +140,7 @@ public class FixedPeriodFundEvent extends FundEvent {
 
     @SetterProperties(localSourceMethod = "sourceOptions")
     public void setCategory(Category category) {
-        set("category", category);
+        set("getCategory", category);
 
         for (FundTransfer fundTransfer : TrackingDatabase.get().get(FundTransfer.class)) {
             fundTransfer.setDestination();
@@ -150,13 +151,13 @@ public class FixedPeriodFundEvent extends FundEvent {
 
     @SetterProperties(localSourceMethod = "sourceOptions")
     public void setStart(ExistingPeriod start) {
-        set("start", start);
+        set("getStart", start);
         recreateRePay();
         validateParents();
     }
 
     public void setDuration(Integer duration) {
-        set("duration", duration);
+        set("getDuration", duration);
         recreateRePay();
         validateParents();
     }

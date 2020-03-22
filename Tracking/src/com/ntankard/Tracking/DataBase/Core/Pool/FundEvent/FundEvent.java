@@ -2,7 +2,6 @@ package com.ntankard.Tracking.DataBase.Core.Pool.FundEvent;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.DataObject_Field;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.Currency;
@@ -28,9 +27,9 @@ public abstract class FundEvent extends Pool {
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields(Integer id, String name, Category category, DataObject container) {
-        List<Field<?>> toReturn = Pool.getFields(id, name, container);
-        toReturn.add(new DataObject_Field<>("category", Category.class, category, container));
+    public static List<Field<?>> getFields() {
+        List<Field<?>> toReturn = Pool.getFields();
+        toReturn.add(new DataObject_Field<>("getCategory", Category.class));
         return toReturn;
     }
 
@@ -65,7 +64,7 @@ public abstract class FundEvent extends Pool {
 
         for (ExistingPeriod period : TrackingDatabase.get().get(ExistingPeriod.class)) {
             if (this.isChargeThisPeriod(period)) {
-                new RePayFundTransfer(TrackingDatabase.get().getNextId(), period, this, TrackingDatabase.get().getDefault(Currency.class)).add();
+                RePayFundTransfer.make(TrackingDatabase.get().getNextId(), period, this, TrackingDatabase.get().getDefault(Currency.class)).add();
             }
         }
     }
@@ -107,7 +106,7 @@ public abstract class FundEvent extends Pool {
 
     @DisplayProperties(order = 1101000)
     public Category getCategory() {
-        return get("category");
+        return get("getCategory");
     }
 
     // 2000000--getParents (Above)

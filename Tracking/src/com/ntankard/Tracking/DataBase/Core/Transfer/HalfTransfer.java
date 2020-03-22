@@ -21,6 +21,7 @@ import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
 /**
  * One half of the transaction
  */
+@ParameterMap(shouldSave = false)
 @ClassExtensionProperties(includeParent = true)
 public class HalfTransfer extends DataObject implements CurrencyBound {
 
@@ -31,22 +32,26 @@ public class HalfTransfer extends DataObject implements CurrencyBound {
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields(Integer id, Period period, Pool pool, Currency currency, Transfer transfer, DataObject container) {
-        List<Field<?>> toReturn = DataObject.getFields(id, container);
-        toReturn.add(new DataObject_Field<>("period", Period.class, period, container));
-        toReturn.add(new DataObject_Field<>("pool", Pool.class, pool, container));
-        toReturn.add(new DataObject_Field<>("currency", Currency.class, currency, container));
-        toReturn.add(new DataObject_Field<>("transfer", Transfer.class, transfer, container));
+    public static List<Field<?>> getFields() {
+        List<Field<?>> toReturn = DataObject.getFields();
+        toReturn.add(new DataObject_Field<>("getPeriod", Period.class));
+        toReturn.add(new DataObject_Field<>("getPool", Pool.class));
+        toReturn.add(new DataObject_Field<>("getCurrency", Currency.class));
+        toReturn.add(new DataObject_Field<>("getTransfer", Transfer.class));
         return toReturn;
     }
 
     /**
-     * Constructor
+     * Create a new HalfTransfer object
      */
-    @ParameterMap(shouldSave = false)
-    public HalfTransfer(Integer id, Period period, Pool pool, Currency currency, Transfer transfer) {
-        super();
-        setFields(getFields(id, period, pool, currency, transfer, this));
+    public static HalfTransfer make(Integer id, Period period, Pool pool, Currency currency, Transfer transfer) {
+        return assembleDataObject(HalfTransfer.getFields(), new HalfTransfer()
+                , "getId", id
+                , "getPeriod", period
+                , "getPool", pool
+                , "getCurrency", currency
+                , "getTransfer", transfer
+        );
     }
 
     /**
@@ -73,12 +78,12 @@ public class HalfTransfer extends DataObject implements CurrencyBound {
 
     @DisplayProperties(order = 1100000)
     public Period getPeriod() {
-        return get("period");
+        return get("getPeriod");
     }
 
     @DisplayProperties(order = 1200000)
     public Pool getPool() {
-        return get("pool");
+        return get("getPool");
     }
 
     @DisplayProperties(order = 1300000, dataType = CURRENCY)
@@ -93,13 +98,13 @@ public class HalfTransfer extends DataObject implements CurrencyBound {
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     @DisplayProperties(order = 1400000)
     public Currency getCurrency() {
-        return get("currency");
+        return get("getCurrency");
     }
 
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     @DisplayProperties(order = 1500000)
     public Transfer getTransfer() {
-        return get("transfer");
+        return get("getTransfer");
     }
 
     // 2000000--getParents (Above)
@@ -111,16 +116,16 @@ public class HalfTransfer extends DataObject implements CurrencyBound {
 
     @SetterProperties(localSourceMethod = "sourceOptions", displaySet = false)
     public void setPeriod(Period period) {
-        set("period", period);
+        set("getPeriod", period);
     }
 
     @SetterProperties(localSourceMethod = "sourceOptions", displaySet = false)
     public void setPool(Pool pool) {
-        set("pool", pool);
+        set("getPool", pool);
     }
 
     @SetterProperties(localSourceMethod = "sourceOptions", displaySet = false)
     public void setCurrency(Currency currency) {
-        set("currency", currency);
+        set("getCurrency", currency);
     }
 }

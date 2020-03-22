@@ -17,8 +17,8 @@ public abstract class Period extends DataObject implements Ordered {
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields(Integer id, DataObject container) {
-        return DataObject.getFields(id, container);
+    public static List<Field<?>> getFields() {
+        return DataObject.getFields();
     }
 
     //------------------------------------------------------------------------------------------------------------------

@@ -2,19 +2,41 @@ package com.ntankard.Tracking.DataBase.Interface.Summary.Pool;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.DataObject_Field;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
+import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 
+import java.util.List;
+
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
 
+@ParameterMap(shouldSave = false)
 @ClassExtensionProperties(includeParent = true)
 public class FundEvent_Summary extends PoolSummary<FundEvent> {
 
-    @ParameterMap(shouldSave = false)
-    public FundEvent_Summary(Period period, FundEvent fundEvent) {
-        super(period, fundEvent);
+    /**
+     * Get all the fields for this object
+     */
+    public static List<Field<?>> getFields() {
+        List<Field<?>> toReturn = PoolSummary.getFields();
+        toReturn.add(new DataObject_Field<>("getPeriod", Period.class));
+        toReturn.add(new DataObject_Field<>("getPool", Pool.class));
+        return toReturn;
+    }
+
+    /**
+     * Create a new StatementEnd object
+     */
+    public static FundEvent_Summary make(Period period, Pool pool) {
+        return assembleDataObject(FundEvent_Summary.getFields(), new FundEvent_Summary()
+                , "getId", -1
+                , "getPeriod", period
+                , "getPool", pool
+        );
     }
 
     // Start End -------------------------------------------------------------------------------------------------------
@@ -27,7 +49,7 @@ public class FundEvent_Summary extends PoolSummary<FundEvent> {
             return 0.0;
         }
         Period last = TrackingDatabase.get().get(Period.class).get(index - 1);
-        return new FundEvent_Summary(last, getPool()).getEnd();
+        return FundEvent_Summary.make(last, getPool()).getEnd();
     }
 
     @Override

@@ -31,9 +31,9 @@ class ReceiptTest {
     void constructor() {
         BankTransfer bankCategoryTransfer = getObject(BankTransfer.class, 0);
 
-        assertDoesNotThrow(() -> new Receipt(0, "", bankCategoryTransfer));
-        assertThrows(IllegalArgumentException.class, () -> new Receipt(0, null, bankCategoryTransfer));
-        assertThrows(IllegalArgumentException.class, () -> new Receipt(0, "", null));
+        assertDoesNotThrow(() -> Receipt.make(0, "", bankCategoryTransfer));
+        assertThrows(IllegalArgumentException.class, () -> Receipt.make(0, null, bankCategoryTransfer));
+        assertThrows(IllegalArgumentException.class, () -> Receipt.make(0, "", null));
     }
 
     //------------------------------------------------------------------------------------------------------------------

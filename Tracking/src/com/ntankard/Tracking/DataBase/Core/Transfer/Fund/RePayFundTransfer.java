@@ -14,6 +14,7 @@ import java.util.List;
 
 import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
 
+@ParameterMap(shouldSave = false)
 @ClassExtensionProperties(includeParent = true)
 public class RePayFundTransfer extends FundTransfer {
 
@@ -24,19 +25,21 @@ public class RePayFundTransfer extends FundTransfer {
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields(Integer id, String description,
-                                           Period period, FundEvent source, Currency currency, DataObject container) {
-        return FundTransfer.getFields(id, description, period, source, currency, container);
+    public static List<Field<?>> getFields() {
+        return FundTransfer.getFields();
     }
 
     /**
-     * Constructor
+     * Create a new RePayFundTransfer object
      */
-    @ParameterMap(shouldSave = false)
-    public RePayFundTransfer(Integer id, Period period,
-                             FundEvent source, Currency currency) {
-        super();
-        setFields(getFields(id, "Not used", period, source, currency, this));
+    public static RePayFundTransfer make(Integer id, Period period, FundEvent source, Currency currency) {
+        return assembleDataObject(RePayFundTransfer.getFields(), new RePayFundTransfer()
+                , "getId", id
+                , "getDescription", "Not used"
+                , "getPeriod", period
+                , "getSource", source
+                , "getCurrency", currency
+        );
     }
 
     /**

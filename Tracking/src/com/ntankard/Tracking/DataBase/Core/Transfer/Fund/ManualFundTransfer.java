@@ -3,13 +3,11 @@ package com.ntankard.Tracking.DataBase.Core.Transfer.Fund;
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.SetterProperties;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
-import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
 import java.util.List;
 
@@ -25,21 +23,24 @@ public class ManualFundTransfer extends FundTransfer {
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields(Integer id, String description,
-                                           Period period, FundEvent source, Double value, Currency currency, DataObject container) {
-        List<Field<?>> toReturn = FundTransfer.getFields(id, description, period, source, currency, container);
-        toReturn.add(new Field<>("value", Double.class, value, container));
+    public static List<Field<?>> getFields() {
+        List<Field<?>> toReturn = FundTransfer.getFields();
+        toReturn.add(new Field<>("getValue", Double.class));
         return toReturn;
     }
 
     /**
-     * Constructor
+     * Create a new RePayFundTransfer object
      */
-    @ParameterMap(parameterGetters = {"getId", "getDescription", "getPeriod", "getSource", "getValue", "getCurrency"})
-    public ManualFundTransfer(Integer id, String description,
-                              Period period, FundEvent source, Double value, Currency currency) {
-        super();
-        setFields(getFields(id, description, period, source, value, currency, this));
+    public static ManualFundTransfer make(Integer id, String description, Period period, FundEvent source, Double value, Currency currency) {
+        return assembleDataObject(ManualFundTransfer.getFields(), new ManualFundTransfer()
+                , "getId", id
+                , "getDescription", description
+                , "getPeriod", period
+                , "getSource", source
+                , "getValue", value
+                , "getCurrency", currency
+        );
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -54,7 +55,7 @@ public class ManualFundTransfer extends FundTransfer {
     @Override
     @DisplayProperties(order = 1400000, dataType = CURRENCY)
     public Double getValue() {
-        return get("value");
+        return get("getValue");
     }
 
     // 1500000----getCurrency
@@ -69,7 +70,7 @@ public class ManualFundTransfer extends FundTransfer {
     //------------------------------------------------------------------------------------------------------------------
 
     public void setValue(Double value) {
-        set("value", value);
+        set("getValue", value);
         updateHalfTransfer();
     }
 

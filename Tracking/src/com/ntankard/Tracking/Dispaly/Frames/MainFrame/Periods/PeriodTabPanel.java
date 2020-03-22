@@ -50,7 +50,7 @@ public class PeriodTabPanel extends UpdatableJPanel {
 
         for (int i = 0; i < periodsPanels.size(); i++) {
             periodsPanels.get(i).update();
-            if (!new Period_Summary(periods.get(i)).isValid()) {
+            if (!Period_Summary.make(periods.get(i)).isValid()) {
                 master_tPanel.setBackgroundAt(i, Color.RED);
             } else {
                 master_tPanel.setBackgroundAt(i, null);

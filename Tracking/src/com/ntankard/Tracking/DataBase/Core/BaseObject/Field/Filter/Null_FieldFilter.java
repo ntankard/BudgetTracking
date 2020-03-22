@@ -20,7 +20,9 @@ public class Null_FieldFilter<T> extends FieldFilter<T> {
     @Override
     public void filter(T value) {
         if (!canBeNull) {
-            if (value == null) throw new IllegalArgumentException("Field is null");
+            if (value == null) {
+                throw new IllegalArgumentException("Field is null");
+            }
         }
     }
 }

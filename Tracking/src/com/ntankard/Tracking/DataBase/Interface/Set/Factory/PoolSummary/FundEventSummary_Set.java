@@ -26,6 +26,6 @@ public class FundEventSummary_Set extends Summary_Set<FundEvent_Summary, FundEve
         if (!pool.isActiveThisPeriod(period)) {
             return null;
         }
-        return new FundEvent_Summary(period, pool);
+        return FundEvent_Summary.make(period, pool);
     }
 }

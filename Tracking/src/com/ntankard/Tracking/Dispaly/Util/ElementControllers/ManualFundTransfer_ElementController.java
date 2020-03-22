@@ -28,7 +28,7 @@ public class ManualFundTransfer_ElementController extends TrackingDatabase_Eleme
      */
     @Override
     public ManualFundTransfer newElement() {
-        return new ManualFundTransfer(TrackingDatabase.get().getNextId(), "",
+        return ManualFundTransfer.make(TrackingDatabase.get().getNextId(), "",
                 period, TrackingDatabase.get().getDefault(FundEvent.class), 0.0, TrackingDatabase.get().getDefault(Currency.class));
     }
 }

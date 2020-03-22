@@ -3,7 +3,6 @@ package com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
@@ -13,7 +12,6 @@ import com.ntankard.Tracking.DataBase.Core.StatementEnd;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.RecurringBankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePayFundTransfer;
 import com.ntankard.Tracking.DataBase.Database.ObjectFactory;
-import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.TwoParent_Children_Set;
 
@@ -30,21 +28,23 @@ public class ExistingPeriod extends Period {
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields(Integer id, Integer month, Integer year, DataObject container) {
-        List<Field<?>> toReturn = Period.getFields(id, container);
-        toReturn.add(new Field<>("month", Integer.class, month, container));
-        toReturn.add(new Field<>("year", Integer.class, year, container));
+    public static List<Field<?>> getFields() {
+        List<Field<?>> toReturn = Period.getFields();
+        toReturn.add(new Field<>("getMonth", Integer.class));
+        toReturn.add(new Field<>("getYear", Integer.class));
         return toReturn;
     }
 
     /**
-     * Constructor
+     * Create a new ExistingPeriod object
      */
-    @ParameterMap(parameterGetters = {"getId", "getMonth", "getYear"})
-    public ExistingPeriod(Integer id, Integer month, Integer year) {
-        super();
-        setFields(getFields(id, month, year, this));
-
+    @SuppressWarnings("unchecked")
+    public static ExistingPeriod make(Integer id, Integer month, Integer year) {
+        return assembleDataObject(ExistingPeriod.getFields(), new ExistingPeriod()
+                , "getId", id
+                , "getMonth", month
+                , "getYear", year
+        );
     }
 
     /**
@@ -60,7 +60,7 @@ public class ExistingPeriod extends Period {
             }
 
             if (fundEvent.isChargeThisPeriod(this)) {
-                new RePayFundTransfer(TrackingDatabase.get().getNextId(), this, fundEvent, TrackingDatabase.get().getDefault(Currency.class)).add();
+                RePayFundTransfer.make(TrackingDatabase.get().getNextId(), this, fundEvent, TrackingDatabase.get().getDefault(Currency.class)).add();
             }
         }
 
@@ -69,7 +69,7 @@ public class ExistingPeriod extends Period {
                 throw new RuntimeException("More than 1 statement end");
             }
             if (new TwoParent_Children_Set<>(StatementEnd.class, bank, this).get().size() == 0) {
-                new StatementEnd(TrackingDatabase.get().getNextId(), this, bank, 0.0).add();
+                StatementEnd.make(TrackingDatabase.get().getNextId(), this, bank, 0.0).add();
             }
         }
 
@@ -96,7 +96,7 @@ public class ExistingPeriod extends Period {
             nextYear++;
         }
 
-        return new ExistingPeriod(TrackingDatabase.get().getNextId(), nextMonth, nextYear);
+        return ExistingPeriod.make(TrackingDatabase.get().getNextId(), nextMonth, nextYear);
     }
 
     /**
@@ -115,12 +115,12 @@ public class ExistingPeriod extends Period {
 
     @DisplayProperties(order = 1010000)
     public Integer getMonth() {
-        return get("month");
+        return get("getMonth");
     }
 
     @DisplayProperties(order = 1020000)
     public Integer getYear() {
-        return get("year");
+        return get("getYear");
     }
 
     @Override

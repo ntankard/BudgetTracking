@@ -1,7 +1,6 @@
 package com.ntankard.Tracking.DataBase.Core.Pool;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.NamedDataObject;
 
@@ -17,8 +16,8 @@ public abstract class Pool extends NamedDataObject {
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields(Integer id, String name, DataObject container) {
-        return NamedDataObject.getFields(id, name, container);
+    public static List<Field<?>> getFields() {
+        return NamedDataObject.getFields();
     }
 
     //------------------------------------------------------------------------------------------------------------------

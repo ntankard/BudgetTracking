@@ -32,10 +32,10 @@ class StatementEndTest {
         ExistingPeriod period = DataAccessUntil.getObject(ExistingPeriod.class, 0);
         Bank bank = DataAccessUntil.getObject(Bank.class, 0);
 
-        assertDoesNotThrow(() -> new StatementEnd(-1, period, bank, 0.0));
-        assertThrows(IllegalArgumentException.class, () -> new StatementEnd(-1, null, bank, 0.0));
-        assertThrows(IllegalArgumentException.class, () -> new StatementEnd(-1, period, null, 0.0));
-        assertThrows(IllegalArgumentException.class, () -> new StatementEnd(-1, period, bank, null));
+        assertDoesNotThrow(() -> StatementEnd.make(-1, period, bank, 0.0));
+        assertThrows(IllegalArgumentException.class, () -> StatementEnd.make(-1, null, bank, 0.0));
+        assertThrows(IllegalArgumentException.class, () -> StatementEnd.make(-1, period, null, 0.0));
+        assertThrows(IllegalArgumentException.class, () -> StatementEnd.make(-1, period, bank, null));
     }
 
     @Test

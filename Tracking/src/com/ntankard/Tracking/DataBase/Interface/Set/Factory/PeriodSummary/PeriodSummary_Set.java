@@ -26,7 +26,7 @@ public class PeriodSummary_Set extends ObjectSet<Period_Summary> {
     public List<Period_Summary> get() {
         List<Period_Summary> toReturn = new ArrayList<>();
         for (Period period : TrackingDatabase.get().get(Period.class)) {
-            toReturn.add(new Period_Summary(period));
+            toReturn.add(Period_Summary.make(period));
         }
         return toReturn;
     }

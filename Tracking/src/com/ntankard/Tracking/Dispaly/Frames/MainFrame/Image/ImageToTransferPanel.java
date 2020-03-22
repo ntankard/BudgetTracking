@@ -218,7 +218,7 @@ public class ImageToTransferPanel extends UpdatableJPanel implements ListSelecti
         int index = transfer_table.getSelectionModel().getMaxSelectionIndex();
         BankTransfer transfer = displayedData.get(index);
 
-        Receipt receipt = new Receipt(TrackingDatabase.get().getNextId(), imagePath, transfer);
+        Receipt receipt = Receipt.make(TrackingDatabase.get().getNextId(), imagePath, transfer);
         receipt.add();
 
         notifyUpdate();
@@ -237,10 +237,10 @@ public class ImageToTransferPanel extends UpdatableJPanel implements ListSelecti
         String description = description_txt.getText();
         Category category = (Category) category_combo.getSelectedItem();
 
-        ManualBankTransfer manualBankTransferN = new ManualBankTransfer(TrackingDatabase.get().getNextId(), description, period, bank, cost, null, category, null);
+        ManualBankTransfer manualBankTransferN = ManualBankTransfer.make(TrackingDatabase.get().getNextId(), description, period, bank, cost, null, category, null);
         manualBankTransferN.add();
 
-        Receipt receipt = new Receipt(TrackingDatabase.get().getNextId(), imagePath, manualBankTransferN);
+        Receipt receipt = Receipt.make(TrackingDatabase.get().getNextId(), imagePath, manualBankTransferN);
         receipt.add();
 
         notifyUpdate();

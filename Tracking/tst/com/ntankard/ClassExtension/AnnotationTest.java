@@ -2,6 +2,7 @@ package com.ntankard.ClassExtension;
 
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Database.ObjectFactory;
+import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import org.junit.jupiter.api.Test;
 
 import java.lang.annotation.Annotation;
@@ -10,7 +11,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.ntankard.TestUtil.ClassInspectionUtil.getAllClasses;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AnnotationTest {
@@ -24,14 +24,14 @@ public class AnnotationTest {
 
         for (Class<? extends DataObject> dClass : getAllClasses()) {
             for (Member member : new MemberClass(dClass).getVerbosityMembers(Integer.MAX_VALUE, false)) {
-                Annotation[] all = member.getGetter().getAnnotations();
-                assertTrue(all.length < 3);
-                if (all.length == 1) {
-                    assertTrue(expectedAnnotations.contains(all[0].annotationType()));
-                } else if (all.length == 2) {
-                    for (int i = 0; i < 2; i++) {
-                        assertTrue(expectedAnnotations.contains(all[i].annotationType()), "An unknown annotation has been detected" + " Class:" + dClass.getSimpleName() + " Method:" + member.getGetter().getName());
-                        assertEquals(expectedAnnotations.get(i), all[i].annotationType(), "Annotations are out of order" + " Class:" + dClass.getSimpleName() + " Method:" + member.getGetter().getName());
+                int testIndex = -1;
+                for (Annotation annotation : member.getGetter().getAnnotations()) {
+                    while (true) {
+                        testIndex++;
+                        assertTrue(testIndex < expectedAnnotations.size(), "Class: " + dClass.getName() + " Member: " + member.getName() + " has its constructor parameters out of order");
+                        if (annotation.annotationType().equals(expectedAnnotations.get(testIndex))) {
+                            break;
+                        }
                     }
                 }
             }
@@ -43,17 +43,17 @@ public class AnnotationTest {
      */
     @Test
     void classAnnotationOrder() {
-        List<Class<? extends Annotation>> expectedAnnotations = new ArrayList<>(Arrays.asList(ClassExtensionProperties.class, ObjectFactory.class));
+        List<Class<? extends Annotation>> expectedAnnotations = new ArrayList<>(Arrays.asList(ParameterMap.class, ClassExtensionProperties.class, ObjectFactory.class));
 
         for (Class<? extends DataObject> dClass : getAllClasses()) {
-            Annotation[] all = dClass.getAnnotations();
-            assertTrue(all.length < 3);
-            if (all.length == 1) {
-                assertTrue(expectedAnnotations.contains(all[0].annotationType()));
-            } else if (all.length == 2) {
-                for (int i = 0; i < 2; i++) {
-                    assertTrue(expectedAnnotations.contains(all[i].annotationType()), "An unknown annotation has been detected" + " Class:" + dClass.getSimpleName());
-                    assertEquals(expectedAnnotations.get(i), all[i].annotationType(), "Annotations are out of order" + " Class:" + dClass.getSimpleName());
+            int testIndex = -1;
+            for (Annotation annotation : dClass.getAnnotations()) {
+                while (true) {
+                    testIndex++;
+                    assertTrue(testIndex < expectedAnnotations.size(), "Class: " + dClass.getName() + " has its constructor parameters out of order");
+                    if (annotation.annotationType().equals(expectedAnnotations.get(testIndex))) {
+                        break;
+                    }
                 }
             }
         }

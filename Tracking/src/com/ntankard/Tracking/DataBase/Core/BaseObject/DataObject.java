@@ -34,10 +34,48 @@ public abstract class DataObject {
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields(Integer id, DataObject container) {
+    public static List<Field<?>> getFields() {
         List<Field<?>> toReturn = new ArrayList<>();
-        toReturn.add(new Field<>("id", Integer.class, id, container));
+        toReturn.add(new Field<>("getId", Integer.class));
         return toReturn;
+    }
+
+    /**
+     * Get a map of the fields
+     *
+     * @param fields The Fields to map
+     * @return A Map of the Fields
+     */
+    public static Map<String, Field<?>> makeFieldMap(List<Field<?>> fields) {
+        Map<String, Field<?>> fieldMap = new HashMap<>();
+        for (Field<?> field : fields) {
+            fieldMap.put(field.getName(), field);
+        }
+        return fieldMap;
+    }
+
+    /**
+     * Construct an object with initialised values
+     *
+     * @param fields      The Fields of the object
+     * @param blackObject The constructed object without the fields attached yet
+     * @param args        The values for the fields
+     * @param <T>         The object type
+     * @return The assembled object
+     */
+    @SuppressWarnings({"rawtypes", "unchecked", "SuspiciousMethodCalls"})
+    public static <T extends DataObject> T assembleDataObject(List<Field<?>> fields, T blackObject, Object... args) {
+        if (args.length / 2 * 2 != args.length) throw new IllegalArgumentException("Wrong amount of arguments");
+        int amount = args.length / 2;
+        fields.forEach(field -> field.setContainer(blackObject));
+        Map<String, Field> fieldMap = new HashMap<>();
+        fields.forEach(field -> fieldMap.put(field.getName(), field));
+
+        for (int i = 0; i < amount; i++) {
+            fieldMap.get(args[i * 2]).initialSet(args[i * 2 + 1]);
+        }
+        blackObject.setFields(fields);
+        return blackObject;
     }
 
     /**
@@ -45,7 +83,7 @@ public abstract class DataObject {
      *
      * @param fields The fields to set
      */
-    protected void setFields(List<Field<?>> fields) {
+    public void setFields(List<Field<?>> fields) {
         for (Field<?> field : fields) {
             fieldMap.put(field.getName(), field);
         }
@@ -63,7 +101,7 @@ public abstract class DataObject {
     @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
     @DisplayProperties(order = 1000000)
     public Integer getId() {
-        return get("id");
+        return get("getId");
     }
 
     /**
@@ -118,6 +156,9 @@ public abstract class DataObject {
         for (DataObject dataObject : getParents()) {
             dataObject.notifyChildLink(this);
         }
+        for (Map.Entry<String, Field<?>> field : fieldMap.entrySet()) {
+            field.getValue().add();
+        }
     }
 
     /**
@@ -141,7 +182,11 @@ public abstract class DataObject {
         for (Map.Entry<String, Field<?>> field : fieldMap.entrySet()) {
             if (field.getValue().get() != null) {
                 if (DataObject_Field.class.isAssignableFrom(field.getValue().getClass())) {
-                    toReturn.add((DataObject) field.getValue().get());
+                    try {
+                        toReturn.add((DataObject) field.getValue().get());
+                    } catch (Exception e) {
+                        toReturn.add((DataObject) field.getValue().get());
+                    }
                 }
             }
         }
@@ -205,6 +250,18 @@ public abstract class DataObject {
     //------------------------------------------------------------------------------------------------------------------
 
     /**
+     * Get a specific field
+     *
+     * @param field The Field to get
+     * @param <T>   THe type of the field
+     * @return The field
+     */
+    @SuppressWarnings("unchecked")
+    protected <T> Field<T> getField(String field) {
+        return (Field<T>) fieldMap.get(field);
+    }
+
+    /**
      * Get the value from a specific field
      *
      * @param field The Field to get
@@ -213,7 +270,7 @@ public abstract class DataObject {
      */
     @SuppressWarnings("unchecked")
     public <T> T get(String field) {
-        return (T) fieldMap.get(field).get();
+        return (T) getField(field).get();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -248,10 +305,14 @@ public abstract class DataObject {
      * Check that all parents are linked properly
      */
     public void validateParents() {
-        for (DataObject dataObject : getParents()) {
-            if (!dataObject.getChildren().contains(this)) {
-                throw new RuntimeException("Not registered with a parent");
+        try {
+            for (DataObject dataObject : getParents()) {
+                if (!dataObject.getChildren().contains(this)) {
+                    throw new RuntimeException("Not registered with a parent");
+                }
             }
+        } catch (UnsupportedOperationException ignored) {
+
         }
     }
 }

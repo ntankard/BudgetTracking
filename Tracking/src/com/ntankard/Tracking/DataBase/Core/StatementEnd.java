@@ -10,7 +10,6 @@ import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
-import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
 import java.util.List;
 
@@ -28,21 +27,24 @@ public class StatementEnd extends DataObject implements CurrencyBound, Ordered {
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields(Integer id, ExistingPeriod period, Bank bank, Double end, DataObject container) {
-        List<Field<?>> toReturn = DataObject.getFields(id, container);
-        toReturn.add(new DataObject_Field<>("period", ExistingPeriod.class, period, container));
-        toReturn.add(new DataObject_Field<>("bank", Bank.class, bank, container));
-        toReturn.add(new Field<>("end", Double.class, end, container));
+    public static List<Field<?>> getFields() {
+        List<Field<?>> toReturn = DataObject.getFields();
+        toReturn.add(new DataObject_Field<>("getPeriod", ExistingPeriod.class));
+        toReturn.add(new DataObject_Field<>("getBank", Bank.class));
+        toReturn.add(new Field<>("getEnd", Double.class));
         return toReturn;
     }
 
     /**
-     * Constructor
+     * Create a new StatementEnd object
      */
-    @ParameterMap(parameterGetters = {"getId", "getPeriod", "getBank", "getEnd"})
-    public StatementEnd(Integer id, ExistingPeriod period, Bank bank, Double end) {
-        super();
-        setFields(getFields(id, period, bank, end, this));
+    public static StatementEnd make(Integer id, ExistingPeriod period, Bank bank, Double end) {
+        return assembleDataObject(StatementEnd.getFields(), new StatementEnd()
+                , "getId", id
+                , "getPeriod", period
+                , "getBank", bank
+                , "getEnd", end
+        );
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -54,17 +56,17 @@ public class StatementEnd extends DataObject implements CurrencyBound, Ordered {
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     @DisplayProperties(order = 1100000)
     public ExistingPeriod getPeriod() {
-        return get("period");
+        return get("getPeriod");
     }
 
     @DisplayProperties(order = 1200000)
     public Bank getBank() {
-        return get("bank");
+        return get("getBank");
     }
 
     @DisplayProperties(order = 1300000, dataType = CURRENCY)
     public Double getEnd() {
-        return get("end");
+        return get("getEnd");
     }
 
     @Override
@@ -88,6 +90,6 @@ public class StatementEnd extends DataObject implements CurrencyBound, Ordered {
     //------------------------------------------------------------------------------------------------------------------
 
     public void setEnd(Double end) {
-        set("end", end);
+        set("getEnd", end);
     }
 }

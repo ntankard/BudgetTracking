@@ -9,24 +9,20 @@ public class DataObject_Field<T extends DataObject> extends Field<T> {
      *
      * @param name      The name of the Field
      * @param type      The data type of the field (same as T)
-     * @param value     The current Value of the Field
      * @param canBeNull Is null accepted?
-     * @param container The class that contains this field
      */
-    public DataObject_Field(String name, Class<T> type, T value, Boolean canBeNull, DataObject container) {
-        super(name, type, value, canBeNull, container);
+    public DataObject_Field(String name, Class<T> type, Boolean canBeNull) {
+        super(name, type, canBeNull);
     }
 
     /**
      * Constructor
      *
-     * @param name      The name of the Field
-     * @param type      The data type of the field (same as T)
-     * @param value     The current Value of the Field
-     * @param container The class that contains this field
+     * @param name The name of the Field
+     * @param type The data type of the field (same as T)
      */
-    public DataObject_Field(String name, Class<T> type, T value, DataObject container) {
-        super(name, type, value, container);
+    public DataObject_Field(String name, Class<T> type) {
+        super(name, type);
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -38,8 +34,10 @@ public class DataObject_Field<T extends DataObject> extends Field<T> {
      */
     @Override
     protected void set_preSet() {
-        if (this.value != null) {
-            this.value.notifyChildUnLink(container);
+        if (fieldState.equals(FieldState.ADDED)) {
+            if (this.value != null) {
+                this.value.notifyChildUnLink(container);
+            }
         }
         super.set_preSet();
     }
@@ -49,9 +47,22 @@ public class DataObject_Field<T extends DataObject> extends Field<T> {
      */
     @Override
     protected void set_postSet() {
-        if (this.value != null) {
-            this.value.notifyChildLink(container);
+        if (fieldState.equals(FieldState.ADDED)) {
+            if (this.value != null) {
+                this.value.notifyChildLink(container);
+            }
         }
         super.set_postSet();
+    }
+
+    /**
+     * {@inheritDoc
+     */
+    @Override
+    protected void set_postCheck() {
+        super.set_postCheck();
+        if (fieldState.equals(FieldState.ADDED)) {
+            container.validateParents();
+        }
     }
 }

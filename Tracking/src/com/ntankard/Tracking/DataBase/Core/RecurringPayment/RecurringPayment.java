@@ -33,14 +33,14 @@ public abstract class RecurringPayment extends NamedDataObject implements Curren
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields(Integer id, String name, Double value, ExistingPeriod start, ExistingPeriod end, Bank bank, Category category, DataObject container) {
-        List<Field<?>> toReturn = NamedDataObject.getFields(id, name, container);
-        toReturn.add(new Field<>("value", Double.class, value, container));
-        toReturn.add(new DataObject_Field<>("bank", Bank.class, bank, container));
-        toReturn.add(new DataObject_Field<>("category", Category.class, category, container));
+    public static List<Field<?>> getFields() {
+        List<Field<?>> toReturn = NamedDataObject.getFields();
+        toReturn.add(new Field<>("getValue", Double.class));
+        toReturn.add(new DataObject_Field<>("getBank", Bank.class));
+        toReturn.add(new DataObject_Field<>("getCategory", Category.class));
 
-        Field<ExistingPeriod> startField = new DataObject_Field<>("start", ExistingPeriod.class, start, container);
-        Field<ExistingPeriod> endField = new DataObject_Field<>("end", ExistingPeriod.class, end, true, container);
+        Field<ExistingPeriod> startField = new DataObject_Field<>("getStart", ExistingPeriod.class);
+        Field<ExistingPeriod> endField = new DataObject_Field<>("getEnd", ExistingPeriod.class, true);
 
         endField.addFilter(new Ordered_FieldFilter<>(startField, Ordered_FieldFilter.OrderSequence.ABOVE));
         startField.addFilter(new Ordered_FieldFilter<>(endField, Ordered_FieldFilter.OrderSequence.BELOW));
@@ -73,27 +73,27 @@ public abstract class RecurringPayment extends NamedDataObject implements Curren
 
     @DisplayProperties(order = 1110000)
     public ExistingPeriod getStart() {
-        return get("start");
+        return get("getStart");
     }
 
     @DisplayProperties(order = 1120000)
     public ExistingPeriod getEnd() {
-        return get("end");
+        return get("getEnd");
     }
 
     @DisplayProperties(order = 1130000)
     public Bank getBank() {
-        return get("bank");
+        return get("getBank");
     }
 
     @DisplayProperties(order = 1140000)
     public Category getCategory() {
-        return get("category");
+        return get("getCategory");
     }
 
     @DisplayProperties(order = 1150000, dataType = CURRENCY)
     public Double getValue() {
-        return get("value");
+        return get("getValue");
     }
 
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
@@ -115,6 +115,7 @@ public abstract class RecurringPayment extends NamedDataObject implements Curren
      */
     @SuppressWarnings("SuspiciousMethodCalls")
     @Override
+
     public <T extends DataObject> List<T> sourceOptions(Class<T> type, String fieldName) {
         if (fieldName.equals("Start")) {
             List<T> all = super.sourceOptions(type, fieldName);
@@ -141,33 +142,33 @@ public abstract class RecurringPayment extends NamedDataObject implements Curren
 
     @SetterProperties(localSourceMethod = "sourceOptions")
     public void setBank(Bank bank) {
-        set("bank", bank);
+        set("getBank", bank);
         regenerateChildren();
         validateParents();
     }
 
     @SetterProperties(localSourceMethod = "sourceOptions")
     public void setCategory(Category category) {
-        set("category", category);
+        set("getCategory", category);
         regenerateChildren();
         validateParents();
     }
 
     @SetterProperties(localSourceMethod = "sourceOptions")
     public void setStart(ExistingPeriod start) {
-        set("start", start);
+        set("getStart", start);
         regenerateChildren();
         validateParents();
     }
 
     @SetterProperties(localSourceMethod = "sourceOptions")
     public void setEnd(ExistingPeriod end) {
-        set("end", end);
+        set("getEnd", end);
         regenerateChildren();
         validateParents();
     }
 
     public void setValue(Double value) {
-        set("value", value);
+        set("getValue", value);
     }
 }

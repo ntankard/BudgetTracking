@@ -1,11 +1,9 @@
 package com.ntankard.Tracking.DataBase.Core.Pool.FundEvent;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category;
-import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
 import java.util.List;
 
@@ -19,17 +17,19 @@ public class NoneFundEvent extends FundEvent {
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields(Integer id, String name, Category category, DataObject container) {
-        return FundEvent.getFields(id, name, category, container);
+    public static List<Field<?>> getFields() {
+        return FundEvent.getFields();
     }
 
     /**
-     * Constructor
+     * Create a new SavingsFundEvent object
      */
-    @ParameterMap(parameterGetters = {"getId", "getName", "getCategory"})
-    public NoneFundEvent(Integer id, String name, Category category) {
-        super();
-        setFields(getFields(id, name, category, this));
+    public static NoneFundEvent make(Integer id, String name, Category category) {
+        return assembleDataObject(NoneFundEvent.getFields(), new NoneFundEvent()
+                , "getId", id
+                , "getName", name
+                , "getCategory", category
+        );
     }
 
     //------------------------------------------------------------------------------------------------------------------

@@ -1,12 +1,10 @@
 package com.ntankard.Tracking.DataBase.Core.Transfer.Bank;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
-import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
 import java.util.List;
 
@@ -20,22 +18,26 @@ public class ManualBankTransfer extends BankTransfer {
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields(Integer id, String description,
-                                           Period period, Bank source, Double value,
-                                           Period destinationPeriod, Pool destination, Double destinationValue,
-                                           DataObject container) {
-        return BankTransfer.getFields(id, description, period, source, value, destinationPeriod, destination, destinationValue, container);
+    public static List<Field<?>> getFields() {
+        return BankTransfer.getFields();
     }
 
     /**
-     * Constructor
+     * Create a new RePayFundTransfer object
      */
-    @ParameterMap(parameterGetters = {"getId", "getDescription", "getPeriod", "getSource", "getValue", "getDestinationPeriod", "getDestination", "getDestinationValue"})
-    public ManualBankTransfer(Integer id, String description,
-                              Period period, Bank source, Double value,
-                              Period destinationPeriod, Pool destination, Double destinationValue) {
-        super();
-        setFields(getFields(id, description, period, source, value, destinationPeriod, destination, destinationValue, this));
+    public static ManualBankTransfer make(Integer id, String description,
+                                          Period period, Bank source, Double value,
+                                          Period destinationPeriod, Pool destination, Double destinationValue) {
+        return assembleDataObject(ManualBankTransfer.getFields(), new ManualBankTransfer()
+                , "getId", id
+                , "getDescription", description
+                , "getPeriod", period
+                , "getSource", source
+                , "getValue", value
+                , "getDestinationPeriod", destinationPeriod
+                , "getDestination", destination
+                , "getDestinationValue", destinationValue
+        );
     }
 
     //------------------------------------------------------------------------------------------------------------------

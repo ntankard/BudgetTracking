@@ -22,19 +22,6 @@ class CurrencyTest {
     //################################### Unit Tests (any instance of an object) #######################################
     //------------------------------------------------------------------------------------------------------------------
 
-    /**
-     * Test constructor parameters
-     */
-    @Test
-    void constructor() {
-        assertDoesNotThrow(() -> new Currency(0, "", false, 0.0, "", ""));
-        assertThrows(IllegalArgumentException.class, () -> new Currency(0, "", null, 0.0, "", ""));
-        assertThrows(IllegalArgumentException.class, () -> new Currency(0, "", false, null, "", ""));
-        assertThrows(IllegalArgumentException.class, () -> new Currency(0, "", false, 0.0, null, ""));
-        assertThrows(IllegalArgumentException.class, () -> new Currency(0, "", false, 0.0, "", null));
-    }
-
-
     //------------------------------------------------------------------------------------------------------------------
     //########################## Implementation Tests (all declared objects in isolation) ##############################
     //------------------------------------------------------------------------------------------------------------------

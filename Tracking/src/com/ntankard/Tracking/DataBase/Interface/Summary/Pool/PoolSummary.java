@@ -28,20 +28,11 @@ public abstract class PoolSummary<PoolType extends Pool> extends DataObject impl
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields(Period period, Pool pool, DataObject container) {
-        List<Field<?>> toReturn = DataObject.getFields(-1, container);
-        toReturn.add(new DataObject_Field<>("period", Period.class, period, container));
-        toReturn.add(new DataObject_Field<>("pool", Pool.class, pool, container));
+    public static List<Field<?>> getFields() {
+        List<Field<?>> toReturn = DataObject.getFields();
+        toReturn.add(new DataObject_Field<>("getPeriod", Period.class));
+        toReturn.add(new DataObject_Field<>("getPool", Pool.class));
         return toReturn;
-    }
-
-    /**
-     * Constructor
-     */
-    protected PoolSummary(Period period, PoolType pool) {
-        super();
-        setFields(getFields(period, pool, this));
-
     }
 
     /**
@@ -101,11 +92,11 @@ public abstract class PoolSummary<PoolType extends Pool> extends DataObject impl
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     @DisplayProperties(order = 2)
     public Period getPeriod() {
-        return get("period");
+        return get("getPeriod");
     }
 
     @DisplayProperties(order = 3)
     public PoolType getPool() {
-        return get("pool");
+        return get("getPool");
     }
 }

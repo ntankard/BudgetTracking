@@ -1,6 +1,8 @@
 package com.ntankard.Tracking.DataBase.Database.SubContainers;
 
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.NamedDataObject;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -164,9 +166,13 @@ class DataObjectContainerTest {
     //------------------------------------------------------------------------------------------------------------------
 
     private static class Layer1_ALT_DataObject_New extends DataObject {
+        @SuppressWarnings("unchecked")
         Layer1_ALT_DataObject_New(Integer id) {
             super();
-            setFields(getFields(id, this));
+            List<Field<?>> fields = NamedDataObject.getFields();
+            fields.forEach(field -> field.setContainer(this));
+            ((Field<Integer>) makeFieldMap(fields).get("getId")).set(id);
+            setFields(fields);
         }
 
         @Override
@@ -176,9 +182,13 @@ class DataObjectContainerTest {
     }
 
     private static class Layer1_DataObject_New extends DataObject {
+        @SuppressWarnings("unchecked")
         Layer1_DataObject_New(Integer id) {
             super();
-            setFields(getFields(id, this));
+            List<Field<?>> fields = NamedDataObject.getFields();
+            fields.forEach(field -> field.setContainer(this));
+            ((Field<Integer>) makeFieldMap(fields).get("getId")).set(id);
+            setFields(fields);
         }
 
         @Override

@@ -35,11 +35,11 @@ public abstract class Transfer extends DataObject implements CurrencyBound {
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields(Integer id, String description, Period period, Pool source, DataObject container) {
-        List<Field<?>> toReturn = DataObject.getFields(id, container);
-        toReturn.add(new Field<>("description", String.class, description, container));
-        toReturn.add(new DataObject_Field<>("period", Period.class, period, container));
-        toReturn.add(new DataObject_Field<>("source", Pool.class, source, container));
+    public static List<Field<?>> getFields() {
+        List<Field<?>> toReturn = DataObject.getFields();
+        toReturn.add(new Field<>("getDescription", String.class));
+        toReturn.add(new DataObject_Field<>("getPeriod", Period.class));
+        toReturn.add(new DataObject_Field<>("getSource", Pool.class));
         return toReturn;
     }
 
@@ -51,9 +51,9 @@ public abstract class Transfer extends DataObject implements CurrencyBound {
         if (sourceTransfer != null) throw new IllegalStateException("This object has already been added");
         if (destinationTransfer != null) throw new IllegalStateException("This object has already been added");
         super.add();
-        sourceTransfer = new HalfTransfer(TrackingDatabase.get().getNextId(), getPeriod(true), getPool(true), getCurrency(true), this);
+        sourceTransfer = HalfTransfer.make(TrackingDatabase.get().getNextId(), getPeriod(true), getPool(true), getCurrency(true), this);
         sourceTransfer.add();
-        destinationTransfer = new HalfTransfer(TrackingDatabase.get().getNextId(), getPeriod(false), getPool(false), getCurrency(false), this);
+        destinationTransfer = HalfTransfer.make(TrackingDatabase.get().getNextId(), getPeriod(false), getPool(false), getCurrency(false), this);
         destinationTransfer.add();
     }
 
@@ -109,17 +109,17 @@ public abstract class Transfer extends DataObject implements CurrencyBound {
 
     @DisplayProperties(order = 1100000)
     public String getDescription() {
-        return get("description");
+        return get("getDescription");
     }
 
     @DisplayProperties(order = 1200000)
     public Period getPeriod() {
-        return get("period");
+        return get("getPeriod");
     }
 
     @DisplayProperties(order = 1300000)
     public Pool getSource() {
-        return get("source");
+        return get("getSource");
     }
 
     @DisplayProperties(order = 1400000, dataType = CURRENCY)
@@ -152,20 +152,20 @@ public abstract class Transfer extends DataObject implements CurrencyBound {
     //------------------------------------------------------------------------------------------------------------------
 
     public void setDescription(String description) {
-        set("description", description);
+        set("getDescription", description);
         updateHalfTransfer();
     }
 
     @SetterProperties(localSourceMethod = "sourceOptions")
     protected void setSource(Pool source) {
-        set("source", source);
+        set("getSource", source);
         updateHalfTransfer();
         validateParents();
     }
 
     @SetterProperties(localSourceMethod = "sourceOptions")
     public void setPeriod(Period period) {
-        set("period", period);
+        set("getPeriod", period);
         updateHalfTransfer();
         validateParents();
     }

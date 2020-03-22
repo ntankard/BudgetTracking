@@ -6,9 +6,9 @@ import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.ClassExtension.SetterProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.DataObject_Field;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Dependant_DataObject_Field;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.Currency;
-import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Transfer;
@@ -28,12 +28,20 @@ public abstract class FundTransfer extends Transfer {
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields(Integer id, String description,
-                                           Period period, FundEvent source, Currency currency, DataObject container) {
-        List<Field<?>> toReturn = Transfer.getFields(id, description, period, source, container);
-        toReturn.add(new Field<>("description", String.class, description, container));
-        toReturn.add(new DataObject_Field<>("destination", Pool.class, source.getCategory(), container));
-        toReturn.add(new DataObject_Field<>("currency", Currency.class, currency, container));
+    public static List<Field<?>> getFields() {
+        List<Field<?>> toReturn = Transfer.getFields();
+
+        toReturn.remove(makeFieldMap(toReturn).get("getSource"));
+        toReturn.add(new DataObject_Field<>("getSource", FundEvent.class));
+
+        toReturn.add(new Dependant_DataObject_Field<>("getDestination", Pool.class, makeFieldMap(toReturn).get("getSource"), new Dependant_DataObject_Field.Extractor<Pool, Pool>() {
+            @Override
+            public Pool extract(Pool value) {
+                return ((FundEvent) value).getCategory();
+            }
+        }));
+
+        toReturn.add(new DataObject_Field<>("getCurrency", Currency.class));
         return toReturn;
     }
 
@@ -73,13 +81,13 @@ public abstract class FundTransfer extends Transfer {
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     @DisplayProperties(order = 1500000)
     public Currency getCurrency() {
-        return get("currency");
+        return get("getCurrency");
     }
 
     @Override
     @DisplayProperties(order = 1600000)
     public Pool getDestination() {
-        return get("destination");
+        return get("getDestination");
     }
 
     // 1700000----getSourceTransfer
@@ -99,14 +107,14 @@ public abstract class FundTransfer extends Transfer {
 
     public void setDestination() {
         Pool destination = ((FundEvent) getSource()).getCategory();
-        set("destination", destination);
+        set("getDestination", destination);
         updateHalfTransfer();
         validateParents();
     }
 
     @SetterProperties(localSourceMethod = "sourceOptions")
     public void setCurrency(Currency currency) {
-        set("currency", currency);
+        set("getCurrency", currency);
         updateHalfTransfer();
         validateParents();
     }

@@ -3,18 +3,16 @@ package com.ntankard.Tracking.DataBase.Core;
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.MemberProperties;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.HasDefault;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.NamedDataObject;
-import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import static com.ntankard.ClassExtension.MemberProperties.*;
+import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
+import static com.ntankard.ClassExtension.MemberProperties.TRACE_DISPLAY;
 
 @ClassExtensionProperties(includeParent = true)
 public class Currency extends NamedDataObject implements HasDefault {
@@ -29,10 +27,6 @@ public class Currency extends NamedDataObject implements HasDefault {
         return Math.round(value * 100.0) / 100.0;
     }
 
-
-    // Generated value
-    private NumberFormat numberFormat;
-
     //------------------------------------------------------------------------------------------------------------------
     //################################################### Constructor ##################################################
     //------------------------------------------------------------------------------------------------------------------
@@ -40,33 +34,13 @@ public class Currency extends NamedDataObject implements HasDefault {
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields(Integer id, String name, Boolean isDefault, Double toPrimary, String language, String country, DataObject container) {
-        List<Field<?>> toReturn = NamedDataObject.getFields(id, name, container);
-        toReturn.add(new Field<>("isDefault", Boolean.class, isDefault, container));
-        toReturn.add(new Field<>("toPrimary", Double.class, toPrimary, container));
-        toReturn.add(new Field<>("language", String.class, language, container));
-        toReturn.add(new Field<>("country", String.class, country, container));
+    public static List<Field<?>> getFields() {
+        List<Field<?>> toReturn = NamedDataObject.getFields();
+        toReturn.add(new Field<>("isDefault", Boolean.class));
+        toReturn.add(new Field<>("getToPrimary", Double.class));
+        toReturn.add(new Field<>("getLanguage", String.class));
+        toReturn.add(new Field<>("getCountry", String.class));
         return toReturn;
-    }
-
-    /**
-     * Constructor
-     */
-    @ParameterMap(parameterGetters = {"getId", "getName", "isDefault", "getToPrimary", "getLanguage", "getCountry"})
-    public Currency(Integer id, String name, Boolean isDefault, Double toPrimary, String language, String country) {
-        super();
-        setFields(getFields(id, name, isDefault, toPrimary, language, country, this));
-        this.numberFormat = NumberFormat.getCurrencyInstance(new Locale(language, country));
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 2000000)
-    public List<DataObject> getParents() {
-        return new ArrayList<>();
     }
 
     /**
@@ -77,7 +51,7 @@ public class Currency extends NamedDataObject implements HasDefault {
     @MemberProperties(verbosityLevel = TRACE_DISPLAY)
     @DisplayProperties(order = 1150000)
     public NumberFormat getNumberFormat() {
-        return numberFormat;
+        return NumberFormat.getCurrencyInstance(new Locale(getLanguage(), getCountry()));
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -95,19 +69,19 @@ public class Currency extends NamedDataObject implements HasDefault {
 
     @DisplayProperties(order = 1120000)
     public Double getToPrimary() {
-        return get("toPrimary");
+        return get("getToPrimary");
     }
 
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     @DisplayProperties(order = 1130000)
     public String getLanguage() {
-        return get("language");
+        return get("getLanguage");
     }
 
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
     @DisplayProperties(order = 1140000)
     public String getCountry() {
-        return get("country");
+        return get("getCountry");
     }
 
     // 1150000------getNumberFormat (Above)

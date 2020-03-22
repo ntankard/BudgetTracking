@@ -12,7 +12,7 @@ public class TrackingDatabase_Repair {
     public static void repair() {
         if (TrackingDatabase.get().get(SavingsFundEvent.class).size() != 1) {
             if (TrackingDatabase.get().get(SavingsFundEvent.class).size() == 0) {
-                new SavingsFundEvent(TrackingDatabase.get().getNextId(), TrackingDatabase.get().getSpecialValue(Category.class, Category.SAVINGS)).add();
+                SavingsFundEvent.make(TrackingDatabase.get().getNextId(), TrackingDatabase.get().getSpecialValue(Category.class, Category.SAVINGS)).add();
             } else {
                 throw new RuntimeException("More than 1 savings event");
             }
@@ -31,11 +31,11 @@ public class TrackingDatabase_Repair {
         }
 
         if (!beforeFound) {
-            new VirtualPeriod(TrackingDatabase.get().getNextId(), "Before", 0).add();
+            VirtualPeriod.make(TrackingDatabase.get().getNextId(), "Before", 0).add();
         }
 
         if (!afterFound) {
-            new VirtualPeriod(TrackingDatabase.get().getNextId(), "After", Integer.MAX_VALUE).add();
+            VirtualPeriod.make(TrackingDatabase.get().getNextId(), "After", Integer.MAX_VALUE).add();
         }
     }
 }
