@@ -139,7 +139,9 @@ public abstract class DataObject {
         if (this.getChildren().size() != 0) {
             throw new RuntimeException("Cant delete this kind of object. NoneFundEvent still has children");
         }
-
+        for (Map.Entry<String, Field<?>> field : fieldMap.entrySet()) {
+            field.getValue().remove();
+        }
         this.notifyParentUnLink();
         TrackingDatabase.get().remove(this);
         // @TODO check that this has not been double removed
@@ -257,7 +259,7 @@ public abstract class DataObject {
      * @return The field
      */
     @SuppressWarnings("unchecked")
-    protected <T> Field<T> getField(String field) {
+    public <T> Field<T> getField(String field) {
         return (Field<T>) fieldMap.get(field);
     }
 

@@ -40,6 +40,7 @@ class NamedDataObjectTest {
     @Test
     void setName() {
         NamedDataObject_Inst namedDataObject_inst = new NamedDataObject_Inst(0, "Test");
+        namedDataObject_inst.add();
         assertDoesNotThrow(() -> namedDataObject_inst.setName(""));
         assertThrows(IllegalArgumentException.class, () -> namedDataObject_inst.setName(null));
     }
@@ -69,8 +70,8 @@ class NamedDataObjectTest {
             super();
             List<Field<?>> fields = NamedDataObject.getFields();
             fields.forEach(field -> field.setContainer(this));
-            ((Field<Integer>) makeFieldMap(fields).get("getId")).set(id);
-            ((Field<String>) makeFieldMap(fields).get("getName")).set(name);
+            ((Field<Integer>) makeFieldMap(fields).get("getId")).initialSet(id);
+            ((Field<String>) makeFieldMap(fields).get("getName")).initialSet(name);
             setFields(fields);
         }
 

@@ -4,6 +4,7 @@ import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Filter.FieldFilter;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Filter.Null_FieldFilter;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Listener.FieldChangeListener;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.SourceDriver.SourceDriver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +51,11 @@ public class Field<T> {
      * Should the field be saved when the object is saved?
      */
     private boolean shouldSave = true;
+
+    /**
+     * The source driver that sets the value of this field
+     */
+    private SourceDriver<T> sourceDriver = null;
 
     // Dynamic data ----------------------------------------------------------------------------------------------------
 
@@ -128,6 +134,19 @@ public class Field<T> {
     }
 
     /**
+     * Link a source driver that will set the value of this field
+     *
+     * @param sourceDriver The source drive
+     * @return This
+     */
+    public Field<T> addSourceDriver(SourceDriver<T> sourceDriver) {
+        this.sourceDriver = sourceDriver;
+        sourceDriver.setDriving(this);
+        this.shouldSave = false;
+        return this;
+    }
+
+    /**
      * Link the field to a container
      *
      * @param container The container to link it too
@@ -152,7 +171,7 @@ public class Field<T> {
         if (fieldState != FieldState.INITIALISED) {
             throw new RuntimeException("The containers has not been set of the initial value has already been provided");
         }
-        set(value);
+        set_impl(value);
         fieldState = FieldState.INITIAL_VALUE;
         return this;
     }
@@ -169,6 +188,19 @@ public class Field<T> {
         fieldState = FieldState.ADDED;
         return this;
     }
+
+    /**
+     * Remove this field from the database
+     */
+    public void remove() {
+        if (fieldState != FieldState.ADDED) {
+            throw new RuntimeException("Removing a field that was never added");
+        }
+        if (sourceDriver != null) {
+            sourceDriver.remove();
+        }
+    }
+
 
     //------------------------------------------------------------------------------------------------------------------
     //################################################## Field Access ##################################################
@@ -189,19 +221,46 @@ public class Field<T> {
      * @param value The value to set
      */
     public void set(T value) {
-        if (fieldState.equals(FieldState.STARTED)) {
-            throw new RuntimeException("Can't set a value before the container is set");
+        if (!fieldState.equals(FieldState.ADDED)) {
+            throw new RuntimeException("Can't set a value before the object is fully setup");
         }
+        set_impl(value);
+    }
+
+    /**
+     * Set from the source driver
+     *
+     * @param value  The value to set
+     * @param source The source of the value
+     */
+    public void sourceSet(T value, SourceDriver<T> source) {
+        if (this.sourceDriver == null || this.sourceDriver != source) {
+            throw new RuntimeException("This source dose not have permission to set values");
+        }
+        if (fieldState.equals(FieldState.ADDED)) {
+            set(value);
+        }
+        if (fieldState.equals(FieldState.INITIALISED)) {
+            initialSet(value);
+        }
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    //################################################# Implementation #################################################
+    //------------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Set the field value and perform what ever actions are required
+     *
+     * @param value The value to set
+     */
+    public void set_impl(T value) {
         set_preCheck(value);
         set_preSet();
         set_set(value);
         set_postSet();
         set_postCheck();
     }
-
-    //------------------------------------------------------------------------------------------------------------------
-    //################################################# Implementation #################################################
-    //------------------------------------------------------------------------------------------------------------------
 
     /**
      * Validate the value to set
@@ -243,7 +302,6 @@ public class Field<T> {
      * Validate the field with the new value
      */
     protected void set_postCheck() {
-
     }
 
     //------------------------------------------------------------------------------------------------------------------

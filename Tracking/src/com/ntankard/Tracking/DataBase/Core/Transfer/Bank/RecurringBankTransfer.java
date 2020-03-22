@@ -4,8 +4,8 @@ import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.ClassExtension.SetterProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.DataObject_Field;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Dependant_Field;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.SourceDriver.DataObjectField_SourceDriver;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
@@ -26,19 +26,9 @@ public class RecurringBankTransfer extends BankTransfer {
     public static List<Field<?>> getFields() {
         List<Field<?>> toReturn = BankTransfer.getFields();
 
-        Field<?> parentPaymentField = new DataObject_Field<>("getParentPayment", FixedRecurringPayment.class);
+        Field<FixedRecurringPayment> parentPaymentField = new DataObject_Field<>("getParentPayment", FixedRecurringPayment.class);
         toReturn.add(parentPaymentField);
-
-        // TODO THIS IS BROKEN, it will work if you change what recuring payment its linked to but NOT if the value of that field changes. So if you change the name it dose not work, you need to add aditional subscriptions
-        toReturn.remove(makeFieldMap(toReturn).get("getDescription"));
-        toReturn.add(new Dependant_Field<>("getDescription", String.class, parentPaymentField, new Dependant_Field.Extractor<String, FixedRecurringPayment>() {
-            @Override
-            public String extract(FixedRecurringPayment value) {
-                return value.getName();
-            }
-        }));
-
-
+        makeFieldMap(toReturn).get("getDescription").addSourceDriver(new DataObjectField_SourceDriver<>(parentPaymentField, "getName"));
         return toReturn;
     }
 

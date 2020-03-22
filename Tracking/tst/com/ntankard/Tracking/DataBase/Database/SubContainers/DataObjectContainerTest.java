@@ -171,7 +171,7 @@ class DataObjectContainerTest {
             super();
             List<Field<?>> fields = NamedDataObject.getFields();
             fields.forEach(field -> field.setContainer(this));
-            ((Field<Integer>) makeFieldMap(fields).get("getId")).set(id);
+            ((Field<Integer>) makeFieldMap(fields).get("getId")).initialSet(id);
             setFields(fields);
         }
 
@@ -187,7 +187,7 @@ class DataObjectContainerTest {
             super();
             List<Field<?>> fields = NamedDataObject.getFields();
             fields.forEach(field -> field.setContainer(this));
-            ((Field<Integer>) makeFieldMap(fields).get("getId")).set(id);
+            ((Field<Integer>) makeFieldMap(fields).get("getId")).initialSet(id);
             setFields(fields);
         }
 

@@ -6,8 +6,8 @@ import com.ntankard.ClassExtension.MemberProperties;
 import com.ntankard.ClassExtension.SetterProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.DataObject_Field;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Dependant_DataObject_Field;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.SourceDriver.DataObjectField_SourceDriver;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
@@ -32,15 +32,9 @@ public abstract class FundTransfer extends Transfer {
         List<Field<?>> toReturn = Transfer.getFields();
 
         toReturn.remove(makeFieldMap(toReturn).get("getSource"));
-        toReturn.add(new DataObject_Field<>("getSource", FundEvent.class));
-
-        toReturn.add(new Dependant_DataObject_Field<>("getDestination", Pool.class, makeFieldMap(toReturn).get("getSource"), new Dependant_DataObject_Field.Extractor<Pool, Pool>() {
-            @Override
-            public Pool extract(Pool value) {
-                return ((FundEvent) value).getCategory();
-            }
-        }));
-
+        Field<FundEvent> source = new DataObject_Field<>("getSource", FundEvent.class);
+        toReturn.add(source);
+        toReturn.add(new DataObject_Field<>("getDestination", Pool.class).addSourceDriver(new DataObjectField_SourceDriver<>(source, "getCategory")));
         toReturn.add(new DataObject_Field<>("getCurrency", Currency.class));
         return toReturn;
     }
