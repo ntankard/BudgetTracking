@@ -212,11 +212,18 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
             @Override
             protected boolean shouldAdd_Impl(BankTransfer dataObject) {
                 if (selectedBank != null) {
-                    if (!dataObject.getSource().equals(selectedBank)) {
-                        return false;
+                    if ((dataObject.getSource().equals(selectedBank) && dataObject.getPeriod().equals(period))) {
+                        return true;
+                    }
+                    if ((dataObject.getDestination().equals(selectedBank))) {
+                        if (dataObject.getDestinationPeriod() != null) {
+                            return dataObject.getDestinationPeriod().equals(period);
+                        } else {
+                            return dataObject.getPeriod().equals(period);
+                        }
                     }
                 }
-                return dataObject.getPeriod().equals(period);
+                return false;
             }
         });
         bankCategoryTransfer_controller = new ManualBankTransfer_ElementController(period, this);
