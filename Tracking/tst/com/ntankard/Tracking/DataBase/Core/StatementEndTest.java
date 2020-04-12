@@ -8,9 +8,6 @@ import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class StatementEndTest {
@@ -76,9 +73,7 @@ class StatementEndTest {
      */
     @Test
     void getParents() {
-        List<String> exclude = new ArrayList<>();
-        exclude.add("Currency");
-        DataObjectTestUtil.testStandardParents(StatementEnd.class, exclude);
+        DataObjectTestUtil.testStandardParents(StatementEnd.class);
     }
 
     /**

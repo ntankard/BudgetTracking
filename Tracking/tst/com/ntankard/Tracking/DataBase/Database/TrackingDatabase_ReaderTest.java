@@ -22,7 +22,7 @@ class TrackingDatabase_ReaderTest {
     static void setUp() {
         TrackingDatabase.reset();
         String savePath = "C:\\Users\\Nicholas\\Google Drive\\BudgetTrackingData";
-        read(savePath);
+        read(savePath, new HashMap<>());
         TrackingDatabase.get().finalizeCore();
     }
 
@@ -65,7 +65,7 @@ class TrackingDatabase_ReaderTest {
         String testPath = "testFiles\\";
 
         TrackingDatabase.reset();
-        read(savePath);
+        read(savePath, new HashMap<>());
         TrackingDatabase.get().finalizeCore();
 
         new File(testPath).mkdir();

@@ -3,7 +3,7 @@ package com.ntankard.Tracking.Dispaly.Frames.MainFrame.SummaryGraphs;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
-import com.ntankard.Tracking.DataBase.Core.Pool.Category;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.Extended.Sum.PeriodPool_SumSet;
 import org.jfree.chart.ChartFactory;
@@ -77,25 +77,25 @@ public class SetCategoryGraph extends UpdatableJPanel {
      */
     private XYDataset createDataset() {
         Map<Integer, XYSeries> categories = new HashMap<>();
-        Map<Integer, List<Category>> setCategories = new HashMap<>();
+        Map<Integer, List<SolidCategory>> setCategories = new HashMap<>();
 
-        for (Category category : TrackingDatabase.get().get(Category.class)) {
-            if (!setCategories.containsKey(category.getSet())) {
-                setCategories.put(category.getSet(), new ArrayList<>());
-                categories.put(category.getSet(), new XYSeries(category.getSetName()));
+        for (SolidCategory solidCategory : TrackingDatabase.get().get(SolidCategory.class)) {
+            if (!setCategories.containsKey(solidCategory.getSet())) {
+                setCategories.put(solidCategory.getSet(), new ArrayList<>());
+                categories.put(solidCategory.getSet(), new XYSeries(solidCategory.getSetName()));
             }
-            setCategories.get(category.getSet()).add(category);
+            setCategories.get(solidCategory.getSet()).add(solidCategory);
         }
 
         int i = 0;
         for (ExistingPeriod period : TrackingDatabase.get().get(ExistingPeriod.class)) {
             for (Integer set : setCategories.keySet()) {
                 XYSeries series = categories.get(set);
-                List<Category> toSumCategories = setCategories.get(set);
+                List<SolidCategory> toSumCategories = setCategories.get(set);
 
                 double sum = 0.0;
-                for (Category category : toSumCategories) {
-                    sum += new PeriodPool_SumSet(period, category).getTotal();
+                for (SolidCategory solidCategory : toSumCategories) {
+                    sum += new PeriodPool_SumSet(period, solidCategory).getTotal();
                 }
                 series.add(i, sum);
             }

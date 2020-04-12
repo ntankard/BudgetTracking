@@ -35,4 +35,12 @@ public abstract class TrackingDatabase_ElementController<T extends DataObject> i
         newObj.add();
         master.notifyUpdate();
     }
+
+    /**
+     * {@inheritDoc
+     */
+    @Override
+    public boolean canCreate() {
+        return true;
+    }
 }

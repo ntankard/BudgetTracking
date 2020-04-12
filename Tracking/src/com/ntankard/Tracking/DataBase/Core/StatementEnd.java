@@ -34,7 +34,7 @@ public class StatementEnd extends DataObject implements CurrencyBound, Ordered {
         DataObject_Field<?> bank = new DataObject_Field<>("getBank", Bank.class);
         toReturn.add(bank);
         toReturn.add(new Field<>("getEnd", Double.class));
-        toReturn.add(new Field<>("getCurrency", Currency.class).addSourceDriver(new DataObjectField_SourceDriver<>(bank, "getCurrency")));
+        toReturn.add(new DataObject_Field<>("getCurrency", Currency.class).addSourceDriver(new DataObjectField_SourceDriver<>(bank, "getCurrency")));
         return toReturn;
     }
 

@@ -12,7 +12,7 @@ import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
-import com.ntankard.Tracking.DataBase.Core.Pool.Category;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.SavingsFundEvent;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.BankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePayFundTransfer;
@@ -240,9 +240,9 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
     @DisplayProperties(order = 15, dataType = CURRENCY)
     public Double getNonSaveCategoryDelta() {
         double sum = 0.0;
-        for (Category category : TrackingDatabase.get().get(Category.class)) {
+        for (SolidCategory solidCategory : TrackingDatabase.get().get(SolidCategory.class)) {
 
-            ObjectSet<HalfTransfer> set = new TwoParent_Children_Set<>(HalfTransfer.class, getPeriod(), category);
+            ObjectSet<HalfTransfer> set = new TwoParent_Children_Set<>(HalfTransfer.class, getPeriod(), solidCategory);
             List<HalfTransfer> data = set.get();
             Object toRemove = null;
             for (HalfTransfer transfer : data) {
@@ -261,7 +261,7 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
                 data.remove(toRemove);
             }
 
-            sum += new Transfer_SumSet<>(new Array_Set<>(data), category).getTotal();
+            sum += new Transfer_SumSet<>(new Array_Set<>(data), solidCategory).getTotal();
         }
         return -sum;
     }
@@ -273,9 +273,9 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
      */
     @DisplayProperties(order = 16, dataType = CURRENCY)
     public Double getTaxableIncome() {
-        Category category = TrackingDatabase.get().getSpecialValue(Category.class, Category.TAXABLE);
-        ObjectSet<HalfTransfer> objectSet = new TwoParent_Children_Set<>(HalfTransfer.class, getPeriod(), category, new TransferType_HalfTransfer_Filter(BankTransfer.class));
-        return Currency.round(new Transfer_SumSet<>(objectSet, category).getTotal());
+        SolidCategory solidCategory = TrackingDatabase.get().getSpecialValue(SolidCategory.class, SolidCategory.TAXABLE);
+        ObjectSet<HalfTransfer> objectSet = new TwoParent_Children_Set<>(HalfTransfer.class, getPeriod(), solidCategory, new TransferType_HalfTransfer_Filter(BankTransfer.class));
+        return Currency.round(new Transfer_SumSet<>(objectSet, solidCategory).getTotal());
     }
 
     /**

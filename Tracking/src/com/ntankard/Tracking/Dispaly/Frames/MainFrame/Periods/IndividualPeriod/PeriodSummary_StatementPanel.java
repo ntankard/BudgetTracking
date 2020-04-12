@@ -5,7 +5,7 @@ import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
-import com.ntankard.Tracking.DataBase.Core.Pool.Category;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.Receipt;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.BankTransfer;
@@ -41,7 +41,7 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
     private Bank selectedBank = null;
 
     // The GUI components
-    private PeriodSummary_Table<Category> categorySummary_table;
+    private PeriodSummary_Table<SolidCategory> categorySummary_table;
     private PeriodSummary_Table<Bank> bankSummary_table;
     private PeriodSummary_Table<FundEvent> fundEventSummary_table;
 
@@ -158,7 +158,7 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
 
         // Category table ----------------------------------------------------------------------------------------------
 
-        categorySummary_table = new PeriodSummary_Table<>(period, true, Category.class, this);
+        categorySummary_table = new PeriodSummary_Table<>(period, true, SolidCategory.class, this);
         categorySummary_table.getModel().addCustomFormatter(bankTransferFormatter);
 
 

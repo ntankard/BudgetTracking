@@ -14,7 +14,7 @@ import com.ntankard.Tracking.DataBase.Core.BaseObject.NamedDataObject;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
-import com.ntankard.Tracking.DataBase.Core.Pool.Category;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePayFundTransfer;
 import com.ntankard.Tracking.DataBase.Database.ObjectFactory;
 
@@ -39,8 +39,8 @@ public abstract class RecurringPayment extends NamedDataObject implements Curren
         toReturn.add(new Field<>("getValue", Double.class));
         DataObject_Field<?> bank = new DataObject_Field<>("getBank", Bank.class);
         toReturn.add(bank);
-        toReturn.add(new DataObject_Field<>("getCategory", Category.class));
-        toReturn.add(new Field<>("getCurrency", Currency.class).addSourceDriver(new DataObjectField_SourceDriver<>(bank, "getCurrency")));
+        toReturn.add(new DataObject_Field<>("getCategory", SolidCategory.class));
+        toReturn.add(new DataObject_Field<>("getCurrency", Currency.class).addSourceDriver(new DataObjectField_SourceDriver<>(bank, "getCurrency")));
 
         Field<ExistingPeriod> startField = new DataObject_Field<>("getStart", ExistingPeriod.class);
         Field<ExistingPeriod> endField = new DataObject_Field<>("getEnd", ExistingPeriod.class, true);
@@ -90,7 +90,7 @@ public abstract class RecurringPayment extends NamedDataObject implements Curren
     }
 
     @DisplayProperties(order = 1140000)
-    public Category getCategory() {
+    public SolidCategory getCategory() {
         return get("getCategory");
     }
 
@@ -151,8 +151,8 @@ public abstract class RecurringPayment extends NamedDataObject implements Curren
     }
 
     @SetterProperties(localSourceMethod = "sourceOptions")
-    public void setCategory(Category category) {
-        set("getCategory", category);
+    public void setCategory(SolidCategory solidCategory) {
+        set("getCategory", solidCategory);
         regenerateChildren();
         validateParents();
     }

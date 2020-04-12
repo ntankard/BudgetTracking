@@ -5,7 +5,7 @@ import com.ntankard.ClassExtension.DisplayProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
-import com.ntankard.Tracking.DataBase.Core.Pool.Category;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePayFundTransfer;
 import com.ntankard.Tracking.DataBase.Database.ObjectFactory;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Period_Summary;
@@ -32,10 +32,10 @@ public class SavingsFundEvent extends FundEvent {
     /**
      * Create a new SavingsFundEvent object
      */
-    public static SavingsFundEvent make(Integer id, Category category) {
+    public static SavingsFundEvent make(Integer id, SolidCategory solidCategory) {
         return assembleDataObject(SavingsFundEvent.getFields(), new SavingsFundEvent()
                 , "getId", id
-                , "getCategory", category
+                , "getCategory", solidCategory
         );
     }
 

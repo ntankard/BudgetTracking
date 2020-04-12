@@ -10,7 +10,7 @@ import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
-import com.ntankard.Tracking.DataBase.Core.Pool.Category;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Transfer;
@@ -108,7 +108,7 @@ public abstract class BankTransfer extends Transfer {
      * @return True if it supports setting a destination period
      */
     boolean doseSupportDestinationPeriod() {
-        return getDestination() instanceof Bank || getDestination() instanceof Category;
+        return getDestination() instanceof Bank || getDestination() instanceof SolidCategory;
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -176,9 +176,9 @@ public abstract class BankTransfer extends Transfer {
     //------------------------------------------------------------------------------------------------------------------
 
     @DisplayProperties(order = 1520000)
-    public Category getCategory() {
-        if (getDestination() instanceof Category) {
-            return (Category) getDestination();
+    public SolidCategory getCategory() {
+        if (getDestination() instanceof SolidCategory) {
+            return (SolidCategory) getDestination();
         }
         return null;
     }
@@ -275,8 +275,8 @@ public abstract class BankTransfer extends Transfer {
     //------------------------------------------------------------------------------------------------------------------
 
     @SetterProperties(localSourceMethod = "sourceOptions")
-    public void setCategory(Category category) {
-        setDestination(category);
+    public void setCategory(SolidCategory solidCategory) {
+        setDestination(solidCategory);
     }
 
     @SetterProperties(localSourceMethod = "sourceOptions")

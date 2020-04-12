@@ -1,7 +1,7 @@
 package com.ntankard.Tracking.DataBase.Database;
 
 import com.ntankard.Tracking.DataBase.Core.Period.VirtualPeriod;
-import com.ntankard.Tracking.DataBase.Core.Pool.Category;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.SavingsFundEvent;
 
 public class TrackingDatabase_Repair {
@@ -12,7 +12,7 @@ public class TrackingDatabase_Repair {
     public static void repair() {
         if (TrackingDatabase.get().get(SavingsFundEvent.class).size() != 1) {
             if (TrackingDatabase.get().get(SavingsFundEvent.class).size() == 0) {
-                SavingsFundEvent.make(TrackingDatabase.get().getNextId(), TrackingDatabase.get().getSpecialValue(Category.class, Category.SAVINGS)).add();
+                SavingsFundEvent.make(TrackingDatabase.get().getNextId(), TrackingDatabase.get().getSpecialValue(SolidCategory.class, SolidCategory.SAVINGS)).add();
             } else {
                 throw new RuntimeException("More than 1 savings event");
             }

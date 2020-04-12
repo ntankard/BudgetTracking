@@ -3,7 +3,7 @@ package com.ntankard.Tracking.Dispaly.Frames.MainFrame.SummaryGraphs;
 import com.ntankard.DynamicGUI.Util.Update.Updatable;
 import com.ntankard.DynamicGUI.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
-import com.ntankard.Tracking.DataBase.Core.Pool.Category;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.Extended.Sum.PeriodPool_SumSet;
 import org.jfree.chart.ChartFactory;
@@ -77,23 +77,23 @@ public class CategoryGraph extends UpdatableJPanel {
      * @return The generated data
      */
     private XYDataset createDataset() {
-        Map<Category, XYSeries> categories = new HashMap<>();
+        Map<SolidCategory, XYSeries> categories = new HashMap<>();
 
-        for (Category category : TrackingDatabase.get().get(Category.class)) {
-            categories.put(category, new XYSeries(category.toString()));
+        for (SolidCategory solidCategory : TrackingDatabase.get().get(SolidCategory.class)) {
+            categories.put(solidCategory, new XYSeries(solidCategory.toString()));
         }
 
         int i = 0;
         for (ExistingPeriod period : TrackingDatabase.get().get(ExistingPeriod.class)) {
-            for (Category category : TrackingDatabase.get().get(Category.class)) {
-                categories.get(category).add(i, new PeriodPool_SumSet(period, category).getTotal());
+            for (SolidCategory solidCategory : TrackingDatabase.get().get(SolidCategory.class)) {
+                categories.get(solidCategory).add(i, new PeriodPool_SumSet(period, solidCategory).getTotal());
             }
             i++;
         }
 
         final XYSeriesCollection dataset = new XYSeriesCollection();
-        for (Category category : TrackingDatabase.get().get(Category.class)) {
-            dataset.addSeries(categories.get(category));
+        for (SolidCategory solidCategory : TrackingDatabase.get().get(SolidCategory.class)) {
+            dataset.addSeries(categories.get(solidCategory));
         }
 
         return dataset;

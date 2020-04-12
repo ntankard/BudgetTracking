@@ -11,7 +11,7 @@ import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
-import com.ntankard.Tracking.DataBase.Core.Pool.Category;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Core.StatementEnd;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.BankTransfer;
@@ -90,7 +90,7 @@ public class Bank_Summary extends PoolSummary<Bank> implements CurrencyBound, Or
 
     @DisplayProperties(order = 8, dataType = CURRENCY)
     public Double getSpend() {
-        return new PeriodPool_SumSet(BankTransfer.class, Category.class, getPeriod(), getPool()).getTotal() / getCurrency().getToPrimary();
+        return new PeriodPool_SumSet(BankTransfer.class, SolidCategory.class, getPeriod(), getPool()).getTotal() / getCurrency().getToPrimary();
     }
 
     @Override

@@ -7,7 +7,7 @@ import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
-import com.ntankard.Tracking.DataBase.Core.Pool.Category;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePayFundTransfer;
 import com.ntankard.Tracking.DataBase.Database.ObjectFactory;
@@ -29,7 +29,7 @@ public abstract class FundEvent extends Pool {
      */
     public static List<Field<?>> getFields() {
         List<Field<?>> toReturn = Pool.getFields();
-        toReturn.add(new DataObject_Field<>("getCategory", Category.class));
+        toReturn.add(new DataObject_Field<>("getCategory", SolidCategory.class));
         return toReturn;
     }
 
@@ -105,7 +105,7 @@ public abstract class FundEvent extends Pool {
     // 1100000----getName
 
     @DisplayProperties(order = 1101000)
-    public Category getCategory() {
+    public SolidCategory getCategory() {
         return get("getCategory");
     }
 

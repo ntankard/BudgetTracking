@@ -2,10 +2,11 @@ package com.ntankard.Tracking.DataBase.Core.Pool;
 
 import com.ntankard.TestUtil.DataAccessUntil;
 import com.ntankard.TestUtil.DataObjectTestUtil;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class CategoryTest {
+class SolidCategoryTest {
 
     /**
      * Load the database
@@ -24,7 +25,7 @@ class CategoryTest {
      */
     @Test
     void getParents() {
-        DataObjectTestUtil.testStandardParents(Category.class);
+        DataObjectTestUtil.testStandardParents(SolidCategory.class);
     }
 
     /**
@@ -32,7 +33,7 @@ class CategoryTest {
      */
     @Test
     void getDataObject() {
-        DataObjectTestUtil.checkDataObjectNotNull(Category.class);
+        DataObjectTestUtil.checkDataObjectNotNull(SolidCategory.class);
     }
 
     //------------------------------------------------------------------------------------------------------------------

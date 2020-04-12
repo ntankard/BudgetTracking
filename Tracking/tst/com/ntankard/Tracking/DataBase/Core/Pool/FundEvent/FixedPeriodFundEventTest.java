@@ -5,7 +5,7 @@ import com.ntankard.TestUtil.DataObjectTestUtil;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
-import com.ntankard.Tracking.DataBase.Core.Pool.Category;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.ManualFundTransfer;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,29 +32,29 @@ class FixedPeriodFundEventTest {
     @Test
     void constructor() {
         assertNotEquals(0, TrackingDatabase.get().get(Period.class).size());
-        assertNotEquals(0, TrackingDatabase.get().get(Category.class).size());
+        assertNotEquals(0, TrackingDatabase.get().get(SolidCategory.class).size());
 
         ExistingPeriod period = TrackingDatabase.get().get(ExistingPeriod.class).get(0);
-        Category category = TrackingDatabase.get().get(Category.class).get(0);
+        SolidCategory solidCategory = TrackingDatabase.get().get(SolidCategory.class).get(0);
 
         assertThrows(IllegalArgumentException.class, () -> FixedPeriodFundEvent.make(-1, "", null, period, 1));
-        assertThrows(IllegalArgumentException.class, () -> FixedPeriodFundEvent.make(-1, "", category, null, 1));
-        assertThrows(IllegalArgumentException.class, () -> FixedPeriodFundEvent.make(-1, "", category, period, 0));
-        assertThrows(IllegalArgumentException.class, () -> FixedPeriodFundEvent.make(-1, "", category, period, -1));
-        assertDoesNotThrow(() -> FixedPeriodFundEvent.make(-1, "", category, period, 1));
+        assertThrows(IllegalArgumentException.class, () -> FixedPeriodFundEvent.make(-1, "", solidCategory, null, 1));
+        assertThrows(IllegalArgumentException.class, () -> FixedPeriodFundEvent.make(-1, "", solidCategory, period, 0));
+        assertThrows(IllegalArgumentException.class, () -> FixedPeriodFundEvent.make(-1, "", solidCategory, period, -1));
+        assertDoesNotThrow(() -> FixedPeriodFundEvent.make(-1, "", solidCategory, period, 1));
     }
 
     @Test
     void isActiveThisPeriod() {
         assertTrue(TrackingDatabase.get().get(Period.class).size() > 7);
-        assertNotEquals(0, TrackingDatabase.get().get(Category.class).size());
+        assertNotEquals(0, TrackingDatabase.get().get(SolidCategory.class).size());
 
         List<Period> periods = TrackingDatabase.get().get(Period.class);
         int start = 3;
         int end = 5;
-        Category category = TrackingDatabase.get().get(Category.class).get(0);
+        SolidCategory solidCategory = TrackingDatabase.get().get(SolidCategory.class).get(0);
 
-        FixedPeriodFundEvent fixedPeriodFundEvent = FixedPeriodFundEvent.make(-1, "", category, (ExistingPeriod) periods.get(start), 2);
+        FixedPeriodFundEvent fixedPeriodFundEvent = FixedPeriodFundEvent.make(-1, "", solidCategory, (ExistingPeriod) periods.get(start), 2);
         fixedPeriodFundEvent.notifyParentLink();
 
         assertFalse(fixedPeriodFundEvent.isActiveThisPeriod(periods.get(start - 2)));
@@ -135,13 +135,13 @@ class FixedPeriodFundEventTest {
     @Test
     void isChargeThisPeriod() {
         assertTrue(TrackingDatabase.get().get(Period.class).size() > 4);
-        assertNotEquals(0, TrackingDatabase.get().get(Category.class).size());
+        assertNotEquals(0, TrackingDatabase.get().get(SolidCategory.class).size());
 
         List<Period> periods = TrackingDatabase.get().get(Period.class);
         int period = 0;
-        Category category = TrackingDatabase.get().get(Category.class).get(0);
+        SolidCategory solidCategory = TrackingDatabase.get().get(SolidCategory.class).get(0);
 
-        FixedPeriodFundEvent fixedPeriodFundEvent = FixedPeriodFundEvent.make(-1, "", category, (ExistingPeriod) periods.get(period + 1), 1);
+        FixedPeriodFundEvent fixedPeriodFundEvent = FixedPeriodFundEvent.make(-1, "", solidCategory, (ExistingPeriod) periods.get(period + 1), 1);
         fixedPeriodFundEvent.notifyParentLink();
 
         ManualFundTransfer useCategoryFundTransfer = ManualFundTransfer.make(-2, "", periods.get(period), fixedPeriodFundEvent, 50.0, TrackingDatabase.get().getDefault(Currency.class));
@@ -181,13 +181,13 @@ class FixedPeriodFundEventTest {
     @Test
     void getCharge() {
         assertTrue(TrackingDatabase.get().get(Period.class).size() > 4);
-        assertNotEquals(0, TrackingDatabase.get().get(Category.class).size());
+        assertNotEquals(0, TrackingDatabase.get().get(SolidCategory.class).size());
 
         List<Period> periods = TrackingDatabase.get().get(Period.class);
         int period = 0;
-        Category category = TrackingDatabase.get().get(Category.class).get(0);
+        SolidCategory solidCategory = TrackingDatabase.get().get(SolidCategory.class).get(0);
 
-        FixedPeriodFundEvent fixedPeriodFundEvent = FixedPeriodFundEvent.make(-1, "", category, (ExistingPeriod) periods.get(period + 1), 1);
+        FixedPeriodFundEvent fixedPeriodFundEvent = FixedPeriodFundEvent.make(-1, "", solidCategory, (ExistingPeriod) periods.get(period + 1), 1);
         fixedPeriodFundEvent.add();
         assertEquals(-0.0, fixedPeriodFundEvent.getCharge(periods.get(period)));
         assertEquals(0.0, fixedPeriodFundEvent.getCharge(periods.get(period + 1)));
@@ -232,29 +232,29 @@ class FixedPeriodFundEventTest {
     @Test
     void setCategory() {
         assertNotEquals(0, TrackingDatabase.get().get(Period.class).size());
-        assertNotEquals(0, TrackingDatabase.get().get(Category.class).size());
-        assertNotEquals(1, TrackingDatabase.get().get(Category.class).size());
+        assertNotEquals(0, TrackingDatabase.get().get(SolidCategory.class).size());
+        assertNotEquals(1, TrackingDatabase.get().get(SolidCategory.class).size());
 
         Period period = TrackingDatabase.get().get(Period.class).get(1);
-        Category category1 = TrackingDatabase.get().get(Category.class).get(0);
-        Category category2 = TrackingDatabase.get().get(Category.class).get(0);
+        SolidCategory solidCategory1 = TrackingDatabase.get().get(SolidCategory.class).get(0);
+        SolidCategory solidCategory2 = TrackingDatabase.get().get(SolidCategory.class).get(0);
 
-        FixedPeriodFundEvent fixedPeriodFundEvent = FixedPeriodFundEvent.make(-1, "", category1, (ExistingPeriod) period, 1);
+        FixedPeriodFundEvent fixedPeriodFundEvent = FixedPeriodFundEvent.make(-1, "", solidCategory1, (ExistingPeriod) period, 1);
         fixedPeriodFundEvent.notifyParentLink();
 
         assertThrows(IllegalArgumentException.class, () -> fixedPeriodFundEvent.setCategory(null));
-        assertDoesNotThrow(() -> fixedPeriodFundEvent.setCategory(category2));
+        assertDoesNotThrow(() -> fixedPeriodFundEvent.setCategory(solidCategory2));
     }
 
     @Test
     void setStart() {
         assertNotEquals(0, TrackingDatabase.get().get(Period.class).size());
-        assertNotEquals(0, TrackingDatabase.get().get(Category.class).size());
+        assertNotEquals(0, TrackingDatabase.get().get(SolidCategory.class).size());
 
         Period period = TrackingDatabase.get().get(Period.class).get(1);
-        Category category = TrackingDatabase.get().get(Category.class).get(0);
+        SolidCategory solidCategory = TrackingDatabase.get().get(SolidCategory.class).get(0);
 
-        FixedPeriodFundEvent fixedPeriodFundEvent = FixedPeriodFundEvent.make(-1, "", category, (ExistingPeriod) period, 1);
+        FixedPeriodFundEvent fixedPeriodFundEvent = FixedPeriodFundEvent.make(-1, "", solidCategory, (ExistingPeriod) period, 1);
         fixedPeriodFundEvent.notifyParentLink();
 
         assertThrows(IllegalArgumentException.class, () -> fixedPeriodFundEvent.setDuration(-1));
@@ -265,12 +265,12 @@ class FixedPeriodFundEventTest {
     @Test
     void setDuration() {
         assertTrue(TrackingDatabase.get().get(Period.class).size() > 3);
-        assertNotEquals(0, TrackingDatabase.get().get(Category.class).size());
+        assertNotEquals(0, TrackingDatabase.get().get(SolidCategory.class).size());
 
         Period period = TrackingDatabase.get().get(Period.class).get(2);
-        Category category = TrackingDatabase.get().get(Category.class).get(0);
+        SolidCategory solidCategory = TrackingDatabase.get().get(SolidCategory.class).get(0);
 
-        FixedPeriodFundEvent fixedPeriodFundEvent = FixedPeriodFundEvent.make(-1, "", category, (ExistingPeriod) period, 1);
+        FixedPeriodFundEvent fixedPeriodFundEvent = FixedPeriodFundEvent.make(-1, "", solidCategory, (ExistingPeriod) period, 1);
         fixedPeriodFundEvent.notifyParentLink();
 
         assertThrows(IllegalArgumentException.class, () -> fixedPeriodFundEvent.setStart(null));

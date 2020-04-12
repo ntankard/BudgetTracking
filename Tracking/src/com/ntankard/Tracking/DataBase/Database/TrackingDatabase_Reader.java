@@ -28,7 +28,7 @@ public class TrackingDatabase_Reader {
      * @param corePath The path that files are located in
      */
     @SuppressWarnings("unchecked")
-    public static void read(String corePath) {
+    public static void read(String corePath, Map<String, String> nameMap) {
         if (!checkSavePath(corePath)) {
             throw new RuntimeException("Save path is invalid");
         }
@@ -52,11 +52,11 @@ public class TrackingDatabase_Reader {
             }
 
             // Parse the object
-            Class<? extends DataObject> fileClass = (Class<? extends DataObject>) classForName(allLines.get(0)[0], "com.ntankard.Tracking.DataBase.Core");
+            Class<? extends DataObject> fileClass = (Class<? extends DataObject>) classForName(allLines.get(0)[0], "com.ntankard.Tracking.DataBase.Core", nameMap);
 
             // Save the meta data
             savedClasses.add(fileClass);
-            classSavedFields.put(fileClass, getSavedFields(allLines.get(1)));
+            classSavedFields.put(fileClass, getSavedFields(allLines.get(1), nameMap));
             classSavedLines.put(fileClass, allLines);
         }
 
@@ -613,10 +613,10 @@ public class TrackingDatabase_Reader {
      * @param lines The lines to generate from
      * @return A ConstructorMap
      */
-    private static List<SavedField<?>> getSavedFields(String[] lines) {
+    private static List<SavedField<?>> getSavedFields(String[] lines, Map<String, String> nameMap) {
         List<SavedField<?>> savedFields = new ArrayList<>();
         for (int i = 0; i < lines.length / 2; i++) {
-            savedFields.add(new SavedField<>(lines[i * 2], classForName(lines[i * 2 + 1], "com.ntankard.Tracking.DataBase.Core")));
+            savedFields.add(new SavedField<>(lines[i * 2], classForName(lines[i * 2 + 1], "com.ntankard.Tracking.DataBase.Core", nameMap)));
         }
         return savedFields;
     }

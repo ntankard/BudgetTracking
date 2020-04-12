@@ -8,7 +8,7 @@ import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Filter.IntegerRange_FieldFilter;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
-import com.ntankard.Tracking.DataBase.Core.Pool.Category;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.FundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.ManualFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePayFundTransfer;
@@ -44,11 +44,11 @@ public class FixedPeriodFundEvent extends FundEvent {
     /**
      * Create a new FixedPeriodFundEvent object
      */
-    public static FixedPeriodFundEvent make(Integer id, String name, Category category, ExistingPeriod start, Integer duration) {
+    public static FixedPeriodFundEvent make(Integer id, String name, SolidCategory solidCategory, ExistingPeriod start, Integer duration) {
         return assembleDataObject(FixedPeriodFundEvent.getFields(), new FixedPeriodFundEvent()
                 , "getId", id
                 , "getName", name
-                , "getCategory", category
+                , "getCategory", solidCategory
                 , "getStart", start
                 , "getDuration", duration
         );
@@ -139,8 +139,8 @@ public class FixedPeriodFundEvent extends FundEvent {
     //------------------------------------------------------------------------------------------------------------------
 
     @SetterProperties(localSourceMethod = "sourceOptions")
-    public void setCategory(Category category) {
-        set("getCategory", category);
+    public void setCategory(SolidCategory solidCategory) {
+        set("getCategory", solidCategory);
 
         for (FundTransfer fundTransfer : TrackingDatabase.get().get(FundTransfer.class)) {
             fundTransfer.setDestination();

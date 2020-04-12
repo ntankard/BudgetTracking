@@ -30,7 +30,7 @@ public class OrderedTest {
         for (Class<? extends DataObject> aClass : getAllClasses()) {
             if (Ordered.class.isAssignableFrom(aClass)) {
                 List<Integer> order = new ArrayList<>();
-                assertNotEquals(0, TrackingDatabase.get().get(aClass).size());
+                assertNotEquals(0, TrackingDatabase.get().get(aClass).size(), "Cant test, no objects of this type exist");
                 for (DataObject object : TrackingDatabase.get().get(aClass)) {
                     Ordered ordered = (Ordered) object;
                     assertFalse(order.contains(ordered.getOrder()), "Duplicate order value. " + " Class " + aClass.getSimpleName());

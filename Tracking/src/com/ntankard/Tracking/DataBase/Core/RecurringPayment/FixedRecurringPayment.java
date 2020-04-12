@@ -4,7 +4,7 @@ import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
-import com.ntankard.Tracking.DataBase.Core.Pool.Category;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.RecurringBankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePayFundTransfer;
 import com.ntankard.Tracking.DataBase.Database.ObjectFactory;
@@ -32,7 +32,7 @@ public class FixedRecurringPayment extends RecurringPayment {
     /**
      * Create a new FixedRecurringPayment object
      */
-    public static FixedRecurringPayment make(Integer id, String name, Double value, ExistingPeriod start, ExistingPeriod end, Bank bank, Category category) {
+    public static FixedRecurringPayment make(Integer id, String name, Double value, ExistingPeriod start, ExistingPeriod end, Bank bank, SolidCategory solidCategory) {
         return assembleDataObject(FixedRecurringPayment.getFields(), new FixedRecurringPayment()
                 , "getId", id
                 , "getName", name
@@ -40,7 +40,7 @@ public class FixedRecurringPayment extends RecurringPayment {
                 , "getStart", start
                 , "getEnd", end
                 , "getBank", bank
-                , "getCategory", category
+                , "getCategory", solidCategory
         );
     }
 

@@ -3,7 +3,7 @@ package com.ntankard.Tracking.DataBase.Core.Pool.FundEvent;
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
-import com.ntankard.Tracking.DataBase.Core.Pool.Category;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 
 import java.util.List;
 
@@ -24,11 +24,11 @@ public class NoneFundEvent extends FundEvent {
     /**
      * Create a new SavingsFundEvent object
      */
-    public static NoneFundEvent make(Integer id, String name, Category category) {
+    public static NoneFundEvent make(Integer id, String name, SolidCategory solidCategory) {
         return assembleDataObject(NoneFundEvent.getFields(), new NoneFundEvent()
                 , "getId", id
                 , "getName", name
-                , "getCategory", category
+                , "getCategory", solidCategory
         );
     }
 

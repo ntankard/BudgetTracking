@@ -2,7 +2,7 @@ package com.ntankard.Tracking.DataBase.Core.Pool.FundEvent;
 
 import com.ntankard.TestUtil.DataAccessUntil;
 import com.ntankard.TestUtil.DataObjectTestUtil;
-import com.ntankard.Tracking.DataBase.Core.Pool.Category;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,12 +25,12 @@ class NoneFundEventTest {
 
     @Test
     void constructor() {
-        assertNotEquals(0, TrackingDatabase.get().get(Category.class).size());
+        assertNotEquals(0, TrackingDatabase.get().get(SolidCategory.class).size());
 
-        Category category = TrackingDatabase.get().get(Category.class).get(0);
+        SolidCategory solidCategory = TrackingDatabase.get().get(SolidCategory.class).get(0);
 
         assertThrows(IllegalArgumentException.class, () -> NoneFundEvent.make(-1, "", null));
-        assertDoesNotThrow(() -> NoneFundEvent.make(-1, "", category));
+        assertDoesNotThrow(() -> NoneFundEvent.make(-1, "", solidCategory));
     }
 
     //------------------------------------------------------------------------------------------------------------------

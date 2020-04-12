@@ -9,7 +9,7 @@ import com.ntankard.Tracking.DataBase.Core.Receipt;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
-import com.ntankard.Tracking.DataBase.Core.Pool.Category;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.BankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.ManualBankTransfer;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
@@ -43,7 +43,7 @@ public class ImageToTransferPanel extends UpdatableJPanel implements ListSelecti
     private JButton new_btn = new JButton("New");
     private JTextField description_txt = new JTextField();
     private JTextField price_txt = new JFormattedTextField();
-    private JComboBox<Category> category_combo = new JComboBox<>();
+    private JComboBox<SolidCategory> category_combo = new JComboBox<>();
 
     /**
      * Constructor
@@ -235,9 +235,9 @@ public class ImageToTransferPanel extends UpdatableJPanel implements ListSelecti
         Bank bank = (Bank) bank_combo.getSelectedItem();
         Period period = (Period) period_combo.getSelectedItem();
         String description = description_txt.getText();
-        Category category = (Category) category_combo.getSelectedItem();
+        SolidCategory solidCategory = (SolidCategory) category_combo.getSelectedItem();
 
-        ManualBankTransfer manualBankTransferN = ManualBankTransfer.make(TrackingDatabase.get().getNextId(), description, period, bank, cost, null, category, null);
+        ManualBankTransfer manualBankTransferN = ManualBankTransfer.make(TrackingDatabase.get().getNextId(), description, period, bank, cost, null, solidCategory, null);
         manualBankTransferN.add();
 
         Receipt receipt = Receipt.make(TrackingDatabase.get().getNextId(), imagePath, manualBankTransferN);
@@ -265,10 +265,10 @@ public class ImageToTransferPanel extends UpdatableJPanel implements ListSelecti
         populateBank();
 
         category_combo.removeAllItems();
-        for (Category category : TrackingDatabase.get().get(Category.class)) {
-            category_combo.addItem(category);
+        for (SolidCategory solidCategory : TrackingDatabase.get().get(SolidCategory.class)) {
+            category_combo.addItem(solidCategory);
         }
-        category_combo.setSelectedItem(TrackingDatabase.get().getDefault(Category.class));
+        category_combo.setSelectedItem(TrackingDatabase.get().getDefault(SolidCategory.class));
 
     }
 

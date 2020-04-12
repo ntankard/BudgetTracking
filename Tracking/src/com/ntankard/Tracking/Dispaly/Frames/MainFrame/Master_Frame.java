@@ -24,6 +24,7 @@ public class Master_Frame extends JPanel implements Updatable {
     private SummaryPanel summaryPanel;
     private ReceiptPanel receiptPanel;
     private RecurringPaymentPanel recurringPaymentPanel;
+    private CategorySetPanel categorySetPanel;
 
     private String savePath;
 
@@ -89,6 +90,7 @@ public class Master_Frame extends JPanel implements Updatable {
         summaryPanel = new SummaryPanel(this);
         receiptPanel = new ReceiptPanel(this);
         recurringPaymentPanel = new RecurringPaymentPanel(this);
+        categorySetPanel = new CategorySetPanel(this);
 
         JTabbedPane master_tPanel = new JTabbedPane();
         master_tPanel.addTab("Periods", periodPanel);
@@ -98,6 +100,7 @@ public class Master_Frame extends JPanel implements Updatable {
         master_tPanel.addTab("Summary", summaryPanel);
         master_tPanel.addTab("Receipts", receiptPanel);
         master_tPanel.addTab("Recurring Payments", recurringPaymentPanel);
+        master_tPanel.addTab("Category Set", categorySetPanel);
 
         this.add(master_tPanel, BorderLayout.CENTER);
     }
@@ -122,5 +125,6 @@ public class Master_Frame extends JPanel implements Updatable {
         summaryPanel.update();
         receiptPanel.update();
         recurringPaymentPanel.update();
+        categorySetPanel.update();
     }
 }

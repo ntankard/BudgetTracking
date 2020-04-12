@@ -7,7 +7,7 @@ import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.DataObject_Field;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
-import com.ntankard.Tracking.DataBase.Core.Pool.Category;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
@@ -19,7 +19,7 @@ import static com.ntankard.ClassExtension.MemberProperties.TRACE_DISPLAY;
 
 @ParameterMap(shouldSave = false)
 @ClassExtensionProperties(includeParent = true)
-public class Category_Summary extends PoolSummary<Category> implements Ordered {
+public class Category_Summary extends PoolSummary<SolidCategory> implements Ordered {
 
     /**
      * Get all the fields for this object

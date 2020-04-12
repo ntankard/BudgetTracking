@@ -81,6 +81,11 @@ public class Field<T> {
      */
     public Field(String name, Class<T> type) {
         this(name, type, false);
+        if (!DataObject_Field.class.isAssignableFrom(this.getClass())) {
+            if (DataObject.class.isAssignableFrom(type)) {
+                throw new IllegalArgumentException("Using the wrong field for a dataObject");
+            }
+        }
     }
 
     /**

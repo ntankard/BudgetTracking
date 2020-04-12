@@ -1,4 +1,4 @@
-package com.ntankard.Tracking.DataBase.Core.Pool;
+package com.ntankard.Tracking.DataBase.Core.Pool.Category;
 
 import com.ntankard.ClassExtension.ClassExtensionProperties;
 import com.ntankard.ClassExtension.DisplayProperties;
@@ -14,7 +14,7 @@ import java.util.List;
 import static com.ntankard.ClassExtension.MemberProperties.*;
 
 @ClassExtensionProperties(includeParent = true)
-public class Category extends Pool implements HasDefault, SpecialValues, Ordered {
+public class SolidCategory extends Category implements HasDefault, SpecialValues, Ordered {
 
     public static Integer SAVINGS = 1;
     public static Integer TAXABLE = 2;
@@ -27,7 +27,7 @@ public class Category extends Pool implements HasDefault, SpecialValues, Ordered
      * Get all the fields for this object
      */
     public static List<Field<?>> getFields() {
-        List<Field<?>> toReturn = Pool.getFields();
+        List<Field<?>> toReturn = Category.getFields();
         toReturn.add(new Field<>("getOrder", Integer.class));
         toReturn.add(new Field<>("isDefault", Boolean.class));
         toReturn.add(new Field<>("isSavings", Boolean.class));
@@ -60,7 +60,7 @@ public class Category extends Pool implements HasDefault, SpecialValues, Ordered
      */
     @Override
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 1107000)
+    @DisplayProperties(order = 1100700)
     public List<Integer> getKeys() {
         List<Integer> keys = new ArrayList<>();
         keys.add(TAXABLE);
@@ -76,43 +76,43 @@ public class Category extends Pool implements HasDefault, SpecialValues, Ordered
     // 1100000----getName
 
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 1101000)
+    @DisplayProperties(order = 1100100)
     public Boolean isDefault() {
         return get("isDefault");
     }
 
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 1102000)
+    @DisplayProperties(order = 1100200)
     public Boolean isSavings() {
         return get("isSavings");
     }
 
     @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 1103000)
+    @DisplayProperties(order = 1100300)
     public Boolean isTaxable() {
         return get("isTaxable");
     }
 
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    @DisplayProperties(order = 1104000)
+    @DisplayProperties(order = 1100400)
     public Integer getSet() {
         return get("getSet");
     }
 
     @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    @DisplayProperties(order = 1105000)
+    @DisplayProperties(order = 1100500)
     public String getSetName() {
         return get("getSetName");
     }
 
     @Override
     @MemberProperties(verbosityLevel = TRACE_DISPLAY)
-    @DisplayProperties(order = 1106000)
+    @DisplayProperties(order = 1100600)
     public Integer getOrder() {
         return get("getOrder");
     }
 
-    // 1107000--------getKeys (Above)
+    // 1100700----------getKeys (Above)
     // 2000000--getParents (Above)
     // 3000000--getChildren
 }
