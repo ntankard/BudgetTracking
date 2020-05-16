@@ -234,7 +234,11 @@ class DataObjectTest {
      */
     @Test
     void validateParent() {
+        // TODO things are missing here. If the field type is not set to data object it wont be registerd as a parent and nothing will catch it, you have to go through each indevidual field and check
+
+
         for (DataObject dataObject : TrackingDatabase.get().getAll()) {
+            dataObject.validateParents();
             for (DataObject parent : dataObject.getParents()) {
                 assertNotNull(parent, "Core Database error. Null parent detected");
                 assertTrue(parent.getChildren().contains(dataObject), "Core Database error. Parent has not been notified");
