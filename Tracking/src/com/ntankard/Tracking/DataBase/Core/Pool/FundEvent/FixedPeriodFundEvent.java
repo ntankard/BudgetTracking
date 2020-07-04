@@ -1,20 +1,17 @@
 package com.ntankard.Tracking.DataBase.Core.Pool.FundEvent;
 
-import com.ntankard.ClassExtension.ClassExtensionProperties;
-import com.ntankard.ClassExtension.DisplayProperties;
-import com.ntankard.ClassExtension.SetterProperties;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.DataObject_Field;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Filter.IntegerRange_FieldFilter;
+import com.ntankard.CoreObject.Field.DataCore.ValueRead_DataCore;
+import com.ntankard.CoreObject.FieldContainer;
+import com.ntankard.CoreObject.Field.DataField;
+import com.ntankard.CoreObject.Field.Filter.IntegerRange_FieldFilter;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Tracking_DataField;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
-import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.FundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.ManualFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePayFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.HalfTransfer;
 import com.ntankard.Tracking.DataBase.Database.ObjectFactory;
-import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.Extended.Sum.Transfer_SumSet;
 import com.ntankard.Tracking.DataBase.Interface.Set.Filter.NotTransferType_HalfTransfer_Filter;
 import com.ntankard.Tracking.DataBase.Interface.Set.OneParent_Children_Set;
@@ -23,7 +20,6 @@ import com.ntankard.Tracking.Dispaly.Util.Comparators.Ordered_Comparator;
 import java.util.ArrayList;
 import java.util.List;
 
-@ClassExtensionProperties(includeParent = true)
 @ObjectFactory(builtObjects = {RePayFundTransfer.class})
 public class FixedPeriodFundEvent extends FundEvent {
 
@@ -31,26 +27,59 @@ public class FixedPeriodFundEvent extends FundEvent {
     //################################################### Constructor ##################################################
     //------------------------------------------------------------------------------------------------------------------
 
+    public static final String FixedPeriodFundEvent_Start = "getStart";
+    public static final String FixedPeriodFundEvent_Duration = "getDuration";
+
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields() {
-        List<Field<?>> toReturn = FundEvent.getFields();
-        toReturn.add(new DataObject_Field<>("getStart", ExistingPeriod.class));
-        toReturn.add(new Field<>("getDuration", Integer.class).addFilter(new IntegerRange_FieldFilter(1, null)));
-        return toReturn;
+    public static FieldContainer getFieldContainer() {
+        FieldContainer fieldContainer = FundEvent.getFieldContainer();
+
+        // ID
+        // Name
+        // Category ====================================================================================================
+        fieldContainer.<SolidCategory>get(FundEvent_Category).setDataCore(new ValueRead_DataCore<>(true));
+        fieldContainer.get(FundEvent_Category).addChangeListener((field, oldValue, newValue) -> {
+            if (field.getState().equals(DataField.NewFieldState.N_ACTIVE)) {
+                ((FixedPeriodFundEvent) field.getContainer()).recreateRePay();
+            }
+        });
+        // Start =======================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(FixedPeriodFundEvent_Start, ExistingPeriod.class));
+        fieldContainer.<ExistingPeriod>get(FixedPeriodFundEvent_Start).setDataCore(new ValueRead_DataCore<>(true));
+        fieldContainer.get(FixedPeriodFundEvent_Start).addChangeListener((field, oldValue, newValue) -> {
+            if (field.getState().equals(DataField.NewFieldState.N_ACTIVE)) {
+                ((FixedPeriodFundEvent) field.getContainer()).recreateRePay();
+            }
+        });
+        // Duration ====================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(FixedPeriodFundEvent_Duration, Integer.class));
+        fieldContainer.get(FixedPeriodFundEvent_Duration).addFilter(new IntegerRange_FieldFilter(1, null));
+        fieldContainer.<Integer>get(FixedPeriodFundEvent_Duration).addFilter(new IntegerRange_FieldFilter(1, null));
+        fieldContainer.get(FixedPeriodFundEvent_Duration).setDataCore(new ValueRead_DataCore<>(true));
+        fieldContainer.get(FixedPeriodFundEvent_Duration).addChangeListener((field, oldValue, newValue) -> {
+            if (field.getState().equals(DataField.NewFieldState.N_ACTIVE)) {
+                ((FixedPeriodFundEvent) field.getContainer()).recreateRePay();
+            }
+        });
+        //==============================================================================================================
+        // Parents
+        // Children
+
+        return fieldContainer.finaliseContainer(FixedPeriodFundEvent.class);
     }
 
     /**
      * Create a new FixedPeriodFundEvent object
      */
     public static FixedPeriodFundEvent make(Integer id, String name, SolidCategory solidCategory, ExistingPeriod start, Integer duration) {
-        return assembleDataObject(FixedPeriodFundEvent.getFields(), new FixedPeriodFundEvent()
-                , "getId", id
-                , "getName", name
-                , "getCategory", solidCategory
-                , "getStart", start
-                , "getDuration", duration
+        return assembleDataObject(FixedPeriodFundEvent.getFieldContainer(), new FixedPeriodFundEvent()
+                , DataObject_Id, id
+                , NamedDataObject_Name, name
+                , FundEvent_Category, solidCategory
+                , FixedPeriodFundEvent_Start, start
+                , FixedPeriodFundEvent_Duration, duration
         );
     }
 
@@ -116,49 +145,27 @@ public class FixedPeriodFundEvent extends FundEvent {
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    // 1000000--getID
-    // 1100000----getName
-    // 1101000--------getCategory
-
-    @DisplayProperties(order = 1101100)
     public ExistingPeriod getStart() {
-        return get("getStart");
+        return get(FixedPeriodFundEvent_Start);
     }
 
-    @DisplayProperties(order = 1101200)
     public Integer getDuration() {
-        return get("getDuration");
+        return get(FixedPeriodFundEvent_Duration);
     }
-
-    // 1110000------getOrder
-    // 2000000--getParents (Above)
-    // 3000000--getChildren
 
     //------------------------------------------------------------------------------------------------------------------
     //##################################################### Setter #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @SetterProperties(localSourceMethod = "sourceOptions")
     public void setCategory(SolidCategory solidCategory) {
-        set("getCategory", solidCategory);
-
-        for (FundTransfer fundTransfer : TrackingDatabase.get().get(FundTransfer.class)) {
-            fundTransfer.setDestination();
-        }
-        recreateRePay();
-        validateParents();
+        set(FundEvent_Category, solidCategory);
     }
 
-    @SetterProperties(localSourceMethod = "sourceOptions")
     public void setStart(ExistingPeriod start) {
-        set("getStart", start);
-        recreateRePay();
-        validateParents();
+        set(FixedPeriodFundEvent_Start, start);
     }
 
     public void setDuration(Integer duration) {
-        set("getDuration", duration);
-        recreateRePay();
-        validateParents();
+        set(FixedPeriodFundEvent_Duration, duration);
     }
 }

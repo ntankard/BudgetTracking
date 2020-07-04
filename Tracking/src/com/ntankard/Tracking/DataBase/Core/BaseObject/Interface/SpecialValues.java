@@ -1,10 +1,7 @@
 package com.ntankard.Tracking.DataBase.Core.BaseObject.Interface;
 
-import com.ntankard.ClassExtension.ClassExtensionProperties;
-
 import java.util.List;
 
-@ClassExtensionProperties(includeParent = true)
 public interface SpecialValues {
 
     /**
@@ -20,5 +17,5 @@ public interface SpecialValues {
      *
      * @return All the special values for this object type
      */
-    List<Integer> getKeys();
+    List<Integer> toChangeGetKeys();
 }

@@ -20,7 +20,7 @@ public class SpecialValuesMap extends Container<Class, Map<Integer, DataObject>>
         }
 
         if (dataObject instanceof SpecialValues) {
-            for (Integer key : ((SpecialValues) dataObject).getKeys()) {
+            for (Integer key : ((SpecialValues) dataObject).toChangeGetKeys()) {
                 if (((SpecialValues) dataObject).isValue(key)) {
                     Map<Integer, DataObject> keyMap = container.get(dataObject.getClass());
                     if (keyMap.containsKey(key)) {
@@ -40,7 +40,7 @@ public class SpecialValuesMap extends Container<Class, Map<Integer, DataObject>>
         checkCanDelete(dataObject);
 
         if (dataObject instanceof SpecialValues) {
-            for (Integer key : ((SpecialValues) dataObject).getKeys()) {
+            for (Integer key : ((SpecialValues) dataObject).toChangeGetKeys()) {
                 if (((SpecialValues) dataObject).isValue(key)) {
                     Map<Integer, DataObject> keyMap = container.get(dataObject.getClass());
                     if (!keyMap.containsKey(key)) {

@@ -1,56 +1,120 @@
 package com.ntankard.Tracking.DataBase.Core.Transfer;
 
-import com.ntankard.ClassExtension.ClassExtensionProperties;
-import com.ntankard.ClassExtension.DisplayProperties;
-import com.ntankard.ClassExtension.MemberProperties;
-import com.ntankard.ClassExtension.SetterProperties;
+import com.ntankard.CoreObject.Field.DataCore.Derived_DataCore;
+import com.ntankard.CoreObject.Field.DataCore.Method_DataCore;
+import com.ntankard.CoreObject.FieldContainer;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.DataObject_Field;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Tracking_DataField;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 
-import java.util.List;
-
-import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
-import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
+import static com.ntankard.CoreObject.Field.Properties.Display_Properties.DataType.CURRENCY;
+import static com.ntankard.CoreObject.Field.Properties.Display_Properties.INFO_DISPLAY;
+import static com.ntankard.CoreObject.Field.Properties.Display_Properties.TRACE_DISPLAY;
+import static com.ntankard.Tracking.DataBase.Core.Transfer.Transfer.*;
 
 /**
  * One half of the transaction
  */
 @ParameterMap(shouldSave = false)
-@ClassExtensionProperties(includeParent = true)
 public class HalfTransfer extends DataObject implements CurrencyBound {
 
     //------------------------------------------------------------------------------------------------------------------
     //################################################### Constructor ##################################################
     //------------------------------------------------------------------------------------------------------------------
 
+    public static final String HalfTransfer_Transfer = "getTransfer";
+    public static final String HalfTransfer_Period = "getPeriod";
+    public static final String HalfTransfer_Pool = "getPool";
+    public static final String HalfTransfer_Value = "getValue";
+    public static final String HalfTransfer_Currency = "getCurrency";
+    public static final String HalfTransfer_Source = "getSource";
+
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields() {
-        List<Field<?>> toReturn = DataObject.getFields();
-        toReturn.add(new DataObject_Field<>("getPeriod", Period.class));
-        toReturn.add(new DataObject_Field<>("getPool", Pool.class));
-        toReturn.add(new DataObject_Field<>("getCurrency", Currency.class));
-        toReturn.add(new DataObject_Field<>("getTransfer", Transfer.class));
-        return toReturn;
+    public static FieldContainer getFieldContainer() {
+        FieldContainer fieldContainer = DataObject.getFieldContainer();
+
+        // ID
+        // Transfer ====================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(HalfTransfer_Transfer, Transfer.class));
+        fieldContainer.get(HalfTransfer_Transfer).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
+        // Period ======================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(HalfTransfer_Period, Period.class));
+        fieldContainer.<Period>get(HalfTransfer_Period).setDataCore(
+                new Derived_DataCore<>(
+                        (Derived_DataCore.Converter<Period, HalfTransfer>) container -> {
+                            if (container.isSource()) {
+                                return container.getTransfer().getSourcePeriodGet();
+                            }
+                            return container.getTransfer().getDestinationPeriodGet();
+
+                        }
+                        , new Derived_DataCore.ExternalSource<>(fieldContainer.get(HalfTransfer_Transfer), Transfer_SourcePeriodGet)
+                        , new Derived_DataCore.ExternalSource<>(fieldContainer.get(HalfTransfer_Transfer), Transfer_DestinationPeriodGet)));
+        fieldContainer.<Pool>get(HalfTransfer_Period).getDisplayProperties().setDisplaySet(false);
+        // Pool ========================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(HalfTransfer_Pool, Pool.class));
+        fieldContainer.<Pool>get(HalfTransfer_Pool).setDataCore(
+                new Derived_DataCore<>(
+                        (Derived_DataCore.Converter<Pool, HalfTransfer>) container -> {
+                            if (container.isSource()) {
+                                return container.getTransfer().getSource();
+                            }
+                            return container.getTransfer().getDestination();
+
+                        }
+                        , new Derived_DataCore.ExternalSource<>(fieldContainer.get(HalfTransfer_Transfer), Transfer_Source)
+                        , new Derived_DataCore.ExternalSource<>(fieldContainer.get(HalfTransfer_Transfer), Transfer_Destination)));
+        fieldContainer.<Pool>get(HalfTransfer_Pool).getDisplayProperties().setDisplaySet(false);
+        // Value =======================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(HalfTransfer_Value, Double.class));
+        fieldContainer.get(HalfTransfer_Value).getDisplayProperties().setDataType(CURRENCY);
+        fieldContainer.get(HalfTransfer_Value).setDataCore(new Method_DataCore<>(container -> {
+            HalfTransfer halfTransfer = ((HalfTransfer) container);
+            if (halfTransfer.isSource()) {
+                return halfTransfer.getTransfer().getValue(true);
+            } else {
+                return halfTransfer.getTransfer().getValue(false);
+            }
+        }));
+        // Currency ====================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(HalfTransfer_Currency, Currency.class));
+        fieldContainer.get(HalfTransfer_Currency).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
+        fieldContainer.<Currency>get(HalfTransfer_Currency).setDataCore(
+                new Derived_DataCore<>(
+                        (Derived_DataCore.Converter<Currency, HalfTransfer>) container -> {
+                            if (container.isSource()) {
+                                return container.getTransfer().getSourceCurrencyGet();
+                            }
+                            return container.getTransfer().getDestinationCurrencyGet();
+
+                        }
+                        , new Derived_DataCore.ExternalSource<>(fieldContainer.get(HalfTransfer_Transfer), Transfer_SourceCurrencyGet)
+                        , new Derived_DataCore.ExternalSource<>(fieldContainer.get(HalfTransfer_Transfer), Transfer_DestinationCurrencyGet)));
+        fieldContainer.<Pool>get(HalfTransfer_Currency).getDisplayProperties().setDisplaySet(false);
+        // Source ======================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(HalfTransfer_Source, Boolean.class));
+        fieldContainer.<Pool>get(HalfTransfer_Source).getDisplayProperties().setVerbosityLevel(TRACE_DISPLAY);
+        //==============================================================================================================
+        // Parents
+        // Children
+
+        return fieldContainer.finaliseContainer(HalfTransfer.class);
     }
 
     /**
      * Create a new HalfTransfer object
      */
-    public static HalfTransfer make(Integer id, Period period, Pool pool, Currency currency, Transfer transfer) {
-        return assembleDataObject(HalfTransfer.getFields(), new HalfTransfer()
-                , "getId", id
-                , "getPeriod", period
-                , "getPool", pool
-                , "getCurrency", currency
-                , "getTransfer", transfer
+    public static HalfTransfer make(Integer id, Transfer transfer, Boolean isSource) {
+        return assembleDataObject(HalfTransfer.getFieldContainer(), new HalfTransfer()
+                , DataObject_Id, id
+                , HalfTransfer_Source, isSource
+                , HalfTransfer_Transfer, transfer
         );
     }
 
@@ -74,58 +138,28 @@ public class HalfTransfer extends DataObject implements CurrencyBound {
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    // 1000000--getID
-
-    @DisplayProperties(order = 1100000)
     public Period getPeriod() {
-        return get("getPeriod");
+        return get(HalfTransfer_Period);
     }
 
-    @DisplayProperties(order = 1200000)
     public Pool getPool() {
-        return get("getPool");
+        return get(HalfTransfer_Pool);
     }
 
-    @DisplayProperties(order = 1300000, dataType = CURRENCY)
     public Double getValue() {
-        if (getTransfer().getSourceTransfer() == this) {
-            return getTransfer().getValue(true);
-        } else {
-            return getTransfer().getValue(false);
-        }
+        return get(HalfTransfer_Value);
     }
 
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    @DisplayProperties(order = 1400000)
+    @Override
     public Currency getCurrency() {
-        return get("getCurrency");
+        return get(HalfTransfer_Currency);
     }
 
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    @DisplayProperties(order = 1500000)
     public Transfer getTransfer() {
-        return get("getTransfer");
+        return get(HalfTransfer_Transfer);
     }
 
-    // 2000000--getParents (Above)
-    // 3000000--getChildren
-
-    //------------------------------------------------------------------------------------------------------------------
-    //#################################################### Setters #####################################################
-    //------------------------------------------------------------------------------------------------------------------
-
-    @SetterProperties(localSourceMethod = "sourceOptions", displaySet = false)
-    public void setPeriod(Period period) {
-        set("getPeriod", period);
-    }
-
-    @SetterProperties(localSourceMethod = "sourceOptions", displaySet = false)
-    public void setPool(Pool pool) {
-        set("getPool", pool);
-    }
-
-    @SetterProperties(localSourceMethod = "sourceOptions", displaySet = false)
-    public void setCurrency(Currency currency) {
-        set("getCurrency", currency);
+    public Boolean isSource() {
+        return get(HalfTransfer_Source);
     }
 }

@@ -1,20 +1,22 @@
 package com.ntankard.Tracking.DataBase.Database;
 
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
+import com.ntankard.CoreObject.Field.DataField;
+import com.ntankard.Tracking.DataBase.Core.Links.CategoryToCategorySet;
+import com.ntankard.Tracking.DataBase.Core.Links.CategoryToVirtualCategory;
 import com.ntankard.Tracking.Util.FileUtil;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static com.ntankard.Tracking.DataBase.Database.TrackingDatabase_Reader.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class TrackingDatabase_ReaderTest {
 
@@ -36,17 +38,24 @@ class TrackingDatabase_ReaderTest {
         }
 
         for (Class<? extends DataObject> aClass : TrackingDatabase.get().getDataObjectTypes()) {
+            if (Modifier.isAbstract(aClass.getModifiers())) {
+                continue;
+            }
+            if (aClass.equals(CategoryToCategorySet.class) || aClass.equals(CategoryToVirtualCategory.class)) { // This wont work because new object can not exist because all the categories are already filled
+                continue; // TODO might need a better solution here
+            }
             for (DataObject dataObject : TrackingDatabase.get().get(aClass)) {
 
-                List<Field<?>> constructorParameters = getSaveFields(dataObject.getClass());
+                List<DataField<?>> constructorParameters = getSaveFields(dataObject.getClass());
+                List<SavedField<?>> savedFields = new ArrayList<>();
+                for (DataField<?> dataField : constructorParameters) {
+                    savedFields.add(new SavedField<>(dataField.getIdentifierName(), dataField.getType()));
+                }
+
                 if (shouldSave(dataObject.getClass())) {
                     List<String> first = dataObjectToString(dataObject, constructorParameters);
 
-                    List<Integer> mapping = new ArrayList<>();
-                    for (int i = 0; i < constructorParameters.size(); i++) {
-                        mapping.add(i);
-                    }
-                    DataObject newObj = dataObjectFromString(dataObject.getClass(), first.toArray(new String[0]), mapping, allObjects);
+                    DataObject newObj = dataObjectFromString(dataObject.getClass(), first.toArray(new String[0]), allObjects, savedFields);
 
                     List<String> second = dataObjectToString(newObj, constructorParameters);
 
@@ -90,14 +99,40 @@ class TrackingDatabase_ReaderTest {
             List<String[]> saveLines = FileUtil.readLines(saveDir + INSTANCE_CLASSES_PATH + saveFile);
             List<String[]> testLines = FileUtil.readLines(testDir + INSTANCE_CLASSES_PATH + testFile);
 
-            assertEquals(saveLines.size(), testLines.size());
-            for (int j = 0; j < saveLines.size(); j++) {
+            assertEquals(saveLines.size(), testLines.size(), "There are more entities of this class type. File:" + saveFile);
+            assertEquals(1, saveLines.get(0).length, "Save file first line dose not contain the class type. File:" + saveFile);
+            assertEquals(1, testLines.get(0).length, "Test file first line dose not contain the class type. File:" + saveFile);
+            assertEquals(saveLines.get(0)[0], testLines.get(0)[0], "Class type dose not match. File:" + saveFile);
+
+            List<Integer> map = new ArrayList<>();
+            String[] saveParamLine = saveLines.get(1);
+            String[] testParamLine = testLines.get(1);
+            assertEquals(saveParamLine.length, testParamLine.length, "Different number of parameters. File:" + saveFile);
+            for (int j = 0; j < saveParamLine.length / 2; j++) {
+                String saveName = saveParamLine[j * 2];
+                String saveType = saveParamLine[j * 2 + 1];
+                int found = -1;
+                for (int k = 0; k < saveParamLine.length / 2; k++) {
+                    String testName = testParamLine[k * 2];
+                    String testType = testParamLine[k * 2 + 1];
+                    if (saveName.equals(testName)) {
+                        assertEquals(testType, saveType, "Different types for the same param. File:" + saveFile + " Param:" + saveName);
+                        found = k;
+                        break;
+                    }
+                }
+                assertNotEquals(-1, found, "The param could not be found once saved. File:" + saveFile + " Param:" + saveName);
+                assertFalse(map.contains(found), "Match found more than once. File:" + saveFile + " Param:" + saveName);
+                map.add(found);
+            }
+
+            for (int j = 2; j < saveLines.size(); j++) {
                 String[] saveLine = saveLines.get(j);
                 String[] testLine = testLines.get(j);
 
                 assertEquals(saveLine.length, testLine.length);
                 for (int k = 0; k < saveLine.length; k++) {
-                    assertEquals(saveLine[k], testLine[k]);
+                    assertEquals(saveLine[k], testLine[map.get(k)]);
                 }
             }
         }

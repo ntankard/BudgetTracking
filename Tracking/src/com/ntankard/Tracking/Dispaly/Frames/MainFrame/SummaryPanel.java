@@ -50,7 +50,7 @@ public class SummaryPanel extends UpdatableJPanel {
         JTabbedPane bank_tPanel = new JTabbedPane();
         JTabbedPane category_tPanel = new JTabbedPane();
         JTabbedPane fundEvent_tPanel = new JTabbedPane();
-        for (Period period : TrackingDatabase.get().get(Period.class)) {
+        for (Period period : TrackingDatabase.get().get(ExistingPeriod.class)) { // TODO changed here to only do exiting, change back
             if (period instanceof ExistingPeriod) {
                 DataObject_VerbosityDisplayList<Bank_Summary> bankPanel = new DataObject_VerbosityDisplayList<>(Bank_Summary.class, new BankSummary_Set((ExistingPeriod) period), this);
                 bankSummary_panels.add(bankPanel);

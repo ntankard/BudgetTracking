@@ -19,31 +19,8 @@ public class AnnotationTest {
      * Check that all known annotations are in the correct order
      */
     @Test
-    void methodAnnotationOrder() {
-        List<Class<? extends Annotation>> expectedAnnotations = new ArrayList<>(Arrays.asList(MemberProperties.class, DisplayProperties.class));
-
-        for (Class<? extends DataObject> dClass : getAllClasses()) {
-            for (Member member : new MemberClass(dClass).getVerbosityMembers(Integer.MAX_VALUE, false)) {
-                int testIndex = -1;
-                for (Annotation annotation : member.getGetter().getAnnotations()) {
-                    while (true) {
-                        testIndex++;
-                        assertTrue(testIndex < expectedAnnotations.size(), "Class: " + dClass.getName() + " Member: " + member.getName() + " has its constructor parameters out of order");
-                        if (annotation.annotationType().equals(expectedAnnotations.get(testIndex))) {
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Check that all known annotations are in the correct order
-     */
-    @Test
     void classAnnotationOrder() {
-        List<Class<? extends Annotation>> expectedAnnotations = new ArrayList<>(Arrays.asList(ParameterMap.class, ClassExtensionProperties.class, ObjectFactory.class));
+        List<Class<? extends Annotation>> expectedAnnotations = new ArrayList<>(Arrays.asList(ParameterMap.class, ObjectFactory.class));
 
         for (Class<? extends DataObject> dClass : getAllClasses()) {
             int testIndex = -1;

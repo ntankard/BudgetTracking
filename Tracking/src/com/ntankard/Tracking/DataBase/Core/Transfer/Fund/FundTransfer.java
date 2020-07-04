@@ -1,42 +1,46 @@
 package com.ntankard.Tracking.DataBase.Core.Transfer.Fund;
 
-import com.ntankard.ClassExtension.ClassExtensionProperties;
-import com.ntankard.ClassExtension.DisplayProperties;
-import com.ntankard.ClassExtension.MemberProperties;
-import com.ntankard.ClassExtension.SetterProperties;
+import com.ntankard.CoreObject.FieldContainer;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.DataObject_Field;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.SourceDriver.DataObjectField_SourceDriver;
-import com.ntankard.Tracking.DataBase.Core.Currency;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Tracking_DataField;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
-import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Transfer;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
+import static com.ntankard.CoreObject.Field.Properties.Display_Properties.ALWAYS_DISPLAY;
 
-@ClassExtensionProperties(includeParent = true)
 public abstract class FundTransfer extends Transfer {
 
     //------------------------------------------------------------------------------------------------------------------
     //################################################### Constructor ##################################################
     //------------------------------------------------------------------------------------------------------------------
 
+
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields() {
-        List<Field<?>> toReturn = Transfer.getFields();
+    public static FieldContainer getFieldContainer() {
+        FieldContainer fieldContainer = Transfer.getFieldContainer();
 
-        toReturn.remove(makeFieldMap(toReturn).get("getSource"));
-        Field<FundEvent> source = new DataObject_Field<>("getSource", FundEvent.class);
-        toReturn.add(source);
-        toReturn.add(new DataObject_Field<>("getDestination", Pool.class).addSourceDriver(new DataObjectField_SourceDriver<>(source, "getCategory")));
-        toReturn.add(new DataObject_Field<>("getCurrency", Currency.class));
-        return toReturn;
+        // ID
+        // Description
+        // Period
+        // Source ======================================================================================================
+        fieldContainer.add(Transfer_Period, new Tracking_DataField<>(Transfer_Source, FundEvent.class));
+        // Value
+        // Currency ====================================================================================================
+        fieldContainer.get(Transfer_Currency).getDisplayProperties().setVerbosityLevel(ALWAYS_DISPLAY);
+        // Destination
+        // SourceCurrencyGet
+        // DestinationCurrencyGet
+        // SourcePeriodGet
+        // DestinationPeriodGet
+        // Parents
+        // Children
+
+        return fieldContainer.endLayer(FundTransfer.class);
     }
 
     /**
@@ -53,63 +57,5 @@ public abstract class FundTransfer extends Transfer {
             return toReturn;
         }
         return super.sourceOptions(type, fieldName);
-    }
-
-    //------------------------------------------------------------------------------------------------------------------
-    //#################################################### Getters #####################################################
-    //------------------------------------------------------------------------------------------------------------------
-
-    // 1000000--getID
-    // 1100000----getDescription
-    // 1200000----getPeriod
-
-    @Override
-    @DisplayProperties(order = 1300000)
-    public Pool getSource() {
-        return super.getSource();
-    }
-
-    // 1400000----getValue
-
-    @Override
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    @DisplayProperties(order = 1500000)
-    public Currency getCurrency() {
-        return get("getCurrency");
-    }
-
-    @Override
-    @DisplayProperties(order = 1600000)
-    public Pool getDestination() {
-        return get("getDestination");
-    }
-
-    // 1700000----getSourceTransfer
-    // 1800000----getDestinationTransfer
-    // 2000000--getParents (Above)
-    // 3000000--getChildren
-
-    //------------------------------------------------------------------------------------------------------------------
-    //#################################################### Setters #####################################################
-    //------------------------------------------------------------------------------------------------------------------
-
-    @Override
-    protected void setSource(Pool fund) {
-        if (!(fund instanceof FundEvent)) throw new IllegalArgumentException("Source is not a fundEvent");
-        super.setSource(fund);
-    }
-
-    public void setDestination() {
-        Pool destination = ((FundEvent) getSource()).getCategory();
-        set("getDestination", destination);
-        updateHalfTransfer();
-        validateParents();
-    }
-
-    @SetterProperties(localSourceMethod = "sourceOptions")
-    public void setCurrency(Currency currency) {
-        set("getCurrency", currency);
-        updateHalfTransfer();
-        validateParents();
     }
 }

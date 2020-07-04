@@ -1,19 +1,15 @@
 package com.ntankard.Tracking.DataBase.Core.Transfer.Fund;
 
-import com.ntankard.ClassExtension.ClassExtensionProperties;
-import com.ntankard.ClassExtension.DisplayProperties;
-import com.ntankard.ClassExtension.SetterProperties;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
+import com.ntankard.CoreObject.Field.DataCore.Derived_DataCore;
+import com.ntankard.CoreObject.Field.DataCore.ValueRead_DataCore;
+import com.ntankard.CoreObject.FieldContainer;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 
-import java.util.List;
+import static com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent.FundEvent_Category;
 
-import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
-
-@ClassExtensionProperties(includeParent = true)
 public class ManualFundTransfer extends FundTransfer {
 
     //------------------------------------------------------------------------------------------------------------------
@@ -23,60 +19,41 @@ public class ManualFundTransfer extends FundTransfer {
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields() {
-        List<Field<?>> toReturn = FundTransfer.getFields();
-        toReturn.add(new Field<>("getValue", Double.class));
-        return toReturn;
+    public static FieldContainer getFieldContainer() {
+        FieldContainer fieldContainer = FundTransfer.getFieldContainer();
+
+        // ID
+        // Description
+        // Period
+        // Source ======================================================================================================
+        fieldContainer.<FundEvent>get(Transfer_Source).setDataCore(new ValueRead_DataCore<>(true));
+        // Value =======================================================================================================
+        fieldContainer.get(Transfer_Value).setDataCore(new ValueRead_DataCore<>(true));
+        // Currency
+        // Destination =================================================================================================
+        // TODO this was failing when it was set on the RePay, this might be because they were being recreated or because there is a problem here, test
+        fieldContainer.<Pool>get(Transfer_Destination).setDataCore(new Derived_DataCore<>(new Derived_DataCore.DirectExternalSource<>(fieldContainer.get(Transfer_Source), FundEvent_Category)));
+        // SourceCurrencyGet
+        // DestinationCurrencyGet
+        // SourcePeriodGet
+        // DestinationPeriodGet
+        // Parents
+        // Children
+
+        return fieldContainer.finaliseContainer(ManualFundTransfer.class);
     }
 
     /**
      * Create a new RePayFundTransfer object
      */
     public static ManualFundTransfer make(Integer id, String description, Period period, FundEvent source, Double value, Currency currency) {
-        return assembleDataObject(ManualFundTransfer.getFields(), new ManualFundTransfer()
-                , "getId", id
-                , "getDescription", description
-                , "getPeriod", period
-                , "getSource", source
-                , "getValue", value
-                , "getCurrency", currency
+        return assembleDataObject(ManualFundTransfer.getFieldContainer(), new ManualFundTransfer()
+                , DataObject_Id, id
+                , Transfer_Description, description
+                , Transfer_Period, period
+                , Transfer_Source, source
+                , Transfer_Value, value
+                , Transfer_Currency, currency
         );
-    }
-
-    //------------------------------------------------------------------------------------------------------------------
-    //#################################################### Getters #####################################################
-    //------------------------------------------------------------------------------------------------------------------
-
-    // 1000000--getID
-    // 1100000----getDescription
-    // 1200000----getPeriod
-    // 1300000----getSource
-
-    @Override
-    @DisplayProperties(order = 1400000, dataType = CURRENCY)
-    public Double getValue() {
-        return get("getValue");
-    }
-
-    // 1500000----getCurrency
-    // 1600000----getDestination
-    // 1700000----getSourceTransfer
-    // 1800000----getDestinationTransfer
-    // 2000000--getParents
-    // 3000000--getChildren
-
-    //------------------------------------------------------------------------------------------------------------------
-    //#################################################### Setters #####################################################
-    //------------------------------------------------------------------------------------------------------------------
-
-    public void setValue(Double value) {
-        set("getValue", value);
-        updateHalfTransfer();
-    }
-
-    @Override
-    @SetterProperties(localSourceMethod = "sourceOptions")
-    public void setSource(Pool source) {
-        super.setSource(source);
     }
 }

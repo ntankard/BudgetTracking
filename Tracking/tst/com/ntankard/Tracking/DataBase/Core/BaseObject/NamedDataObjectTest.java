@@ -1,7 +1,8 @@
 package com.ntankard.Tracking.DataBase.Core.BaseObject;
 
+import com.ntankard.CoreObject.FieldContainer;
 import com.ntankard.TestUtil.DataAccessUntil;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
+import com.ntankard.CoreObject.Field.DataField;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.ntankard.Tracking.DataBase.Core.BaseObject.NamedDataObject.NamedDataObject_Name;
 import static org.junit.jupiter.api.Assertions.*;
 
 class NamedDataObjectTest {
@@ -30,8 +32,8 @@ class NamedDataObjectTest {
      */
     @Test
     void constructor() {
-        assertDoesNotThrow(() -> new NamedDataObject_Inst(0, "Test"));
-        assertThrows(IllegalArgumentException.class, () -> new NamedDataObject_Inst(0, null));
+        assertDoesNotThrow(() -> NamedDataObject_Inst.make(0, "Test"));
+        assertThrows(IllegalArgumentException.class, () -> NamedDataObject_Inst.make(0, null));
     }
 
     /**
@@ -39,10 +41,10 @@ class NamedDataObjectTest {
      */
     @Test
     void setName() {
-        NamedDataObject_Inst namedDataObject_inst = new NamedDataObject_Inst(0, "Test");
+        NamedDataObject_Inst namedDataObject_inst = NamedDataObject_Inst.make(0, "Test");
         namedDataObject_inst.add();
-        assertDoesNotThrow(() -> namedDataObject_inst.setName(""));
-        assertThrows(IllegalArgumentException.class, () -> namedDataObject_inst.setName(null));
+        assertDoesNotThrow(() -> namedDataObject_inst.set(NamedDataObject_Name, ""));
+        assertThrows(IllegalArgumentException.class, () -> namedDataObject_inst.set(NamedDataObject_Name, null));
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -65,19 +67,16 @@ class NamedDataObjectTest {
 
     private static class NamedDataObject_Inst extends NamedDataObject {
 
-        @SuppressWarnings("unchecked")
-        NamedDataObject_Inst(Integer id, String name) {
-            super();
-            List<Field<?>> fields = NamedDataObject.getFields();
-            fields.forEach(field -> field.setContainer(this));
-            ((Field<Integer>) makeFieldMap(fields).get("getId")).initialSet(id);
-            ((Field<String>) makeFieldMap(fields).get("getName")).initialSet(name);
-            setFields(fields);
+        public static FieldContainer getFieldContainer() {
+            FieldContainer fieldContainer = NamedDataObject.getFieldContainer();
+            return fieldContainer.finaliseContainer(NamedDataObject_Inst.class);
         }
 
-        @Override
-        public List<DataObject> getParents() {
-            return new ArrayList<>();
+        public static NamedDataObject_Inst make(Integer id, String name) {
+            return assembleDataObject(NamedDataObject_Inst.getFieldContainer(), new NamedDataObject_Inst()
+                    , DataObject_Id, id
+                    , NamedDataObject_Name, name
+            );
         }
     }
 }

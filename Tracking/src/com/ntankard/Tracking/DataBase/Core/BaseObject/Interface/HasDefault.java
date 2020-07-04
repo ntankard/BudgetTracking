@@ -1,8 +1,5 @@
 package com.ntankard.Tracking.DataBase.Core.BaseObject.Interface;
 
-import com.ntankard.ClassExtension.ClassExtensionProperties;
-
-@ClassExtensionProperties(includeParent = true)
 public interface HasDefault {
 
     /**

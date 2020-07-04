@@ -15,9 +15,9 @@ public class SetTransfer_LocaleSource implements CurrencyDecoder_NumberFormatSou
         Transfer moneyEvent = (Transfer) rowObject;
         switch (contextName) {
             case "Value":
-                return moneyEvent.getSourceTransfer().getCurrency().getNumberFormat();
+                return moneyEvent.toChaneGetSourceTransfer().getCurrency().getNumberFormat();
             case "DestinationValue":
-                return moneyEvent.getDestinationTransfer().getCurrency().getNumberFormat();
+                return moneyEvent.toChangeGetDestinationTransfer().getCurrency().getNumberFormat();
         }
         throw new RuntimeException("Unknown field");
     }

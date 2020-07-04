@@ -1,47 +1,77 @@
 package com.ntankard.Tracking.DataBase.Core.Links;
 
-import com.ntankard.ClassExtension.ClassExtensionProperties;
-import com.ntankard.ClassExtension.DisplayProperties;
-import com.ntankard.ClassExtension.MemberProperties;
-import com.ntankard.ClassExtension.SetterProperties;
+import com.ntankard.CoreObject.Field.DataCore.Derived_DataCore;
+import com.ntankard.CoreObject.Field.DataCore.ValueRead_DataCore;
+import com.ntankard.CoreObject.Field.Filter.Dependant_FieldFilter;
+import com.ntankard.CoreObject.FieldContainer;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.DataObject_Field;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Tracking_DataField;
 import com.ntankard.Tracking.DataBase.Core.CategorySet;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 
 import java.util.List;
 
-import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
+import static com.ntankard.CoreObject.Field.Properties.Display_Properties.DEBUG_DISPLAY;
+import static com.ntankard.Tracking.DataBase.Core.CategorySet.CategorySet_Order;
 
-@ClassExtensionProperties(includeParent = true)
 public class CategoryToCategorySet extends DataObject implements Ordered {
 
     //------------------------------------------------------------------------------------------------------------------
     //################################################### Constructor ##################################################
     //------------------------------------------------------------------------------------------------------------------
 
+    public static final String CategoryToCategorySet_CategorySet = "getCategorySet";
+    public static final String CategoryToCategorySet_SolidCategory = "getSolidCategory";
+    public static final String CategoryToCategorySet_OrderImpl = "getOrderImpl";
+    public static final String CategoryToCategorySet_Order = "getOrder";
+
+
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields() {
-        List<Field<?>> toReturn = DataObject.getFields();
-        toReturn.add(new DataObject_Field<>("getCategorySet", CategorySet.class));
-        toReturn.add(new DataObject_Field<>("getSolidCategory", SolidCategory.class));
-        toReturn.add(new Field<>("getOrderImpl", Integer.class));
-        return toReturn;
+    public static FieldContainer getFieldContainer() {
+        FieldContainer fieldContainer = DataObject.getFieldContainer();
+
+        // ID
+        // CategorySet ========================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(CategoryToCategorySet_CategorySet, CategorySet.class));
+        // SolidCategory ========================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(CategoryToCategorySet_SolidCategory, SolidCategory.class));
+        fieldContainer.<SolidCategory>get(CategoryToCategorySet_SolidCategory).setDataCore(new ValueRead_DataCore<>(true));
+        fieldContainer.<SolidCategory>get(CategoryToCategorySet_SolidCategory).addFilter(new Dependant_FieldFilter<SolidCategory, CategoryToCategorySet>(CategoryToCategorySet_CategorySet) {
+            @Override
+            public boolean isValid(SolidCategory value, CategoryToCategorySet categoryToCategorySet) {
+                return !categoryToCategorySet.getCategorySet().getUsedCategories().contains(value) || value.equals(categoryToCategorySet.getSolidCategory());
+            }
+        });
+        // OrderImpl ========================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(CategoryToCategorySet_OrderImpl, Integer.class));
+        fieldContainer.get(CategoryToCategorySet_OrderImpl).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
+        fieldContainer.get(CategoryToCategorySet_OrderImpl).setDataCore(new ValueRead_DataCore<>(true));
+        // Order ========================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(CategoryToCategorySet_Order, Integer.class));
+        fieldContainer.get(CategoryToCategorySet_Order).setDataCore(
+                new Derived_DataCore<>
+                        (container -> ((CategoryToCategorySet) container).getCategorySet().getOrder() * 1000 + ((CategoryToCategorySet) container).getOrderImpl()
+                                , new Derived_DataCore.LocalSource<>(fieldContainer.get(CategoryToCategorySet_OrderImpl))
+                                , new Derived_DataCore.ExternalSource<>(fieldContainer.get(CategoryToCategorySet_CategorySet), CategorySet_Order)));
+        //==============================================================================================================
+        // Parents
+        // Children
+
+        return fieldContainer.finaliseContainer(CategoryToCategorySet.class);
     }
 
     /**
      * Create a new RePayFundTransfer object
      */
     public static CategoryToCategorySet make(Integer id, CategorySet categorySet, SolidCategory solidCategory, Integer orderImpl) {
-        return assembleDataObject(CategoryToCategorySet.getFields(), new CategoryToCategorySet()
-                , "getId", id
-                , "getCategorySet", categorySet
-                , "getSolidCategory", solidCategory
-                , "getOrderImpl", orderImpl
+        return assembleDataObject(CategoryToCategorySet.getFieldContainer(), new CategoryToCategorySet()
+                , DataObject_Id, id
+                , CategoryToCategorySet_CategorySet, categorySet
+                , CategoryToCategorySet_SolidCategory, solidCategory
+                , CategoryToCategorySet_OrderImpl, orderImpl
         );
     }
 
@@ -71,48 +101,20 @@ public class CategoryToCategorySet extends DataObject implements Ordered {
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    // 1000000--getID
-
-    @DisplayProperties(order = 1100000)
     public CategorySet getCategorySet() {
-        return get("getCategorySet");
+        return get(CategoryToCategorySet_CategorySet);
     }
 
-    @DisplayProperties(order = 1200000)
     public SolidCategory getSolidCategory() {
-        return get("getSolidCategory");
+        return get(CategoryToCategorySet_SolidCategory);
     }
 
-    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 1300000)
     public Integer getOrderImpl() {
-        return get("getOrderImpl");
+        return get(CategoryToCategorySet_OrderImpl);
     }
 
     @Override
-    @DisplayProperties(order = 1400000)
     public Integer getOrder() {
-        return getCategorySet().getOrder() * 1000 + getOrderImpl();
-    }
-
-    // 2000000--getParents (Above)
-    // 3000000--getChildren
-
-    //------------------------------------------------------------------------------------------------------------------
-    //#################################################### Setters #####################################################
-    //------------------------------------------------------------------------------------------------------------------
-
-    @SetterProperties(localSourceMethod = "sourceOptions")
-    public void setSolidCategory(SolidCategory solidCategory) {
-        if (solidCategory == null) throw new IllegalArgumentException("solidCategory is null");
-        if (getCategorySet().getUsedCategories().contains(solidCategory) && !solidCategory.equals(getSolidCategory()))
-            throw new IllegalArgumentException("solidCategory used in this set already");
-        set("getSolidCategory", solidCategory);
-        validateParents();
-    }
-
-    public void setOrderImpl(Integer orderImpl) {
-        if (orderImpl == null) throw new IllegalArgumentException("orderImpl is null");
-        set("getOrderImpl", orderImpl);
+        return get(CategoryToCategorySet_Order);
     }
 }

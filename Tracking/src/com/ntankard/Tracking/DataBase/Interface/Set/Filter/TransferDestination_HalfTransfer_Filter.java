@@ -31,6 +31,6 @@ public class TransferDestination_HalfTransfer_Filter extends SetFilter<HalfTrans
      */
     @Override
     protected boolean shouldAdd_Impl(HalfTransfer halfTransfer) {
-        return destination.isAssignableFrom(halfTransfer.getTransfer().getDestinationTransfer().getPool().getClass());
+        return destination.isAssignableFrom(halfTransfer.getTransfer().toChangeGetDestinationTransfer().getPool().getClass());
     }
 }

@@ -1,7 +1,10 @@
 package com.ntankard.Tracking.DataBase.Database;
 
+import com.ntankard.CoreObject.CoreObject;
+import com.ntankard.CoreObject.Field.DataCore.Calculate_DataCore;
+import com.ntankard.CoreObject.FieldContainer;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
+import com.ntankard.CoreObject.Field.DataField;
 import com.ntankard.Tracking.Util.FileUtil;
 
 import java.io.File;
@@ -69,7 +72,7 @@ public class TrackingDatabase_Reader {
         int maxID = 0;
         for (Class<? extends DataObject> toRead : readOrder) {
 
-            List<Field<?>> fields = getSaveFields(toRead);
+            List<DataField<?>> fields = getSaveFields(toRead);
             List<SavedField<?>> savedFields = classSavedFields.get(toRead);
             List<String[]> savedLines = classSavedLines.get(toRead);
 
@@ -80,7 +83,7 @@ public class TrackingDatabase_Reader {
                     throw new RuntimeException("Line parts dose not match the available params");
 
                 // Generate
-                DataObject toAdd = dataObjectFromString(toRead, savedLines.get(i), getParameterMapping(toRead, fields, savedFields), objectIDMap);
+                DataObject toAdd = dataObjectFromString(toRead, savedLines.get(i), objectIDMap, savedFields);
 
                 // Store
                 loadedObjects.add(toAdd);
@@ -126,7 +129,7 @@ public class TrackingDatabase_Reader {
         }
 
         Map<Class<? extends DataObject>, List<List<String>>> classLinesToSave = new HashMap<>();
-        Map<Class<? extends DataObject>, List<Field<?>>> classFields = new HashMap<>();
+        Map<Class<? extends DataObject>, List<DataField<?>>> classFields = new HashMap<>();
 
         // Generate the headers
         for (Class<? extends DataObject> aClass : TrackingDatabase.get().getDataObjectTypes()) {
@@ -154,8 +157,8 @@ public class TrackingDatabase_Reader {
                 classFields.put(aClass, getSaveFields(aClass));
 
                 List<String> types = new ArrayList<>();
-                for (Field<?> constructorParameter : classFields.get(aClass)) {
-                    types.add(constructorParameter.getName());
+                for (DataField<?> constructorParameter : classFields.get(aClass)) {
+                    types.add(constructorParameter.getIdentifierName());
                     types.add(constructorParameter.getType().getName());
                 }
                 classLinesToSave.get(aClass).add(types);
@@ -165,7 +168,7 @@ public class TrackingDatabase_Reader {
         // Add each individual object
         for (DataObject dataObject : TrackingDatabase.get().getAll()) {
             List<List<String>> lines = classLinesToSave.get(dataObject.getClass());
-            List<Field<?>> constructorParameters = classFields.get(dataObject.getClass());
+            List<DataField<?>> constructorParameters = classFields.get(dataObject.getClass());
 
             if (lines == null || constructorParameters == null) {
                 if (shouldSave(dataObject.getClass())) {
@@ -311,7 +314,7 @@ public class TrackingDatabase_Reader {
 
                     // Get the non conflicting dependencies for the constructor
                     List<Class<? extends DataObject>> constructorParameters = new ArrayList<>();
-                    for (Field<?> field : getSaveFields(managedObject)) {       // For each ObjectManagers, ManagedObjects, Constructor parameters
+                    for (DataField<?> field : getSaveFields(managedObject)) {       // For each ObjectManagers, ManagedObjects, Constructor parameters
                         Class<?> constructorParameterType = field.getType();
                         if (DataObject.class.isAssignableFrom(constructorParameterType)) {                              // If its a DataObject
 
@@ -406,10 +409,13 @@ public class TrackingDatabase_Reader {
     @SuppressWarnings("unchecked")
     private static List<Class<? extends DataObject>> getConstructorDependencies(Class<? extends DataObject> dataObjectClass, List<Class<? extends DataObject>> loadingObjects) {
         List<Class<? extends DataObject>> dependencies = new ArrayList<>();
-        for (Field<?> field : getFields(dataObjectClass)) {
+        for (DataField<?> field : CoreObject.getFieldContainer(dataObjectClass).getList()) {
 
             // Look for the direct dependency
             if (DataObject.class.isAssignableFrom(field.getType())) {
+                if (Calculate_DataCore.class.isAssignableFrom(field.getDataCore().getClass())) {
+                    continue; // TODO need to check this logic, the problem is without this a half transfer is detected, there might be a better solution
+                }
                 Class<? extends DataObject> primeDependencies = (Class<? extends DataObject>) field.getType();
                 dependencies.add(primeDependencies);
 
@@ -440,74 +446,86 @@ public class TrackingDatabase_Reader {
     /**
      * Create an object based on a string of its parameters
      *
-     * @param aClass           The type of class to build
-     * @param paramStrings     The values as a string
-     * @param parameterMapping The map between saves and current fields
-     * @param loadedObjects    All past loaded objects
+     * @param aClass        The type of class to build
+     * @param paramStrings  The values as a string
+     * @param loadedObjects All past loaded objects
+     * @param savedFields   The past parameters
      * @return The newly constructed object
      */
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    static DataObject dataObjectFromString(Class<? extends DataObject> aClass, String[] paramStrings, List<Integer> parameterMapping, Map<Integer, DataObject> loadedObjects) {
+    static DataObject dataObjectFromString(Class<? extends DataObject> aClass, String[] paramStrings, Map<Integer, DataObject> loadedObjects, List<SavedField<?>> savedFields) {
+
+        FieldContainer fieldContainer = CoreObject.getFieldContainer(aClass);
+        List<DataField<?>> currentFields = CoreObject.getFieldContainer(aClass).getList();
+        currentFields.removeIf(field -> !field.getDataCore().isDirectData());
+
+        // Build up the argument list
+        int i = 0;
+        List<Object> args = new ArrayList<>();
+        for (SavedField<?> savedField : savedFields) {
+            DataField<?> currentField = fieldContainer.get(savedField.name);
+            if (currentField == null)
+                throw new RuntimeException("An unknown field was saved, you can probably skip past this");
+            if (!currentField.getType().equals(savedField.type))
+                throw new RuntimeException("Type mismatch");
+            if (!currentFields.contains(currentField))
+                throw new RuntimeException("Field should not have been saved or has been loaded twice");
+
+            args.add(savedField.name);
+            args.add(paramFromString(paramStrings[i++], savedField.type, loadedObjects));
+            currentFields.remove(currentField);
+        }
+        if (currentFields.size() != 0)
+            throw new RuntimeException("A expected field was not loaded");
 
         // Build the base object
         DataObject newDataObject;
-        List<Field<?>> fields = getFields(aClass);
         try {
             newDataObject = (DataObject) aClass.getConstructors()[0].newInstance();
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException(e);
         }
 
-        // Link the fields to the new object
-        fields.forEach(field -> field.setContainer(newDataObject));
+        return DataObject.assembleDataObject(CoreObject.getFieldContainer(aClass), newDataObject, args.toArray());
+    }
 
-        // Isolate the fields that have saved data
-        List<Field<?>> toLoad = new ArrayList<>(fields);
-        toLoad.removeIf(field -> !field.isShouldSave());
+    /**
+     * Build a parameter object from string
+     *
+     * @param paramString   The string value
+     * @param paramType     The type
+     * @param loadedObjects All past loaded objects
+     * @return The object from the string
+     */
+    private static Object paramFromString(String paramString, Class<?> paramType, Map<Integer, DataObject> loadedObjects) {
+        Object parsedData;
 
-        // Load data into each field
-        for (int i = 0; i < toLoad.size(); i++) {
-            Object parsedData;
-            if (parameterMapping.get(i) == -1) {
+        if (DataObject.class.isAssignableFrom(paramType)) {
+            if (paramString.equals(" ")) {
                 parsedData = null;
-                System.out.println("Warning, the object " + aClass.getSimpleName() + ". Has a new parameter that was not saved before. Setting to null");
             } else {
-                String paramString = paramStrings[parameterMapping.get(i)];
-                Class paramType = toLoad.get(i).getType();
-
-                if (DataObject.class.isAssignableFrom(paramType)) {
-                    if (paramString.equals(" ")) {
-                        parsedData = null;
-                    } else {
-                        DataObject dataObject = loadedObjects.get(Integer.parseInt(paramString));
-                        if (dataObject == null) {
-                            throw new RuntimeException("Trying to load an object that is not yet in the database");
-                        }
-                        parsedData = dataObject;
-                    }
-                } else if (String.class.isAssignableFrom(paramType)) {
-                    parsedData = paramString;
-                } else if (Boolean.class.isAssignableFrom(paramType) || boolean.class.isAssignableFrom(paramType)) {
-                    parsedData = Boolean.parseBoolean(paramString);
-                } else if (Double.class.isAssignableFrom(paramType) || double.class.isAssignableFrom(paramType)) {
-                    if (paramString.equals(" ")) {
-                        parsedData = null;
-                    } else {
-                        parsedData = Double.parseDouble(paramString);
-                    }
-                } else if (Integer.class.isAssignableFrom(paramType) || int.class.isAssignableFrom(paramType)) {
-                    parsedData = Integer.parseInt(paramString);
-                } else {
-                    throw new RuntimeException("Unknown data type");
+                DataObject dataObject = loadedObjects.get(Integer.parseInt(paramString));
+                if (dataObject == null) {
+                    throw new RuntimeException("Trying to load an object that is not yet in the database");
                 }
+                parsedData = dataObject;
             }
-            ((Field) toLoad.get(i)).initialSet(parsedData);
+        } else if (String.class.isAssignableFrom(paramType)) {
+            parsedData = paramString;
+        } else if (Boolean.class.isAssignableFrom(paramType) || boolean.class.isAssignableFrom(paramType)) {
+            parsedData = Boolean.parseBoolean(paramString);
+        } else if (Double.class.isAssignableFrom(paramType) || double.class.isAssignableFrom(paramType)) {
+            if (paramString.equals(" ")) {
+                parsedData = null;
+            } else {
+                parsedData = Double.parseDouble(paramString);
+            }
+        } else if (Integer.class.isAssignableFrom(paramType) || int.class.isAssignableFrom(paramType)) {
+            parsedData = Integer.parseInt(paramString);
+        } else {
+            throw new RuntimeException("Unknown data type");
         }
 
-        // Load all the fields
-        newDataObject.setFields(fields);
-
-        return newDataObject;
+        return parsedData;
     }
 
     /**
@@ -517,19 +535,19 @@ public class TrackingDatabase_Reader {
      * @param fields     the parameters to save for loading in the future
      * @return All objects needed to construct the object as a string
      */
-    static List<String> dataObjectToString(DataObject dataObject, List<Field<?>> fields) {
+    static List<String> dataObjectToString(DataObject dataObject, List<DataField<?>> fields) {
         List<String> paramStrings = new ArrayList<>();
-        for (Field<?> field : fields) {
+        for (DataField<?> field : fields) {
 
             // Find the method
             Method getter;
             try {
-                getter = dataObject.getClass().getMethod(field.getName());
+                getter = dataObject.getClass().getMethod(field.getIdentifierName());
             } catch (NoSuchMethodException e) {
-                throw new RuntimeException("\n" + "Class: " + dataObject.getClass().getSimpleName() + " Method:" + field.getName() + "\n" + e);
+                throw new RuntimeException("\n" + "Class: " + dataObject.getClass().getSimpleName() + " Method:" + field.getIdentifierName() + "\n" + e);
             }
             if (!getter.getReturnType().isAssignableFrom(field.getType()))
-                throw new RuntimeException("Class:" + dataObject.getClass().getSimpleName() + " Method:" + field.getName() + " Getter provided by ParameterMap dose not match the parameter in the constructor. Could save but would not be able to load. Aborting save");
+                throw new RuntimeException("Class:" + dataObject.getClass().getSimpleName() + " Method:" + field.getIdentifierName() + " Getter provided by ParameterMap dose not match the parameter in the constructor. Could save but would not be able to load. Aborting save");
 
             // Execute the getter
             Object getterValue;
@@ -557,57 +575,6 @@ public class TrackingDatabase_Reader {
     //------------------------------------------------------------------------------------------------------------------
 
     /**
-     * Find out how the old constructor parameters map top the new constructor parameters
-     *
-     * @param aClass        The Object to map
-     * @param currentFields The current parameters
-     * @param savedFields   The past parameters
-     * @return A orders lists of the mapping
-     */
-    private static List<Integer> getParameterMapping(Class<? extends DataObject> aClass, List<Field<?>> currentFields, List<SavedField<?>> savedFields) {
-        List<Integer> mappedOrder = new ArrayList<>();
-
-        // Check for duplicates parameters in current object
-        for (int i = 0; i < currentFields.size(); i++)
-            for (int j = 0; j < currentFields.size(); j++)
-                if (i != j)
-                    if (currentFields.get(i).getName().equals(currentFields.get(j).getName()))
-                        throw new RuntimeException("Error, the object " + aClass.getSimpleName() + ". Has a duplicate parameter name");
-
-        // Check for duplicate parameters in the saved object
-        for (int i = 0; i < savedFields.size(); i++)
-            for (int j = 0; j < savedFields.size(); j++)
-                if (i != j)
-                    if (savedFields.get(i).name.equals(savedFields.get(j).name))
-                        throw new RuntimeException("Error, the object " + aClass.getSimpleName() + ". Was saved with a duplicate parameter name");
-
-        // Find the past entry that matches the constructor parameter
-        for (Field<?> currentParameter : currentFields) {
-            int foundIndex = 0;
-            boolean found = false;
-            for (SavedField<?> savedParameter : savedFields) {
-                if (currentParameter.getName().equals(savedParameter.name)) {
-                    if (!currentParameter.getType().equals(savedParameter.type))
-                        throw new RuntimeException("Error, the object " + aClass.getSimpleName() + ". Name matched, type did not");
-                    found = true;
-                    break;
-                }
-                foundIndex++;
-            }
-
-            // Save the match
-            if (!found) {
-                mappedOrder.add(-1);
-                System.out.println("Warning, the object " + aClass.getSimpleName() + ". Has a new parameter that was not saved before. Making it to be set to null");
-            } else {
-                mappedOrder.add(foundIndex);
-            }
-        }
-
-        return mappedOrder;
-    }
-
-    /**
      * Create a ConstructorMap object for its save line
      *
      * @param lines The lines to generate from
@@ -631,26 +598,10 @@ public class TrackingDatabase_Reader {
      * @param aClass The class to get the fields from
      * @return All fields not marked as do not save
      */
-    static List<Field<?>> getSaveFields(Class<? extends DataObject> aClass) {
-        List<Field<?>> toReturn = getFields(aClass);
-        toReturn.removeIf(field -> !field.isShouldSave());
+    static List<DataField<?>> getSaveFields(Class<? extends DataObject> aClass) {
+        List<DataField<?>> toReturn = CoreObject.getFieldContainer(aClass).getList();
+        toReturn.removeIf(field -> !field.getDataCore().isDirectData());
         return toReturn;
-    }
-
-    /**
-     * Get the fields used by a class
-     *
-     * @param aClass The class to get the fields from
-     * @return All fields
-     */
-    @SuppressWarnings("unchecked")
-    private static List<Field<?>> getFields(Class<? extends DataObject> aClass) {
-        try {
-            Method method = aClass.getDeclaredMethod("getFields");
-            return (List<Field<?>>) method.invoke(null);
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException("Cant extract object fields", e);
-        }
     }
 
     /**

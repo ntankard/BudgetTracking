@@ -1,16 +1,14 @@
 package com.ntankard.Tracking.DataBase.Core.RecurringPayment;
 
-import com.ntankard.ClassExtension.ClassExtensionProperties;
-import com.ntankard.ClassExtension.DisplayProperties;
-import com.ntankard.ClassExtension.MemberProperties;
-import com.ntankard.ClassExtension.SetterProperties;
+import com.ntankard.CoreObject.Field.DataCore.Derived_DataCore;
+import com.ntankard.CoreObject.Field.DataCore.ValueRead_DataCore;
+import com.ntankard.CoreObject.Field.DataField;
+import com.ntankard.CoreObject.FieldContainer;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.DataObject_Field;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Filter.Ordered_FieldFilter;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.SourceDriver.DataObjectField_SourceDriver;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.NamedDataObject;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Tracking_DataField;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
@@ -20,10 +18,10 @@ import com.ntankard.Tracking.DataBase.Database.ObjectFactory;
 
 import java.util.List;
 
-import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
-import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
+import static com.ntankard.CoreObject.Field.Properties.Display_Properties.DataType.CURRENCY;
+import static com.ntankard.CoreObject.Field.Properties.Display_Properties.DEBUG_DISPLAY;
+import static com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank_Currency;
 
-@ClassExtensionProperties(includeParent = true)
 @ObjectFactory(builtObjects = {RePayFundTransfer.class})
 public abstract class RecurringPayment extends NamedDataObject implements CurrencyBound {
 
@@ -31,26 +29,69 @@ public abstract class RecurringPayment extends NamedDataObject implements Curren
     //################################################### Constructor ##################################################
     //------------------------------------------------------------------------------------------------------------------
 
+    public static final String RecurringPayment_Start = "getStart";
+    public static final String RecurringPayment_End = "getEnd";
+    public static final String RecurringPayment_Bank = "getBank";
+    public static final String RecurringPayment_Category = "getCategory";
+    public static final String RecurringPayment_Value = "getValue";
+    public static final String RecurringPayment_Currency = "getCurrency";
+
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields() {
-        List<Field<?>> toReturn = NamedDataObject.getFields();
-        toReturn.add(new Field<>("getValue", Double.class));
-        DataObject_Field<?> bank = new DataObject_Field<>("getBank", Bank.class);
-        toReturn.add(bank);
-        toReturn.add(new DataObject_Field<>("getCategory", SolidCategory.class));
-        toReturn.add(new DataObject_Field<>("getCurrency", Currency.class).addSourceDriver(new DataObjectField_SourceDriver<>(bank, "getCurrency")));
+    public static FieldContainer getFieldContainer() {
+        FieldContainer fieldContainer = NamedDataObject.getFieldContainer();
 
-        Field<ExistingPeriod> startField = new DataObject_Field<>("getStart", ExistingPeriod.class);
-        Field<ExistingPeriod> endField = new DataObject_Field<>("getEnd", ExistingPeriod.class, true);
+        // ID
+        // Name
+        // Start =======================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(RecurringPayment_Start, ExistingPeriod.class, true));
+        fieldContainer.<ExistingPeriod>get(RecurringPayment_Start).setDataCore(new ValueRead_DataCore<>(true));
+        fieldContainer.get(RecurringPayment_Start).addChangeListener((field, oldValue, newValue) -> {
+            if (field.getState().equals(DataField.NewFieldState.N_ACTIVE)) {
+                ((RecurringPayment) field.getContainer()).regenerateChildren();
+            }
+        });
+        // End =========================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(RecurringPayment_End, ExistingPeriod.class, true));
+        fieldContainer.<ExistingPeriod>get(RecurringPayment_End).setDataCore(new ValueRead_DataCore<>(true));
+        fieldContainer.get(RecurringPayment_End).addChangeListener((field, oldValue, newValue) -> {
+            if (field.getState().equals(DataField.NewFieldState.N_ACTIVE)) {
+                ((RecurringPayment) field.getContainer()).regenerateChildren();
+            }
+        });
+        // Bank ========================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(RecurringPayment_Bank, Bank.class));
+        fieldContainer.<Bank>get(RecurringPayment_Bank).setDataCore(new ValueRead_DataCore<>(true));
+        fieldContainer.get(RecurringPayment_Bank).addChangeListener((field, oldValue, newValue) -> {
+            if (field.getState().equals(DataField.NewFieldState.N_ACTIVE)) {
+                ((RecurringPayment) field.getContainer()).regenerateChildren();
+            }
+        });
+        // Category ====================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(RecurringPayment_Category, SolidCategory.class));
+        fieldContainer.<SolidCategory>get(RecurringPayment_Category).setDataCore(new ValueRead_DataCore<>(true));
+        fieldContainer.get(RecurringPayment_Category).addChangeListener((field, oldValue, newValue) -> {
+            if (field.getState().equals(DataField.NewFieldState.N_ACTIVE)) {
+                ((RecurringPayment) field.getContainer()).regenerateChildren();
+            }
+        });
+        // Value =======================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(RecurringPayment_Value, Double.class));
+        fieldContainer.<Double>get(RecurringPayment_Value).setDataCore(new ValueRead_DataCore<>(true));
+        fieldContainer.get(RecurringPayment_Value).getDisplayProperties().setDataType(CURRENCY);
+        // Currency ====================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(RecurringPayment_Currency, Currency.class));
+        fieldContainer.<Currency>get(RecurringPayment_Currency).setDataCore(new Derived_DataCore<>(new Derived_DataCore.DirectExternalSource<>(fieldContainer.get(RecurringPayment_Bank), Bank_Currency)));
+        fieldContainer.get(RecurringPayment_Currency).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
+        //==============================================================================================================
+        // Parents
+        // Children
 
-        endField.addFilter(new Ordered_FieldFilter<>(startField, Ordered_FieldFilter.OrderSequence.ABOVE));
-        startField.addFilter(new Ordered_FieldFilter<>(endField, Ordered_FieldFilter.OrderSequence.BELOW));
+        fieldContainer.<ExistingPeriod>get(RecurringPayment_End).addFilter(new Ordered_FieldFilter<>(RecurringPayment_Start, Ordered_FieldFilter.OrderSequence.ABOVE));
+        fieldContainer.<ExistingPeriod>get(RecurringPayment_Start).addFilter(new Ordered_FieldFilter<>(RecurringPayment_End, Ordered_FieldFilter.OrderSequence.BELOW));
 
-        toReturn.add(startField);
-        toReturn.add(endField);
-        return toReturn;
+        return fieldContainer.endLayer(RecurringPayment.class);
     }
 
     /**
@@ -71,43 +112,29 @@ public abstract class RecurringPayment extends NamedDataObject implements Curren
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    // 1000000--getID
-    // 1100000--getName
-
-    @DisplayProperties(order = 1110000)
     public ExistingPeriod getStart() {
-        return get("getStart");
+        return get(RecurringPayment_Start);
     }
 
-    @DisplayProperties(order = 1120000)
     public ExistingPeriod getEnd() {
-        return get("getEnd");
+        return get(RecurringPayment_End);
     }
 
-    @DisplayProperties(order = 1130000)
     public Bank getBank() {
-        return get("getBank");
+        return get(RecurringPayment_Bank);
     }
 
-    @DisplayProperties(order = 1140000)
     public SolidCategory getCategory() {
-        return get("getCategory");
+        return get(RecurringPayment_Category);
     }
 
-    @DisplayProperties(order = 1150000, dataType = CURRENCY)
     public Double getValue() {
-        return get("getValue");
+        return get(RecurringPayment_Value);
     }
 
-    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 1160000)
-    @Override
     public Currency getCurrency() {
-        return get("getCurrency");
+        return get(RecurringPayment_Currency);
     }
-
-    // 2000000--getParents (Above)
-    // 3000000--getChildren
 
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Setters #####################################################
@@ -118,7 +145,6 @@ public abstract class RecurringPayment extends NamedDataObject implements Curren
      */
     @SuppressWarnings("SuspiciousMethodCalls")
     @Override
-
     public <T extends DataObject> List<T> sourceOptions(Class<T> type, String fieldName) {
         if (fieldName.equals("Start")) {
             List<T> all = super.sourceOptions(type, fieldName);
@@ -141,37 +167,5 @@ public abstract class RecurringPayment extends NamedDataObject implements Curren
             return all;
         }
         return super.sourceOptions(type, fieldName);
-    }
-
-    @SetterProperties(localSourceMethod = "sourceOptions")
-    public void setBank(Bank bank) {
-        set("getBank", bank);
-        regenerateChildren();
-        validateParents();
-    }
-
-    @SetterProperties(localSourceMethod = "sourceOptions")
-    public void setCategory(SolidCategory solidCategory) {
-        set("getCategory", solidCategory);
-        regenerateChildren();
-        validateParents();
-    }
-
-    @SetterProperties(localSourceMethod = "sourceOptions")
-    public void setStart(ExistingPeriod start) {
-        set("getStart", start);
-        regenerateChildren();
-        validateParents();
-    }
-
-    @SetterProperties(localSourceMethod = "sourceOptions")
-    public void setEnd(ExistingPeriod end) {
-        set("getEnd", end);
-        regenerateChildren();
-        validateParents();
-    }
-
-    public void setValue(Double value) {
-        set("getValue", value);
     }
 }

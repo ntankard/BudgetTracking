@@ -8,6 +8,7 @@ import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static com.ntankard.Tracking.DataBase.Core.StatementEnd.StatementEnd_End;
 import static org.junit.jupiter.api.Assertions.*;
 
 class StatementEndTest {
@@ -39,8 +40,8 @@ class StatementEndTest {
     void setEnd() {
         StatementEnd statementEnd = DataAccessUntil.getObject(StatementEnd.class, 0);
 
-        assertDoesNotThrow(() -> statementEnd.setEnd(0.0));
-        assertThrows(IllegalArgumentException.class, () -> statementEnd.setEnd(null));
+        assertDoesNotThrow(() -> statementEnd.set(StatementEnd_End, 0.0));
+        assertThrows(IllegalArgumentException.class, () -> statementEnd.set(StatementEnd_End, null));
     }
 
     //------------------------------------------------------------------------------------------------------------------

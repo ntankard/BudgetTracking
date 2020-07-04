@@ -1,13 +1,9 @@
 package com.ntankard.Tracking.DataBase.Core.Period;
 
-import com.ntankard.ClassExtension.ClassExtensionProperties;
+import com.ntankard.CoreObject.FieldContainer;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
 
-import java.util.List;
-
-@ClassExtensionProperties(includeParent = true)
 public abstract class Period extends DataObject implements Ordered {
 
     //------------------------------------------------------------------------------------------------------------------
@@ -17,8 +13,14 @@ public abstract class Period extends DataObject implements Ordered {
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields() {
-        return DataObject.getFields();
+    public static FieldContainer getFieldContainer() {
+        FieldContainer fieldContainer = DataObject.getFieldContainer();
+
+        // ID
+        // Parents
+        // Children
+
+        return fieldContainer.endLayer(Period.class);
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -36,12 +38,4 @@ public abstract class Period extends DataObject implements Ordered {
         int diff = this.getOrder() - start.getOrder();
         return diff >= 0 && diff < duration;
     }
-
-    //------------------------------------------------------------------------------------------------------------------
-    //#################################################### Getters #####################################################
-    //------------------------------------------------------------------------------------------------------------------
-
-    // 1000000--getID
-    // 2000000--getParents (Above)
-    // 3000000--getChildren
 }

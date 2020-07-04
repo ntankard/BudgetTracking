@@ -1,19 +1,15 @@
 package com.ntankard.Tracking.DataBase.Core.Pool.Category;
 
-import com.ntankard.ClassExtension.ClassExtensionProperties;
-import com.ntankard.ClassExtension.DisplayProperties;
-import com.ntankard.ClassExtension.MemberProperties;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
+import com.ntankard.CoreObject.Field.Properties.Display_Properties;
+import com.ntankard.CoreObject.FieldContainer;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.HasDefault;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.SpecialValues;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Tracking_DataField;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ntankard.ClassExtension.MemberProperties.*;
-
-@ClassExtensionProperties(includeParent = true)
 public class SolidCategory extends Category implements HasDefault, SpecialValues, Ordered {
 
     public static Integer SAVINGS = 1;
@@ -23,18 +19,44 @@ public class SolidCategory extends Category implements HasDefault, SpecialValues
     //################################################### Constructor ##################################################
     //------------------------------------------------------------------------------------------------------------------
 
+    public static final String SolidCategory_Default = "isDefault";
+    public static final String SolidCategory_Savings = "isSavings";
+    public static final String SolidCategory_Taxable = "isTaxable";
+    public static final String SolidCategory_Set = "getSet";
+    public static final String SolidCategory_SetName = "getSetName";
+    public static final String SolidCategory_Order = "getOrder";
+
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields() {
-        List<Field<?>> toReturn = Category.getFields();
-        toReturn.add(new Field<>("getOrder", Integer.class));
-        toReturn.add(new Field<>("isDefault", Boolean.class));
-        toReturn.add(new Field<>("isSavings", Boolean.class));
-        toReturn.add(new Field<>("isTaxable", Boolean.class));
-        toReturn.add(new Field<>("getSet", Integer.class));
-        toReturn.add(new Field<>("getSetName", String.class));
-        return toReturn;
+    public static FieldContainer getFieldContainer() {
+        FieldContainer fieldContainer = Category.getFieldContainer();
+
+        // ID
+        // Name
+        // Default =====================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(SolidCategory_Default, Boolean.class));
+        fieldContainer.get(SolidCategory_Default).getDisplayProperties().setVerbosityLevel(Display_Properties.DEBUG_DISPLAY);
+        // Savings =====================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(SolidCategory_Savings, Boolean.class));
+        fieldContainer.get(SolidCategory_Savings).getDisplayProperties().setVerbosityLevel(Display_Properties.DEBUG_DISPLAY);
+        // Taxable =====================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(SolidCategory_Taxable, Boolean.class));
+        fieldContainer.get(SolidCategory_Taxable).getDisplayProperties().setVerbosityLevel(Display_Properties.DEBUG_DISPLAY);
+        // Set =========================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(SolidCategory_Set, Integer.class));
+        fieldContainer.get(SolidCategory_Set).getDisplayProperties().setVerbosityLevel(Display_Properties.INFO_DISPLAY);
+        // SetName =====================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(SolidCategory_SetName, String.class));
+        fieldContainer.get(SolidCategory_SetName).getDisplayProperties().setVerbosityLevel(Display_Properties.INFO_DISPLAY);
+        // Order =======================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(SolidCategory_Order, Integer.class));
+        fieldContainer.get(SolidCategory_Order).getDisplayProperties().setVerbosityLevel(Display_Properties.INFO_DISPLAY);
+        //==============================================================================================================
+        // Parents
+        // Children
+
+        return fieldContainer.finaliseContainer(SolidCategory.class);
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -59,9 +81,7 @@ public class SolidCategory extends Category implements HasDefault, SpecialValues
      * {@inheritDoc
      */
     @Override
-    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 1100700)
-    public List<Integer> getKeys() {
+    public List<Integer> toChangeGetKeys() {
         List<Integer> keys = new ArrayList<>();
         keys.add(TAXABLE);
         keys.add(SAVINGS);
@@ -72,47 +92,29 @@ public class SolidCategory extends Category implements HasDefault, SpecialValues
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    // 1000000--getID
-    // 1100000----getName
-
-    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 1100100)
+    @Override
     public Boolean isDefault() {
-        return get("isDefault");
+        return get(SolidCategory_Default);
     }
 
-    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 1100200)
     public Boolean isSavings() {
-        return get("isSavings");
+        return get(SolidCategory_Savings);
     }
 
-    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 1100300)
     public Boolean isTaxable() {
-        return get("isTaxable");
+        return get(SolidCategory_Taxable);
     }
 
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    @DisplayProperties(order = 1100400)
     public Integer getSet() {
-        return get("getSet");
+        return get(SolidCategory_Set);
     }
 
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    @DisplayProperties(order = 1100500)
     public String getSetName() {
-        return get("getSetName");
+        return get(SolidCategory_SetName);
     }
 
     @Override
-    @MemberProperties(verbosityLevel = TRACE_DISPLAY)
-    @DisplayProperties(order = 1100600)
     public Integer getOrder() {
-        return get("getOrder");
+        return get(SolidCategory_Order);
     }
-
-    // 1100700----------getKeys (Above)
-    // 2000000--getParents (Above)
-    // 3000000--getChildren
 }

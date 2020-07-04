@@ -15,12 +15,12 @@ public class DataObject_VerbosityDisplayList<T extends DataObject> extends Updat
     /**
      * The supported verbosity levels
      */
-    private static String[] NAMES = {"Always", "Info", "Debug", "Trace"};
+    private static final String[] NAMES = {"Always", "Info", "Debug", "Trace"};
 
     /**
      * The type to general
      */
-    private Class<T> tClass;
+    private final Class<T> tClass;
 
     /**
      * The source of data for the list
@@ -28,7 +28,7 @@ public class DataObject_VerbosityDisplayList<T extends DataObject> extends Updat
     private ObjectSet<T> objectSet = null;
 
     // The GUI components
-    private List<DataObject_DisplayList> tabs = new ArrayList<>();
+    private final List<DataObject_DisplayList<T>> tabs = new ArrayList<>();
 
     /**
      * Constructor
@@ -70,7 +70,7 @@ public class DataObject_VerbosityDisplayList<T extends DataObject> extends Updat
         master_tPanel.addTab("All", allTab);
 
         for (int i = 0; i < NAMES.length; i++) {
-            DataObject_DisplayList single;
+            DataObject_DisplayList<T> single;
             if (objectSet == null) {
                 single = new DataObject_DisplayList<>(tClass, false, this);
             } else {
@@ -79,7 +79,7 @@ public class DataObject_VerbosityDisplayList<T extends DataObject> extends Updat
             single.setVerbosity(i);
             master_tPanel.addTab(NAMES[i], single);
 
-            DataObject_DisplayList all;
+            DataObject_DisplayList<T> all;
             if (objectSet == null) {
                 all = new DataObject_DisplayList<>(tClass, false, this);
             } else {
@@ -102,7 +102,7 @@ public class DataObject_VerbosityDisplayList<T extends DataObject> extends Updat
      */
     @Override
     public void update() {
-        for (DataObject_DisplayList tab : tabs) {
+        for (DataObject_DisplayList<T> tab : tabs) {
             tab.update();
         }
     }

@@ -1,9 +1,11 @@
 package com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Filter;
 
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
+import com.ntankard.CoreObject.CoreObject;
+import com.ntankard.CoreObject.Field.Filter.FieldFilter;
+import com.ntankard.CoreObject.Field.DataField;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
 
-public class Ordered_FieldFilter<T extends Ordered> extends FieldFilter<T> {
+public class Ordered_FieldFilter<T extends Ordered, ContainerType extends CoreObject> extends FieldFilter<T, ContainerType> {
 
     /**
      * The type of order
@@ -13,17 +15,17 @@ public class Ordered_FieldFilter<T extends Ordered> extends FieldFilter<T> {
     /**
      * The field to compare too
      */
-    private Field<T> toCompare;
+    private final String toCompare;
 
     /**
      * The type of order
      */
-    private OrderSequence orderSequence;
+    private final OrderSequence orderSequence;
 
     /**
      * Constructor
      */
-    public Ordered_FieldFilter(Field<T> toCompare, OrderSequence orderSequence) {
+    public Ordered_FieldFilter(String toCompare, OrderSequence orderSequence) {
         this.toCompare = toCompare;
         this.orderSequence = orderSequence;
     }
@@ -32,16 +34,17 @@ public class Ordered_FieldFilter<T extends Ordered> extends FieldFilter<T> {
      * {@inheritDoc
      */
     @Override
-    public void filter(T value) {
-        if (value != null && toCompare.get() != null) {
+    public boolean isValid(T value, ContainerType container) {
+        if (value != null && container.getField(toCompare).get() != null) {
             Integer order1 = value.getOrder();
-            Integer order2 = toCompare.get().getOrder();
+            Integer order2 = ((Ordered) container.getField(toCompare).get()).getOrder();
 
             if (orderSequence.equals(OrderSequence.BELOW)) {
-                if ((order1 >= order2)) throw new IllegalArgumentException("Out of order below");
+                return order1 < order2;
             } else if (orderSequence.equals(OrderSequence.ABOVE)) {
-                if ((order1 <= order2)) throw new IllegalArgumentException("Out of order above");
+                return order1 > order2;
             }
         }
+        return true;
     }
 }

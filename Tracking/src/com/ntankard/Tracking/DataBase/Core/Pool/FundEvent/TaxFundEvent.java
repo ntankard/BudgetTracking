@@ -1,8 +1,7 @@
 package com.ntankard.Tracking.DataBase.Core.Pool.FundEvent;
 
-import com.ntankard.ClassExtension.ClassExtensionProperties;
-import com.ntankard.ClassExtension.DisplayProperties;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
+import com.ntankard.CoreObject.FieldContainer;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Tracking_DataField;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
@@ -10,9 +9,6 @@ import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePayFundTransfer;
 import com.ntankard.Tracking.DataBase.Database.ObjectFactory;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Period_Summary;
 
-import java.util.List;
-
-@ClassExtensionProperties(includeParent = true)
 @ObjectFactory(builtObjects = {RePayFundTransfer.class})
 public class TaxFundEvent extends FundEvent {
 
@@ -20,13 +16,24 @@ public class TaxFundEvent extends FundEvent {
     //################################################### Constructor ##################################################
     //------------------------------------------------------------------------------------------------------------------
 
+    public static final String TaxFundEvent_Percentage = "getPercentage";
+
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields() {
-        List<Field<?>> toReturn = FundEvent.getFields();
-        toReturn.add(new Field<>("getPercentage", Double.class));
-        return toReturn;
+    public static FieldContainer getFieldContainer() {
+        FieldContainer fieldContainer = FundEvent.getFieldContainer();
+
+        // ID
+        // Name
+        // Category
+        // Percentage ==================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(TaxFundEvent_Percentage, Double.class));
+        //==============================================================================================================
+        // Parents
+        // Children
+
+        return fieldContainer.finaliseContainer(TaxFundEvent.class);
     }
 
     /**
@@ -69,16 +76,7 @@ public class TaxFundEvent extends FundEvent {
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    // 1000000--getID
-    // 1100000----getName
-    // 1101000--------getCategory
-
-    @DisplayProperties(order = 1101100)
     public Double getPercentage() {
-        return get("getPercentage");
+        return get(TaxFundEvent_Percentage);
     }
-
-    // 1110000------getOrder
-    // 2000000--getParents
-    // 3000000--getChildren
 }

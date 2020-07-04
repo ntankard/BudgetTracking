@@ -1,37 +1,46 @@
 package com.ntankard.Tracking.DataBase.Core.Period;
 
-import com.ntankard.ClassExtension.ClassExtensionProperties;
-import com.ntankard.ClassExtension.DisplayProperties;
-import com.ntankard.ClassExtension.MemberProperties;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
+import com.ntankard.CoreObject.FieldContainer;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Tracking_DataField;
 
-import java.util.List;
+import static com.ntankard.CoreObject.Field.Properties.Display_Properties.INFO_DISPLAY;
 
-@ClassExtensionProperties(includeParent = true)
 public class VirtualPeriod extends Period {
 
     //------------------------------------------------------------------------------------------------------------------
     //################################################### Constructor ##################################################
     //------------------------------------------------------------------------------------------------------------------
 
+    public static final String VirtualPeriod_Name = "getName";
+    public static final String VirtualPeriod_Order = "getOrder";
+
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields() {
-        List<Field<?>> toReturn = Period.getFields();
-        toReturn.add(new Field<>("getName", String.class));
-        toReturn.add(new Field<>("getOrder", Integer.class));
-        return toReturn;
+    public static FieldContainer getFieldContainer() {
+        FieldContainer fieldContainer = Period.getFieldContainer();
+
+        // ID
+        // Name ========================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(VirtualPeriod_Name, String.class));
+        // Order =======================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(VirtualPeriod_Order, Integer.class));
+        fieldContainer.get(VirtualPeriod_Order).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
+        //==============================================================================================================
+        // Parents
+        // Children
+
+        return fieldContainer.finaliseContainer(VirtualPeriod.class);
     }
 
     /**
      * Create a new VirtualPeriod object
      */
     public static VirtualPeriod make(Integer id, String name, Integer order) {
-        return assembleDataObject(VirtualPeriod.getFields(), new VirtualPeriod()
-                , "getId", id
-                , "getName", name
-                , "getOrder", order
+        return assembleDataObject(VirtualPeriod.getFieldContainer(), new VirtualPeriod()
+                , DataObject_Id, id
+                , VirtualPeriod_Name, name
+                , VirtualPeriod_Order, order
         );
     }
 
@@ -47,20 +56,12 @@ public class VirtualPeriod extends Period {
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    // 1000000--getID
-
-    @DisplayProperties(order = 1010000)
     public String getName() {
-        return get("getName");
+        return get(VirtualPeriod_Name);
     }
 
     @Override
-    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
-    @DisplayProperties(order = 1020000)
     public Integer getOrder() {
-        return get("getOrder");
+        return get(VirtualPeriod_Order);
     }
-
-    // 2000000--getParents (Above)
-    // 3000000--getChildren
 }

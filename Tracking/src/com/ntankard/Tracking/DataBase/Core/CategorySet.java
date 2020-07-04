@@ -1,12 +1,12 @@
 package com.ntankard.Tracking.DataBase.Core;
 
-import com.ntankard.ClassExtension.ClassExtensionProperties;
-import com.ntankard.ClassExtension.DisplayProperties;
-import com.ntankard.ClassExtension.MemberProperties;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
+import com.ntankard.CoreObject.Field.DataCore.Method_DataCore;
+import com.ntankard.CoreObject.Field.DataCore.ValueRead_DataCore;
+import com.ntankard.CoreObject.FieldContainer;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.HasDefault;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.NamedDataObject;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Tracking_DataField;
 import com.ntankard.Tracking.DataBase.Core.Links.CategoryToCategorySet;
 import com.ntankard.Tracking.DataBase.Core.Links.CategoryToVirtualCategory;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
@@ -16,34 +16,56 @@ import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
+import static com.ntankard.CoreObject.Field.Properties.Display_Properties.DEBUG_DISPLAY;
 
-@ClassExtensionProperties(includeParent = true)
 public class CategorySet extends NamedDataObject implements HasDefault, Ordered {
 
     //------------------------------------------------------------------------------------------------------------------
     //################################################### Constructor ##################################################
     //------------------------------------------------------------------------------------------------------------------
 
+    public static final String CategorySet_Default = "isDefault";
+    public static final String CategorySet_Order = "getOrder";
+    public static final String CategorySet_AvailableCategories = "getAvailableCategories";
+    public static final String CategorySet_UsedCategories = "getUsedCategories";
+
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields() {
-        List<Field<?>> toReturn = NamedDataObject.getFields();
-        toReturn.add(new Field<>("isDefault", Boolean.class));
-        toReturn.add(new Field<>("getOrder", Integer.class));
-        return toReturn;
+    public static FieldContainer getFieldContainer() {
+        FieldContainer fieldContainer = NamedDataObject.getFieldContainer();
+
+        // ID
+        // Name
+        // Default ======================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(CategorySet_Default, Boolean.class));
+        fieldContainer.get(CategorySet_Default).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
+        // Order =======================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(CategorySet_Order, Integer.class));
+        fieldContainer.get(CategorySet_Order).setDataCore(new ValueRead_DataCore<>(true));
+        // AvailableCategories =========================================================================================
+        fieldContainer.add(new Tracking_DataField<>(CategorySet_AvailableCategories, List.class));
+        fieldContainer.get(CategorySet_AvailableCategories).setDataCore(new Method_DataCore<>(container -> ((CategorySet) container).getAvailableCategoriesImpl()));
+        // UsedCategories ==============================================================================================
+        fieldContainer.add(new Tracking_DataField<>(CategorySet_UsedCategories, List.class));
+        fieldContainer.get(CategorySet_UsedCategories).setDataCore(new Method_DataCore<>(container -> ((CategorySet) container).getUsedCategoriesImpl()));
+        fieldContainer.get(CategorySet_UsedCategories).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
+        //==============================================================================================================
+        // Parents
+        // Children
+
+        return fieldContainer.finaliseContainer(CategorySet.class);
     }
 
     /**
      * Create a new RePayFundTransfer object
      */
     public static CategorySet make(Integer id, String name, Boolean isDefault, Integer order) {
-        return assembleDataObject(CategorySet.getFields(), new CategorySet()
-                , "getId", id
-                , "getName", name
-                , "isDefault", isDefault
-                , "getOrder", order
+        return assembleDataObject(CategorySet.getFieldContainer(), new CategorySet()
+                , DataObject_Id, id
+                , NamedDataObject_Name, name
+                , CategorySet_Default, isDefault
+                , CategorySet_Order, order
         );
     }
 
@@ -59,16 +81,13 @@ public class CategorySet extends NamedDataObject implements HasDefault, Ordered 
     //################################################# Implementation #################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @DisplayProperties(order = 1130000)
-    public List<SolidCategory> getAvailableCategories() {
+    private List<SolidCategory> getAvailableCategoriesImpl() {
         List<SolidCategory> toReturn = TrackingDatabase.get().get(SolidCategory.class);
         toReturn.removeAll(getUsedCategories());
         return toReturn;
     }
 
-    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 1140000)
-    public List<SolidCategory> getUsedCategories() {
+    private List<SolidCategory> getUsedCategoriesImpl() {
         List<SolidCategory> toReturn = new ArrayList<>();
         for (CategoryToCategorySet categoryToCategorySet : getChildren(CategoryToCategorySet.class)) {
             toReturn.add(categoryToCategorySet.getSolidCategory());
@@ -85,31 +104,21 @@ public class CategorySet extends NamedDataObject implements HasDefault, Ordered 
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    // 1000000--getID
-    // 1100000----getName
-
-    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 1110000)
+    @Override
     public Boolean isDefault() {
-        return get("isDefault");
+        return get(CategorySet_Default);
     }
 
     @Override
-    @DisplayProperties(order = 1120000)
     public Integer getOrder() {
-        return get("getOrder");
+        return get(CategorySet_Order);
     }
 
-    // 1130000------getAvailableCategories(above)
-    // 1140000------getUsedCategories (above)
-    // 2000000--getParents
-    // 3000000--getChildren
+    public List<SolidCategory> getAvailableCategories() {
+        return get(CategorySet_AvailableCategories);
+    }
 
-    //------------------------------------------------------------------------------------------------------------------
-    //#################################################### Setters #####################################################
-    //------------------------------------------------------------------------------------------------------------------
-
-    public void setOrder(Integer order) {
-        set("getOrder", order);
+    public List<SolidCategory> getUsedCategories() {
+        return get(CategorySet_UsedCategories);
     }
 }

@@ -1,13 +1,11 @@
 package com.ntankard.Tracking.DataBase.Interface.Summary;
 
-import com.ntankard.ClassExtension.ClassExtensionProperties;
-import com.ntankard.ClassExtension.DisplayProperties;
-import com.ntankard.ClassExtension.MemberProperties;
+import com.ntankard.CoreObject.Field.DataCore.Method_DataCore;
+import com.ntankard.CoreObject.FieldContainer;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.DataObject_Field;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Tracking_DataField;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
@@ -34,65 +32,154 @@ import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.FundEvent_Summary;
 
 import java.util.List;
 
-import static com.ntankard.ClassExtension.DisplayProperties.DataContext.*;
-import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
-import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
-import static com.ntankard.ClassExtension.MemberProperties.TRACE_DISPLAY;
+import static com.ntankard.CoreObject.Field.Properties.Display_Properties.DataContext.*;
+import static com.ntankard.CoreObject.Field.Properties.Display_Properties.DataType.CURRENCY;
+import static com.ntankard.CoreObject.Field.Properties.Display_Properties.DEBUG_DISPLAY;
+import static com.ntankard.CoreObject.Field.Properties.Display_Properties.TRACE_DISPLAY;
 
 @ParameterMap(shouldSave = false)
-@ClassExtensionProperties(includeParent = true)
 public class Period_Summary extends DataObject implements CurrencyBound, Ordered {
 
     //------------------------------------------------------------------------------------------------------------------
     //################################################### Constructor ##################################################
     //------------------------------------------------------------------------------------------------------------------
 
+    public static final String Period_Summary_Period = "getPeriod";
+    public static final String Period_Summary_BankStart = "getBankStart";
+    public static final String Period_Summary_BankEnd = "getBankEnd";
+    public static final String Period_Summary_BankDelta = "getBankDelta";
+    public static final String Period_Summary_CategoryDelta = "getCategoryDelta";
+    public static final String Period_Summary_FundEventStart = "getFundEventStart";
+    public static final String Period_Summary_FundEventEnd = "getFundEventEnd";
+    public static final String Period_Summary_FundEventDelta = "getFundEventDelta";
+    public static final String Period_Summary_AllSummaryValid = "isAllSummaryValid";
+    public static final String Period_Summary_CategoryClear = "isCategoryClear";
+    public static final String Period_Summary_ValueConserved = "isValueConserved";
+    public static final String Period_Summary_ExchangeRateAcceptable = "isExchangeRateAcceptable";
+    public static final String Period_Summary_Valid = "isValid";
+    public static final String Period_Summary_NonSaveCategoryDelta = "getNonSaveCategoryDelta";
+    public static final String Period_Summary_TaxableIncome = "getTaxableIncome";
+    public static final String Period_Summary_CurrencyValueLoss = "getCurrencyValueLoss";
+    public static final String Period_Summary_Order = "getOrder";
+    public static final String Period_Summary_Currency = "getCurrency";
+
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields() {
-        List<Field<?>> toReturn = DataObject.getFields();
-        toReturn.add(new DataObject_Field<>("getPeriod", Period.class));
-        return toReturn;
+    public static FieldContainer getFieldContainer() {
+        FieldContainer fieldContainer = DataObject.getFieldContainer();
+
+        // ID
+        // Period ======================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(Period_Summary_Period, Period.class));
+        // BankStart ===================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(Period_Summary_BankStart, Double.class));
+        fieldContainer.get(Period_Summary_BankStart).setDataCore(new Method_DataCore<>(container -> ((Period_Summary) container).getBankStart_impl()));
+        fieldContainer.get(Period_Summary_BankStart).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
+        fieldContainer.get(Period_Summary_BankStart).getDisplayProperties().setDataType(CURRENCY);
+        // BankEnd =====================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(Period_Summary_BankEnd, DataObject.class));
+        fieldContainer.get(Period_Summary_BankEnd).setDataCore(new Method_DataCore<>(container -> ((Period_Summary) container).getBankEnd_impl()));
+        fieldContainer.get(Period_Summary_BankEnd).getDisplayProperties().setDataType(CURRENCY);
+        // BankDelta ===================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(Period_Summary_BankDelta, Double.class));
+        fieldContainer.get(Period_Summary_BankDelta).setDataCore(new Method_DataCore<>(container -> ((Period_Summary) container).getBankDelta_impl()));
+        fieldContainer.get(Period_Summary_BankDelta).getDisplayProperties().setDataType(CURRENCY);
+        fieldContainer.get(Period_Summary_BankDelta).getDisplayProperties().setDataContext(ZERO_SCALE);
+        // CategoryDelta ===============================================================================================
+        fieldContainer.add(new Tracking_DataField<>(Period_Summary_CategoryDelta, Double.class));
+        fieldContainer.get(Period_Summary_CategoryDelta).setDataCore(new Method_DataCore<>(container -> ((Period_Summary) container).getCategoryDelta_impl()));
+        fieldContainer.get(Period_Summary_CategoryDelta).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
+        fieldContainer.get(Period_Summary_CategoryDelta).getDisplayProperties().setDataType(CURRENCY);
+        fieldContainer.get(Period_Summary_CategoryDelta).getDisplayProperties().setDataContext(ZERO_TARGET);
+        // FundEventStart ==============================================================================================
+        fieldContainer.add(new Tracking_DataField<>(Period_Summary_FundEventStart, Double.class));
+        fieldContainer.get(Period_Summary_FundEventStart).setDataCore(new Method_DataCore<>(container -> ((Period_Summary) container).getFundEventStart_impl()));
+        fieldContainer.get(Period_Summary_FundEventStart).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
+        fieldContainer.get(Period_Summary_FundEventStart).getDisplayProperties().setDataType(CURRENCY);
+        // FundEventEnd ================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(Period_Summary_FundEventEnd, Double.class));
+        fieldContainer.get(Period_Summary_FundEventEnd).setDataCore(new Method_DataCore<>(container -> ((Period_Summary) container).getFundEventEnd_impl()));
+        fieldContainer.get(Period_Summary_FundEventEnd).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
+        fieldContainer.get(Period_Summary_FundEventEnd).getDisplayProperties().setDataType(CURRENCY);
+        // FundEventDelta ==============================================================================================
+        fieldContainer.add(new Tracking_DataField<>(Period_Summary_FundEventDelta, Double.class));
+        fieldContainer.get(Period_Summary_FundEventDelta).setDataCore(new Method_DataCore<>(container -> ((Period_Summary) container).getFundEventDelta_impl()));
+        fieldContainer.get(Period_Summary_FundEventDelta).getDisplayProperties().setDataType(CURRENCY);
+        fieldContainer.get(Period_Summary_FundEventDelta).getDisplayProperties().setDataContext(ZERO_SCALE);
+        // AllSummaryValid =============================================================================================
+        fieldContainer.add(new Tracking_DataField<>(Period_Summary_AllSummaryValid, Boolean.class));
+        fieldContainer.get(Period_Summary_AllSummaryValid).setDataCore(new Method_DataCore<>(container -> ((Period_Summary) container).isAllSummaryValid_impl()));
+        fieldContainer.get(Period_Summary_AllSummaryValid).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
+        fieldContainer.get(Period_Summary_AllSummaryValid).getDisplayProperties().setDataContext(NOT_FALSE);
+        // CategoryClear ===============================================================================================
+        fieldContainer.add(new Tracking_DataField<>(Period_Summary_CategoryClear, Boolean.class));
+        fieldContainer.get(Period_Summary_CategoryClear).setDataCore(new Method_DataCore<>(container -> ((Period_Summary) container).isCategoryClear_impl()));
+        fieldContainer.get(Period_Summary_CategoryClear).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
+        fieldContainer.get(Period_Summary_CategoryClear).getDisplayProperties().setDataContext(NOT_FALSE);
+        // ValueConserved ==============================================================================================
+        fieldContainer.add(new Tracking_DataField<>(Period_Summary_ValueConserved, Boolean.class));
+        fieldContainer.get(Period_Summary_ValueConserved).setDataCore(new Method_DataCore<>(container -> ((Period_Summary) container).isValueConserved_impl()));
+        fieldContainer.get(Period_Summary_ValueConserved).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
+        fieldContainer.get(Period_Summary_ValueConserved).getDisplayProperties().setDataContext(NOT_FALSE);
+        // ExchangeRateAcceptable ======================================================================================
+        fieldContainer.add(new Tracking_DataField<>(Period_Summary_ExchangeRateAcceptable, Boolean.class));
+        fieldContainer.get(Period_Summary_ExchangeRateAcceptable).setDataCore(new Method_DataCore<>(container -> ((Period_Summary) container).isExchangeRateAcceptable_impl()));
+        fieldContainer.get(Period_Summary_ExchangeRateAcceptable).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
+        fieldContainer.get(Period_Summary_ExchangeRateAcceptable).getDisplayProperties().setDataContext(NOT_FALSE);
+        // Valid =======================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(Period_Summary_Valid, Boolean.class));
+        fieldContainer.get(Period_Summary_Valid).setDataCore(new Method_DataCore<>(container -> ((Period_Summary) container).isValid_impl()));
+        fieldContainer.get(Period_Summary_Valid).getDisplayProperties().setDataContext(NOT_FALSE);
+        // NonSaveCategoryDelta ========================================================================================
+        fieldContainer.add(new Tracking_DataField<>(Period_Summary_NonSaveCategoryDelta, Double.class));
+        fieldContainer.get(Period_Summary_NonSaveCategoryDelta).setDataCore(new Method_DataCore<>(container -> ((Period_Summary) container).getNonSaveCategoryDelta_impl()));
+        fieldContainer.get(Period_Summary_NonSaveCategoryDelta).getDisplayProperties().setDataType(CURRENCY);
+        // TaxableIncome ===============================================================================================
+        fieldContainer.add(new Tracking_DataField<>(Period_Summary_TaxableIncome, Double.class));
+        fieldContainer.get(Period_Summary_TaxableIncome).setDataCore(new Method_DataCore<>(container -> ((Period_Summary) container).getTaxableIncome_impl()));
+        fieldContainer.get(Period_Summary_TaxableIncome).getDisplayProperties().setDataType(CURRENCY);
+        // CurrencyValueLoss ===========================================================================================
+        fieldContainer.add(new Tracking_DataField<>(Period_Summary_CurrencyValueLoss, Double.class));
+        fieldContainer.get(Period_Summary_CurrencyValueLoss).setDataCore(new Method_DataCore<>(container -> ((Period_Summary) container).getCurrencyValueLoss_impl()));
+        fieldContainer.get(Period_Summary_CurrencyValueLoss).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
+        fieldContainer.get(Period_Summary_CurrencyValueLoss).getDisplayProperties().setDataType(CURRENCY);
+        // Order =======================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(Period_Summary_Order, Integer.class));
+        fieldContainer.get(Period_Summary_Order).setDataCore(new Method_DataCore<>(container -> ((Period_Summary) container).getPeriod().getOrder()));
+        fieldContainer.get(Period_Summary_CurrencyValueLoss).getDisplayProperties().setVerbosityLevel(TRACE_DISPLAY);
+        // Currency ====================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(Period_Summary_Currency, Currency.class));
+        fieldContainer.get(Period_Summary_Currency).getDisplayProperties().setVerbosityLevel(TRACE_DISPLAY);
+        fieldContainer.get(Period_Summary_Currency).getDisplayProperties().setShouldDisplay(false);
+        fieldContainer.get(Period_Summary_Currency).setDataCore(new Method_DataCore<>(container -> TrackingDatabase.get().getDefault(Currency.class)));
+        // Parents =====================================================================================================
+        fieldContainer.get(DataObject_Parents).setDataCore(new Method_DataCore<>(container -> {
+            throw new UnsupportedOperationException();
+        }));
+        fieldContainer.get(DataObject_Parents).getDisplayProperties().setVerbosityLevel(TRACE_DISPLAY);
+        fieldContainer.get(DataObject_Parents).getDisplayProperties().setShouldDisplay(false);
+        //==============================================================================================================
+        // Children
+
+        return fieldContainer.finaliseContainer(Period_Summary.class);
     }
 
     /**
      * Create a new StatementEnd object
      */
     public static Period_Summary make(Period period) {
-        return assembleDataObject(Period_Summary.getFields(), new Period_Summary()
-                , "getId", -1
-                , "getPeriod", period
+        return assembleDataObject(Period_Summary.getFieldContainer(), new Period_Summary()
+                , DataObject_Id, -1
+                , Period_Summary_Period, period
         );
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    @MemberProperties(verbosityLevel = TRACE_DISPLAY, shouldDisplay = false)
-    @DisplayProperties(order = 21)
-    public List<DataObject> getParents() {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    @MemberProperties(verbosityLevel = TRACE_DISPLAY, shouldDisplay = false)
-    @DisplayProperties(order = 22)
-    public Currency getCurrency() {
-        return TrackingDatabase.get().getDefault(Currency.class);
     }
 
     //------------------------------------------------------------------------------------------------------------------
     //################################################## Pool Summary ##################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 3, dataType = CURRENCY)
-    public Double getBankStart() {
+    private Double getBankStart_impl() {
         if (getPeriod() instanceof ExistingPeriod) {
             double value = 0.0;
             for (Bank_Summary bank_summary : new BankSummary_Set((ExistingPeriod) getPeriod()).get()) {
@@ -103,8 +190,7 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
         return -1.0;
     }
 
-    @DisplayProperties(order = 4, dataType = CURRENCY)
-    public Double getBankEnd() {
+    private Double getBankEnd_impl() {
         if (getPeriod() instanceof ExistingPeriod) {
             double value = 0.0;
             for (Bank_Summary bank_summary : new BankSummary_Set((ExistingPeriod) getPeriod()).get()) {
@@ -115,14 +201,11 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
         return -1.0;
     }
 
-    @DisplayProperties(order = 5, dataType = CURRENCY, dataContext = ZERO_SCALE)
-    public Double getBankDelta() {
+    private Double getBankDelta_impl() {
         return getBankEnd() - getBankStart();
     }
 
-    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 6, dataType = CURRENCY, dataContext = ZERO_TARGET)
-    public Double getCategoryDelta() {
+    private Double getCategoryDelta_impl() {
         double value = 0.0;
         for (Category_Summary category_summary : new CategorySummary_Set(getPeriod()).get()) {
             value += category_summary.getTransferSum();
@@ -130,9 +213,7 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
         return Currency.round(value);
     }
 
-    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 7, dataType = CURRENCY)
-    public Double getFundEventStart() {
+    private Double getFundEventStart_impl() {
         double value = 0.0;
         for (FundEvent_Summary fundEvent_summary : new FundEventSummary_Set(getPeriod()).get()) {
             value += fundEvent_summary.getStart() * fundEvent_summary.getCurrency().getToPrimary();
@@ -140,9 +221,7 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
         return Currency.round(value);
     }
 
-    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 8, dataType = CURRENCY)
-    public Double getFundEventEnd() {
+    private Double getFundEventEnd_impl() {
         double value = 0.0;
         for (FundEvent_Summary fundEvent_summary : new FundEventSummary_Set(getPeriod()).get()) {
             value += fundEvent_summary.getEnd() * fundEvent_summary.getCurrency().getToPrimary();
@@ -150,8 +229,7 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
         return value;
     }
 
-    @DisplayProperties(order = 9, dataType = CURRENCY, dataContext = ZERO_SCALE)
-    public Double getFundEventDelta() {
+    private Double getFundEventDelta_impl() {
         return getFundEventEnd() - getFundEventStart();
     }
 
@@ -159,9 +237,7 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
     //#################################################### Validity ####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 10, dataContext = NOT_FALSE)
-    public Boolean isAllSummaryValid() {
+    private Boolean isAllSummaryValid_impl() {
         if (getPeriod() instanceof ExistingPeriod) {
             for (Bank_Summary summary : new BankSummary_Set((ExistingPeriod) getPeriod()).get()) {
                 if (!summary.isValid()) {
@@ -190,21 +266,15 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
         return true;
     }
 
-    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 11, dataContext = NOT_FALSE)
-    public Boolean isCategoryClear() {
+    private Boolean isCategoryClear_impl() {
         return getCategoryDelta().equals(0.0);
     }
 
-    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 12, dataContext = NOT_FALSE)
-    public Boolean isValueConserved() {
+    private Boolean isValueConserved_impl() {
         return Math.abs(getBankDelta() + getFundEventDelta() - getCurrencyValueLoss()) < 0.01;
     }
 
-    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 13, dataContext = NOT_FALSE)
-    public Boolean isExchangeRateAcceptable() {
+    private Boolean isExchangeRateAcceptable_impl() {
         for (Currency currency1 : TrackingDatabase.get().get(Currency.class)) {
             for (Currency currency2 : TrackingDatabase.get().get(Currency.class)) {
                 if (!currency1.equals(currency2)) {
@@ -223,8 +293,7 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
         return true;
     }
 
-    @DisplayProperties(order = 14, dataContext = NOT_FALSE)
-    public Boolean isValid() {
+    private Boolean isValid_impl() {
         return isAllSummaryValid() && isCategoryClear() && isExchangeRateAcceptable(); //  && isValueConserved() Removed as we don't have a way to account for intra period
     }
 
@@ -232,13 +301,13 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
     //############################################## Special Calculations ##############################################
     //------------------------------------------------------------------------------------------------------------------
 
+
     /**
      * Get the total of all transfers not including the savings transfer
      *
      * @return The total of all transfers not including the savings transfer
      */
-    @DisplayProperties(order = 15, dataType = CURRENCY)
-    public Double getNonSaveCategoryDelta() {
+    private Double getNonSaveCategoryDelta_impl() {
         double sum = 0.0;
         for (SolidCategory solidCategory : TrackingDatabase.get().get(SolidCategory.class)) {
 
@@ -250,6 +319,7 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
                     RePayFundTransfer rePayCategoryFundTransfer = (RePayFundTransfer) transfer.getTransfer();
                     if (rePayCategoryFundTransfer.getSource() instanceof SavingsFundEvent) {
                         if (toRemove != null) {
+                            //toRemove.toString();
                             throw new RuntimeException("Duplicate savings");
                         }
                         toRemove = transfer;
@@ -271,25 +341,23 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
      *
      * @return The sum of BankCategoryTransfer into taxable income categories
      */
-    @DisplayProperties(order = 16, dataType = CURRENCY)
-    public Double getTaxableIncome() {
+    private Double getTaxableIncome_impl() {
         SolidCategory solidCategory = TrackingDatabase.get().getSpecialValue(SolidCategory.class, SolidCategory.TAXABLE);
         ObjectSet<HalfTransfer> objectSet = new TwoParent_Children_Set<>(HalfTransfer.class, getPeriod(), solidCategory, new TransferType_HalfTransfer_Filter(BankTransfer.class));
         return Currency.round(new Transfer_SumSet<>(objectSet, solidCategory).getTotal());
     }
+
 
     /**
      * Get the difference between the expected exchange rate and the used exchanged rate for IntraCurrencyBankTransfer
      *
      * @return THe value lost from the system to currency exchange
      */
-    @MemberProperties(verbosityLevel = DEBUG_DISPLAY)
-    @DisplayProperties(order = 17, dataType = CURRENCY)
-    public Double getCurrencyValueLoss() {
+    private Double getCurrencyValueLoss_impl() {
         double value = 0.0;
         for (BankTransfer bankTransfer : getPeriod().getChildren(BankTransfer.class)) {
-            HalfTransfer halfSource = bankTransfer.getSourceTransfer();
-            HalfTransfer halfDestination = bankTransfer.getDestinationTransfer();
+            HalfTransfer halfSource = bankTransfer.toChaneGetSourceTransfer();
+            HalfTransfer halfDestination = bankTransfer.toChangeGetDestinationTransfer();
             double source = halfSource.getValue() * halfSource.getCurrency().getToPrimary();
             double destination = halfDestination.getValue() * halfDestination.getCurrency().getToPrimary();
             value += destination + source;
@@ -308,8 +376,8 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
         double primarySum = 0.0;
         double secondarySum = 0.0;
         for (BankTransfer bankTransfer : getPeriod().getChildren(BankTransfer.class)) {
-            HalfTransfer halfSource = bankTransfer.getSourceTransfer();
-            HalfTransfer halfDestination = bankTransfer.getDestinationTransfer();
+            HalfTransfer halfSource = bankTransfer.toChaneGetSourceTransfer();
+            HalfTransfer halfDestination = bankTransfer.toChangeGetDestinationTransfer();
 
             if (halfDestination.getCurrency().equals(currency1) && halfSource.getCurrency().equals(currency2)) {
                 primarySum += halfDestination.getValue();
@@ -349,14 +417,77 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @DisplayProperties(order = 2)
-    public Period getPeriod() {
-        return get("getPeriod");
+    @Override
+    public Currency getCurrency() {
+        return get(Period_Summary_Currency);
     }
 
-    @MemberProperties(verbosityLevel = TRACE_DISPLAY)
-    @DisplayProperties(order = 23)
+    public Double getBankStart() {
+        return get(Period_Summary_BankStart);
+    }
+
+    public Double getBankEnd() {
+        return get(Period_Summary_BankEnd);
+    }
+
+    public Double getBankDelta() {
+        return get(Period_Summary_BankDelta);
+    }
+
+    public Double getCategoryDelta() {
+        return get(Period_Summary_CategoryDelta);
+    }
+
+    public Double getFundEventStart() {
+        return get(Period_Summary_FundEventStart);
+    }
+
+    public Double getFundEventEnd() {
+        return get(Period_Summary_FundEventEnd);
+    }
+
+    public Double getFundEventDelta() {
+        return get(Period_Summary_FundEventDelta);
+    }
+
+    public Boolean isAllSummaryValid() {
+        return get(Period_Summary_AllSummaryValid);
+    }
+
+    public Boolean isCategoryClear() {
+        return get(Period_Summary_CategoryClear);
+    }
+
+    public Boolean isValueConserved() {
+        return get(Period_Summary_ValueConserved);
+    }
+
+    public Boolean isExchangeRateAcceptable() {
+        return get(Period_Summary_ExchangeRateAcceptable);
+    }
+
+    public Boolean isValid() {
+        return get(Period_Summary_Valid);
+    }
+
+    public Double getNonSaveCategoryDelta() {
+        return get(Period_Summary_NonSaveCategoryDelta);
+    }
+
+    public Double getTaxableIncome() {
+        return get(Period_Summary_TaxableIncome);
+    }
+
+    public Double getCurrencyValueLoss() {
+        return get(Period_Summary_CurrencyValueLoss);
+    }
+
+    public Period getPeriod() {
+        return get(Period_Summary_Period);
+    }
+
+    @Override
     public Integer getOrder() {
-        return getPeriod().getOrder();
+        return get(Period_Summary_Order);
     }
 }

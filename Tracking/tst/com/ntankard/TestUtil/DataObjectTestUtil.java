@@ -1,7 +1,7 @@
 package com.ntankard.TestUtil;
 
-import com.ntankard.ClassExtension.Member;
-import com.ntankard.ClassExtension.MemberClass;
+import com.ntankard.CoreObject.CoreObject;
+import com.ntankard.CoreObject.Field.DataField;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 
@@ -25,14 +25,13 @@ public class DataObjectTestUtil {
     public static void testStandardParents(Class<? extends DataObject> aClass, List<String> exclude) {
         assertNotEquals(0, TrackingDatabase.get().get(aClass).size());
         for (DataObject toTest : TrackingDatabase.get().get(aClass)) {
-            MemberClass mClass = new MemberClass(toTest.getClass());
-            List<Member> members = mClass.getVerbosityMembers(Integer.MAX_VALUE, false);
+            List<DataField<?>> members = CoreObject.getFieldContainer(toTest.getClass()).getVerbosityDataFields(Integer.MAX_VALUE);
 
             // Find the getters
-            List<Member> expectedMember = new ArrayList<>();
-            for (Member candidate : members) {
-                if (DataObject.class.isAssignableFrom(candidate.getGetter().getReturnType())) {
-                    if (!exclude.contains(candidate.getName())) {
+            List<DataField<?>> expectedMember = new ArrayList<>();
+            for (DataField<?> candidate : members) {
+                if (DataObject.class.isAssignableFrom(candidate.getType())) {
+                    if (!exclude.contains(candidate.getDisplayName())) {
                         expectedMember.add(candidate);
                     }
                 }
@@ -40,13 +39,13 @@ public class DataObjectTestUtil {
 
             // Extract all the objects
             List<DataObject> expectedParents = new ArrayList<>();
-            for (Member getter : expectedMember) {
+            for (DataField<?> getter : expectedMember) {
                 assertDoesNotThrow(() -> {
-                    DataObject toAdd = (DataObject) getter.getGetter().invoke(toTest);
+                    DataObject toAdd = toTest.get(getter.getIdentifierName());
                     if (!expectedParents.contains(toAdd)) {
                         expectedParents.add(toAdd);
                     }
-                }, "Could not get the object." + " Class:" + aClass.getSimpleName() + " Object:" + toTest.toString() + " Member:" + getter.getName());
+                }, "Could not get the object." + " Class:" + aClass.getSimpleName() + " Object:" + toTest.toString() + " Member:" + getter.getDisplayName());
             }
 
             // Extract the presented objects
@@ -72,25 +71,24 @@ public class DataObjectTestUtil {
     public static void checkDataObjectNotNull(Class<? extends DataObject> aClass, List<String> exclude) {
         assertNotEquals(0, TrackingDatabase.get().getAll().size());
         for (DataObject toTest : TrackingDatabase.get().get(aClass)) {
-            MemberClass mClass = new MemberClass(toTest.getClass());
-            List<Member> members = mClass.getVerbosityMembers(Integer.MAX_VALUE, false);
+            List<DataField<?>> members = CoreObject.getFieldContainer(toTest.getClass()).getVerbosityDataFields(Integer.MAX_VALUE);
 
             // Find the getters
-            List<Member> expectedMember = new ArrayList<>();
-            for (Member candidate : members) {
-                if (DataObject.class.isAssignableFrom(candidate.getGetter().getReturnType())) {
-                    if (!exclude.contains(candidate.getName())) {
+            List<DataField<?>> expectedMember = new ArrayList<>();
+            for (DataField<?> candidate : members) {
+                if (DataObject.class.isAssignableFrom(candidate.getType())) {
+                    if (!exclude.contains(candidate.getDisplayName())) {
                         expectedMember.add(candidate);
                     }
                 }
             }
 
             // Extract all the objects
-            for (Member getter : expectedMember) {
+            for (DataField<?> getter : expectedMember) {
                 assertDoesNotThrow(() -> {
-                    DataObject toAdd = (DataObject) getter.getGetter().invoke(toTest);
+                    DataObject toAdd = toTest.get(getter.getIdentifierName());
                     assertNotNull(toAdd);
-                }, "Could not get the object." + " Class:" + toTest.getClass().getSimpleName() + " Object:" + toTest.toString() + " Member:" + getter.getName());
+                }, "Could not get the object." + " Class:" + toTest.getClass().getSimpleName() + " Object:" + toTest.toString() + " Member:" + getter.getDisplayName());
             }
         }
     }

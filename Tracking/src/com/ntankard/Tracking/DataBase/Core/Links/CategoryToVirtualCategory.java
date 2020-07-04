@@ -1,41 +1,59 @@
 package com.ntankard.Tracking.DataBase.Core.Links;
 
-import com.ntankard.ClassExtension.ClassExtensionProperties;
-import com.ntankard.ClassExtension.DisplayProperties;
-import com.ntankard.ClassExtension.SetterProperties;
+import com.ntankard.CoreObject.Field.DataCore.ValueRead_DataCore;
+import com.ntankard.CoreObject.Field.Filter.Dependant_FieldFilter;
+import com.ntankard.CoreObject.FieldContainer;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.DataObject_Field;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Tracking_DataField;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.VirtualCategory;
 
 import java.util.List;
 
-@ClassExtensionProperties(includeParent = true)
 public class CategoryToVirtualCategory extends DataObject {
 
     //------------------------------------------------------------------------------------------------------------------
     //################################################### Constructor ##################################################
     //------------------------------------------------------------------------------------------------------------------
 
+    public static final String CategoryToVirtualCategory_VirtualCategory = "getVirtualCategory";
+    public static final String CategoryToVirtualCategory_SolidCategory = "getSolidCategory";
+
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields() {
-        List<Field<?>> toReturn = DataObject.getFields();
-        toReturn.add(new DataObject_Field<>("getVirtualCategory", VirtualCategory.class));
-        toReturn.add(new DataObject_Field<>("getSolidCategory", SolidCategory.class));
-        return toReturn;
+    public static FieldContainer getFieldContainer() {
+        FieldContainer fieldContainer = DataObject.getFieldContainer();
+
+        // ID
+        // VirtualCategory =============================================================================================
+        fieldContainer.add(new Tracking_DataField<>(CategoryToVirtualCategory_VirtualCategory, VirtualCategory.class));
+        // SolidCategory ===============================================================================================
+        fieldContainer.add(new Tracking_DataField<>(CategoryToVirtualCategory_SolidCategory, SolidCategory.class));
+        fieldContainer.<SolidCategory>get(CategoryToVirtualCategory_SolidCategory).setDataCore(new ValueRead_DataCore<>(true));
+        fieldContainer.<SolidCategory>get(CategoryToVirtualCategory_SolidCategory).addFilter(new Dependant_FieldFilter<SolidCategory, CategoryToVirtualCategory>(CategoryToVirtualCategory_VirtualCategory) {
+            @Override
+            public boolean isValid(SolidCategory value, CategoryToVirtualCategory categoryToVirtualCategory) {
+                if (value == null)
+                    return false;
+                return !categoryToVirtualCategory.getVirtualCategory().getCategorySet().getUsedCategories().contains(value) || value.equals(categoryToVirtualCategory.getSolidCategory());
+            }
+        });
+        //==============================================================================================================
+        // Parents
+        // Children
+
+        return fieldContainer.finaliseContainer(CategoryToVirtualCategory.class);
     }
 
     /**
      * Create a new RePayFundTransfer object
      */
     public static CategoryToVirtualCategory make(Integer id, VirtualCategory virtualCategory, SolidCategory solidCategory) {
-        return assembleDataObject(CategoryToVirtualCategory.getFields(), new CategoryToVirtualCategory()
-                , "getId", id
-                , "getVirtualCategory", virtualCategory
-                , "getSolidCategory", solidCategory
+        return assembleDataObject(CategoryToVirtualCategory.getFieldContainer(), new CategoryToVirtualCategory()
+                , DataObject_Id, id
+                , CategoryToVirtualCategory_VirtualCategory, virtualCategory
+                , CategoryToVirtualCategory_SolidCategory, solidCategory
         );
     }
 
@@ -65,31 +83,11 @@ public class CategoryToVirtualCategory extends DataObject {
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    // 1000000--getID
-
-    @DisplayProperties(order = 1100000)
     public VirtualCategory getVirtualCategory() {
-        return get("getVirtualCategory");
+        return get(CategoryToVirtualCategory_VirtualCategory);
     }
 
-    @DisplayProperties(order = 1200000)
     public SolidCategory getSolidCategory() {
-        return get("getSolidCategory");
-    }
-
-    // 2000000--getParents (Above)
-    // 3000000--getChildren
-
-    //------------------------------------------------------------------------------------------------------------------
-    //#################################################### Setters #####################################################
-    //------------------------------------------------------------------------------------------------------------------
-
-    @SetterProperties(localSourceMethod = "sourceOptions")
-    public void setSolidCategory(SolidCategory solidCategory) {
-        if (solidCategory == null) throw new IllegalArgumentException("solidCategory is null");
-        if (getVirtualCategory().getCategorySet().getUsedCategories().contains(solidCategory) && !solidCategory.equals(getSolidCategory()))
-            throw new IllegalArgumentException("solidCategory used in this set already");
-        set("getSolidCategory", solidCategory);
-        validateParents();
+        return get(CategoryToVirtualCategory_SolidCategory);
     }
 }

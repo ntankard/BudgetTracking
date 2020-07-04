@@ -37,6 +37,7 @@ public class DataObjectContainer extends Container<Class<? extends DataObject>, 
             container.get(aClass).put(toAdd.getId(), toAdd);
             masterContainer.get(aClass).add(toAdd);
 
+            // TODO This is critical for anything involving period range checks, should probably be handled another way
             if (Ordered.class.isAssignableFrom(aClass)) {
                 masterContainer.get(aClass).sort(new Ordered_Comparator());
             }

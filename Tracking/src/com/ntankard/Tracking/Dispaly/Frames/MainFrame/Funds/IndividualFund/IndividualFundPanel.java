@@ -10,12 +10,12 @@ import com.ntankard.Tracking.Dispaly.Util.Panels.Object_DisplayList;
 import javax.swing.*;
 import java.awt.*;
 
-import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
+import static com.ntankard.CoreObject.Field.Properties.Display_Properties.INFO_DISPLAY;
 
 public class IndividualFundPanel extends UpdatableJPanel {
 
     // Core Data
-    private FundEvent core;
+    private final FundEvent core;
 
     // The GUI components
     private Object_DisplayList<FundEvent_Summary> fundEventSummary_panel;

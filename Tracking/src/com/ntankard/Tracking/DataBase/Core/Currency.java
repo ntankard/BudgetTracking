@@ -1,20 +1,17 @@
 package com.ntankard.Tracking.DataBase.Core;
 
-import com.ntankard.ClassExtension.ClassExtensionProperties;
-import com.ntankard.ClassExtension.DisplayProperties;
-import com.ntankard.ClassExtension.MemberProperties;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
+import com.ntankard.CoreObject.Field.DataCore.Derived_DataCore;
+import com.ntankard.CoreObject.FieldContainer;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.HasDefault;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.NamedDataObject;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Tracking_DataField;
 
 import java.text.NumberFormat;
-import java.util.List;
 import java.util.Locale;
 
-import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
-import static com.ntankard.ClassExtension.MemberProperties.TRACE_DISPLAY;
+import static com.ntankard.CoreObject.Field.Properties.Display_Properties.INFO_DISPLAY;
+import static com.ntankard.CoreObject.Field.Properties.Display_Properties.TRACE_DISPLAY;
 
-@ClassExtensionProperties(includeParent = true)
 public class Currency extends NamedDataObject implements HasDefault {
 
     /**
@@ -31,60 +28,67 @@ public class Currency extends NamedDataObject implements HasDefault {
     //################################################### Constructor ##################################################
     //------------------------------------------------------------------------------------------------------------------
 
+    public static final String Currency_Default = "isDefault";
+    public static final String Currency_ToPrimary = "getToPrimary";
+    public static final String Currency_Language = "getLanguage";
+    public static final String Currency_Country = "getCountry";
+    public static final String Currency_NumberFormat = "getNumberFormat";
+
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields() {
-        List<Field<?>> toReturn = NamedDataObject.getFields();
-        toReturn.add(new Field<>("isDefault", Boolean.class));
-        toReturn.add(new Field<>("getToPrimary", Double.class));
-        toReturn.add(new Field<>("getLanguage", String.class));
-        toReturn.add(new Field<>("getCountry", String.class));
-        return toReturn;
-    }
+    public static FieldContainer getFieldContainer() {
+        FieldContainer fieldContainer = NamedDataObject.getFieldContainer();
 
-    /**
-     * Get the appropriate formatter for this currency type
-     *
-     * @return The formatter for this currency
-     */
-    @MemberProperties(verbosityLevel = TRACE_DISPLAY)
-    @DisplayProperties(order = 1150000)
-    public NumberFormat getNumberFormat() {
-        return NumberFormat.getCurrencyInstance(new Locale(getLanguage(), getCountry()));
+        // ID
+        // Name
+        // Default =====================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(Currency_Default, Boolean.class));
+        // ToPrimary ===================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(Currency_ToPrimary, Double.class));
+        // Language ====================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(Currency_Language, String.class));
+        fieldContainer.get(Currency_Language).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
+        // Country =====================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(Currency_Country, String.class));
+        fieldContainer.get(Currency_Country).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
+        // NumberFormat ================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(Currency_NumberFormat, NumberFormat.class));
+        fieldContainer.get(Currency_NumberFormat).getDisplayProperties().setVerbosityLevel(TRACE_DISPLAY);
+        fieldContainer.<NumberFormat>get(Currency_NumberFormat).setDataCore(
+                new Derived_DataCore<NumberFormat, Currency>
+                        (coreObject -> NumberFormat.getCurrencyInstance(new Locale(coreObject.getLanguage(), coreObject.getCountry()))
+                                , new Derived_DataCore.LocalSource<>(fieldContainer.get(Currency_Country))
+                                , new Derived_DataCore.LocalSource<>(fieldContainer.get(Currency_Language))));
+        //==============================================================================================================
+        // Parents
+        // Children
+
+        return fieldContainer.finaliseContainer(Currency.class);
     }
 
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    // 1000000--getID
-    // 1100000----getName
-
     @Override
-    @DisplayProperties(order = 1110000)
     public Boolean isDefault() {
-        return get("isDefault");
+        return get(Currency_Default);
     }
 
-    @DisplayProperties(order = 1120000)
     public Double getToPrimary() {
-        return get("getToPrimary");
+        return get(Currency_ToPrimary);
     }
 
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    @DisplayProperties(order = 1130000)
     public String getLanguage() {
-        return get("getLanguage");
+        return get(Currency_Language);
     }
 
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    @DisplayProperties(order = 1140000)
     public String getCountry() {
-        return get("getCountry");
+        return get(Currency_Country);
     }
 
-    // 1150000------getNumberFormat (Above)
-    // 2000000--getParents (Above)
-    // 3000000--getChildren
+    public NumberFormat getNumberFormat() {
+        return get(Currency_NumberFormat);
+    }
 }

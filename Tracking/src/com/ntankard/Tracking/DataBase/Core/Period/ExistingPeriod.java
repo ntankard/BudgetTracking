@@ -1,9 +1,8 @@
 package com.ntankard.Tracking.DataBase.Core.Period;
 
-import com.ntankard.ClassExtension.ClassExtensionProperties;
-import com.ntankard.ClassExtension.DisplayProperties;
-import com.ntankard.ClassExtension.MemberProperties;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
+import com.ntankard.CoreObject.Field.DataCore.Derived_DataCore;
+import com.ntankard.CoreObject.FieldContainer;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Tracking_DataField;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
@@ -15,9 +14,8 @@ import com.ntankard.Tracking.DataBase.Database.ObjectFactory;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.TwoParent_Children_Set;
 
-import java.util.List;
+import static com.ntankard.CoreObject.Field.Properties.Display_Properties.INFO_DISPLAY;
 
-@ClassExtensionProperties(includeParent = true)
 @ObjectFactory(builtObjects = {StatementEnd.class, RePayFundTransfer.class, RecurringBankTransfer.class})
 public class ExistingPeriod extends Period {
 
@@ -25,25 +23,44 @@ public class ExistingPeriod extends Period {
     //################################################### Constructor ##################################################
     //------------------------------------------------------------------------------------------------------------------
 
+    public static final String ExistingPeriod_Month = "getMonth";
+    public static final String ExistingPeriod_Year = "getYear";
+    public static final String ExistingPeriod_Order = "getOrder";
+
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields() {
-        List<Field<?>> toReturn = Period.getFields();
-        toReturn.add(new Field<>("getMonth", Integer.class));
-        toReturn.add(new Field<>("getYear", Integer.class));
-        return toReturn;
+    public static FieldContainer getFieldContainer() {
+        FieldContainer fieldContainer = Period.getFieldContainer();
+
+        // ID
+        // Month =======================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(ExistingPeriod_Month, Integer.class));
+        // Year ========================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(ExistingPeriod_Year, Integer.class));
+        // Order =======================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(ExistingPeriod_Order, Integer.class));
+        fieldContainer.get(ExistingPeriod_Order).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
+        fieldContainer.get(ExistingPeriod_Order).setDataCore(
+                new Derived_DataCore<>
+                        (container -> ((ExistingPeriod) container).getYear() * 12 + ((ExistingPeriod) container).getMonth()
+                                , new Derived_DataCore.LocalSource<>(fieldContainer.get(ExistingPeriod_Month))
+                                , new Derived_DataCore.LocalSource<>(fieldContainer.get(ExistingPeriod_Year))));
+        //==============================================================================================================
+        // Parents
+        // Children
+
+        return fieldContainer.finaliseContainer(ExistingPeriod.class);
     }
 
     /**
      * Create a new ExistingPeriod object
      */
-    @SuppressWarnings("unchecked")
     public static ExistingPeriod make(Integer id, Integer month, Integer year) {
-        return assembleDataObject(ExistingPeriod.getFields(), new ExistingPeriod()
-                , "getId", id
-                , "getMonth", month
-                , "getYear", year
+        return assembleDataObject(ExistingPeriod.getFieldContainer(), new ExistingPeriod()
+                , DataObject_Id, id
+                , ExistingPeriod_Month, month
+                , ExistingPeriod_Year, year
         );
     }
 
@@ -111,25 +128,16 @@ public class ExistingPeriod extends Period {
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    // 1000000--getID
-
-    @DisplayProperties(order = 1010000)
     public Integer getMonth() {
-        return get("getMonth");
+        return get(ExistingPeriod_Month);
     }
 
-    @DisplayProperties(order = 1020000)
     public Integer getYear() {
-        return get("getYear");
+        return get(ExistingPeriod_Year);
     }
 
     @Override
-    @MemberProperties(verbosityLevel = MemberProperties.INFO_DISPLAY)
-    @DisplayProperties(order = 1030000)
     public Integer getOrder() {
-        return getYear() * 12 + getMonth();
+        return get(ExistingPeriod_Order);
     }
-
-    // 2000000--getParents (Above)
-    // 3000000--getChildren
 }

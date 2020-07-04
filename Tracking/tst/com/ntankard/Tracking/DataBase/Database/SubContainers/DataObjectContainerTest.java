@@ -1,7 +1,7 @@
 package com.ntankard.Tracking.DataBase.Database.SubContainers;
 
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
+import com.ntankard.CoreObject.Field.DataField;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.NamedDataObject;
 import org.junit.jupiter.api.Test;
 
@@ -166,13 +166,16 @@ class DataObjectContainerTest {
     //------------------------------------------------------------------------------------------------------------------
 
     private static class Layer1_ALT_DataObject_New extends DataObject {
-        @SuppressWarnings("unchecked")
+        private final Integer id;
+
         Layer1_ALT_DataObject_New(Integer id) {
             super();
-            List<Field<?>> fields = NamedDataObject.getFields();
-            fields.forEach(field -> field.setContainer(this));
-            ((Field<Integer>) makeFieldMap(fields).get("getId")).initialSet(id);
-            setFields(fields);
+            this.id = id;
+        }
+
+        @Override
+        public Integer getId() {
+            return id;
         }
 
         @Override
@@ -182,13 +185,16 @@ class DataObjectContainerTest {
     }
 
     private static class Layer1_DataObject_New extends DataObject {
-        @SuppressWarnings("unchecked")
+        private final Integer id;
+
         Layer1_DataObject_New(Integer id) {
             super();
-            List<Field<?>> fields = NamedDataObject.getFields();
-            fields.forEach(field -> field.setContainer(this));
-            ((Field<Integer>) makeFieldMap(fields).get("getId")).initialSet(id);
-            setFields(fields);
+            this.id = id;
+        }
+
+        @Override
+        public Integer getId() {
+            return id;
         }
 
         @Override

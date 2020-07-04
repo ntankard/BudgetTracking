@@ -1,40 +1,47 @@
 package com.ntankard.Tracking.DataBase.Core;
 
-import com.ntankard.ClassExtension.ClassExtensionProperties;
-import com.ntankard.ClassExtension.DisplayProperties;
-import com.ntankard.ClassExtension.SetterProperties;
+import com.ntankard.CoreObject.Field.DataCore.ValueRead_DataCore;
+import com.ntankard.CoreObject.FieldContainer;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.DataObject_Field;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Tracking_DataField;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.BankTransfer;
 
-import java.util.List;
-
-@ClassExtensionProperties(includeParent = true)
 public class Receipt extends DataObject {
 
     //------------------------------------------------------------------------------------------------------------------
     //################################################### Constructor ##################################################
     //------------------------------------------------------------------------------------------------------------------
 
+    public static final String Receipt_FileName = "getFileName";
+    public static final String Receipt_BankTransfer = "getBankTransfer";
+
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields() {
-        List<Field<?>> toReturn = DataObject.getFields();
-        toReturn.add(new Field<>("getFileName", String.class));
-        toReturn.add(new DataObject_Field<>("getBankTransfer", BankTransfer.class));
-        return toReturn;
+    public static FieldContainer getFieldContainer() {
+        FieldContainer fieldContainer = DataObject.getFieldContainer();
+
+        // ID
+        // FileName ======================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(Receipt_FileName, String.class));
+        // BankTransfer ========================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(Receipt_BankTransfer, BankTransfer.class));
+        fieldContainer.get(Receipt_BankTransfer).setDataCore(new ValueRead_DataCore<>(true));
+        //==============================================================================================================
+        // Parents
+        // Children
+
+        return fieldContainer.finaliseContainer(Receipt.class);
     }
 
     /**
      * Create a new Receipt object
      */
     public static Receipt make(Integer id, String fileName, BankTransfer bankTransfer) {
-        return assembleDataObject(Receipt.getFields(), new Receipt()
-                , "getId", id
-                , "getFileName", fileName
-                , "getBankTransfer", bankTransfer
+        return assembleDataObject(Receipt.getFieldContainer(), new Receipt()
+                , DataObject_Id, id
+                , Receipt_FileName, fileName
+                , Receipt_BankTransfer, bankTransfer
         );
     }
 
@@ -50,28 +57,19 @@ public class Receipt extends DataObject {
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    // 1000000--getID
-
-    @DisplayProperties(order = 1100000)
     public BankTransfer getBankTransfer() {
-        return get("getBankTransfer");
+        return get(Receipt_BankTransfer);
     }
 
-    @DisplayProperties(order = 1200000)
     public String getFileName() {
-        return get("getFileName");
+        return get(Receipt_FileName);
     }
-
-    // 1300000----isFirstFile (Above)
-    // 2000000--getParents (Above)
-    // 3000000--getChildren
 
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Setters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @SetterProperties(localSourceMethod = "sourceOptions", displaySet = false)
     public void setBankTransfer(BankTransfer bankTransfer) {
-        set("getBankTransfer", bankTransfer);
+        set(Receipt_BankTransfer, bankTransfer);
     }
 }

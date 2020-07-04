@@ -1,23 +1,20 @@
 package com.ntankard.Tracking.DataBase.Interface.Summary.Pool;
 
-import com.ntankard.ClassExtension.DisplayProperties;
-import com.ntankard.ClassExtension.MemberProperties;
+import com.ntankard.CoreObject.Field.DataCore.Method_DataCore;
+import com.ntankard.CoreObject.FieldContainer;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.DataObject_Field;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Tracking_DataField;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.Extended.Sum.PeriodPool_SumSet;
 
-import java.util.List;
-
-import static com.ntankard.ClassExtension.DisplayProperties.DataContext.ZERO_TARGET;
-import static com.ntankard.ClassExtension.DisplayProperties.DataType.CURRENCY;
-import static com.ntankard.ClassExtension.MemberProperties.DEBUG_DISPLAY;
-import static com.ntankard.ClassExtension.MemberProperties.INFO_DISPLAY;
+import static com.ntankard.CoreObject.Field.Properties.Display_Properties.DataContext.ZERO_TARGET;
+import static com.ntankard.CoreObject.Field.Properties.Display_Properties.DataType.CURRENCY;
+import static com.ntankard.CoreObject.Field.Properties.Display_Properties.DEBUG_DISPLAY;
+import static com.ntankard.CoreObject.Field.Properties.Display_Properties.INFO_DISPLAY;
 
 public abstract class PoolSummary<PoolType extends Pool> extends DataObject implements CurrencyBound {
 
@@ -25,63 +22,89 @@ public abstract class PoolSummary<PoolType extends Pool> extends DataObject impl
     //################################################### Constructor ##################################################
     //------------------------------------------------------------------------------------------------------------------
 
+    public static final String PoolSummary_Period = "getPeriod";
+    public static final String PoolSummary_Pool = "getPool";
+    public static final String PoolSummary_Currency = "getCurrency";
+    public static final String PoolSummary_Start = "getStart";
+    public static final String PoolSummary_End = "getEnd";
+    public static final String PoolSummary_Net = "getNet";
+    public static final String PoolSummary_TransferSum = "getTransferSum";
+    public static final String PoolSummary_Missing = "getMissing";
+    public static final String PoolSummary_Valid = "isValid";
+
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields() {
-        List<Field<?>> toReturn = DataObject.getFields();
-        toReturn.add(new DataObject_Field<>("getPeriod", Period.class));
-        toReturn.add(new DataObject_Field<>("getPool", Pool.class));
-        return toReturn;
-    }
+    public static FieldContainer getFieldContainer() {
+        FieldContainer fieldContainer = DataObject.getFieldContainer();
 
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    @MemberProperties(verbosityLevel = DEBUG_DISPLAY, shouldDisplay = false)
-    @DisplayProperties(order = 21)
-    public List<DataObject> getParents() {
-        throw new UnsupportedOperationException();
+        // ID
+        // Period ======================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(PoolSummary_Period, Period.class));
+        fieldContainer.get(PoolSummary_Period).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
+        // Pool ========================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(PoolSummary_Pool, Pool.class));
+        // Currency ====================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(PoolSummary_Currency, Currency.class));
+        fieldContainer.get(PoolSummary_Currency).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
+        fieldContainer.get(PoolSummary_Currency).setDataCore(new Method_DataCore<>(container -> ((PoolSummary<?>) container).getCurrency_impl()));
+        // Start =======================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(PoolSummary_Start, Double.class));
+        fieldContainer.get(PoolSummary_Start).getDisplayProperties().setDataType(CURRENCY);
+        // End =========================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(PoolSummary_End, Double.class));
+        fieldContainer.get(PoolSummary_End).getDisplayProperties().setDataType(CURRENCY);
+        // Net =========================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(PoolSummary_Net, Double.class));
+        fieldContainer.get(PoolSummary_Net).getDisplayProperties().setDataType(CURRENCY);
+        fieldContainer.get(PoolSummary_Net).setDataCore(new Method_DataCore<>(container -> ((PoolSummary<?>) container).getNet_impl()));
+        // TransferSum =================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(PoolSummary_TransferSum, Double.class));
+        fieldContainer.get(PoolSummary_TransferSum).getDisplayProperties().setDataType(CURRENCY);
+        fieldContainer.get(PoolSummary_TransferSum).setDataCore(new Method_DataCore<>(container -> ((PoolSummary<?>) container).getTransferSum_impl()));
+        // Missing =====================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(PoolSummary_Missing, Double.class));
+        fieldContainer.get(PoolSummary_Missing).getDisplayProperties().setDataType(CURRENCY);
+        fieldContainer.get(PoolSummary_Missing).getDisplayProperties().setDataContext(ZERO_TARGET);
+        fieldContainer.get(PoolSummary_Missing).setDataCore(new Method_DataCore<>(container -> ((PoolSummary<?>) container).getMissing_impl()));
+        // Valid =======================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(PoolSummary_Valid, Boolean.class));
+        fieldContainer.get(PoolSummary_Valid).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
+        fieldContainer.get(PoolSummary_Valid).setDataCore(new Method_DataCore<>(container -> ((PoolSummary<?>) container).isValid_impl()));
+        // Parents =====================================================================================================
+        fieldContainer.get(DataObject_Parents).getDisplayProperties().setShouldDisplay(false);
+        fieldContainer.get(DataObject_Parents).setDataCore(new Method_DataCore<>(container -> {
+            throw new UnsupportedOperationException();
+        }));
+        //==============================================================================================================
+        // Children
+
+        return fieldContainer.endLayer(PoolSummary.class);
     }
 
     // Transfer sum ----------------------------------------------------------------------------------------------------
 
-    @Override
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    @DisplayProperties(order = 4)
-    public Currency getCurrency() {
+    private Currency getCurrency_impl() {
         return TrackingDatabase.get().getDefault(Currency.class);
-    }
-
-    @DisplayProperties(order = 8, dataType = CURRENCY)
-    public Double getTransferSum() {
-        return new PeriodPool_SumSet(getPeriod(), getPool()).getTotal() / getCurrency().getToPrimary();
     }
 
     // Start End -------------------------------------------------------------------------------------------------------
 
-    @DisplayProperties(order = 5, dataType = CURRENCY)
-    public abstract Double getStart();
-
-    @DisplayProperties(order = 6, dataType = CURRENCY)
-    public abstract Double getEnd();
-
-    @DisplayProperties(order = 7, dataType = CURRENCY)
-    public Double getNet() {
+    private Double getNet_impl() {
         return getEnd() - getStart();
+    }
+
+    private Double getTransferSum_impl() {
+        return new PeriodPool_SumSet(getPeriod(), getPool()).getTotal() / getCurrency().getToPrimary();
     }
 
     // Validity --------------------------------------------------------------------------------------------------------
 
-    @DisplayProperties(order = 9, dataContext = ZERO_TARGET, dataType = CURRENCY)
-    public Double getMissing() {
+    private Double getMissing_impl() {
         return Currency.round(getTransferSum() - getNet());
     }
 
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    @DisplayProperties(order = 10)
-    public Boolean isValid() {
+    private Boolean isValid_impl() {
         return getMissing().equals(0.00);
     }
 
@@ -89,14 +112,40 @@ public abstract class PoolSummary<PoolType extends Pool> extends DataObject impl
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @MemberProperties(verbosityLevel = INFO_DISPLAY)
-    @DisplayProperties(order = 2)
     public Period getPeriod() {
-        return get("getPeriod");
+        return get(PoolSummary_Period);
     }
 
-    @DisplayProperties(order = 3)
     public PoolType getPool() {
-        return get("getPool");
+        return get(PoolSummary_Pool);
+    }
+
+    @Override
+    public Currency getCurrency() {
+        return get(PoolSummary_Currency);
+    }
+
+    public Double getStart() {
+        return get(PoolSummary_Start);
+    }
+
+    public Double getEnd() {
+        return get(PoolSummary_End);
+    }
+
+    public Double getNet() {
+        return get(PoolSummary_Net);
+    }
+
+    public Double getTransferSum() {
+        return get(PoolSummary_TransferSum);
+    }
+
+    public Double getMissing() {
+        return get(PoolSummary_Missing);
+    }
+
+    public Boolean isValid() {
+        return get(PoolSummary_Valid);
     }
 }

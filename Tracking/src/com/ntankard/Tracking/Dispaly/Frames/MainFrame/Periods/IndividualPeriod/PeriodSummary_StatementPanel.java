@@ -37,7 +37,7 @@ import static java.awt.GridBagConstraints.BOTH;
 public class PeriodSummary_StatementPanel extends UpdatableJPanel {
 
     // Core Data
-    private Period period;
+    private final Period period;
     private Bank selectedBank = null;
 
     // The GUI components
@@ -88,7 +88,7 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
                         selected = transaction.getSource().equals(selectedBank);
                     }
 
-                    if (!halfTransfer.getTransfer().getSourceTransfer().getPeriod().equals(period)) {
+                    if (!halfTransfer.getTransfer().toChaneGetSourceTransfer().getPeriod().equals(period)) {
                         rendererObject.background = new Color(230, 204, 255);
                     } else if (halfTransfer.getTransfer() instanceof RecurringBankTransfer) {
                         if (halfTransfer.getTransfer().getChildren(Receipt.class).size() != 0) {
@@ -133,14 +133,14 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
                 HalfTransfer halfTransfer = (HalfTransfer) dataObject;
                 BankTransfer transaction = (BankTransfer) halfTransfer.getTransfer();
 
-                boolean amSource = halfTransfer.equals(transaction.getSourceTransfer());
+                boolean amSource = halfTransfer.equals(transaction.toChaneGetSourceTransfer());
                 boolean sourceSelected = false;
                 boolean destinationSelected = false;
                 if (selectedBank != null) {
-                    sourceSelected = transaction.getSourceTransfer().getPool().equals(selectedBank);
+                    sourceSelected = transaction.toChaneGetSourceTransfer().getPool().equals(selectedBank);
                 }
                 if (selectedBank != null) {
-                    destinationSelected = transaction.getDestinationTransfer().getPool().equals(selectedBank);
+                    destinationSelected = transaction.toChangeGetDestinationTransfer().getPool().equals(selectedBank);
                 }
 
 

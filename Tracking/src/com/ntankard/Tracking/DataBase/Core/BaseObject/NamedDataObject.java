@@ -1,25 +1,31 @@
 package com.ntankard.Tracking.DataBase.Core.BaseObject;
 
-import com.ntankard.ClassExtension.ClassExtensionProperties;
-import com.ntankard.ClassExtension.DisplayProperties;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
+import com.ntankard.CoreObject.Field.DataCore.ValueRead_DataCore;
+import com.ntankard.CoreObject.FieldContainer;
 
-import java.util.List;
-
-@ClassExtensionProperties(includeParent = true)
 public abstract class NamedDataObject extends DataObject {
 
     //------------------------------------------------------------------------------------------------------------------
     //################################################### Constructor ##################################################
     //------------------------------------------------------------------------------------------------------------------
 
+    public static final String NamedDataObject_Name = "getName";
+
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields() {
-        List<Field<?>> toReturn = DataObject.getFields();
-        toReturn.add(new Field<>("getName", String.class));
-        return toReturn;
+    public static FieldContainer getFieldContainer() {
+        FieldContainer fieldContainer = DataObject.getFieldContainer();
+
+        // ID
+        // Name ========================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(NamedDataObject_Name, String.class));
+        fieldContainer.getLast().setDataCore(new ValueRead_DataCore<>(true));
+        //==============================================================================================================
+        // Parents
+        // Children
+
+        return fieldContainer.endLayer(NamedDataObject.class);
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -38,21 +44,7 @@ public abstract class NamedDataObject extends DataObject {
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    // 1000000--getID
-
-    @DisplayProperties(order = 1100000)
     public String getName() {
-        return get("getName");
-    }
-
-    // 2000000--getParents
-    // 3000000--getChildren
-
-    //------------------------------------------------------------------------------------------------------------------
-    //#################################################### Setters #####################################################
-    //------------------------------------------------------------------------------------------------------------------
-
-    public void setName(String name) {
-        set("getName", name);
+        return get(NamedDataObject_Name);
     }
 }

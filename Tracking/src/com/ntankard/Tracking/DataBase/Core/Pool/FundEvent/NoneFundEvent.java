@@ -1,13 +1,9 @@
 package com.ntankard.Tracking.DataBase.Core.Pool.FundEvent;
 
-import com.ntankard.ClassExtension.ClassExtensionProperties;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
+import com.ntankard.CoreObject.FieldContainer;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 
-import java.util.List;
-
-@ClassExtensionProperties(includeParent = true)
 public class NoneFundEvent extends FundEvent {
 
     //------------------------------------------------------------------------------------------------------------------
@@ -17,19 +13,35 @@ public class NoneFundEvent extends FundEvent {
     /**
      * Get all the fields for this object
      */
-    public static List<Field<?>> getFields() {
-        return FundEvent.getFields();
+    public static FieldContainer getFieldContainer() {
+        FieldContainer fieldContainer = FundEvent.getFieldContainer();
+
+        // ID
+        // Name
+        // Category
+        // Parents
+        // Children
+
+        return fieldContainer.finaliseContainer(NoneFundEvent.class);
     }
 
     /**
      * Create a new SavingsFundEvent object
      */
     public static NoneFundEvent make(Integer id, String name, SolidCategory solidCategory) {
-        return assembleDataObject(NoneFundEvent.getFields(), new NoneFundEvent()
-                , "getId", id
-                , "getName", name
-                , "getCategory", solidCategory
+        return assembleDataObject(NoneFundEvent.getFieldContainer(), new NoneFundEvent()
+                , DataObject_Id, id
+                , NamedDataObject_Name, name
+                , FundEvent_Category, solidCategory
         );
+    }
+
+    /**
+     * {@inheritDoc
+     */
+    @Override
+    public void add() {
+        super.add();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -59,15 +71,4 @@ public class NoneFundEvent extends FundEvent {
     public Double getCharge(Period period) {
         throw new UnsupportedOperationException("Not relevant for this type");
     }
-
-    //------------------------------------------------------------------------------------------------------------------
-    //#################################################### Getters #####################################################
-    //------------------------------------------------------------------------------------------------------------------
-
-    // 1000000--getID
-    // 1100000----getName
-    // 1101000--------getCategory
-    // 1110000------getOrder
-    // 2000000--getParents
-    // 3000000--getChildren
 }

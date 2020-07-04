@@ -1,11 +1,10 @@
 package com.ntankard.Tracking.DataBase.Core.BaseObject;
 
-import com.ntankard.ClassExtension.Member;
-import com.ntankard.ClassExtension.MemberClass;
-import com.ntankard.ClassExtension.SetterProperties;
+import com.ntankard.CoreObject.CoreObject;
+import com.ntankard.CoreObject.Field.DataField;
+import com.ntankard.CoreObject.FieldContainer;
 import com.ntankard.TestUtil.ClassInspectionUtil;
 import com.ntankard.TestUtil.DataAccessUntil;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Field;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,8 +35,8 @@ class DataObjectTest {
      */
     @Test
     void constructor() {
-        assertDoesNotThrow(() -> new DataObject_Inst(0, null));
-        assertThrows(IllegalArgumentException.class, () -> new DataObject_Inst(null, null));
+        assertDoesNotThrow(() -> DataObject_Inst.make(0, null));
+        assertThrows(IllegalArgumentException.class, () -> DataObject_Inst.make(null, null));
     }
 
     /**
@@ -45,12 +44,12 @@ class DataObjectTest {
      */
     @Test
     void notifyParentLink() {
-        DataObject_Inst parent = new DataObject_Inst(0, null);
+        DataObject_Inst parent = DataObject_Inst.make(0, null);
         assertEquals(0, parent.getChildren().size());
 
-        DataObject_Inst child1 = new DataObject_Inst(1, parent);
-        DataObject_Inst child2 = new DataObject_Inst(2, parent);
-        DataObject_Inst child3 = new DataObject_Inst(3, parent);
+        DataObject_Inst child1 = DataObject_Inst.make(1, parent);
+        DataObject_Inst child2 = DataObject_Inst.make(2, parent);
+        DataObject_Inst child3 = DataObject_Inst.make(3, parent);
         assertEquals(0, parent.getChildren().size());
 
         child1.notifyParentLink();
@@ -80,12 +79,12 @@ class DataObjectTest {
      */
     @Test
     void notifyParentUnLink() {
-        DataObject_Inst_NoParent parent = new DataObject_Inst_NoParent(0);
+        DataObject_Inst_NoParent parent = DataObject_Inst_NoParent.make(0);
         parent.add();
 
-        DataObject_Inst child1 = new DataObject_Inst(1, parent);
-        DataObject_Inst child2 = new DataObject_Inst(2, parent);
-        DataObject_Inst child3 = new DataObject_Inst(3, parent);
+        DataObject_Inst child1 = DataObject_Inst.make(1, parent);
+        DataObject_Inst child2 = DataObject_Inst.make(2, parent);
+        DataObject_Inst child3 = DataObject_Inst.make(3, parent);
 
         child1.notifyParentLink();
         child2.notifyParentLink();
@@ -120,38 +119,45 @@ class DataObjectTest {
     @Test
     void set() {
         assertNotEquals(0, TrackingDatabase.get().getAll().size());
+
+        for (DataObject dataObject1 : TrackingDatabase.get().getAll()) {
+            dataObject1.validateParents();
+            dataObject1.validateChildren();
+        }
+
         for (Class<? extends DataObject> testClass : TrackingDatabase.get().getDataObjectTypes()) {
             if (!Modifier.isAbstract(testClass.getModifiers())) {
                 for (DataObject dataObject : TrackingDatabase.get().get(testClass)) {
                     Class<? extends DataObject> aClass = dataObject.getClass();
-                    MemberClass mClass = new MemberClass(aClass);
-                    List<Member> members = mClass.getVerbosityMembers(Integer.MAX_VALUE, false);
+                    List<DataField<?>> members = CoreObject.getFieldContainer(aClass).getVerbosityDataFields(Integer.MAX_VALUE);
 
                     // Find the setters
-                    for (Member member : members) {
-                        if (member.getSetter() != null && DataObject.class.isAssignableFrom(member.getType())) {
-                            SetterProperties properties = member.getSetter().getAnnotation(SetterProperties.class);
-                            assertNotNull(properties, "Setter is missing a source deceleration. " + "Class:" + aClass.getSimpleName() + " Member:" + member.getSetter().getName());
+                    for (DataField member : members) {
+                        if (member.getDataCore().canEdit() && member.getDisplayProperties().getDisplaySet() && DataObject.class.isAssignableFrom(member.getType())) {
+                            // Get the data
+                            AtomicReference<List<DataObject>> expectedOptions = new AtomicReference<>();
+                            assertDoesNotThrow(() -> expectedOptions.set((List) member.getSource().invoke(dataObject, member.getType(), member.getDisplayName())));
+                            List<DataObject> fullOptions = new ArrayList(TrackingDatabase.get().get(member.getType()));
 
-                            if (properties.displaySet()) {
-                                // Get the data
-                                AtomicReference<List<DataObject>> expectedOptions = new AtomicReference<>();
-                                assertDoesNotThrow(() -> expectedOptions.set((List) member.getSource().invoke(dataObject, member.getType(), member.getName())));
-                                List<DataObject> fullOptions = new ArrayList(TrackingDatabase.get().get(member.getType()));
-
-                                // Check valid values
-                                for (DataObject valid : expectedOptions.get()) {
-                                    assertDoesNotThrow(() -> member.getSetter().invoke(dataObject, valid), "A valid value was rejected from a method" + "DataObject:" + dataObject.toString() + " Class:" + aClass.getSimpleName() + " Setter:" + member.getSetter().getName());
-                                    fullOptions.remove(valid);
+                            // Check valid values
+                            for (DataObject valid : expectedOptions.get()) {
+                                try {
+                                    dataObject.set(member.getIdentifierName(), valid);
+                                } catch (Exception e) {
+                                    dataObject.set(member.getIdentifierName(), valid);
                                 }
+                                assertDoesNotThrow(() -> dataObject.set(member.getIdentifierName(), valid), "A valid value was rejected from a method" + "DataObject:" + dataObject.toString() + " Class:" + aClass.getSimpleName());
+                                fullOptions.remove(valid);
+                            }
 
-                                // Check invalid values
-                                for (DataObject invalid : fullOptions) {
-                                    assertThrows(Exception.class, () -> member.getSetter().invoke(dataObject, invalid), "A invalid value was allowed to be set from a method." + " DataObject:" + dataObject.toString() + " Class:" + aClass.getSimpleName() + " Setter:" + member.getSetter().getName() + " ValidValue:" + invalid.toString());
-                                }
+                            // Check invalid values
+                            for (DataObject invalid : fullOptions) {
+                                assertThrows(Exception.class, () -> dataObject.set(member.getIdentifierName(), invalid), "A invalid value was allowed to be set from a method." + " DataObject:" + dataObject.toString() + " Class:" + aClass.getSimpleName() + " ValidValue:" + invalid.toString());
+                            }
 
-                                // Check null
-                                assertThrows(IllegalArgumentException.class, () -> member.getSetter().invoke(dataObject, null), "A null value was allowed to be set from a method." + " DataObject:" + dataObject.toString() + " Class:" + aClass.getSimpleName() + " Setter:" + member.getSetter().getName() + " ValidValue:");
+                            // Check null
+                            if (!((Tracking_DataField) member).isCanBeNull()) {
+                                assertThrows(IllegalArgumentException.class, () -> dataObject.set(member.getIdentifierName(), null));
                             }
                         }
                     }
@@ -187,12 +193,11 @@ class DataObjectTest {
     @Test
     void checkNonPrimitive() {
         for (Class<? extends DataObject> toTest : ClassInspectionUtil.getAllClasses()) {
-            MemberClass mClass = new MemberClass(toTest);
-            List<Member> members = mClass.getVerbosityMembers(Integer.MAX_VALUE, false);
+            List<DataField<?>> members = CoreObject.getFieldContainer(toTest).getVerbosityDataFields(Integer.MAX_VALUE);
 
             // Find the setters
-            for (Member member : members) {
-                assertFalse(member.getType().isPrimitive(), "A member is defined primitive" + " Class:" + toTest.getSimpleName() + " Method:" + member.getName());
+            for (DataField member : members) {
+                assertFalse(member.getType().isPrimitive(), "A member is defined primitive" + " Class:" + toTest.getSimpleName() + " Method:" + member.getDisplayName());
             }
         }
     }
@@ -265,27 +270,35 @@ class DataObjectTest {
 
     private static class DataObject_Inst_NoParent extends DataObject {
 
-        @SuppressWarnings("unchecked")
-        DataObject_Inst_NoParent(Integer id) {
-            super();
-            List<Field<?>> fields = DataObject.getFields();
-            fields.forEach(field -> field.setContainer(this));
-            ((Field<Integer>) makeFieldMap(fields).get("getId")).initialSet(id);
-            setFields(fields);
+        public static FieldContainer getFieldContainer() {
+            FieldContainer fieldContainer = DataObject.getFieldContainer();
+            return fieldContainer.finaliseContainer(DataObject_Inst_NoParent.class);
+        }
+
+        public static DataObject_Inst_NoParent make(Integer id) {
+            return assembleDataObject(DataObject_Inst_NoParent.getFieldContainer(), new DataObject_Inst_NoParent()
+                    , DataObject_Id, id
+            );
         }
     }
 
     private static class DataObject_Inst extends DataObject {
 
-        private DataObject parent;
+        public static FieldContainer getFieldContainer() {
+            FieldContainer fieldContainer = DataObject.getFieldContainer();
+            return fieldContainer.finaliseContainer(DataObject_Inst.class);
+        }
 
-        @SuppressWarnings("unchecked")
-        DataObject_Inst(Integer id, DataObject parent) {
+        public static DataObject_Inst make(Integer id, DataObject parent) {
+            return assembleDataObject(DataObject_Inst.getFieldContainer(), new DataObject_Inst(parent)
+                    , DataObject_Id, id
+            );
+        }
+
+        private final DataObject parent;
+
+        private DataObject_Inst(DataObject parent) {
             super();
-            List<Field<?>> fields = DataObject.getFields();
-            fields.forEach(field -> field.setContainer(this));
-            ((Field<Integer>) makeFieldMap(fields).get("getId")).initialSet(id);
-            setFields(fields);
             this.parent = parent;
         }
 
