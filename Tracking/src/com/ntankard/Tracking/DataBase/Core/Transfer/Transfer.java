@@ -121,7 +121,7 @@ public abstract class Transfer extends DataObject implements CurrencyBound {
         if (getChildren(Receipt.class).size() != 0) {
             getChildren(Receipt.class).get(0).remove();
         }
-        super.remove_impl();
+        remove_impl();
     }
 
     /**

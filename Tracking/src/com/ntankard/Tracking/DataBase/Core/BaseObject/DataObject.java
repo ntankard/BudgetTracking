@@ -25,7 +25,6 @@ public abstract class DataObject extends CoreObject {
 
     public static final String DataObject_Id = "getId";
     public static final String DataObject_Parents = "getParents";
-    public static final String DataObject_Children = "getChildren";
 
     /**
      * Get all the fields for this object
@@ -40,10 +39,6 @@ public abstract class DataObject extends CoreObject {
         fieldContainer.add(new Tracking_DataField<>(DataObject_Parents, List.class));
         fieldContainer.get(DataObject_Parents).setDataCore(new Method_DataCore<>(container -> ((DataObject) container).getParentsImpl()));
         fieldContainer.get(DataObject_Parents).getDisplayProperties().setVerbosityLevel(Display_Properties.DEBUG_DISPLAY);
-        // Children ====================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(DataObject_Children, List.class));
-        fieldContainer.get(DataObject_Children).setDataCore(new Method_DataCore<>(container -> ((DataObject) container).getChildrenImpl()));
-        fieldContainer.get(DataObject_Children).getDisplayProperties().setVerbosityLevel(Display_Properties.TRACE_DISPLAY);
         //==============================================================================================================
 
         return fieldContainer.endLayer(DataObject.class, DataObject_Id);
@@ -142,7 +137,9 @@ public abstract class DataObject extends CoreObject {
      */
     public void add() {
         TrackingDatabase.get().add(this);
-        this.notifyParentLink();
+        for (Map.Entry<String, DataField<?>> field : fieldMap.entrySet()) {
+            field.getValue().add();
+        }
         // @TODO check that this has not been double added
     }
 
@@ -160,12 +157,15 @@ public abstract class DataObject extends CoreObject {
         if (this.getChildren().size() != 0) {
             throw new RuntimeException("Cant delete this kind of object. NoneFundEvent still has children");
         }
-        this.notifyParentUnLink();
         TrackingDatabase.get().remove(this);
 
         for (Map.Entry<String, DataField<?>> field : fieldMap.entrySet()) {
+            if (field.getKey().equals(DataObject_Id)) {
+                continue;
+            }
             field.getValue().remove();
         }
+        fieldMap.get(DataObject_Id).remove();
 
         for (Map.Entry<String, DataField<?>> field : fieldMap.entrySet()) {
             if (!field.getValue().getFieldChangeListeners().isEmpty()) {
@@ -181,27 +181,6 @@ public abstract class DataObject extends CoreObject {
     //------------------------------------------------------------------------------------------------------------------
 
     /**
-     * Notify all the objects parents that this object has linked to them
-     */
-    public void notifyParentLink() {
-        for (DataObject dataObject : getParents()) {
-            dataObject.notifyChildLink(this);
-        }
-        for (Map.Entry<String, DataField<?>> field : fieldMap.entrySet()) {
-            field.getValue().add();
-        }
-    }
-
-    /**
-     * Notify all this object's parent that this object is removing the link to them. Call before deleting this object
-     */
-    public void notifyParentUnLink() {
-        for (DataObject dataObject : getParents()) {
-            dataObject.notifyChildUnLink(this);
-        }
-    }
-
-    /**
      * Get all the parents of this object
      *
      * @return All the parents of this object
@@ -211,7 +190,7 @@ public abstract class DataObject extends CoreObject {
         for (Map.Entry<String, DataField<?>> field : fieldMap.entrySet()) {
             if (!Calculate_DataCore.class.isAssignableFrom(field.getValue().getDataCore().getClass())) {
                 if (DataObject.class.isAssignableFrom(field.getValue().getType())) {
-                    if (((Tracking_DataField) field.getValue()).isTellParent()) {
+                    if (((Tracking_DataField<?>) field.getValue()).isTellParent()) {
                         if (field.getValue().get() != null) {
                             try {
                                 toReturn.add((DataObject) field.getValue().get());
@@ -245,6 +224,15 @@ public abstract class DataObject extends CoreObject {
     }
 
     /**
+     * Get all children
+     *
+     * @return The List of all children
+     */
+    public List<DataObject> getChildren() {
+        return children.get();
+    }
+
+    /**
      * Get the list of children for a a specific class type
      *
      * @param type The class type to get
@@ -267,29 +255,15 @@ public abstract class DataObject extends CoreObject {
         return children.get(type, key);
     }
 
-    /**
-     * Get the list of all children
-     *
-     * @return The list of all children
-     */
-    private List<DataObject> getChildrenImpl() {
-        return children.get();
-    }
-
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
-
     public Integer getId() {
         return get(DataObject_Id);
     }
 
     public List<DataObject> getParents() {
         return get(DataObject_Parents);
-    }
-
-    public List<DataObject> getChildren() {
-        return get(DataObject_Children);
     }
 
     //------------------------------------------------------------------------------------------------------------------

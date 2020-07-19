@@ -31,9 +31,9 @@ class StatementEndTest {
         Bank bank = DataAccessUntil.getObject(Bank.class, 0);
 
         assertDoesNotThrow(() -> StatementEnd.make(-1, period, bank, 0.0));
-        assertThrows(IllegalArgumentException.class, () -> StatementEnd.make(-1, null, bank, 0.0));
-        assertThrows(IllegalArgumentException.class, () -> StatementEnd.make(-1, period, null, 0.0));
-        assertThrows(IllegalArgumentException.class, () -> StatementEnd.make(-1, period, bank, null));
+        assertThrows(IllegalArgumentException.class, () -> StatementEnd.make(-2, null, bank, 0.0));
+        assertThrows(IllegalArgumentException.class, () -> StatementEnd.make(-3, period, null, 0.0));
+        assertThrows(IllegalArgumentException.class, () -> StatementEnd.make(-4, period, bank, null));
     }
 
     @Test

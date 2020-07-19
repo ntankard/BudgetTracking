@@ -16,7 +16,7 @@ public class Tracking_DataField<T> extends DataField<T> {
     /**
      * Should the parent be notified if this field links to it? @TODO this is a bad hack and should be removed
      */
-    private final boolean tellParent;
+    private boolean tellParent;
 
     /**
      * Listener to register children and parents
@@ -41,8 +41,30 @@ public class Tracking_DataField<T> extends DataField<T> {
      * {@inheritDoc
      */
     @Override
+    public void add() {
+        super.add();
+        if (DataObject.class.isAssignableFrom(getType())) {
+            if (tellParent) {
+                if (get() != null) {
+                    ((DataObject) get()).notifyChildLink((DataObject) getContainer());
+                }
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc
+     */
+    @Override
     public void remove() {
         this.removeChangeListener(listener);
+        if (DataObject.class.isAssignableFrom(getType())) {
+            if (tellParent) {
+                if (get() != null) {
+                    ((DataObject) get()).notifyChildUnLink((DataObject) getContainer());
+                }
+            }
+        }
         super.remove();
     }
 
@@ -53,6 +75,7 @@ public class Tracking_DataField<T> extends DataField<T> {
     public void setDataCore(DataCore<T> dataCore) {
         if (Calculate_DataCore.class.isAssignableFrom(dataCore.getClass())) {
             removeChangeListener(listener);
+            tellParent = false;
         }
         if (dataCore.canEdit() && DataObject.class.isAssignableFrom(getType())) {
             setSource(DataObject.getSourceOptionMethod());

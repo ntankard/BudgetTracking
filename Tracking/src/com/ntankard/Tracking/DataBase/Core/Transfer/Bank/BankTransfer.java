@@ -1,10 +1,14 @@
 package com.ntankard.Tracking.DataBase.Core.Transfer.Bank;
 
+import com.ntankard.CoreObject.CoreObject;
 import com.ntankard.CoreObject.Field.DataCore.Derived_DataCore;
 import com.ntankard.CoreObject.Field.DataCore.MethodSet_DataCore;
 import com.ntankard.CoreObject.Field.DataCore.ValueRead_DataCore;
 import com.ntankard.CoreObject.Field.DataField;
 import com.ntankard.CoreObject.Field.Filter.Dependant_FieldFilter;
+import com.ntankard.CoreObject.Field.Filter.FieldFilter;
+import com.ntankard.CoreObject.Field.Listener.FieldChangeListener;
+import com.ntankard.CoreObject.Field.Listener.Marked_FieldChangeListener;
 import com.ntankard.CoreObject.FieldContainer;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Tracking_DataField;
@@ -29,15 +33,14 @@ public abstract class BankTransfer extends Transfer {
     //################################################### Constructor ##################################################
     //------------------------------------------------------------------------------------------------------------------
 
-
     public static final String BankTransfer_DestinationPeriod = "getDestinationPeriod";
     public static final String BankTransfer_Category = "getCategory";
     public static final String BankTransfer_Bank = "getBank";
     public static final String BankTransfer_FundEvent = "getFundEvent";
-
     public static final String BankTransfer_DestinationValue = "getDestinationValue";
-
     public static final String BankTransfer_DestinationCurrency = "getDestinationCurrency";
+
+    public static final String Transfer_Destination_ListenerMark = "getDestinationListenerMark";
 
     /**
      * Get all the fields for this object
@@ -45,10 +48,16 @@ public abstract class BankTransfer extends Transfer {
     public static FieldContainer getFieldContainer() {
         FieldContainer fieldContainer = Transfer.getFieldContainer();
 
-
         // ID
         // Description
-        // Period
+        // Period ======================================================================================================
+        fieldContainer.<Period>get(Transfer_Period).addFilter(new FieldFilter<Period, CoreObject>() {
+            @Override
+            public boolean isValid(Period value, CoreObject container) {
+                BankTransfer bankTransfer = ((BankTransfer) container);
+                return bankTransfer.getDestinationPeriod() == null || !bankTransfer.getDestinationPeriod().equals(value);
+            }
+        });
         // Source ======================================================================================================
         fieldContainer.add(Transfer_Period, new Tracking_DataField<>(Transfer_Source, Bank.class));
         fieldContainer.get(Transfer_Source).addChangeListener((field, oldValue, newValue) -> {
@@ -116,17 +125,20 @@ public abstract class BankTransfer extends Transfer {
             }
         });
         // TODO This might be a problem, its only safe because it goes through the impl method below, if it was ever set directly it would break
-        fieldContainer.<Pool>get(Transfer_Destination).addChangeListener((field, oldValue, newValue) -> {
-            if (field.getState().equals(DataField.NewFieldState.N_ACTIVE)) {
-                BankTransfer bankTransfer = ((BankTransfer) field.getContainer());
-                // Destination Period can only be maintained if its a Bank to Bank transfer
-                if (!bankTransfer.doseSupportDestinationPeriod()) {
-                    bankTransfer.setDestinationPeriod(null);
-                }
+        fieldContainer.<Pool>get(Transfer_Destination).addChangeListener(new Marked_FieldChangeListener<Pool>(Transfer_Destination_ListenerMark) {
+            @Override
+            public void valueChanged(DataField<Pool> field, Pool oldValue, Pool newValue) {
+                if (field.getState().equals(DataField.NewFieldState.N_ACTIVE)) {
+                    BankTransfer bankTransfer = ((BankTransfer) field.getContainer());
+                    // Destination Period can only be maintained if its a Bank to Bank transfer
+                    if (!bankTransfer.doseSupportDestinationPeriod()) {
+                        bankTransfer.setDestinationPeriod(null);
+                    }
 
-                // Destination value can only be maintained if its a bank to bank transfer with different currencies
-                if (!bankTransfer.doseSupportDestinationValue()) {
-                    bankTransfer.setDestinationValue(null);
+                    // Destination value can only be maintained if its a bank to bank transfer with different currencies
+                    if (!bankTransfer.doseSupportDestinationValue()) {
+                        bankTransfer.setDestinationValue(null);
+                    }
                 }
             }
         });
@@ -190,6 +202,27 @@ public abstract class BankTransfer extends Transfer {
     /**
      * {@inheritDoc
      */
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    @Override
+    protected void remove_impl() {
+        FieldChangeListener toRemove = null;
+        for (FieldChangeListener<?> fieldChangeListener : fieldMap.get(Transfer_Destination).getFieldChangeListeners()) {
+            if (fieldChangeListener instanceof Marked_FieldChangeListener) {
+                if (((Marked_FieldChangeListener<?>) fieldChangeListener).getId().equals(Transfer_Destination_ListenerMark)) {
+                    toRemove = fieldChangeListener;
+                    break;
+                }
+            }
+        }
+        if (toRemove != null) {
+            fieldMap.get(Transfer_Destination).removeChangeListener(toRemove);
+        }
+        super.remove_impl();
+    }
+
+    /**
+     * {@inheritDoc
+     */
     @Override
     @SuppressWarnings({"SuspiciousMethodCalls", "unchecked"})
     public <T extends DataObject> List<T> sourceOptions(Class<T> type, String fieldName) {
@@ -216,6 +249,11 @@ public abstract class BankTransfer extends Transfer {
                 for (Bank bank : super.sourceOptions(Bank.class, fieldName)) {
                     toReturn.add((T) bank);
                 }
+                return toReturn;
+            }
+            case "Period": {
+                List<T> toReturn = super.sourceOptions(type, fieldName);
+                toReturn.remove(getDestinationPeriod());
                 return toReturn;
             }
         }

@@ -35,81 +35,8 @@ class DataObjectTest {
      */
     @Test
     void constructor() {
-        assertDoesNotThrow(() -> DataObject_Inst.make(0, null));
-        assertThrows(IllegalArgumentException.class, () -> DataObject_Inst.make(null, null));
-    }
-
-    /**
-     * Test the notifying the parent results in the correct link
-     */
-    @Test
-    void notifyParentLink() {
-        DataObject_Inst parent = DataObject_Inst.make(0, null);
-        assertEquals(0, parent.getChildren().size());
-
-        DataObject_Inst child1 = DataObject_Inst.make(1, parent);
-        DataObject_Inst child2 = DataObject_Inst.make(2, parent);
-        DataObject_Inst child3 = DataObject_Inst.make(3, parent);
-        assertEquals(0, parent.getChildren().size());
-
-        child1.notifyParentLink();
-        assertEquals(1, parent.getChildren().size());
-        assertTrue(parent.getChildren().contains(child1));
-        assertFalse(parent.getChildren().contains(child2));
-        assertFalse(parent.getChildren().contains(child3));
-        assertThrows(Exception.class, child1::notifyParentLink, "Can add the same child twice");
-
-        child2.notifyParentLink();
-        assertEquals(2, parent.getChildren().size());
-        assertTrue(parent.getChildren().contains(child1));
-        assertTrue(parent.getChildren().contains(child2));
-        assertFalse(parent.getChildren().contains(child3));
-        assertThrows(Exception.class, child2::notifyParentLink, "Can add the same child twice");
-
-        child3.notifyParentLink();
-        assertEquals(3, parent.getChildren().size());
-        assertTrue(parent.getChildren().contains(child1));
-        assertTrue(parent.getChildren().contains(child2));
-        assertTrue(parent.getChildren().contains(child3));
-        assertThrows(Exception.class, child3::notifyParentLink, "Can add the same child twice");
-    }
-
-    /**
-     * Test the notifying the parent results in the correct un link
-     */
-    @Test
-    void notifyParentUnLink() {
-        DataObject_Inst_NoParent parent = DataObject_Inst_NoParent.make(0);
-        parent.add();
-
-        DataObject_Inst child1 = DataObject_Inst.make(1, parent);
-        DataObject_Inst child2 = DataObject_Inst.make(2, parent);
-        DataObject_Inst child3 = DataObject_Inst.make(3, parent);
-
-        child1.notifyParentLink();
-        child2.notifyParentLink();
-        child3.notifyParentLink();
-
-        child1.notifyParentUnLink();
-        assertThrows(Exception.class, child1::notifyParentUnLink, "Can remove the same child twice");
-        assertEquals(2, parent.getChildren().size());
-        assertFalse(parent.getChildren().contains(child1));
-        assertTrue(parent.getChildren().contains(child2));
-        assertTrue(parent.getChildren().contains(child3));
-
-        child2.notifyParentUnLink();
-        assertThrows(Exception.class, child2::notifyParentUnLink, "Can remove the same child twice");
-        assertEquals(1, parent.getChildren().size());
-        assertFalse(parent.getChildren().contains(child1));
-        assertFalse(parent.getChildren().contains(child2));
-        assertTrue(parent.getChildren().contains(child3));
-
-        child3.notifyParentUnLink();
-        assertThrows(Exception.class, child3::notifyParentUnLink, "Can remove the same child twice");
-        assertEquals(0, parent.getChildren().size());
-        assertFalse(parent.getChildren().contains(child1));
-        assertFalse(parent.getChildren().contains(child2));
-        assertFalse(parent.getChildren().contains(child3));
+        assertDoesNotThrow(() -> DataObject_Inst.make(0));
+        assertThrows(IllegalArgumentException.class, () -> DataObject_Inst.make(null));
     }
 
     /**
@@ -141,11 +68,6 @@ class DataObjectTest {
 
                             // Check valid values
                             for (DataObject valid : expectedOptions.get()) {
-                                try {
-                                    dataObject.set(member.getIdentifierName(), valid);
-                                } catch (Exception e) {
-                                    dataObject.set(member.getIdentifierName(), valid);
-                                }
                                 assertDoesNotThrow(() -> dataObject.set(member.getIdentifierName(), valid), "A valid value was rejected from a method" + "DataObject:" + dataObject.toString() + " Class:" + aClass.getSimpleName());
                                 fullOptions.remove(valid);
                             }
@@ -156,7 +78,7 @@ class DataObjectTest {
                             }
 
                             // Check null
-                            if (!((Tracking_DataField) member).isCanBeNull()) {
+                            if (!((Tracking_DataField<?>) member).isCanBeNull()) {
                                 assertThrows(IllegalArgumentException.class, () -> dataObject.set(member.getIdentifierName(), null));
                             }
                         }
@@ -241,7 +163,6 @@ class DataObjectTest {
     void validateParent() {
         // TODO things are missing here. If the field type is not set to data object it wont be registerd as a parent and nothing will catch it, you have to go through each indevidual field and check
 
-
         for (DataObject dataObject : TrackingDatabase.get().getAll()) {
             dataObject.validateParents();
             for (DataObject parent : dataObject.getParents()) {
@@ -268,20 +189,6 @@ class DataObjectTest {
     //################################################ Special Objects #################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    private static class DataObject_Inst_NoParent extends DataObject {
-
-        public static FieldContainer getFieldContainer() {
-            FieldContainer fieldContainer = DataObject.getFieldContainer();
-            return fieldContainer.finaliseContainer(DataObject_Inst_NoParent.class);
-        }
-
-        public static DataObject_Inst_NoParent make(Integer id) {
-            return assembleDataObject(DataObject_Inst_NoParent.getFieldContainer(), new DataObject_Inst_NoParent()
-                    , DataObject_Id, id
-            );
-        }
-    }
-
     private static class DataObject_Inst extends DataObject {
 
         public static FieldContainer getFieldContainer() {
@@ -289,24 +196,10 @@ class DataObjectTest {
             return fieldContainer.finaliseContainer(DataObject_Inst.class);
         }
 
-        public static DataObject_Inst make(Integer id, DataObject parent) {
-            return assembleDataObject(DataObject_Inst.getFieldContainer(), new DataObject_Inst(parent)
+        public static DataObject_Inst make(Integer id) {
+            return assembleDataObject(DataObject_Inst.getFieldContainer(), new DataObject_Inst()
                     , DataObject_Id, id
             );
-        }
-
-        private final DataObject parent;
-
-        private DataObject_Inst(DataObject parent) {
-            super();
-            this.parent = parent;
-        }
-
-        @Override
-        public List<DataObject> getParents() {
-            List<DataObject> toReturn = super.getParents();
-            toReturn.add(parent);
-            return toReturn;
         }
     }
 }
