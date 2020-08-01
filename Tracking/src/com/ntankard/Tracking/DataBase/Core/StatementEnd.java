@@ -101,4 +101,12 @@ public class StatementEnd extends DataObject implements CurrencyBound, Ordered {
     public Integer getOrder() {
         return get(StatementEnd_Order);
     }
+
+    //------------------------------------------------------------------------------------------------------------------
+    //#################################################### Setters #####################################################
+    //------------------------------------------------------------------------------------------------------------------
+
+    public void setEnd(Double value) {
+        set(StatementEnd_End, value);
+    }
 }

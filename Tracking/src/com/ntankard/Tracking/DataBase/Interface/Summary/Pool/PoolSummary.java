@@ -1,6 +1,7 @@
 package com.ntankard.Tracking.DataBase.Interface.Summary.Pool;
 
 import com.ntankard.CoreObject.Field.DataCore.Method_DataCore;
+import com.ntankard.CoreObject.Field.DataField;
 import com.ntankard.CoreObject.FieldContainer;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
@@ -10,6 +11,8 @@ import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.Extended.Sum.PeriodPool_SumSet;
+
+import java.util.Map;
 
 import static com.ntankard.CoreObject.Field.Properties.Display_Properties.DataContext.ZERO_TARGET;
 import static com.ntankard.CoreObject.Field.Properties.Display_Properties.DataType.CURRENCY;
@@ -40,12 +43,12 @@ public abstract class PoolSummary<PoolType extends Pool> extends DataObject impl
 
         // ID
         // Period ======================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(PoolSummary_Period, Period.class));
+        fieldContainer.add(new Tracking_DataField<>(PoolSummary_Period, Period.class, false, false));
         fieldContainer.get(PoolSummary_Period).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
         // Pool ========================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(PoolSummary_Pool, Pool.class));
+        fieldContainer.add(new Tracking_DataField<>(PoolSummary_Pool, Pool.class, false, false));
         // Currency ====================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(PoolSummary_Currency, Currency.class));
+        fieldContainer.add(new Tracking_DataField<>(PoolSummary_Currency, Currency.class, false, false));
         fieldContainer.get(PoolSummary_Currency).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
         fieldContainer.get(PoolSummary_Currency).setDataCore(new Method_DataCore<>(container -> ((PoolSummary<?>) container).getCurrency_impl()));
         // Start =======================================================================================================
@@ -106,6 +109,16 @@ public abstract class PoolSummary<PoolType extends Pool> extends DataObject impl
 
     private Boolean isValid_impl() {
         return getMissing().equals(0.00);
+    }
+
+    /**
+     * {@inheritDoc
+     */
+    @Override
+    public void add() {
+        for (Map.Entry<String, DataField<?>> field : fieldMap.entrySet()) {
+            field.getValue().add();
+        }
     }
 
     //------------------------------------------------------------------------------------------------------------------

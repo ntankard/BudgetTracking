@@ -1,5 +1,6 @@
 package com.ntankard.Tracking.DataBase.Interface.Summary.Pool;
 
+import com.ntankard.CoreObject.Field.DataCore.MethodSet_DataCore;
 import com.ntankard.CoreObject.Field.DataCore.Method_DataCore;
 import com.ntankard.CoreObject.FieldContainer;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
@@ -42,7 +43,7 @@ public class Bank_Summary extends PoolSummary<Bank> implements CurrencyBound, Or
         // Start =======================================================================================================
         fieldContainer.get(PoolSummary_Start).setDataCore(new Method_DataCore<>(container -> ((Bank_Summary) container).getStart_impl()));
         // End =========================================================================================================
-        fieldContainer.get(PoolSummary_End).setDataCore(new Method_DataCore<>(container -> ((Bank_Summary) container).getEnd_impl()));
+        fieldContainer.get(PoolSummary_End).setDataCore(new MethodSet_DataCore<>(container -> ((Bank_Summary) container).getEnd_impl(), (container, toSet) -> ((Bank_Summary) container).setEnd_impl((Double) toSet)));
         // Net
         // TransferSum
         // Missing
@@ -70,11 +71,13 @@ public class Bank_Summary extends PoolSummary<Bank> implements CurrencyBound, Or
      * Create a new StatementEnd object
      */
     public static Bank_Summary make(Period period, Pool pool) {
-        return assembleDataObject(Bank_Summary.getFieldContainer(), new Bank_Summary()
+        Bank_Summary bank_summary = assembleDataObject(Bank_Summary.getFieldContainer(), new Bank_Summary()
                 , DataObject_Id, -1
                 , PoolSummary_Period, period
                 , PoolSummary_Pool, pool
         );
+        bank_summary.add();
+        return bank_summary;
     }
 
     private Double getStart_impl() {
@@ -91,6 +94,10 @@ public class Bank_Summary extends PoolSummary<Bank> implements CurrencyBound, Or
 
     private Double getEnd_impl() {
         return new TwoParent_Children_Set<>(StatementEnd.class, getPeriod(), getPool()).get().get(0).getEnd();
+    }
+
+    private void setEnd_impl(Double value) {
+        new TwoParent_Children_Set<>(StatementEnd.class, getPeriod(), getPool()).get().get(0).setEnd(value);
     }
 
     private Double getNetTransfer_impl() {
