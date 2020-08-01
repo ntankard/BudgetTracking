@@ -24,7 +24,6 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="Budget" />
     <orderEntry type="library" name="lib (3)" level="project" />
     <orderEntry type="module-library" scope="TEST">
       <library name="JUnit5.3">
