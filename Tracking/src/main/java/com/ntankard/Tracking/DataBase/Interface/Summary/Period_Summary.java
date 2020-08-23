@@ -153,13 +153,7 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
         fieldContainer.get(Period_Summary_Currency).getDisplayProperties().setVerbosityLevel(TRACE_DISPLAY);
         fieldContainer.get(Period_Summary_Currency).getDisplayProperties().setShouldDisplay(false);
         fieldContainer.get(Period_Summary_Currency).setDataCore(new Method_DataCore<>(container -> TrackingDatabase.get().getDefault(Currency.class)));
-        // Parents =====================================================================================================
-        fieldContainer.get(DataObject_Parents).setDataCore(new Method_DataCore<>(container -> {
-            throw new UnsupportedOperationException();
-        }));
-        fieldContainer.get(DataObject_Parents).getDisplayProperties().setVerbosityLevel(TRACE_DISPLAY);
-        fieldContainer.get(DataObject_Parents).getDisplayProperties().setShouldDisplay(false);
-        //==============================================================================================================
+        // Parents
         // Children
 
         return fieldContainer.finaliseContainer(Period_Summary.class);
@@ -169,8 +163,12 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
      * Create a new StatementEnd object
      */
     public static Period_Summary make(Period period) {
+        if (!period.getChildren(Period_Summary.class).isEmpty()) {
+            throw new IllegalStateException("Making a second period summary");
+        }
+
         return assembleDataObject(Period_Summary.getFieldContainer(), new Period_Summary()
-                , DataObject_Id, -1
+                , DataObject_Id, TrackingDatabase.get().getNextId()
                 , Period_Summary_Period, period
         );
     }

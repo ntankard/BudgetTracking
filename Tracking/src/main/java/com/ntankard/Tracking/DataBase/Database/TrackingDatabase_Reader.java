@@ -300,9 +300,13 @@ public class TrackingDatabase_Reader {
         // Find all the objects that manage other objects, add the objects they make to there own dependency
         Map<Class<? extends DataObject>, List<Class<? extends DataObject>>> managedObjectDependencies = new HashMap<>();
         for (Class<? extends DataObject> loadedObject : loadingObjects) {
-            ObjectFactory objectFactory = loadedObject.getAnnotation(ObjectFactory.class);
-            if (objectFactory != null) {
-                managedObjectDependencies.put(loadedObject, new ArrayList<>(Arrays.asList(objectFactory.builtObjects())));
+            FieldContainer container = CoreObject.getFieldContainer(loadedObject);
+            if (container.getObjectFactories().size() != 0) {
+                List<Class<? extends DataObject>> factories = new ArrayList<>();
+                for (com.ntankard.dynamicGUI.CoreObject.Factory.ObjectFactory factory : container.getObjectFactories()) {
+                    factories.add((Class<? extends DataObject>) factory.getObjectToBuild());
+                }
+                managedObjectDependencies.put(loadedObject, factories);
             }
         }
 
@@ -319,11 +323,11 @@ public class TrackingDatabase_Reader {
                         if (DataObject.class.isAssignableFrom(constructorParameterType)) {                              // If its a DataObject
 
                             // Check that the constructor parameter cant be used to build the managed object
-                            ObjectFactory constructorParameterTypeFactory = constructorParameterType.getAnnotation(ObjectFactory.class);
+                            FieldContainer container = CoreObject.getFieldContainer(constructorParameterType);
                             boolean found = false;
-                            if (constructorParameterTypeFactory != null) {                                              // If the constructor parameter manages objects
-                                for (Class<?> toTest : constructorParameterTypeFactory.builtObjects()) {
-                                    if (toTest.isAssignableFrom(managedObject)) {                                       // Check that is dose not manage this object
+                            if (container.getObjectFactories().size() != 0) {                                           // If the constructor parameter manages objects
+                                for (com.ntankard.dynamicGUI.CoreObject.Factory.ObjectFactory toTest : container.getObjectFactories()) {
+                                    if (toTest.getObjectToBuild().isAssignableFrom(managedObject)) {                    // Check that is dose not manage this object
                                         found = true;
                                         break;
                                     }

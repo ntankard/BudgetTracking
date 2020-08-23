@@ -76,13 +76,13 @@ public class ClassInspectionUtil {
      * @return All classes in the PATH that extend DataObject
      */
     @SuppressWarnings("rawtypes")
-    public static List<Class<? extends DataObject>> getAllClasses() {
+    public static List<Class<DataObject>> getAllClasses() {
         // Get all classes
         final Class[][] classes = {new Class[0]};
         assertDoesNotThrow(() -> classes[0] = Util.getClasses(PATH));
 
         // Filter to HasDefault
-        List<Class<? extends DataObject>> toReturn = new ArrayList<>();
+        List<Class<DataObject>> toReturn = new ArrayList<>();
         for (Class aClass : classes[0]) {
             if (DataObject.class.isAssignableFrom(aClass)) {
                 toReturn.add(aClass);

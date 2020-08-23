@@ -1,5 +1,7 @@
 package com.ntankard.Tracking.Dispaly.Frames.MainFrame;
 
+import com.ntankard.Tracking.DataBase.Interface.Summary.Period_Summary;
+import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.PoolSummary;
 import com.ntankard.dynamicGUI.Gui.Util.Update.Updatable;
 import com.ntankard.dynamicGUI.Gui.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
@@ -64,9 +66,11 @@ public class DatabasePanel extends UpdatableJPanel {
         if (rootNode.children.size() == 0) {
 
             // Build the bottom of the tree, the actual object
-            DataObject_VerbosityDisplayList list = new DataObject_VerbosityDisplayList<>(rootNode.data, this);
-            parent.add(rootNode.data.getSimpleName(), list);
-            updatableList.add(list);
+            if (!PoolSummary.class.isAssignableFrom(rootNode.data) && !Period_Summary.class.isAssignableFrom(rootNode.data)) {
+                DataObject_VerbosityDisplayList<?> list = new DataObject_VerbosityDisplayList<>(rootNode.data, this);
+                parent.add(rootNode.data.getSimpleName(), list);
+                updatableList.add(list);
+            }
         } else {
             if (rootNode.data.equals(NamedDataObject.class)) {
 
@@ -82,9 +86,11 @@ public class DatabasePanel extends UpdatableJPanel {
 
                 // If this is a solid object display it as well
                 if (!Modifier.isAbstract(rootNode.data.getModifiers())) {
-                    DataObject_VerbosityDisplayList list = new DataObject_VerbosityDisplayList<>(rootNode.data, this);
-                    container.add(rootNode.data.getSimpleName(), list);
-                    updatableList.add(list);
+                    if (!PoolSummary.class.isAssignableFrom(rootNode.data) && !Period_Summary.class.isAssignableFrom(rootNode.data)) {
+                        DataObject_VerbosityDisplayList<?> list = new DataObject_VerbosityDisplayList<>(rootNode.data, this);
+                        container.add(rootNode.data.getSimpleName(), list);
+                        updatableList.add(list);
+                    }
                 }
 
                 for (TreeNode<Class<? extends DataObject>> node : rootNode.children) {

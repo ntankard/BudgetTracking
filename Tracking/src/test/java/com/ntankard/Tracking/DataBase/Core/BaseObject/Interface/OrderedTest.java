@@ -27,7 +27,7 @@ public class OrderedTest {
      */
     @Test
     void testStandardOrder() {
-        for (Class<? extends DataObject> aClass : getAllClasses()) {
+        for (Class<DataObject> aClass : getAllClasses()) {
             if (Ordered.class.isAssignableFrom(aClass)) {
                 List<Integer> order = new ArrayList<>();
                 assertNotEquals(0, TrackingDatabase.get().get(aClass).size(), "Cant test, no objects of this type exist");

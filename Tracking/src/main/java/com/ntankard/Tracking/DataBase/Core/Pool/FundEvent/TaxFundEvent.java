@@ -1,15 +1,13 @@
 package com.ntankard.Tracking.DataBase.Core.Pool.FundEvent;
 
-import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Tracking_DataField;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePayFundTransfer;
-import com.ntankard.Tracking.DataBase.Database.ObjectFactory;
-import com.ntankard.Tracking.DataBase.Interface.Summary.Period_Summary;
+import com.ntankard.dynamicGUI.CoreObject.Factory.Dummy_Factory;
+import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
 
-@ObjectFactory(builtObjects = {RePayFundTransfer.class})
 public class TaxFundEvent extends FundEvent {
 
     //------------------------------------------------------------------------------------------------------------------
@@ -23,6 +21,9 @@ public class TaxFundEvent extends FundEvent {
      */
     public static FieldContainer getFieldContainer() {
         FieldContainer fieldContainer = FundEvent.getFieldContainer();
+
+        // Class behavior
+        fieldContainer.addObjectFactory(new Dummy_Factory(RePayFundTransfer.class));
 
         // ID
         // Name
@@ -69,7 +70,7 @@ public class TaxFundEvent extends FundEvent {
      */
     @Override
     public Double getCharge(Period period) {
-        return -Currency.round(Period_Summary.make(period).getTaxableIncome() * getPercentage());
+        return -Currency.round(period.getPeriodSummary().getTaxableIncome() * getPercentage());
     }
 
     //------------------------------------------------------------------------------------------------------------------

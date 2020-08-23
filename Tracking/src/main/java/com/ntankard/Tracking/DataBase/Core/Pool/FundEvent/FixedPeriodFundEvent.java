@@ -1,9 +1,5 @@
 package com.ntankard.Tracking.DataBase.Core.Pool.FundEvent;
 
-import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.ValueRead_DataCore;
-import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
-import com.ntankard.dynamicGUI.CoreObject.Field.DataField;
-import com.ntankard.dynamicGUI.CoreObject.Field.Filter.IntegerRange_FieldFilter;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Tracking_DataField;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
@@ -11,16 +7,19 @@ import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.ManualFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePayFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.HalfTransfer;
-import com.ntankard.Tracking.DataBase.Database.ObjectFactory;
 import com.ntankard.Tracking.DataBase.Interface.Set.Extended.Sum.Transfer_SumSet;
 import com.ntankard.Tracking.DataBase.Interface.Set.Filter.NotTransferType_HalfTransfer_Filter;
 import com.ntankard.Tracking.DataBase.Interface.Set.OneParent_Children_Set;
 import com.ntankard.Tracking.Dispaly.Util.Comparators.Ordered_Comparator;
+import com.ntankard.dynamicGUI.CoreObject.Factory.Dummy_Factory;
+import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.ValueRead_DataCore;
+import com.ntankard.dynamicGUI.CoreObject.Field.DataField;
+import com.ntankard.dynamicGUI.CoreObject.Field.Filter.IntegerRange_FieldFilter;
+import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@ObjectFactory(builtObjects = {RePayFundTransfer.class})
 public class FixedPeriodFundEvent extends FundEvent {
 
     //------------------------------------------------------------------------------------------------------------------
@@ -35,6 +34,9 @@ public class FixedPeriodFundEvent extends FundEvent {
      */
     public static FieldContainer getFieldContainer() {
         FieldContainer fieldContainer = FundEvent.getFieldContainer();
+
+        // Class behavior
+        fieldContainer.addObjectFactory(new Dummy_Factory(RePayFundTransfer.class));
 
         // ID
         // Name

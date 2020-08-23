@@ -1,7 +1,5 @@
 package com.ntankard.Tracking.DataBase.Core.Period;
 
-import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.Derived_DataCore;
-import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Tracking_DataField;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
@@ -10,13 +8,14 @@ import com.ntankard.Tracking.DataBase.Core.RecurringPayment.FixedRecurringPaymen
 import com.ntankard.Tracking.DataBase.Core.StatementEnd;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.RecurringBankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePayFundTransfer;
-import com.ntankard.Tracking.DataBase.Database.ObjectFactory;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.TwoParent_Children_Set;
+import com.ntankard.dynamicGUI.CoreObject.Factory.Dummy_Factory;
+import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.Derived_DataCore;
+import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
 
 import static com.ntankard.dynamicGUI.CoreObject.Field.Properties.Display_Properties.INFO_DISPLAY;
 
-@ObjectFactory(builtObjects = {StatementEnd.class, RePayFundTransfer.class, RecurringBankTransfer.class})
 public class ExistingPeriod extends Period {
 
     //------------------------------------------------------------------------------------------------------------------
@@ -32,6 +31,11 @@ public class ExistingPeriod extends Period {
      */
     public static FieldContainer getFieldContainer() {
         FieldContainer fieldContainer = Period.getFieldContainer();
+
+        // Class behavior
+        fieldContainer.addObjectFactory(new Dummy_Factory(StatementEnd.class));
+        fieldContainer.addObjectFactory(new Dummy_Factory(RePayFundTransfer.class));
+        fieldContainer.addObjectFactory(new Dummy_Factory(RecurringBankTransfer.class));
 
         // ID
         // Month =======================================================================================================

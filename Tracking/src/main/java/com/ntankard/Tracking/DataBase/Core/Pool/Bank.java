@@ -1,6 +1,5 @@
 package com.ntankard.Tracking.DataBase.Core.Pool;
 
-import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.HasDefault;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
@@ -8,13 +7,13 @@ import com.ntankard.Tracking.DataBase.Core.BaseObject.Tracking_DataField;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.StatementEnd;
-import com.ntankard.Tracking.DataBase.Database.ObjectFactory;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.TwoParent_Children_Set;
+import com.ntankard.dynamicGUI.CoreObject.Factory.Dummy_Factory;
+import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
 
 import static com.ntankard.dynamicGUI.CoreObject.Field.Properties.Display_Properties.INFO_DISPLAY;
 
-@ObjectFactory(builtObjects = {StatementEnd.class})
 public class Bank extends Pool implements CurrencyBound, Ordered, HasDefault {
 
     //------------------------------------------------------------------------------------------------------------------
@@ -31,6 +30,9 @@ public class Bank extends Pool implements CurrencyBound, Ordered, HasDefault {
      */
     public static FieldContainer getFieldContainer() {
         FieldContainer fieldContainer = Pool.getFieldContainer();
+
+        // Class behavior
+        fieldContainer.addObjectFactory(new Dummy_Factory(StatementEnd.class));
 
         // ID
         // Name

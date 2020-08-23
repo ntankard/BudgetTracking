@@ -1,6 +1,5 @@
 package com.ntankard.Tracking.DataBase.Core.Pool.FundEvent;
 
-import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Tracking_DataField;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
@@ -8,11 +7,11 @@ import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePayFundTransfer;
-import com.ntankard.Tracking.DataBase.Database.ObjectFactory;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.OneParent_Children_Set;
+import com.ntankard.dynamicGUI.CoreObject.Factory.Dummy_Factory;
+import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
 
-@ObjectFactory(builtObjects = {RePayFundTransfer.class})
 public abstract class FundEvent extends Pool {
 
     //------------------------------------------------------------------------------------------------------------------
@@ -26,6 +25,9 @@ public abstract class FundEvent extends Pool {
      */
     public static FieldContainer getFieldContainer() {
         FieldContainer fieldContainer = Pool.getFieldContainer();
+
+        // Class behavior
+        fieldContainer.addObjectFactory(new Dummy_Factory(RePayFundTransfer.class));
 
         // ID
         // Name

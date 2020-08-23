@@ -1,29 +1,30 @@
 package com.ntankard.Tracking.DataBase.Core.RecurringPayment;
 
-import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.RecurringBankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePayFundTransfer;
-import com.ntankard.Tracking.DataBase.Database.ObjectFactory;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.Filter.SetFilter;
 import com.ntankard.Tracking.DataBase.Interface.Set.TwoParent_Children_Set;
+import com.ntankard.dynamicGUI.CoreObject.Factory.Dummy_Factory;
+import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
 
-@ObjectFactory(builtObjects = {RePayFundTransfer.class})
 public class FixedRecurringPayment extends RecurringPayment {
 
     //------------------------------------------------------------------------------------------------------------------
     //################################################### Constructor ##################################################
     //------------------------------------------------------------------------------------------------------------------
 
-
     /**
      * Get all the fields for this object
      */
     public static FieldContainer getFieldContainer() {
         FieldContainer fieldContainer = RecurringPayment.getFieldContainer();
+
+        // Class behavior
+        fieldContainer.addObjectFactory(new Dummy_Factory(RePayFundTransfer.class));
 
         // ID
         // Name

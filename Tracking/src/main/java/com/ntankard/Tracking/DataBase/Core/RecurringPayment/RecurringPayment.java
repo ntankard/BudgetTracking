@@ -1,9 +1,5 @@
 package com.ntankard.Tracking.DataBase.Core.RecurringPayment;
 
-import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.Derived_DataCore;
-import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.ValueRead_DataCore;
-import com.ntankard.dynamicGUI.CoreObject.Field.DataField;
-import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Filter.Ordered_FieldFilter;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
@@ -14,15 +10,18 @@ import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePayFundTransfer;
-import com.ntankard.Tracking.DataBase.Database.ObjectFactory;
+import com.ntankard.dynamicGUI.CoreObject.Factory.Dummy_Factory;
+import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.Derived_DataCore;
+import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.ValueRead_DataCore;
+import com.ntankard.dynamicGUI.CoreObject.Field.DataField;
+import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
 
 import java.util.List;
 
-import static com.ntankard.dynamicGUI.CoreObject.Field.Properties.Display_Properties.DataType.CURRENCY;
-import static com.ntankard.dynamicGUI.CoreObject.Field.Properties.Display_Properties.DEBUG_DISPLAY;
 import static com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank_Currency;
+import static com.ntankard.dynamicGUI.CoreObject.Field.Properties.Display_Properties.DEBUG_DISPLAY;
+import static com.ntankard.dynamicGUI.CoreObject.Field.Properties.Display_Properties.DataType.CURRENCY;
 
-@ObjectFactory(builtObjects = {RePayFundTransfer.class})
 public abstract class RecurringPayment extends NamedDataObject implements CurrencyBound {
 
     //------------------------------------------------------------------------------------------------------------------
@@ -41,6 +40,9 @@ public abstract class RecurringPayment extends NamedDataObject implements Curren
      */
     public static FieldContainer getFieldContainer() {
         FieldContainer fieldContainer = NamedDataObject.getFieldContainer();
+
+        // Class behavior
+        fieldContainer.addObjectFactory(new Dummy_Factory(RePayFundTransfer.class));
 
         // ID
         // Name
