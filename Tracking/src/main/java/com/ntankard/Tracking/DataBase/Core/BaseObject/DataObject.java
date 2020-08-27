@@ -1,6 +1,8 @@
 package com.ntankard.Tracking.DataBase.Core.BaseObject;
 
 import com.ntankard.dynamicGUI.CoreObject.CoreObject;
+import com.ntankard.dynamicGUI.CoreObject.Factory.Dummy_Factory;
+import com.ntankard.dynamicGUI.CoreObject.Factory.ObjectFactory;
 import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.Calculate_DataCore;
 import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.Method_DataCore;
 import com.ntankard.dynamicGUI.CoreObject.Field.Properties.Display_Properties;
@@ -135,11 +137,20 @@ public abstract class DataObject extends CoreObject {
     /**
      * Add this object to the database. Notify everyone required and create or add supporting objects if needed
      */
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public void add() {
         TrackingDatabase.get().add(this);
         for (Map.Entry<String, DataField<?>> field : fieldMap.entrySet()) {
             field.getValue().add();
         }
+
+        FieldContainer fieldContainer = CoreObject.getFieldContainer(this.getClass());
+        for (ObjectFactory factory : fieldContainer.getObjectFactories()) {
+            if (!(factory instanceof Dummy_Factory)) {
+                factory.generate(this);
+            }
+        }
+
         // @TODO check that this has not been double added
     }
 

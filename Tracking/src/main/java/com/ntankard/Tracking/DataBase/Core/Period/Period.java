@@ -3,7 +3,7 @@ package com.ntankard.Tracking.DataBase.Core.Period;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Period_Summary;
-import com.ntankard.dynamicGUI.CoreObject.Factory.Dummy_Factory;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Factory.SingleParentFactory;
 import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
 
 public abstract class Period extends DataObject implements Ordered {
@@ -19,22 +19,13 @@ public abstract class Period extends DataObject implements Ordered {
         FieldContainer fieldContainer = DataObject.getFieldContainer();
 
         // Class behavior
-        fieldContainer.addObjectFactory(new Dummy_Factory(Period_Summary.class));
+        fieldContainer.addObjectFactory(new SingleParentFactory<>(Period_Summary.class, Period_Summary::make));
 
         // ID
         // Parents
         // Children
 
         return fieldContainer.endLayer(Period.class);
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public void add() {
-        super.add();
-        Period_Summary.make(this).add();
     }
 
     //------------------------------------------------------------------------------------------------------------------

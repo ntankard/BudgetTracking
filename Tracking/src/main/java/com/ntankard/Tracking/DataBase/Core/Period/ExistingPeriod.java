@@ -1,5 +1,6 @@
 package com.ntankard.Tracking.DataBase.Core.Period;
 
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Factory.DoubleParentFactory;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Tracking_DataField;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
@@ -11,6 +12,7 @@ import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePayFundTransfer;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.TwoParent_Children_Set;
 import com.ntankard.dynamicGUI.CoreObject.Factory.Dummy_Factory;
+import com.ntankard.dynamicGUI.CoreObject.Factory.ObjectFactory;
 import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.Derived_DataCore;
 import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
 
@@ -33,9 +35,13 @@ public class ExistingPeriod extends Period {
         FieldContainer fieldContainer = Period.getFieldContainer();
 
         // Class behavior
-        fieldContainer.addObjectFactory(new Dummy_Factory(StatementEnd.class));
         fieldContainer.addObjectFactory(new Dummy_Factory(RePayFundTransfer.class));
         fieldContainer.addObjectFactory(new Dummy_Factory(RecurringBankTransfer.class));
+        fieldContainer.addObjectFactory(new DoubleParentFactory<StatementEnd, ExistingPeriod, Bank>(
+                StatementEnd.class,
+                Bank.class,
+                (generator, secondaryGenerator) -> StatementEnd.make(TrackingDatabase.get().getNextId(), generator, secondaryGenerator, 0.0),
+                ObjectFactory.GeneratorMode.SINGLE));
 
         // ID
         // Month =======================================================================================================
@@ -82,15 +88,6 @@ public class ExistingPeriod extends Period {
 
             if (fundEvent.isChargeThisPeriod(this)) {
                 RePayFundTransfer.make(TrackingDatabase.get().getNextId(), this, fundEvent, TrackingDatabase.get().getDefault(Currency.class)).add();
-            }
-        }
-
-        for (Bank bank : TrackingDatabase.get().get(Bank.class)) {
-            if (new TwoParent_Children_Set<>(StatementEnd.class, bank, this).get().size() > 1) {
-                throw new RuntimeException("More than 1 statement end");
-            }
-            if (new TwoParent_Children_Set<>(StatementEnd.class, bank, this).get().size() == 0) {
-                StatementEnd.make(TrackingDatabase.get().getNextId(), this, bank, 0.0).add();
             }
         }
 

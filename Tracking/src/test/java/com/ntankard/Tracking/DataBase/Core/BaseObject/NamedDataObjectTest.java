@@ -61,7 +61,7 @@ class NamedDataObjectTest {
     //################################################ Special Objects #################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    private static class NamedDataObject_Inst extends NamedDataObject {
+    public static class NamedDataObject_Inst extends NamedDataObject {
 
         public static FieldContainer getFieldContainer() {
             FieldContainer fieldContainer = NamedDataObject.getFieldContainer();

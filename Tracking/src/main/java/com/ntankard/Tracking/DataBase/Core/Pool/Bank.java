@@ -1,5 +1,7 @@
 package com.ntankard.Tracking.DataBase.Core.Pool;
 
+import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Factory.DoubleParentFactory;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.HasDefault;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
@@ -10,6 +12,7 @@ import com.ntankard.Tracking.DataBase.Core.StatementEnd;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.TwoParent_Children_Set;
 import com.ntankard.dynamicGUI.CoreObject.Factory.Dummy_Factory;
+import com.ntankard.dynamicGUI.CoreObject.Factory.ObjectFactory;
 import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
 
 import static com.ntankard.dynamicGUI.CoreObject.Field.Properties.Display_Properties.INFO_DISPLAY;
@@ -32,7 +35,11 @@ public class Bank extends Pool implements CurrencyBound, Ordered, HasDefault {
         FieldContainer fieldContainer = Pool.getFieldContainer();
 
         // Class behavior
-        fieldContainer.addObjectFactory(new Dummy_Factory(StatementEnd.class));
+        fieldContainer.addObjectFactory(new DoubleParentFactory<StatementEnd, Bank, ExistingPeriod>(
+                StatementEnd.class,
+                ExistingPeriod.class,
+                (generator, secondaryGenerator) -> StatementEnd.make(TrackingDatabase.get().getNextId(), secondaryGenerator, generator, 0.0),
+                ObjectFactory.GeneratorMode.SINGLE));
 
         // ID
         // Name
@@ -52,23 +59,6 @@ public class Bank extends Pool implements CurrencyBound, Ordered, HasDefault {
         // Children
 
         return fieldContainer.finaliseContainer(Bank.class);
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public void add() {
-        super.add();
-
-        for (ExistingPeriod period : TrackingDatabase.get().get(ExistingPeriod.class)) {
-            if (new TwoParent_Children_Set<>(StatementEnd.class, this, period).get().size() > 1) {
-                throw new RuntimeException("More than 1 statement end");
-            }
-            if (new TwoParent_Children_Set<>(StatementEnd.class, this, period).get().size() == 0) {
-                StatementEnd.make(TrackingDatabase.get().getNextId(), period, this, 0.0).add();
-            }
-        }
     }
 
     //------------------------------------------------------------------------------------------------------------------

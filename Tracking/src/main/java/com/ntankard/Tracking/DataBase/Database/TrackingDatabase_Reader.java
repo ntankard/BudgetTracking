@@ -303,8 +303,8 @@ public class TrackingDatabase_Reader {
             FieldContainer container = CoreObject.getFieldContainer(loadedObject);
             if (container.getObjectFactories().size() != 0) {
                 List<Class<? extends DataObject>> factories = new ArrayList<>();
-                for (com.ntankard.dynamicGUI.CoreObject.Factory.ObjectFactory factory : container.getObjectFactories()) {
-                    factories.add((Class<? extends DataObject>) factory.getObjectToBuild());
+                for (com.ntankard.dynamicGUI.CoreObject.Factory.ObjectFactory<?, ?> factory : container.getObjectFactories()) {
+                    factories.add((Class<? extends DataObject>) factory.getGeneratedType());
                 }
                 managedObjectDependencies.put(loadedObject, factories);
             }
@@ -326,8 +326,8 @@ public class TrackingDatabase_Reader {
                             FieldContainer container = CoreObject.getFieldContainer(constructorParameterType);
                             boolean found = false;
                             if (container.getObjectFactories().size() != 0) {                                           // If the constructor parameter manages objects
-                                for (com.ntankard.dynamicGUI.CoreObject.Factory.ObjectFactory toTest : container.getObjectFactories()) {
-                                    if (toTest.getObjectToBuild().isAssignableFrom(managedObject)) {                    // Check that is dose not manage this object
+                                for (com.ntankard.dynamicGUI.CoreObject.Factory.ObjectFactory<?, ?> toTest : container.getObjectFactories()) {
+                                    if (toTest.getGeneratedType().isAssignableFrom(managedObject)) {                    // Check that is dose not manage this object
                                         found = true;
                                         break;
                                     }
