@@ -1,6 +1,8 @@
 package com.ntankard.Tracking.DataBase.Interface.Summary.Pool;
 
+import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.Method_DataCore;
+import com.ntankard.dynamicGUI.CoreObject.Field.DataField;
 import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Tracking_DataField;
@@ -8,6 +10,8 @@ import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
+
+import java.util.Map;
 
 import static com.ntankard.dynamicGUI.CoreObject.Field.Properties.Display_Properties.TRACE_DISPLAY;
 
@@ -49,9 +53,9 @@ public class Category_Summary extends PoolSummary<SolidCategory> implements Orde
     /**
      * Create a new StatementEnd object
      */
-    public static Category_Summary make(Period period, Pool pool) {
+    public static Category_Summary make(Integer id, Period period, Pool pool) {
         return assembleDataObject(Category_Summary.getFieldContainer(), new Category_Summary()
-                , DataObject_Id, -1
+                , DataObject_Id, id
                 , PoolSummary_Period, period
                 , PoolSummary_Pool, pool
         );

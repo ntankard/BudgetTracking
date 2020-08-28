@@ -11,6 +11,7 @@ import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.StatementEnd;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.TwoParent_Children_Set;
+import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Bank_Summary;
 import com.ntankard.dynamicGUI.CoreObject.Factory.Dummy_Factory;
 import com.ntankard.dynamicGUI.CoreObject.Factory.ObjectFactory;
 import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
@@ -40,6 +41,10 @@ public class Bank extends Pool implements CurrencyBound, Ordered, HasDefault {
                 ExistingPeriod.class,
                 (generator, secondaryGenerator) -> StatementEnd.make(TrackingDatabase.get().getNextId(), secondaryGenerator, generator, 0.0),
                 ObjectFactory.GeneratorMode.SINGLE));
+        fieldContainer.addObjectFactory(new DoubleParentFactory<Bank_Summary, Bank, ExistingPeriod>(
+                Bank_Summary.class,
+                ExistingPeriod.class,
+                (generator, secondaryGenerator) -> Bank_Summary.make(TrackingDatabase.get().getNextId(), secondaryGenerator, generator)));
 
         // ID
         // Name

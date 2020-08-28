@@ -2,6 +2,7 @@ package com.ntankard.Tracking.DataBase.Interface.Set.Factory.PoolSummary;
 
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
+import com.ntankard.Tracking.DataBase.Interface.Set.TwoParent_Children_Set;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Bank_Summary;
 
 public class BankSummary_Set extends Summary_Set<Bank_Summary, Bank, ExistingPeriod> {
@@ -23,6 +24,6 @@ public class BankSummary_Set extends Summary_Set<Bank_Summary, Bank, ExistingPer
      */
     @Override
     protected Bank_Summary getSummary(ExistingPeriod period, Bank pool) {
-        return Bank_Summary.make(period, pool);
+        return new TwoParent_Children_Set<>(Bank_Summary.class, period, pool).get().get(0);
     }
 }

@@ -43,12 +43,12 @@ public abstract class PoolSummary<PoolType extends Pool> extends DataObject impl
 
         // ID
         // Period ======================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(PoolSummary_Period, Period.class, false, false));
+        fieldContainer.add(new Tracking_DataField<>(PoolSummary_Period, Period.class, false));
         fieldContainer.get(PoolSummary_Period).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
         // Pool ========================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(PoolSummary_Pool, Pool.class, false, false));
+        fieldContainer.add(new Tracking_DataField<>(PoolSummary_Pool, Pool.class, false));
         // Currency ====================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(PoolSummary_Currency, Currency.class, false, false));
+        fieldContainer.add(new Tracking_DataField<>(PoolSummary_Currency, Currency.class, false));
         fieldContainer.get(PoolSummary_Currency).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
         fieldContainer.get(PoolSummary_Currency).setDataCore(new Method_DataCore<>(container -> ((PoolSummary<?>) container).getCurrency_impl()));
         // Start =======================================================================================================
@@ -74,12 +74,7 @@ public abstract class PoolSummary<PoolType extends Pool> extends DataObject impl
         fieldContainer.add(new Tracking_DataField<>(PoolSummary_Valid, Boolean.class));
         fieldContainer.get(PoolSummary_Valid).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
         fieldContainer.get(PoolSummary_Valid).setDataCore(new Method_DataCore<>(container -> ((PoolSummary<?>) container).isValid_impl()));
-        // Parents =====================================================================================================
-        fieldContainer.get(DataObject_Parents).getDisplayProperties().setShouldDisplay(false);
-        fieldContainer.get(DataObject_Parents).setDataCore(new Method_DataCore<>(container -> {
-            throw new UnsupportedOperationException();
-        }));
-        //==============================================================================================================
+        // Parents
         // Children
 
         return fieldContainer.endLayer(PoolSummary.class);
@@ -109,16 +104,6 @@ public abstract class PoolSummary<PoolType extends Pool> extends DataObject impl
 
     private Boolean isValid_impl() {
         return getMissing().equals(0.00);
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public void add() {
-        for (Map.Entry<String, DataField<?>> field : fieldMap.entrySet()) {
-            field.getValue().add();
-        }
     }
 
     //------------------------------------------------------------------------------------------------------------------

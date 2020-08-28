@@ -11,6 +11,7 @@ import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.RecurringBankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePayFundTransfer;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.TwoParent_Children_Set;
+import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Bank_Summary;
 import com.ntankard.dynamicGUI.CoreObject.Factory.Dummy_Factory;
 import com.ntankard.dynamicGUI.CoreObject.Factory.ObjectFactory;
 import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.Derived_DataCore;
@@ -42,6 +43,10 @@ public class ExistingPeriod extends Period {
                 Bank.class,
                 (generator, secondaryGenerator) -> StatementEnd.make(TrackingDatabase.get().getNextId(), generator, secondaryGenerator, 0.0),
                 ObjectFactory.GeneratorMode.SINGLE));
+        fieldContainer.addObjectFactory(new DoubleParentFactory<Bank_Summary, ExistingPeriod, Bank>(
+                Bank_Summary.class,
+                Bank.class,
+                (generator, secondaryGenerator) -> Bank_Summary.make(TrackingDatabase.get().getNextId(), generator, secondaryGenerator)));
 
         // ID
         // Month =======================================================================================================

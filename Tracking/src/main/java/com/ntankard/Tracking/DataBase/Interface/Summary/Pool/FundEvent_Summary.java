@@ -1,12 +1,16 @@
 package com.ntankard.Tracking.DataBase.Interface.Summary.Pool;
 
+import com.ntankard.Tracking.DataBase.Interface.Set.TwoParent_Children_Set;
 import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.Method_DataCore;
+import com.ntankard.dynamicGUI.CoreObject.Field.DataField;
 import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
+
+import java.util.Map;
 
 @ParameterMap(shouldSave = false)
 public class FundEvent_Summary extends PoolSummary<FundEvent> {
@@ -39,9 +43,9 @@ public class FundEvent_Summary extends PoolSummary<FundEvent> {
     /**
      * Create a new StatementEnd object
      */
-    public static FundEvent_Summary make(Period period, Pool pool) {
+    public static FundEvent_Summary make(Integer id, Period period, Pool pool) {
         return assembleDataObject(FundEvent_Summary.getFieldContainer(), new FundEvent_Summary()
-                , DataObject_Id, -1
+                , DataObject_Id, id
                 , PoolSummary_Period, period
                 , PoolSummary_Pool, pool
         );
@@ -55,7 +59,7 @@ public class FundEvent_Summary extends PoolSummary<FundEvent> {
             return 0.0;
         }
         Period last = TrackingDatabase.get().get(Period.class).get(index - 1);
-        return FundEvent_Summary.make(last, getPool()).getEnd();
+        return new TwoParent_Children_Set<>(FundEvent_Summary.class, last, getPool()).get().get(0).getEnd();//FundEvent_Summary.make(last, getPool()).getEnd();
     }
 
     private Double getEnd_impl() {

@@ -403,7 +403,7 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
         if (getPeriod() instanceof ExistingPeriod) {
             double value = 0.0;
             for (Bank bank : new OneParent_Children_Set<>(Bank.class, currency).get()) {
-                Bank_Summary summary = Bank_Summary.make((ExistingPeriod) getPeriod(), bank);
+                Bank_Summary summary = new TwoParent_Children_Set<>(Bank_Summary.class, (ExistingPeriod) getPeriod(), bank).get().get(0);
                 value += summary.getEnd() * summary.getCurrency().getToPrimary();
             }
             return value;

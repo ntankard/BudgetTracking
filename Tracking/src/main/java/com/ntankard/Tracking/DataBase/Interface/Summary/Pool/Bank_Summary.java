@@ -24,7 +24,6 @@ import static com.ntankard.dynamicGUI.CoreObject.Field.Properties.Display_Proper
 @ParameterMap(shouldSave = false)
 public class Bank_Summary extends PoolSummary<Bank> implements CurrencyBound, Ordered {
 
-
     public static final String Bank_Summary_NetTransfer = "getNetTransfer";
     public static final String Bank_Summary_Spend = "getSpend";
     public static final String Bank_Summary_Order = "getOrder";
@@ -70,14 +69,12 @@ public class Bank_Summary extends PoolSummary<Bank> implements CurrencyBound, Or
     /**
      * Create a new StatementEnd object
      */
-    public static Bank_Summary make(Period period, Pool pool) {
-        Bank_Summary bank_summary = assembleDataObject(Bank_Summary.getFieldContainer(), new Bank_Summary()
-                , DataObject_Id, -1
+    public static Bank_Summary make(Integer id, Period period, Pool pool) {
+        return assembleDataObject(Bank_Summary.getFieldContainer(), new Bank_Summary()
+                , DataObject_Id, id
                 , PoolSummary_Period, period
                 , PoolSummary_Pool, pool
         );
-        bank_summary.add();
-        return bank_summary;
     }
 
     private Double getStart_impl() {

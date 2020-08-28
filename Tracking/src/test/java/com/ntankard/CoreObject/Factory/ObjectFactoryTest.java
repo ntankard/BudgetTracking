@@ -33,7 +33,7 @@ class ObjectFactoryTest {
                         // Check at least 1 of the factories also has the original class as secondary
                         if (DoubleParentFactory.class.isAssignableFrom(factoryToCheck.getClass())) {
                             DoubleParentFactory<?, ?, ?> doubleParentFactoryToCheck = ((DoubleParentFactory<?, ?, ?>) factoryToCheck);
-                            if (doubleParentFactoryToCheck.getSecondaryGeneratorType().equals(aClass)) {
+                            if (doubleParentFactoryToCheck.getSecondaryGeneratorType().isAssignableFrom(aClass)) {
                                 found = true;
                                 break;
                             }

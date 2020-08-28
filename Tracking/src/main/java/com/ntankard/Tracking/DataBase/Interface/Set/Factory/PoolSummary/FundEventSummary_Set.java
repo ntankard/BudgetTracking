@@ -2,6 +2,8 @@ package com.ntankard.Tracking.DataBase.Interface.Set.Factory.PoolSummary;
 
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
+import com.ntankard.Tracking.DataBase.Interface.Set.TwoParent_Children_Set;
+import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Category_Summary;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.FundEvent_Summary;
 
 public class FundEventSummary_Set extends Summary_Set<FundEvent_Summary, FundEvent, Period> {
@@ -26,6 +28,6 @@ public class FundEventSummary_Set extends Summary_Set<FundEvent_Summary, FundEve
         if (!pool.isActiveThisPeriod(period)) {
             return null;
         }
-        return FundEvent_Summary.make(period, pool);
+        return new TwoParent_Children_Set<>(FundEvent_Summary.class, period, pool).get().get(0);
     }
 }

@@ -2,6 +2,8 @@ package com.ntankard.Tracking.DataBase.Interface.Set.Factory.PoolSummary;
 
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
+import com.ntankard.Tracking.DataBase.Interface.Set.TwoParent_Children_Set;
+import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Bank_Summary;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Category_Summary;
 
 public class CategorySummary_Set extends Summary_Set<Category_Summary, SolidCategory, Period> {
@@ -23,6 +25,6 @@ public class CategorySummary_Set extends Summary_Set<Category_Summary, SolidCate
      */
     @Override
     protected Category_Summary getSummary(Period period, SolidCategory pool) {
-        return Category_Summary.make(period, pool);
+        return new TwoParent_Children_Set<>(Category_Summary.class, period, pool).get().get(0);
     }
 }
