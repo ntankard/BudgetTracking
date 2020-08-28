@@ -8,6 +8,7 @@ import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.RecurringPayment.FixedRecurringPayment;
 import com.ntankard.Tracking.DataBase.Core.StatementEnd;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.RecurringBankTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.ClassicRePayFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePayFundTransfer;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.TwoParent_Children_Set;
@@ -87,12 +88,12 @@ public class ExistingPeriod extends Period {
         super.add();
 
         for (FundEvent fundEvent : TrackingDatabase.get().get(FundEvent.class)) {
-            if (new TwoParent_Children_Set<>(RePayFundTransfer.class, fundEvent, this).get().size() != 0) {
+            if (new TwoParent_Children_Set<>(ClassicRePayFundTransfer.class, fundEvent, this).get().size() != 0) {
                 throw new RuntimeException("Repay exists before it should");
             }
 
             if (fundEvent.isChargeThisPeriod(this)) {
-                RePayFundTransfer.make(TrackingDatabase.get().getNextId(), this, fundEvent, TrackingDatabase.get().getDefault(Currency.class)).add();
+                ClassicRePayFundTransfer.make(TrackingDatabase.get().getNextId(), this, fundEvent, TrackingDatabase.get().getDefault(Currency.class)).add();
             }
         }
 

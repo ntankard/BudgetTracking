@@ -1,8 +1,8 @@
 package com.ntankard.Tracking.DataBase.Core.Pool.FundEvent;
 
-import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
+import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
 
 public class NoneFundEvent extends FundEvent {
 
@@ -42,6 +42,14 @@ public class NoneFundEvent extends FundEvent {
     @Override
     public void add() {
         super.add();
+    }
+
+    /**
+     * {@inheritDoc
+     */
+    @Override
+    public void remove() {
+        super.remove_impl();
     }
 
     //------------------------------------------------------------------------------------------------------------------
