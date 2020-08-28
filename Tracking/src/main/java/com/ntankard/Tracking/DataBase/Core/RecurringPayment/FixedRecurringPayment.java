@@ -4,7 +4,7 @@ import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.RecurringBankTransfer;
-import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePayFundTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePay.RePayFundTransfer;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.Filter.SetFilter;
 import com.ntankard.Tracking.DataBase.Interface.Set.TwoParent_Children_Set;

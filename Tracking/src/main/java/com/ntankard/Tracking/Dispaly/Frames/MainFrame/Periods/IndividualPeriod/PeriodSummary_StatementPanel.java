@@ -12,7 +12,7 @@ import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.BankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.RecurringBankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.FundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.ManualFundTransfer;
-import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePayFundTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePay.RePayFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.HalfTransfer;
 import com.ntankard.Tracking.DataBase.Interface.Set.Filter.SetFilter;
 import com.ntankard.Tracking.DataBase.Interface.Set.OneParent_Children_Set;

@@ -9,7 +9,7 @@ import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
-import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePayFundTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePay.RePayFundTransfer;
 import com.ntankard.dynamicGUI.CoreObject.Factory.Dummy_Factory;
 import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.Derived_DataCore;
 import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.ValueRead_DataCore;

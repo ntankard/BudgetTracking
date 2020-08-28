@@ -1,4 +1,4 @@
-package com.ntankard.Tracking.DataBase.Core.Transfer.Fund;
+package com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePay;
 
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;

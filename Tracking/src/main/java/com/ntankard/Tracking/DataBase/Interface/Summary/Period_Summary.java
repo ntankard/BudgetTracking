@@ -15,7 +15,7 @@ import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.SavingsFundEvent;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.BankTransfer;
-import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePayFundTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePay.RePayFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.HalfTransfer;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
@@ -24,8 +24,6 @@ import com.ntankard.Tracking.DataBase.Interface.Set.Filter.TransferType_HalfTran
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Bank_Summary;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Category_Summary;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.FundEvent_Summary;
-
-import java.util.List;
 
 import static com.ntankard.dynamicGUI.CoreObject.Field.Properties.Display_Properties.DataContext.*;
 import static com.ntankard.dynamicGUI.CoreObject.Field.Properties.Display_Properties.DataType.CURRENCY;
