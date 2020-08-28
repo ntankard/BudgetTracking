@@ -5,7 +5,7 @@ import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
-import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePay.ClassicRePayFundTransfer;
+import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePay.FixedPeriodRePayFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.ManualFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePay.RePayFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.HalfTransfer;
@@ -113,13 +113,13 @@ public class FixedPeriodFundEvent extends FundEvent {
      * Create the repay objects (remove old ones)
      */
     protected void recreateRePay() {
-        for (ClassicRePayFundTransfer toRemove : new OneParent_Children_Set<>(ClassicRePayFundTransfer.class, this).get()) {
+        for (FixedPeriodRePayFundTransfer toRemove : new OneParent_Children_Set<>(FixedPeriodRePayFundTransfer.class, this).get()) {
             toRemove.remove();
         }
 
         for (ExistingPeriod period : TrackingDatabase.get().get(ExistingPeriod.class)) {
             if (this.isChargeThisPeriod(period)) {
-                ClassicRePayFundTransfer.make(TrackingDatabase.get().getNextId(), period, this, TrackingDatabase.get().getDefault(Currency.class)).add();
+                FixedPeriodRePayFundTransfer.make(TrackingDatabase.get().getNextId(), period, this, TrackingDatabase.get().getDefault(Currency.class)).add();
             }
         }
     }

@@ -7,7 +7,7 @@ import com.ntankard.Tracking.DataBase.Database.ParameterMap;
 import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
 
 @ParameterMap(shouldSave = false)
-public class ClassicRePayFundTransfer extends RePayFundTransfer {
+public class FixedPeriodRePayFundTransfer extends RePayFundTransfer {
 
     //------------------------------------------------------------------------------------------------------------------
     //################################################### Constructor ##################################################
@@ -33,14 +33,14 @@ public class ClassicRePayFundTransfer extends RePayFundTransfer {
         // Parents
         // Children
 
-        return fieldContainer.finaliseContainer(ClassicRePayFundTransfer.class);
+        return fieldContainer.finaliseContainer(FixedPeriodRePayFundTransfer.class);
     }
 
     /**
      * Create a new RePayFundTransfer object
      */
-    public static ClassicRePayFundTransfer make(Integer id, Period period, FundEvent source, Currency currency) {
-        return assembleDataObject(ClassicRePayFundTransfer.getFieldContainer(), new ClassicRePayFundTransfer()
+    public static FixedPeriodRePayFundTransfer make(Integer id, Period period, FundEvent source, Currency currency) {
+        return assembleDataObject(FixedPeriodRePayFundTransfer.getFieldContainer(), new FixedPeriodRePayFundTransfer()
                 , DataObject_Id, id
                 , Transfer_Period, period
                 , Transfer_Source, source
