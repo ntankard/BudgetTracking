@@ -1,5 +1,6 @@
 package com.ntankard.Tracking.Dispaly.Frames.MainFrame.Periods.IndividualPeriod;
 
+import com.ntankard.Tracking.DataBase.Interface.Set.Single_OneParent_Children_Set;
 import com.ntankard.dynamicGUI.Gui.Util.Update.Updatable;
 import com.ntankard.dynamicGUI.Gui.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.Currency;
@@ -68,7 +69,7 @@ public class SummaryPanel extends UpdatableJPanel {
         double netMin = Double.MAX_VALUE;
         double netMax = Double.MIN_VALUE;
         for (Period period : TrackingDatabase.get().get(Period.class)) {
-            double profit = period.getPeriodSummary().getBankDelta();
+            double profit = new Single_OneParent_Children_Set<>(Period_Summary.class, period).getItem().getBankDelta();
             if (profit > netMax) {
                 netMax = profit;
             }
@@ -77,7 +78,7 @@ public class SummaryPanel extends UpdatableJPanel {
             }
         }
 
-        Period_Summary period_summary = core.getPeriodSummary();
+        Period_Summary period_summary = new Single_OneParent_Children_Set<>(Period_Summary.class, core).getItem();
 
         double profit = period_summary.getBankDelta();
         netMoney_txt.setText(formatter.format(profit * YEN.getToPrimary()));

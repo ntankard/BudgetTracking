@@ -4,6 +4,8 @@ import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePayFundTransfer;
+import com.ntankard.Tracking.DataBase.Interface.Set.Single_OneParent_Children_Set;
+import com.ntankard.Tracking.DataBase.Interface.Summary.Period_Summary;
 import com.ntankard.dynamicGUI.CoreObject.Factory.Dummy_Factory;
 import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.Method_DataCore;
 import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
@@ -77,7 +79,7 @@ public class SavingsFundEvent extends FundEvent {
      */
     @Override
     public Double getCharge(Period period) {
-        return period.getPeriodSummary().getNonSaveCategoryDelta();
+        return new Single_OneParent_Children_Set<>(Period_Summary.class, period).getItem().getNonSaveCategoryDelta();
     }
 
     //------------------------------------------------------------------------------------------------------------------

@@ -1,5 +1,6 @@
 package com.ntankard.Tracking.Dispaly.Frames.MainFrame.Periods;
 
+import com.ntankard.Tracking.DataBase.Interface.Set.Single_OneParent_Children_Set;
 import com.ntankard.dynamicGUI.Gui.Util.Update.Updatable;
 import com.ntankard.dynamicGUI.Gui.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
@@ -50,7 +51,7 @@ public class PeriodTabPanel extends UpdatableJPanel {
 
         for (int i = 0; i < periodsPanels.size(); i++) {
             periodsPanels.get(i).update();
-            if (!periods.get(i).getPeriodSummary().isValid()) {
+            if (!new Single_OneParent_Children_Set<>(Period_Summary.class, periods.get(i)).getItem().isValid()) {
                 master_tPanel.setBackgroundAt(i, Color.RED);
             } else {
                 master_tPanel.setBackgroundAt(i, null);

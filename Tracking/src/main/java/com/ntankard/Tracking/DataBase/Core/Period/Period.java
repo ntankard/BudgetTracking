@@ -57,13 +57,4 @@ public abstract class Period extends DataObject implements Ordered {
         int diff = this.getOrder() - start.getOrder();
         return diff >= 0 && diff < duration;
     }
-
-    /**
-     * Get the Period Summary for this period, it is in the main database, stored here for convenience
-     *
-     * @return The period summary for this period
-     */
-    public Period_Summary getPeriodSummary() {
-        return getChildren(Period_Summary.class).get(0);
-    }
 }

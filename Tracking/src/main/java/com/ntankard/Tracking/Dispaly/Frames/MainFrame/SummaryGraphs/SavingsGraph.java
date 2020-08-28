@@ -1,5 +1,6 @@
 package com.ntankard.Tracking.Dispaly.Frames.MainFrame.SummaryGraphs;
 
+import com.ntankard.Tracking.DataBase.Interface.Set.Single_OneParent_Children_Set;
 import com.ntankard.dynamicGUI.Gui.Util.Update.Updatable;
 import com.ntankard.dynamicGUI.Gui.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.Currency;
@@ -79,7 +80,7 @@ public class SavingsGraph extends UpdatableJPanel {
             final XYSeries cur = new XYSeries(currency.getName());
             int i = 0;
             for (ExistingPeriod period : TrackingDatabase.get().get(ExistingPeriod.class)) {
-                cur.add(i++, period.getPeriodSummary().getBankEnd(currency));
+                cur.add(i++, new Single_OneParent_Children_Set<>(Period_Summary.class, period).getItem().getBankEnd(currency));
             }
             dataset.addSeries(cur);
         }
@@ -87,7 +88,7 @@ public class SavingsGraph extends UpdatableJPanel {
         final XYSeries total = new XYSeries("Total");
         int i = 0;
         for (ExistingPeriod period : TrackingDatabase.get().get(ExistingPeriod.class)) {
-            total.add(i++, period.getPeriodSummary().getBankEnd());
+            total.add(i++, new Single_OneParent_Children_Set<>(Period_Summary.class, period).getItem().getBankEnd());
         }
         dataset.addSeries(total);
 

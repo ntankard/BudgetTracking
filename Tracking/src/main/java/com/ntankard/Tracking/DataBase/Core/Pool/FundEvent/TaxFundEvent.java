@@ -5,6 +5,8 @@ import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePayFundTransfer;
+import com.ntankard.Tracking.DataBase.Interface.Set.Single_OneParent_Children_Set;
+import com.ntankard.Tracking.DataBase.Interface.Summary.Period_Summary;
 import com.ntankard.dynamicGUI.CoreObject.Factory.Dummy_Factory;
 import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
 
@@ -70,7 +72,7 @@ public class TaxFundEvent extends FundEvent {
      */
     @Override
     public Double getCharge(Period period) {
-        return -Currency.round(period.getPeriodSummary().getTaxableIncome() * getPercentage());
+        return -Currency.round(new Single_OneParent_Children_Set<>(Period_Summary.class, period).getItem().getTaxableIncome() * getPercentage());
     }
 
     //------------------------------------------------------------------------------------------------------------------
