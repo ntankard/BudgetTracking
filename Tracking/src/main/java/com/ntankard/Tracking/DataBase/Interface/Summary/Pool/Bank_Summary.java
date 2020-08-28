@@ -1,5 +1,6 @@
 package com.ntankard.Tracking.DataBase.Interface.Summary.Pool;
 
+import com.ntankard.Tracking.DataBase.Interface.Set.Single_TwoParent_Children_Set;
 import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.MethodSet_DataCore;
 import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.Method_DataCore;
 import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
@@ -84,17 +85,17 @@ public class Bank_Summary extends PoolSummary<Bank> implements CurrencyBound, Or
         }
         Period last = TrackingDatabase.get().get(Period.class).get(index - 1);
         if (last instanceof ExistingPeriod) {
-            return new TwoParent_Children_Set<>(StatementEnd.class, last, getPool()).get().get(0).getEnd();
+            return new Single_TwoParent_Children_Set<>(StatementEnd.class, last, getPool()).getItem().getEnd();
         }
         return getPool().getStart();
     }
 
     private Double getEnd_impl() {
-        return new TwoParent_Children_Set<>(StatementEnd.class, getPeriod(), getPool()).get().get(0).getEnd();
+        return new Single_TwoParent_Children_Set<>(StatementEnd.class, getPeriod(), getPool()).getItem().getEnd();
     }
 
     private void setEnd_impl(Double value) {
-        new TwoParent_Children_Set<>(StatementEnd.class, getPeriod(), getPool()).get().get(0).setEnd(value);
+        new Single_TwoParent_Children_Set<>(StatementEnd.class, getPeriod(), getPool()).getItem().setEnd(value);
     }
 
     private Double getNetTransfer_impl() {

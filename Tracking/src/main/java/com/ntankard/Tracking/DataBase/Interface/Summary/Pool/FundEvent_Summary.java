@@ -1,5 +1,6 @@
 package com.ntankard.Tracking.DataBase.Interface.Summary.Pool;
 
+import com.ntankard.Tracking.DataBase.Interface.Set.Single_TwoParent_Children_Set;
 import com.ntankard.Tracking.DataBase.Interface.Set.TwoParent_Children_Set;
 import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.Method_DataCore;
 import com.ntankard.dynamicGUI.CoreObject.Field.DataField;
@@ -59,7 +60,7 @@ public class FundEvent_Summary extends PoolSummary<FundEvent> {
             return 0.0;
         }
         Period last = TrackingDatabase.get().get(Period.class).get(index - 1);
-        return new TwoParent_Children_Set<>(FundEvent_Summary.class, last, getPool()).get().get(0).getEnd();//FundEvent_Summary.make(last, getPool()).getEnd();
+        return new Single_TwoParent_Children_Set<>(FundEvent_Summary.class, last, getPool()).getItem().getEnd();
     }
 
     private Double getEnd_impl() {
