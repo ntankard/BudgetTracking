@@ -1,6 +1,7 @@
 package com.ntankard.Tracking.DataBase.Interface.Summary;
 
 import com.ntankard.Tracking.DataBase.Interface.Set.*;
+import com.ntankard.Tracking.DataBase.Interface.Set.Filter.SetFilter;
 import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.Method_DataCore;
 import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
@@ -293,7 +294,6 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
     //############################################## Special Calculations ##############################################
     //------------------------------------------------------------------------------------------------------------------
 
-
     /**
      * Get the total of all transfers not including the savings transfer
      *
@@ -303,27 +303,18 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
         double sum = 0.0;
         for (SolidCategory solidCategory : TrackingDatabase.get().get(SolidCategory.class)) {
 
-            ObjectSet<HalfTransfer> set = new TwoParent_Children_Set<>(HalfTransfer.class, getPeriod(), solidCategory);
-            List<HalfTransfer> data = set.get();
-            Object toRemove = null;
-            for (HalfTransfer transfer : data) {
-                if (transfer.getTransfer() instanceof RePayFundTransfer) {
-                    RePayFundTransfer rePayCategoryFundTransfer = (RePayFundTransfer) transfer.getTransfer();
-                    if (rePayCategoryFundTransfer.getSource() instanceof SavingsFundEvent) {
-                        if (toRemove != null) {
-                            //toRemove.toString();
-                            throw new RuntimeException("Duplicate savings");
-                        }
-                        toRemove = transfer;
+            ObjectSet<HalfTransfer> set = new TwoParent_Children_Set<>(HalfTransfer.class, getPeriod(), solidCategory, new SetFilter<HalfTransfer>(null) {
+                @Override
+                protected boolean shouldAdd_Impl(HalfTransfer dataObject) {
+                    if (dataObject.getTransfer() instanceof RePayFundTransfer) {
+                        RePayFundTransfer rePayCategoryFundTransfer = (RePayFundTransfer) dataObject.getTransfer();
+                        return !(rePayCategoryFundTransfer.getSource() instanceof SavingsFundEvent);
                     }
+                    return true;
                 }
-            }
+            });
 
-            if (toRemove != null) {
-                data.remove(toRemove);
-            }
-
-            sum += new Transfer_SumSet<>(new Array_Set<>(data), solidCategory).getTotal();
+            sum += new Transfer_SumSet<>(set, solidCategory).getTotal();
         }
         return -sum;
     }

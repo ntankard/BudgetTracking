@@ -31,14 +31,4 @@ public class PeriodPool_SumSet extends Transfer_SumSet<TwoParent_Children_Set<Ha
     public PeriodPool_SumSet(TwoParent_Children_Set<HalfTransfer, Period, Pool> set, Pool pool) {
         super(set, pool);
     }
-
-    /**
-     * Set the pool object to filter on
-     *
-     * @param pool The pool object to filter on
-     */
-    public void setPool(Pool pool) {
-        this.coreSet.setSecondaryParent(pool);
-        this.pool = pool;
-    }
 }

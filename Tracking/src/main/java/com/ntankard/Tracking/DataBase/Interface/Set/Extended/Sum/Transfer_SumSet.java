@@ -9,7 +9,7 @@ import com.ntankard.Tracking.DataBase.Interface.Set.ObjectSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Transfer_SumSet<S extends ObjectSet<HalfTransfer>> extends ObjectSet<HalfTransfer> {
+public class Transfer_SumSet<S extends ObjectSet<HalfTransfer>> {
 
     /**
      * The source of data
@@ -25,15 +25,15 @@ public class Transfer_SumSet<S extends ObjectSet<HalfTransfer>> extends ObjectSe
      * Constructor
      */
     public Transfer_SumSet(S coreSet, Pool pool) {
-        super(null);
         this.coreSet = coreSet;
         this.pool = pool;
     }
-
+    
     /**
-     * {@inheritDoc
+     * Get the set of objects
+     *
+     * @return A set of daa objects
      */
-    @Override
     public List<HalfTransfer> get() {
         return coreSet.get();
     }
