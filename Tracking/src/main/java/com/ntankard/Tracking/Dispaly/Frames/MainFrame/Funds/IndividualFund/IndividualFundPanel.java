@@ -1,9 +1,9 @@
 package com.ntankard.Tracking.Dispaly.Frames.MainFrame.Funds.IndividualFund;
 
+import com.ntankard.Tracking.DataBase.Interface.Set.OneParent_Children_Set;
 import com.ntankard.dynamicGUI.Gui.Util.Update.Updatable;
 import com.ntankard.dynamicGUI.Gui.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
-import com.ntankard.Tracking.DataBase.Interface.Set.Factory.PoolSummary.FundEventSummary_Set;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.FundEvent_Summary;
 import com.ntankard.Tracking.Dispaly.Util.Panels.Object_DisplayList;
 
@@ -40,7 +40,7 @@ public class IndividualFundPanel extends UpdatableJPanel {
 
         JTabbedPane master_tPanel = new JTabbedPane();
 
-        fundEventSummary_panel = new Object_DisplayList<>(FundEvent_Summary.class, new FundEventSummary_Set(core), false, this);
+        fundEventSummary_panel = new Object_DisplayList<>(FundEvent_Summary.class, new OneParent_Children_Set<>(FundEvent_Summary.class, core), false, this);
         fundEventSummary_panel.setVerbosity(INFO_DISPLAY);
         master_tPanel.addTab("Summary", fundEventSummary_panel);
 

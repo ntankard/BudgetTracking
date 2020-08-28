@@ -1,9 +1,9 @@
 package com.ntankard.Tracking.Dispaly.Frames.MainFrame.Funds.IndividualFund;
 
+import com.ntankard.Tracking.DataBase.Interface.Set.OneParent_Children_Set;
 import com.ntankard.dynamicGUI.Gui.Util.Update.Updatable;
 import com.ntankard.dynamicGUI.Gui.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
-import com.ntankard.Tracking.DataBase.Interface.Set.Factory.PoolSummary.FundEventSummary_Set;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.FundEvent_Summary;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -55,9 +55,9 @@ public class SumGraph extends UpdatableJPanel {
         XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
         plot.setRenderer(renderer);
 
-        String[] axisLabel = new String[new FundEventSummary_Set(fundEvent).get().size()];
+        String[] axisLabel = new String[new OneParent_Children_Set<>(FundEvent_Summary.class, fundEvent).get().size()];
         int i = 0;
-        for (FundEvent_Summary fundEvent_summary : new FundEventSummary_Set(fundEvent).get()) {
+        for (FundEvent_Summary fundEvent_summary : new OneParent_Children_Set<>(FundEvent_Summary.class, fundEvent).get()) {
             axisLabel[i] = fundEvent_summary.getPeriod().toString();
             i++;
         }
@@ -76,7 +76,7 @@ public class SumGraph extends UpdatableJPanel {
         XYSeries total = new XYSeries("Total");
 
         int i = 0;
-        for (FundEvent_Summary fundEvent_summary : new FundEventSummary_Set(fundEvent).get()) {
+        for (FundEvent_Summary fundEvent_summary : new OneParent_Children_Set<>(FundEvent_Summary.class, fundEvent).get()) {
             total.add(i, fundEvent_summary.getEnd());
             i++;
         }
