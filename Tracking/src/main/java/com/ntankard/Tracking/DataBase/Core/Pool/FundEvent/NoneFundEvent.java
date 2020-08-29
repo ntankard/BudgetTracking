@@ -1,6 +1,5 @@
 package com.ntankard.Tracking.DataBase.Core.Pool.FundEvent;
 
-import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
 
@@ -50,33 +49,5 @@ public class NoneFundEvent extends FundEvent {
     @Override
     public void remove() {
         super.remove_impl();
-    }
-
-    //------------------------------------------------------------------------------------------------------------------
-    //################################################### Speciality ###################################################
-    //------------------------------------------------------------------------------------------------------------------
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public Boolean isActiveThisPeriod(Period period) {
-        return true;
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public Boolean isChargeThisPeriod(Period period) {
-        return false;
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public Double getCharge(Period period) {
-        throw new UnsupportedOperationException("Not relevant for this type");
     }
 }

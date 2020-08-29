@@ -460,7 +460,7 @@ public class TrackingDatabase_Reader {
 
         FieldContainer fieldContainer = CoreObject.getFieldContainer(aClass);
         List<DataField<?>> currentFields = CoreObject.getFieldContainer(aClass).getList();
-        currentFields.removeIf(field -> !field.getDataCore().isDirectData());
+        currentFields.removeIf(field -> !field.getDataCore().canInitialSet());
 
         // Build up the argument list
         int i = 0;
@@ -604,7 +604,7 @@ public class TrackingDatabase_Reader {
      */
     static List<DataField<?>> getSaveFields(Class<? extends DataObject> aClass) {
         List<DataField<?>> toReturn = CoreObject.getFieldContainer(aClass).getList();
-        toReturn.removeIf(field -> !field.getDataCore().isDirectData());
+        toReturn.removeIf(field -> !field.getDataCore().canInitialSet());
         return toReturn;
     }
 

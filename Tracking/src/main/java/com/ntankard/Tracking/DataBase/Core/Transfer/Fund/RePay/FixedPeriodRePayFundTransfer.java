@@ -2,8 +2,10 @@ package com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePay;
 
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
+import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FixedPeriodFundEvent;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
+import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.Method_DataCore;
 import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
 
 @ParameterMap(shouldSave = false)
@@ -23,7 +25,14 @@ public class FixedPeriodRePayFundTransfer extends RePayFundTransfer {
         // Description
         // Period
         // Source
-        // Value
+        // Value =======================================================================================================
+        fieldContainer.<Double>get(Transfer_Value).setDataCore(new Method_DataCore<>((Method_DataCore.Getter<Double, FixedPeriodRePayFundTransfer>) container -> {
+            FixedPeriodFundEvent fixedPeriodFundEvent = (FixedPeriodFundEvent) container.getSource();
+            if (!container.getPeriod().isWithin(fixedPeriodFundEvent.getStart(), fixedPeriodFundEvent.getDuration())) {
+                return -0.0;
+            }
+            return fixedPeriodFundEvent.getRepayAmount();
+        }));
         // Currency
         // Destination
         // SourceCurrencyGet
@@ -45,7 +54,6 @@ public class FixedPeriodRePayFundTransfer extends RePayFundTransfer {
                 , Transfer_Period, period
                 , Transfer_Source, source
                 , Transfer_Currency, currency
-                , Transfer_Destination, source.getCategory() // TODO THIS IS BAD, this is happening because this object is always remade when a value is changed in the fund event, add proper listeners and remove this
         );
     }
 }

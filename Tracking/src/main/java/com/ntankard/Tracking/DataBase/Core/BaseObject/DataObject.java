@@ -168,6 +168,10 @@ public abstract class DataObject extends CoreObject {
         if (this.getChildren().size() != 0) {
             throw new RuntimeException("Cant delete this kind of object. NoneFundEvent still has children");
         }
+        if (CoreObject.getFieldContainer(this.getClass()).getObjectFactories().size() != 0) {
+            throw new UnsupportedOperationException("The code for deleting object that are factories has not been implemented yet");
+        }
+
         TrackingDatabase.get().remove(this);
 
         for (Map.Entry<String, DataField<?>> field : fieldMap.entrySet()) {

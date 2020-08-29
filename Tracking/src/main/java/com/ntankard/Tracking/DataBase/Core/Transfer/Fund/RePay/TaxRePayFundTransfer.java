@@ -3,7 +3,11 @@ package com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePay;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
+import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.TaxFundEvent;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
+import com.ntankard.Tracking.DataBase.Interface.Set.Single_OneParent_Children_Set;
+import com.ntankard.Tracking.DataBase.Interface.Summary.Period_Summary;
+import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.Method_DataCore;
 import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
 
 @ParameterMap(shouldSave = false)
@@ -23,7 +27,11 @@ public class TaxRePayFundTransfer extends RePayFundTransfer {
         // Description
         // Period
         // Source
-        // Value
+        // Value =======================================================================================================
+        fieldContainer.<Double>get(Transfer_Value).setDataCore(new Method_DataCore<>((Method_DataCore.Getter<Double, TaxRePayFundTransfer>) container -> {
+            TaxFundEvent taxFundEvent = (TaxFundEvent) container.getSource();
+            return -Currency.round(new Single_OneParent_Children_Set<>(Period_Summary.class, container.getPeriod()).getItem().getTaxableIncome() * taxFundEvent.getPercentage());
+        }));
         // Currency
         // Destination
         // SourceCurrencyGet
@@ -45,7 +53,6 @@ public class TaxRePayFundTransfer extends RePayFundTransfer {
                 , Transfer_Period, period
                 , Transfer_Source, source
                 , Transfer_Currency, currency
-                , Transfer_Destination, source.getCategory() // TODO THIS IS BAD, this is happening because this object is always remade when a value is changed in the fund event, add proper listeners and remove this
         );
     }
 }

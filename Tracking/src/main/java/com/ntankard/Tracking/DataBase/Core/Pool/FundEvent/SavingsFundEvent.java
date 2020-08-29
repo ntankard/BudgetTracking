@@ -3,13 +3,10 @@ package com.ntankard.Tracking.DataBase.Core.Pool.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Factory.DoubleParentFactory;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
-import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePay.SavingsRePayFundTransfer;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
-import com.ntankard.Tracking.DataBase.Interface.Set.Single_OneParent_Children_Set;
-import com.ntankard.Tracking.DataBase.Interface.Summary.Period_Summary;
-import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.Method_DataCore;
+import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.Static_DataCore;
 import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
 
 public class SavingsFundEvent extends FundEvent {
@@ -37,7 +34,7 @@ public class SavingsFundEvent extends FundEvent {
 
         // ID
         // Name ========================================================================================================
-        fieldContainer.get(NamedDataObject_Name).setDataCore(new Method_DataCore<>(container -> "Savings"));
+        fieldContainer.get(NamedDataObject_Name).setDataCore(new Static_DataCore<>("Savings"));
         // =============================================================================================================
         // Category
         // Parents
@@ -62,34 +59,6 @@ public class SavingsFundEvent extends FundEvent {
     @Override
     public void add() {
         super.add();
-    }
-
-    //------------------------------------------------------------------------------------------------------------------
-    //################################################### Speciality ###################################################
-    //------------------------------------------------------------------------------------------------------------------
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public Boolean isActiveThisPeriod(Period period) {
-        return isChargeThisPeriod(period);
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public Boolean isChargeThisPeriod(Period period) {
-        return period instanceof ExistingPeriod;
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public Double getCharge(Period period) {
-        return new Single_OneParent_Children_Set<>(Period_Summary.class, period).getItem().getNonSaveCategoryDelta();
     }
 
     //------------------------------------------------------------------------------------------------------------------

@@ -1,10 +1,12 @@
 package com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePay;
 
-import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.FundTransfer;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
-import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.Method_DataCore;
+import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.Derived_DataCore;
 import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
+
+import static com.ntankard.Tracking.DataBase.Core.BaseObject.NamedDataObject.NamedDataObject_Name;
+import static com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent.FundEvent_Category;
 
 @ParameterMap(shouldSave = false)
 public abstract class RePayFundTransfer extends FundTransfer {
@@ -21,17 +23,18 @@ public abstract class RePayFundTransfer extends FundTransfer {
 
         // ID
         // Description =================================================================================================
-        fieldContainer.get(Transfer_Description).setDataCore(new Method_DataCore<>(container -> "RP " + ((RePayFundTransfer) container).getSource().getName()));
+        fieldContainer.get(Transfer_Description).setDataCore(
+                new Derived_DataCore<>(
+                        new Derived_DataCore.DirectExternalSource<>(fieldContainer.get(Transfer_Source), NamedDataObject_Name,
+                                original -> "RP " + original)));
         // Period
         // Source
-        // Value =======================================================================================================
-        // TODO this is a terrible hack. The change listener should not be needed because this object is fully regenerated ever time, but this is terible too
-        while (fieldContainer.get(Transfer_Value).getFieldChangeListeners().size() != 0) {
-            fieldContainer.get(Transfer_Value).removeChangeListener(fieldContainer.get(Transfer_Value).getFieldChangeListeners().get(0));
-        }
-        fieldContainer.get(Transfer_Value).setDataCore(new Method_DataCore<>(container -> ((FundEvent) ((RePayFundTransfer) container).getSource()).getCharge(((RePayFundTransfer) container).getPeriod())));
+        // Value
         // Currency
-        // Destination
+        // Destination =================================================================================================
+        fieldContainer.get(Transfer_Destination).setDataCore(
+                new Derived_DataCore<>(
+                        new Derived_DataCore.DirectExternalSource<>(fieldContainer.get(Transfer_Source), FundEvent_Category)));
         // SourceCurrencyGet
         // DestinationCurrencyGet
         // SourcePeriodGet

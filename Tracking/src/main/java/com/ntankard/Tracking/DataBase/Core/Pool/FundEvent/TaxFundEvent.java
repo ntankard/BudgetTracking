@@ -4,11 +4,8 @@ import com.ntankard.Tracking.DataBase.Core.BaseObject.Factory.DoubleParentFactor
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Tracking_DataField;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
-import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePay.TaxRePayFundTransfer;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
-import com.ntankard.Tracking.DataBase.Interface.Set.Single_OneParent_Children_Set;
-import com.ntankard.Tracking.DataBase.Interface.Summary.Period_Summary;
 import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
 
 public class TaxFundEvent extends FundEvent {
@@ -54,34 +51,6 @@ public class TaxFundEvent extends FundEvent {
     @Override
     public void add() {
         super.add();
-    }
-
-    //------------------------------------------------------------------------------------------------------------------
-    //################################################### Speciality ###################################################
-    //------------------------------------------------------------------------------------------------------------------
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public Boolean isActiveThisPeriod(Period period) {
-        return isChargeThisPeriod(period);
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public Boolean isChargeThisPeriod(Period period) {
-        return period instanceof ExistingPeriod;
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public Double getCharge(Period period) {
-        return -Currency.round(new Single_OneParent_Children_Set<>(Period_Summary.class, period).getItem().getTaxableIncome() * getPercentage());
     }
 
     //------------------------------------------------------------------------------------------------------------------
