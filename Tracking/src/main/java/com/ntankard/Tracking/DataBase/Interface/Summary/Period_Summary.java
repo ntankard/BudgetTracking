@@ -129,7 +129,7 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
         fieldContainer.get(Period_Summary_NonSaveCategoryDelta).setDataCore(new Method_DataCore<>(container -> ((Period_Summary) container).getNonSaveCategoryDelta_impl()));
         fieldContainer.get(Period_Summary_NonSaveCategoryDelta).getDisplayProperties().setDataType(CURRENCY);
         // TaxableIncome ===============================================================================================
-        fieldContainer.add(new Tracking_DataField<>(Period_Summary_TaxableIncome, Double.class));
+        fieldContainer.add(new Tracking_DataField<>(Period_Summary_TaxableIncome, Double.class)); // TODO this is duplicated in the fund transfer
         fieldContainer.get(Period_Summary_TaxableIncome).setDataCore(new Method_DataCore<>(container -> ((Period_Summary) container).getTaxableIncome_impl()));
         fieldContainer.get(Period_Summary_TaxableIncome).getDisplayProperties().setDataType(CURRENCY);
         // CurrencyValueLoss ===========================================================================================
@@ -312,7 +312,7 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
                 }
             });
 
-            sum += new Transfer_SumSet<>(set, solidCategory).getTotal();
+            sum += new Transfer_SumSet<>(set).getTotal();
         }
         return -sum;
     }
@@ -325,7 +325,7 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
     private Double getTaxableIncome_impl() {
         SolidCategory solidCategory = TrackingDatabase.get().getSpecialValue(SolidCategory.class, SolidCategory.TAXABLE);
         ObjectSet<HalfTransfer> objectSet = new TwoParent_Children_Set<>(HalfTransfer.class, getPeriod(), solidCategory, new TransferType_HalfTransfer_Filter(BankTransfer.class));
-        return Currency.round(new Transfer_SumSet<>(objectSet, solidCategory).getTotal());
+        return Currency.round(new Transfer_SumSet<>(objectSet).getTotal());
     }
 
 

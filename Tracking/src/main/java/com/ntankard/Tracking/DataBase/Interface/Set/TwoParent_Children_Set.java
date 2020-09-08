@@ -1,12 +1,14 @@
 package com.ntankard.Tracking.DataBase.Interface.Set;
 
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
+import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.Filter.SetFilter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class TwoParent_Children_Set<T extends DataObject, PrimaryParentType extends DataObject, SecondaryParentType extends DataObject> extends ObjectSet<T> {
+public class TwoParent_Children_Set<T extends DataObject, PrimaryParentType extends DataObject, SecondaryParentType extends DataObject> extends ObjectSet<T> implements DataObject.ChildrenListener<T> {
 
     /**
      * The DataObject to get from the core
@@ -22,6 +24,16 @@ public class TwoParent_Children_Set<T extends DataObject, PrimaryParentType exte
      * The secondary object to extract children from
      */
     private SecondaryParentType secondaryParent;
+
+    /**
+     * Is the set attached to the database and listen for changes?
+     */
+    private boolean isAttached = false;
+
+    /**
+     * The master list of contents of this set. Only used if isAttached is true
+     */
+    private List<T> list = null;
 
     /**
      * Constructor
@@ -41,11 +53,94 @@ public class TwoParent_Children_Set<T extends DataObject, PrimaryParentType exte
     }
 
     /**
+     * Attach this set to the database and maintain a list based on observed changes
+     */
+    public void attach() {
+        if (isAttached) {
+            throw new IllegalArgumentException();
+        }
+        primaryParent.addChildrenListener(this);
+        secondaryParent.addChildrenListener(this);
+        list = manualGet();
+        isAttached = true;
+    }
+
+    /**
+     * Detach from the database. After this all calls to get will be calculated in full
+     */
+    public void detach() {
+        if (!isAttached) {
+            throw new IllegalArgumentException();
+        }
+        primaryParent.removeChildrenListener(this);
+        secondaryParent.removeChildrenListener(this);
+        list = null;
+        isAttached = false;
+    }
+
+    /**
      * {@inheritDoc
      */
-    @SuppressWarnings("unchecked")
     @Override
     public List<T> get() {
+        if (isAttached) {
+            if (TrackingDatabase.get().shouldVerifyCalculations()) {
+                List<T> reCalculated = manualGet();
+
+                if (reCalculated.size() != list.size()) {
+                    throw new IllegalStateException();
+                }
+
+                for (T toCheck : list) {
+                    if (!reCalculated.contains(toCheck)) {
+                        throw new IllegalStateException();
+                    }
+                }
+            }
+            return Collections.unmodifiableList(list);
+        }
+        return manualGet();
+    }
+
+    /**
+     * {@inheritDoc
+     */
+    @Override
+    public void childAdded(T dataObject) {
+        if (tClass.isAssignableFrom(dataObject.getClass())) {
+            if (list.contains(dataObject)) {
+                throw new IllegalArgumentException();
+            }
+            if (primaryParent.getChildren(tClass).contains(dataObject)) {
+                if (secondaryParent.getChildren(tClass).contains(dataObject)) {
+                    if (shouldAdd(dataObject)) {
+                        list.add(dataObject);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc
+     */
+    @Override
+    public void childRemoved(T dataObject) {
+        if (tClass.isAssignableFrom(dataObject.getClass())) { // TODO check that this is the right way around, also check other uses
+            if (primaryParent.getChildren(tClass).contains(dataObject)) {
+                if (secondaryParent.getChildren(tClass).contains(dataObject)) {
+                    list.remove(dataObject);
+                }
+            }
+        }
+    }
+
+    /**
+     * Regenerate the list manually fully
+     *
+     * @return The regenerated list
+     */
+    private List<T> manualGet() {
         if (primaryParent == null || secondaryParent == null) {
             return new ArrayList<>();
         }
@@ -70,7 +165,14 @@ public class TwoParent_Children_Set<T extends DataObject, PrimaryParentType exte
      * @param primaryParent The core object to extract children from
      */
     public void setPrimaryParent(PrimaryParentType primaryParent) {
+        boolean wasAttached = isAttached;
+        if (isAttached) {
+            detach();
+        }
         this.primaryParent = primaryParent;
+        if (wasAttached) {
+            attach();
+        }
     }
 
     /**
@@ -79,6 +181,13 @@ public class TwoParent_Children_Set<T extends DataObject, PrimaryParentType exte
      * @param secondaryParent The secondary object to extract children from
      */
     public void setSecondaryParent(SecondaryParentType secondaryParent) {
+        boolean wasAttached = isAttached;
+        if (isAttached) {
+            detach();
+        }
         this.secondaryParent = secondaryParent;
+        if (wasAttached) {
+            attach();
+        }
     }
 }

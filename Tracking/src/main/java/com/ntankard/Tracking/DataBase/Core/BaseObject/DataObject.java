@@ -21,6 +21,11 @@ public abstract class DataObject extends CoreObject {
      */
     private final DataObjectContainer children = new DataObjectContainer();
 
+    /**
+     * All object to be notified when a child is linked or unlinked
+     */
+    private final List<ChildrenListener<?>> childrenListeners = new ArrayList<>();
+
     //------------------------------------------------------------------------------------------------------------------
     //################################################### Constructor ##################################################
     //------------------------------------------------------------------------------------------------------------------
@@ -172,6 +177,12 @@ public abstract class DataObject extends CoreObject {
             throw new UnsupportedOperationException("The code for deleting object that are factories has not been implemented yet");
         }
 
+        for (Map.Entry<String, DataField<?>> field : fieldMap.entrySet()) {
+            if (field.getValue() instanceof Tracking_DataField) {
+                ((Tracking_DataField<?>) field.getValue()).unlink();
+            }
+        }
+
         TrackingDatabase.get().remove(this);
 
         for (Map.Entry<String, DataField<?>> field : fieldMap.entrySet()) {
@@ -194,6 +205,48 @@ public abstract class DataObject extends CoreObject {
     //------------------------------------------------------------------------------------------------------------------
     //############################################### Parental Hierarchy  ##############################################
     //------------------------------------------------------------------------------------------------------------------
+
+    /**
+     * A listener for notifying when new children are added or removed to this object
+     *
+     * @param <T> THe type of child object
+     */
+    public interface ChildrenListener<T extends DataObject> {
+
+        /**
+         * Called when a new child is linked to this object
+         *
+         * @param dataObject The added object
+         */
+        void childAdded(T dataObject);
+
+        /**
+         * Called when a child is unlinked from this object
+         *
+         * @param dataObject The object that was removed
+         */
+        void childRemoved(T dataObject);
+    }
+
+    /**
+     * Add a new ChildrenListener listeners
+     *
+     * @param childrenListener The ChildrenListener
+     * @param <T>              tClass type
+     */
+    public <T extends DataObject> void addChildrenListener(ChildrenListener<T> childrenListener) {
+        childrenListeners.add(childrenListener);
+    }
+
+    /**
+     * Remove a ChildrenListener listeners
+     *
+     * @param childrenListener The ChildrenListener
+     * @param <T>              tClass type
+     */
+    public <T extends DataObject> void removeChildrenListener(ChildrenListener<T> childrenListener) {
+        childrenListeners.remove(childrenListener);
+    }
 
     /**
      * Get all the parents of this object
@@ -225,8 +278,13 @@ public abstract class DataObject extends CoreObject {
      *
      * @param linkObject The child
      */
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public void notifyChildLink(DataObject linkObject) {
         children.add(linkObject);
+
+        for (ChildrenListener childrenListener : childrenListeners) {
+            childrenListener.childAdded(linkObject);
+        }
     }
 
     /**
@@ -234,7 +292,12 @@ public abstract class DataObject extends CoreObject {
      *
      * @param linkObject The child
      */
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public void notifyChildUnLink(DataObject linkObject) {
+        for (ChildrenListener childrenListener : childrenListeners) {
+            childrenListener.childRemoved(linkObject);
+        }
+
         children.remove(linkObject);
     }
 
@@ -273,6 +336,7 @@ public abstract class DataObject extends CoreObject {
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
+
     public Integer getId() {
         return get(DataObject_Id);
     }

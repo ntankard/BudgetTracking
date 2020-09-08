@@ -15,12 +15,12 @@ import java.util.List;
 public class ModelData_Columns<P extends Pool> {
 
     // Core data
-    private Class<P> columnClass;
-    private Period core;
+    private final Class<P> columnClass;
+    private final Period core;
 
     // Column data
     public final List<P> pools = new ArrayList<>();
-    private List<Column> columns = new ArrayList<>();
+    private final List<Column> columns = new ArrayList<>();
 
     /**
      * Constructor
@@ -176,6 +176,6 @@ public class ModelData_Columns<P extends Pool> {
     }
 
     private PeriodPool_SumSet getSumSet(P pool) {
-        return new PeriodPool_SumSet(getSet(pool), pool);
+        return new PeriodPool_SumSet(getSet(pool));
     }
 }

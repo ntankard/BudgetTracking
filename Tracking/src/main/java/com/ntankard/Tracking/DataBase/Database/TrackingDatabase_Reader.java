@@ -2,6 +2,7 @@ package com.ntankard.Tracking.DataBase.Database;
 
 import com.ntankard.dynamicGUI.CoreObject.CoreObject;
 import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.Calculate_DataCore;
+import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.Static_DataCore;
 import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.dynamicGUI.CoreObject.Field.DataField;
@@ -419,6 +420,9 @@ public class TrackingDatabase_Reader {
             if (DataObject.class.isAssignableFrom(field.getType())) {
                 if (Calculate_DataCore.class.isAssignableFrom(field.getDataCore().getClass())) {
                     continue; // TODO need to check this logic, the problem is without this a half transfer is detected, there might be a better solution
+                }
+                if (Static_DataCore.class.isAssignableFrom(field.getDataCore().getClass())) {
+                    continue; // TODO THis is here because at least one Static_DataCore references itself resulting in a circular dependency. Some Static_DataCore may need to be added to dependency
                 }
                 Class<? extends DataObject> primeDependencies = (Class<? extends DataObject>) field.getType();
                 dependencies.add(primeDependencies);

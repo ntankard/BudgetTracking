@@ -1,15 +1,5 @@
 package com.ntankard.Tracking.DataBase.Core.Transfer.Bank;
 
-import com.ntankard.dynamicGUI.CoreObject.CoreObject;
-import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.Derived_DataCore;
-import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.MethodSet_DataCore;
-import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.ValueRead_DataCore;
-import com.ntankard.dynamicGUI.CoreObject.Field.DataField;
-import com.ntankard.dynamicGUI.CoreObject.Field.Filter.Dependant_FieldFilter;
-import com.ntankard.dynamicGUI.CoreObject.Field.Filter.FieldFilter;
-import com.ntankard.dynamicGUI.CoreObject.Field.Listener.FieldChangeListener;
-import com.ntankard.dynamicGUI.CoreObject.Field.Listener.Marked_FieldChangeListener;
-import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Tracking_DataField;
 import com.ntankard.Tracking.DataBase.Core.Currency;
@@ -20,12 +10,23 @@ import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Transfer;
+import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
+import com.ntankard.dynamicGUI.CoreObject.CoreObject;
+import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.Derived_DataCore;
+import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.MethodSet_DataCore;
+import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.ValueRead_DataCore;
+import com.ntankard.dynamicGUI.CoreObject.Field.DataField;
+import com.ntankard.dynamicGUI.CoreObject.Field.Filter.Dependant_FieldFilter;
+import com.ntankard.dynamicGUI.CoreObject.Field.Filter.FieldFilter;
+import com.ntankard.dynamicGUI.CoreObject.Field.Listener.FieldChangeListener;
+import com.ntankard.dynamicGUI.CoreObject.Field.Listener.Marked_FieldChangeListener;
+import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ntankard.dynamicGUI.CoreObject.Field.Properties.Display_Properties.DataType.CURRENCY;
 import static com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank_Currency;
+import static com.ntankard.dynamicGUI.CoreObject.Field.Properties.Display_Properties.DataType.CURRENCY;
 
 public abstract class BankTransfer extends Transfer {
 
@@ -41,6 +42,7 @@ public abstract class BankTransfer extends Transfer {
     public static final String BankTransfer_DestinationCurrency = "getDestinationCurrency";
 
     public static final String Transfer_Destination_ListenerMark = "getDestinationListenerMark";
+    public static final String Transfer_Source_ListenerMark = "getSourceListenerMark";
 
     /**
      * Get all the fields for this object
@@ -51,6 +53,7 @@ public abstract class BankTransfer extends Transfer {
         // ID
         // Description
         // Period ======================================================================================================
+        fieldContainer.<Period>get(Transfer_Period).setDataCore(new ValueRead_DataCore<>(true));
         fieldContainer.<Period>get(Transfer_Period).addFilter(new FieldFilter<Period, CoreObject>() {
             @Override
             public boolean isValid(Period value, CoreObject container) {
@@ -60,15 +63,18 @@ public abstract class BankTransfer extends Transfer {
         });
         // Source ======================================================================================================
         fieldContainer.add(Transfer_Period, new Tracking_DataField<>(Transfer_Source, Bank.class));
-        fieldContainer.get(Transfer_Source).addChangeListener((field, oldValue, newValue) -> {
-            // TODO Hidden error here, basically when this object setups up it triggers the change listener but when an object is being build the fields have not been added yet. This check patches the problem but may be a larger issue
-            if (field.getState().equals(DataField.NewFieldState.N_ACTIVE)) {
-                BankTransfer thisTransfer = (BankTransfer) field.getContainer();
-                if (!(thisTransfer.getDestination() instanceof Bank && thisTransfer.getDestinationCurrency() != null)) {
+        fieldContainer.get(Transfer_Source).addChangeListener(new Marked_FieldChangeListener<Object>(Transfer_Source_ListenerMark) {
+            @Override
+            public void valueChanged(DataField<Object> field, Object oldValue, Object newValue) {
+                // TODO Hidden error here, basically when this object setups up it triggers the change listener but when an object is being build the fields have not been added yet. This check patches the problem but may be a larger issue
+                if (field.getState().equals(DataField.NewFieldState.N_ACTIVE)) {
+                    BankTransfer thisTransfer = (BankTransfer) field.getContainer();
+                    if (!(thisTransfer.getDestination() instanceof Bank && thisTransfer.getDestinationCurrency() != null)) {
 
-                    thisTransfer.setDestinationValue(null);
+                        thisTransfer.setDestinationValue(null);
+                    }
+                    thisTransfer.validateParents();
                 }
-                thisTransfer.validateParents();
             }
         });
         // Value =======================================================================================================
@@ -206,6 +212,19 @@ public abstract class BankTransfer extends Transfer {
     @Override
     protected void remove_impl() {
         FieldChangeListener toRemove = null;
+        for (FieldChangeListener<?> fieldChangeListener : fieldMap.get(Transfer_Source).getFieldChangeListeners()) {
+            if (fieldChangeListener instanceof Marked_FieldChangeListener) {
+                if (((Marked_FieldChangeListener<?>) fieldChangeListener).getId().equals(Transfer_Source_ListenerMark)) {
+                    toRemove = fieldChangeListener;
+                    break;
+                }
+            }
+        }
+        if (toRemove != null) {
+            fieldMap.get(Transfer_Source).removeChangeListener(toRemove);
+        }
+
+        toRemove = null;
         for (FieldChangeListener<?> fieldChangeListener : fieldMap.get(Transfer_Destination).getFieldChangeListeners()) {
             if (fieldChangeListener instanceof Marked_FieldChangeListener) {
                 if (((Marked_FieldChangeListener<?>) fieldChangeListener).getId().equals(Transfer_Destination_ListenerMark)) {

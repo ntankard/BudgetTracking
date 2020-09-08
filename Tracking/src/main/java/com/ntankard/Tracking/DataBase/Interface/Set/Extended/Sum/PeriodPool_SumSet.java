@@ -8,7 +8,6 @@ import com.ntankard.Tracking.DataBase.Interface.Set.Filter.TransferDestination_H
 import com.ntankard.Tracking.DataBase.Interface.Set.Filter.TransferType_HalfTransfer_Filter;
 import com.ntankard.Tracking.DataBase.Interface.Set.TwoParent_Children_Set;
 
-@SuppressWarnings("rawtypes")
 public class PeriodPool_SumSet extends Transfer_SumSet<TwoParent_Children_Set<HalfTransfer, Period, Pool>> {
 
     /**
@@ -22,13 +21,13 @@ public class PeriodPool_SumSet extends Transfer_SumSet<TwoParent_Children_Set<Ha
      * Constructor
      */
     public PeriodPool_SumSet(Class<? extends Transfer> transferType, Class<? extends Pool> transferDestination, Period period, Pool pool) {
-        this(new TwoParent_Children_Set<>(HalfTransfer.class, period, pool, new TransferType_HalfTransfer_Filter(transferType, new TransferDestination_HalfTransfer_Filter(transferDestination))), pool);
+        this(new TwoParent_Children_Set<>(HalfTransfer.class, period, pool, new TransferType_HalfTransfer_Filter(transferType, new TransferDestination_HalfTransfer_Filter(transferDestination))));
     }
 
     /**
      * Constructor
      */
-    public PeriodPool_SumSet(TwoParent_Children_Set<HalfTransfer, Period, Pool> set, Pool pool) {
-        super(set, pool);
+    public PeriodPool_SumSet(TwoParent_Children_Set<HalfTransfer, Period, Pool> set) {
+        super(set);
     }
 }

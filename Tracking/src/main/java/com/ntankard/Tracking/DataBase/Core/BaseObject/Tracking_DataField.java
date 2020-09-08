@@ -53,11 +53,9 @@ public class Tracking_DataField<T> extends DataField<T> {
     }
 
     /**
-     * {@inheritDoc
+     * Unlink objects from the parental system
      */
-    @Override
-    public void remove() {
-        this.removeChangeListener(listener);
+    public void unlink() {
         if (DataObject.class.isAssignableFrom(getType())) {
             if (tellParent) {
                 if (get() != null) {
@@ -65,6 +63,14 @@ public class Tracking_DataField<T> extends DataField<T> {
                 }
             }
         }
+    }
+
+    /**
+     * {@inheritDoc
+     */
+    @Override
+    public void remove() {
+        this.removeChangeListener(listener);
         super.remove();
     }
 

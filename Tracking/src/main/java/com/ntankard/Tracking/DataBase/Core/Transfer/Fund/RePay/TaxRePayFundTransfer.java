@@ -1,14 +1,24 @@
 package com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePay;
 
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.DataCore.HalfTransferSetSum_DataCore;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.DataCore.TwoParentSet_DataCore;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Tracking_DataField;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category.Category;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.TaxFundEvent;
+import com.ntankard.Tracking.DataBase.Core.Transfer.HalfTransfer;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
-import com.ntankard.Tracking.DataBase.Interface.Set.Single_OneParent_Children_Set;
-import com.ntankard.Tracking.DataBase.Interface.Summary.Period_Summary;
-import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.Method_DataCore;
+import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
+import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.Derived_DataCore;
+import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.Static_DataCore;
 import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
+
+import java.util.List;
+
+import static com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.TaxFundEvent.TaxFundEvent_Percentage;
 
 @ParameterMap(shouldSave = false)
 public class TaxRePayFundTransfer extends RePayFundTransfer {
@@ -16,6 +26,10 @@ public class TaxRePayFundTransfer extends RePayFundTransfer {
     //------------------------------------------------------------------------------------------------------------------
     //################################################### Constructor ##################################################
     //------------------------------------------------------------------------------------------------------------------
+
+    public static final String TaxRePayFundTransfer_TaxableCategory = "getTaxableCategory";
+    public static final String TaxRePayFundTransfer_TaxableSet = "getTaxableSet";
+    public static final String TaxRePayFundTransfer_TaxableAmount = "getTaxableAmount";
 
     /**
      * Get all the fields for this object
@@ -27,11 +41,36 @@ public class TaxRePayFundTransfer extends RePayFundTransfer {
         // Description
         // Period
         // Source
+        // TaxableCategory =============================================================================================
+        fieldContainer.add(new Tracking_DataField<>(TaxRePayFundTransfer_TaxableCategory, Category.class));
+        fieldContainer.<SolidCategory>get(TaxRePayFundTransfer_TaxableCategory).setDataCore(new Static_DataCore<SolidCategory>(null) {
+            @Override
+            public SolidCategory get() {
+                return TrackingDatabase.get().getSpecialValue(SolidCategory.class, SolidCategory.TAXABLE);
+            }
+        });
+        // TaxableSet ==================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(TaxRePayFundTransfer_TaxableSet, List.class));
+        fieldContainer.<List<HalfTransfer>>get(TaxRePayFundTransfer_TaxableSet).setDataCore(
+                new TwoParentSet_DataCore<>(
+                        HalfTransfer.class,
+                        fieldContainer.get(TaxRePayFundTransfer_TaxableCategory),
+                        fieldContainer.get(Transfer_Period)));
+        // TaxableAmount ===============================================================================================
+        fieldContainer.add(new Tracking_DataField<>(TaxRePayFundTransfer_TaxableAmount, Double.class));
+        fieldContainer.<Double>get(TaxRePayFundTransfer_TaxableAmount).setDataCore(
+                new HalfTransferSetSum_DataCore(
+                        fieldContainer.get(TaxRePayFundTransfer_TaxableSet)));
         // Value =======================================================================================================
-        fieldContainer.<Double>get(Transfer_Value).setDataCore(new Method_DataCore<>((Method_DataCore.Getter<Double, TaxRePayFundTransfer>) container -> {
-            TaxFundEvent taxFundEvent = (TaxFundEvent) container.getSource();
-            return -Currency.round(new Single_OneParent_Children_Set<>(Period_Summary.class, container.getPeriod()).getItem().getTaxableIncome() * taxFundEvent.getPercentage());
-        }));
+        fieldContainer.<Double>get(Transfer_Value).setDataCore(
+                new Derived_DataCore<>(
+                        (Derived_DataCore.Converter<Double, TaxRePayFundTransfer>) container -> {
+                            TaxFundEvent taxFundEvent = (TaxFundEvent) container.getSource();
+                            return -Currency.round(container.getTaxableAmount() * taxFundEvent.getPercentage());
+                        }
+                        , new Derived_DataCore.LocalSource<>(fieldContainer.get(TaxRePayFundTransfer_TaxableAmount))
+                        , new Derived_DataCore.ExternalSource<>(fieldContainer.get(Transfer_Source), TaxFundEvent_Percentage)));
+        //==============================================================================================================
         // Currency
         // Destination
         // SourceCurrencyGet
@@ -54,5 +93,9 @@ public class TaxRePayFundTransfer extends RePayFundTransfer {
                 , Transfer_Source, source
                 , Transfer_Currency, currency
         );
+    }
+
+    public Double getTaxableAmount() {
+        return this.<Double>get(TaxRePayFundTransfer_TaxableAmount);
     }
 }

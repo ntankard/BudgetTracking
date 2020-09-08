@@ -198,4 +198,17 @@ public class TrackingDatabase {
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
     }
+
+    //------------------------------------------------------------------------------------------------------------------
+    //############################################# System Behavior ####################################################
+    //------------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Should all calculations made using listeners be recalculated and checked at the time of access?
+     *
+     * @return True if they should be recalculated
+     */
+    public boolean shouldVerifyCalculations() {
+        return true;
+    }
 }

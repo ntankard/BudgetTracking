@@ -53,9 +53,8 @@ public abstract class Transfer extends DataObject implements CurrencyBound {
         fieldContainer.get(Transfer_Description).setDataCore(new ValueRead_DataCore<>(true));
         // Period ======================================================================================================
         fieldContainer.add(new Tracking_DataField<>(Transfer_Period, Period.class));
-        fieldContainer.<Period>get(Transfer_Period).setDataCore(new ValueRead_DataCore<>(true));
-        // Source ======================================================================================================
-        //fieldContainer.add(new Tracking_DataField<>(Transfer_Source, Pool.class));
+        //==============================================================================================================
+        // Source
         // Value =======================================================================================================
         fieldContainer.add(new Tracking_DataField<>(Transfer_Value, Double.class));
         fieldContainer.get(Transfer_Value).getDisplayProperties().setDataType(CURRENCY);

@@ -1,6 +1,8 @@
 package com.ntankard.Tracking.DataBase.Core.Pool.FundEvent;
 
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Factory.DoubleParentFactory;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.DataCore.HalfTransferSetSum_DataCore;
+import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.DataCore.SingleParentSet_DataCore;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Tracking_DataField;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
@@ -9,13 +11,14 @@ import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePay.FixedPeriodRePayF
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePay.RePayFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.HalfTransfer;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
-import com.ntankard.Tracking.DataBase.Interface.Set.Extended.Sum.Transfer_SumSet;
 import com.ntankard.Tracking.DataBase.Interface.Set.Filter.NotTransferType_HalfTransfer_Filter;
-import com.ntankard.Tracking.DataBase.Interface.Set.OneParent_Children_Set;
-import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.Method_DataCore;
+import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.Derived_DataCore;
+import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.Static_DataCore;
 import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.ValueRead_DataCore;
 import com.ntankard.dynamicGUI.CoreObject.Field.Filter.IntegerRange_FieldFilter;
 import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
+
+import java.util.List;
 
 public class FixedPeriodFundEvent extends FundEvent {
 
@@ -25,6 +28,9 @@ public class FixedPeriodFundEvent extends FundEvent {
 
     public static final String FixedPeriodFundEvent_Start = "getStart";
     public static final String FixedPeriodFundEvent_Duration = "getDuration";
+    public static final String FixedPeriodFundEvent_Self = "getSelf";
+    public static final String FixedPeriodFundEvent_NonRepaySet = "getNonRepaySet";
+    public static final String FixedPeriodFundEvent_NonRepaySum = "getNonRepaySum";
     public static final String FixedPeriodFundEvent_RepayAmount = "getRepayAmount";
 
     /**
@@ -55,11 +61,34 @@ public class FixedPeriodFundEvent extends FundEvent {
         fieldContainer.add(new Tracking_DataField<>(FixedPeriodFundEvent_Duration, Integer.class));
         fieldContainer.<Integer>get(FixedPeriodFundEvent_Duration).addFilter(new IntegerRange_FieldFilter<>(1, null));
         fieldContainer.get(FixedPeriodFundEvent_Duration).setDataCore(new ValueRead_DataCore<>(true));
+        // Self ========================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(FixedPeriodFundEvent_Self, FixedPeriodFundEvent.class));
+        fieldContainer.<FixedPeriodFundEvent>get(FixedPeriodFundEvent_Self).setDataCore(new Static_DataCore<FixedPeriodFundEvent>(null) {
+            @Override
+            public FixedPeriodFundEvent get() {
+                return (FixedPeriodFundEvent) getDataField().getContainer();
+            }
+        });
+        // NonRepaySet =================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(FixedPeriodFundEvent_NonRepaySet, List.class));
+        fieldContainer.<List<HalfTransfer>>get(FixedPeriodFundEvent_NonRepaySet).setDataCore(
+                new SingleParentSet_DataCore<>(
+                        HalfTransfer.class,
+                        fieldContainer.get(FixedPeriodFundEvent_Self),
+                        new NotTransferType_HalfTransfer_Filter(RePayFundTransfer.class)));
+        // NonRepaySum =================================================================================================
+        fieldContainer.add(new Tracking_DataField<>(FixedPeriodFundEvent_NonRepaySum, Double.class));
+        fieldContainer.<Double>get(FixedPeriodFundEvent_NonRepaySum).setDataCore(
+                new HalfTransferSetSum_DataCore(
+                        fieldContainer.get(FixedPeriodFundEvent_NonRepaySet)));
         // RepayAmount =================================================================================================
         fieldContainer.add(new Tracking_DataField<>(FixedPeriodFundEvent_RepayAmount, Double.class));
-        fieldContainer.<Double>get(FixedPeriodFundEvent_RepayAmount).setDataCore(new Method_DataCore<Double, FixedPeriodFundEvent>(container -> {
-            return new Transfer_SumSet<>(new OneParent_Children_Set<>(HalfTransfer.class, container, new NotTransferType_HalfTransfer_Filter(RePayFundTransfer.class)), container).getTotal() / container.getDuration();
-        }));
+        fieldContainer.<Double>get(FixedPeriodFundEvent_RepayAmount).setDataCore(
+                new Derived_DataCore<>(
+                        (Derived_DataCore.Converter<Double, FixedPeriodFundEvent>)
+                                container -> container.getNonRepaySum() / container.getDuration()
+                        , new Derived_DataCore.LocalSource<>(fieldContainer.get(FixedPeriodFundEvent_NonRepaySum))
+                        , new Derived_DataCore.LocalSource<>(fieldContainer.get(FixedPeriodFundEvent_Duration))));
         //==============================================================================================================
         // Parents
         // Children
@@ -94,6 +123,10 @@ public class FixedPeriodFundEvent extends FundEvent {
 
     public Double getRepayAmount() {
         return get(FixedPeriodFundEvent_RepayAmount);
+    }
+
+    public Double getNonRepaySum() {
+        return get(FixedPeriodFundEvent_NonRepaySum);
     }
 
     //------------------------------------------------------------------------------------------------------------------

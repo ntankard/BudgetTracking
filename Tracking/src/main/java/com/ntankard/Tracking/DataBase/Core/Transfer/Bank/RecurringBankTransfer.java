@@ -1,13 +1,15 @@
 package com.ntankard.Tracking.DataBase.Core.Transfer.Bank;
 
-import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.Method_DataCore;
-import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.ValueRead_DataCore;
-import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Tracking_DataField;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Core.RecurringPayment.FixedRecurringPayment;
+import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.Derived_DataCore;
+import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.ValueRead_DataCore;
+import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
+
+import static com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FixedPeriodFundEvent.NamedDataObject_Name;
 
 public class RecurringBankTransfer extends BankTransfer {
 
@@ -24,11 +26,11 @@ public class RecurringBankTransfer extends BankTransfer {
         FieldContainer fieldContainer = BankTransfer.getFieldContainer();
 
         // ID
-        // Description =================================================================================================
-        fieldContainer.<String>get(Transfer_Description).setDataCore(new Method_DataCore<>(container -> ((RecurringBankTransfer) container).getParentPayment().getName()));
+        // Description (Below)
         // Period
         // Source ======================================================================================================
         fieldContainer.<Bank>get(Transfer_Source).setDataCore(new ValueRead_DataCore<>(true));
+        //==============================================================================================================
         // Value
         // Currency
         // DestinationPeriod
@@ -44,8 +46,15 @@ public class RecurringBankTransfer extends BankTransfer {
         // DestinationPeriodGet
         // ParentPayment ===============================================================================================
         fieldContainer.add(new Tracking_DataField<>(RecurringBankTransfer_ParentPayment, FixedRecurringPayment.class));
+        //==============================================================================================================
         // Parents
         // Children
+
+        // Description =================================================================================================
+        fieldContainer.<String>get(Transfer_Description).setDataCore(
+                new Derived_DataCore<>(
+                        new Derived_DataCore.DirectExternalSource<>(fieldContainer.get(RecurringBankTransfer_ParentPayment), NamedDataObject_Name)));
+        //==============================================================================================================
 
         return fieldContainer.finaliseContainer(RecurringBankTransfer.class);
     }

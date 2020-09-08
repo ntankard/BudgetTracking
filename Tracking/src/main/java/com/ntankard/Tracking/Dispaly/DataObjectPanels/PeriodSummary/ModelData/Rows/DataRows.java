@@ -97,6 +97,6 @@ public abstract class DataRows<P extends Pool> {
      * @return The set
      */
     protected PeriodPool_SumSet getSumSet(P pool) {
-        return new PeriodPool_SumSet(new TwoParent_Children_Set<>(HalfTransfer.class, core, pool, new TransferType_HalfTransfer_Filter(typeParameterClass, new TransferDestination_HalfTransfer_Filter(pool.getClass()))), pool);
+        return new PeriodPool_SumSet(new TwoParent_Children_Set<>(HalfTransfer.class, core, pool, new TransferType_HalfTransfer_Filter(typeParameterClass, new TransferDestination_HalfTransfer_Filter(pool.getClass()))));
     }
 }

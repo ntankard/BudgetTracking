@@ -1,8 +1,5 @@
 package com.ntankard.Tracking.DataBase.Core.Transfer;
 
-import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.Derived_DataCore;
-import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.Method_DataCore;
-import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Tracking_DataField;
@@ -10,11 +7,13 @@ import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Database.ParameterMap;
+import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.Derived_DataCore;
+import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
 
+import static com.ntankard.Tracking.DataBase.Core.Transfer.Transfer.*;
 import static com.ntankard.dynamicGUI.CoreObject.Field.Properties.Display_Properties.DataType.CURRENCY;
 import static com.ntankard.dynamicGUI.CoreObject.Field.Properties.Display_Properties.INFO_DISPLAY;
 import static com.ntankard.dynamicGUI.CoreObject.Field.Properties.Display_Properties.TRACE_DISPLAY;
-import static com.ntankard.Tracking.DataBase.Core.Transfer.Transfer.*;
 
 /**
  * One half of the transaction
@@ -74,14 +73,16 @@ public class HalfTransfer extends DataObject implements CurrencyBound {
         // Value =======================================================================================================
         fieldContainer.add(new Tracking_DataField<>(HalfTransfer_Value, Double.class));
         fieldContainer.get(HalfTransfer_Value).getDisplayProperties().setDataType(CURRENCY);
-        fieldContainer.get(HalfTransfer_Value).setDataCore(new Method_DataCore<>(container -> {
-            HalfTransfer halfTransfer = ((HalfTransfer) container);
-            if (halfTransfer.isSource()) {
-                return halfTransfer.getTransfer().getValue(true);
-            } else {
-                return halfTransfer.getTransfer().getValue(false);
-            }
-        }));
+        fieldContainer.<Double>get(HalfTransfer_Value).setDataCore(
+                new Derived_DataCore<>(
+                        (Derived_DataCore.Converter<Double, HalfTransfer>) container -> {
+                            if (container.isSource()) {
+                                return container.getTransfer().getValue(true);
+                            } else {
+                                return container.getTransfer().getValue(false);
+                            }
+                        }
+                        , new Derived_DataCore.ExternalSource<>(fieldContainer.get(HalfTransfer_Transfer), Transfer_Value)));
         // Currency ====================================================================================================
         fieldContainer.add(new Tracking_DataField<>(HalfTransfer_Currency, Currency.class));
         fieldContainer.get(HalfTransfer_Currency).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
@@ -138,6 +139,10 @@ public class HalfTransfer extends DataObject implements CurrencyBound {
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
+    public Transfer getTransfer() {
+        return get(HalfTransfer_Transfer);
+    }
+
     public Period getPeriod() {
         return get(HalfTransfer_Period);
     }
@@ -153,10 +158,6 @@ public class HalfTransfer extends DataObject implements CurrencyBound {
     @Override
     public Currency getCurrency() {
         return get(HalfTransfer_Currency);
-    }
-
-    public Transfer getTransfer() {
-        return get(HalfTransfer_Transfer);
     }
 
     public Boolean isSource() {

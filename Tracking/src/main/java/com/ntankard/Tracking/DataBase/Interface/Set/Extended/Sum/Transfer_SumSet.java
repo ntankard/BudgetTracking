@@ -1,7 +1,6 @@
 package com.ntankard.Tracking.DataBase.Interface.Set.Extended.Sum;
 
 import com.ntankard.Tracking.DataBase.Core.Currency;
-import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Core.Transfer.HalfTransfer;
 import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.ObjectSet;
@@ -17,18 +16,12 @@ public class Transfer_SumSet<S extends ObjectSet<HalfTransfer>> {
     protected S coreSet;
 
     /**
-     * What side of the transaction is this for calculations
-     */
-    protected Pool pool;
-
-    /**
      * Constructor
      */
-    public Transfer_SumSet(S coreSet, Pool pool) {
+    public Transfer_SumSet(S coreSet) {
         this.coreSet = coreSet;
-        this.pool = pool;
     }
-    
+
     /**
      * Get the set of objects
      *
