@@ -1,16 +1,16 @@
 package com.ntankard.Tracking.DataBase.Core;
 
-import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.Derived_DataCore;
-import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.HasDefault;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataCore.Derived_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.CoreObject.Interface.HasDefault;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.NamedDataObject;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Tracking_DataField;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
 
 import java.text.NumberFormat;
 import java.util.Locale;
 
-import static com.ntankard.dynamicGUI.CoreObject.Field.Properties.Display_Properties.INFO_DISPLAY;
-import static com.ntankard.dynamicGUI.CoreObject.Field.Properties.Display_Properties.TRACE_DISPLAY;
+import static com.ntankard.javaObjectDatabase.CoreObject.Field.Properties.Display_Properties.INFO_DISPLAY;
+import static com.ntankard.javaObjectDatabase.CoreObject.Field.Properties.Display_Properties.TRACE_DISPLAY;
 
 public class Currency extends NamedDataObject implements HasDefault {
 
@@ -43,21 +43,21 @@ public class Currency extends NamedDataObject implements HasDefault {
         // ID
         // Name
         // Default =====================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(Currency_Default, Boolean.class));
+        fieldContainer.add(new DataField<>(Currency_Default, Boolean.class));
         // ToPrimary ===================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(Currency_ToPrimary, Double.class));
+        fieldContainer.add(new DataField<>(Currency_ToPrimary, Double.class));
         // Language ====================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(Currency_Language, String.class));
+        fieldContainer.add(new DataField<>(Currency_Language, String.class));
         fieldContainer.get(Currency_Language).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
         // Country =====================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(Currency_Country, String.class));
+        fieldContainer.add(new DataField<>(Currency_Country, String.class));
         fieldContainer.get(Currency_Country).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
         // NumberFormat ================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(Currency_NumberFormat, NumberFormat.class));
+        fieldContainer.add(new DataField<>(Currency_NumberFormat, NumberFormat.class));
         fieldContainer.get(Currency_NumberFormat).getDisplayProperties().setVerbosityLevel(TRACE_DISPLAY);
         fieldContainer.<NumberFormat>get(Currency_NumberFormat).setDataCore(
                 new Derived_DataCore<NumberFormat, Currency>
-                        (coreObject -> NumberFormat.getCurrencyInstance(new Locale(coreObject.getLanguage(), coreObject.getCountry()))
+                        (dataObject -> NumberFormat.getCurrencyInstance(new Locale(dataObject.getLanguage(), dataObject.getCountry()))
                                 , new Derived_DataCore.LocalSource<>(fieldContainer.get(Currency_Country))
                                 , new Derived_DataCore.LocalSource<>(fieldContainer.get(Currency_Language))));
         //==============================================================================================================

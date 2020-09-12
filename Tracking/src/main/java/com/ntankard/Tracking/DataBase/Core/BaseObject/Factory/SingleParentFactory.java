@@ -1,7 +1,7 @@
 package com.ntankard.Tracking.DataBase.Core.BaseObject.Factory;
 
-import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.dynamicGUI.CoreObject.Factory.ObjectFactory;
+import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
+import com.ntankard.javaObjectDatabase.CoreObject.Factory.ObjectFactory;
 
 public class SingleParentFactory<GeneratedType extends DataObject, GeneratorType extends DataObject> extends ObjectFactory<GeneratedType, GeneratorType> {
 

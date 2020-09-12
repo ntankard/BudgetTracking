@@ -4,7 +4,7 @@ import com.ntankard.dynamicGUI.Gui.Util.Update.Updatable;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FixedPeriodFundEvent;
-import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
 import com.ntankard.Tracking.Dispaly.Util.Panels.TrackingDatabase_ElementController;
 
 public class FixedPeriodFundEvent_ElementController extends TrackingDatabase_ElementController<FixedPeriodFundEvent> {

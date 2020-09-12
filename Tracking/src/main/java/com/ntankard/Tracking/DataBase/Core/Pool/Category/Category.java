@@ -1,6 +1,6 @@
 package com.ntankard.Tracking.DataBase.Core.Pool.Category;
 
-import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 
 public abstract class Category extends Pool {

@@ -3,8 +3,8 @@ package com.ntankard.Tracking.Dispaly.Frames.MainFrame.Image;
 import com.ntankard.dynamicGUI.Gui.Util.Update.Updatable;
 import com.ntankard.dynamicGUI.Gui.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.Receipt;
-import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
-import com.ntankard.Tracking.Util.FileUtil;
+import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.util.FileUtil;
 
 import javax.swing.*;
 import java.awt.*;

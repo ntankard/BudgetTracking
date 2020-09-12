@@ -1,7 +1,7 @@
 package com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary;
 
 import com.ntankard.dynamicGUI.Gui.Util.Update.Updatable;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
+import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
@@ -104,20 +104,20 @@ public class PeriodSummary_Model<P extends Pool> extends AbstractTableModel impl
 
         if (dataRow instanceof DividerRow) {
             if (columns.isCenterTable(columnIndex)) {
-                value.coreObject = dataRow.getValue(null, null, rowIndex);
+                value.dataObject = dataRow.getValue(null, null, rowIndex);
             }
             value.background = HIGHLIGHTED_BACKGROUND;
         } else if (sectionIndex == 0) { // Category name
 
             if (columns.isCenter(columnIndex)) {
-                value.coreObject = columns.getCategory(columnIndex).toString();
+                value.dataObject = columns.getCategory(columnIndex).toString();
             }
             value.bottom = STANDARD_LINE;
 
         } else if (sectionIndex == 1) { // Total
 
             if (columns.isCenter(columnIndex)) {
-                value.coreObject = dataRow.getTotal(pool);
+                value.dataObject = dataRow.getTotal(pool);
                 value.foreground = HIGHLIGHTED_TEXT;
                 value.isBold = true;
                 //value.foreground = new Color(222, 149, 47);
@@ -129,7 +129,7 @@ public class PeriodSummary_Model<P extends Pool> extends AbstractTableModel impl
         } else if (sectionIndex == 2) { // Currency name
 
             if (columns.getCurrency(columnIndex) != null) {
-                value.coreObject = columns.getCurrency(columnIndex).toString();
+                value.dataObject = columns.getCurrency(columnIndex).toString();
                 value.bottom = STANDARD_LINE;
             }
             value.right = STANDARD_LINE;
@@ -137,7 +137,7 @@ public class PeriodSummary_Model<P extends Pool> extends AbstractTableModel impl
         } else if (sectionIndex == 3) { // Currency total
 
             if (columns.getCurrency(columnIndex) != null) {
-                value.coreObject = dataRow.getCurrencyTotal(pool, currency);
+                value.dataObject = dataRow.getCurrencyTotal(pool, currency);
                 value.foreground = HIGHLIGHTED_TEXT;
                 value.background = HIGHLIGHTED_BACKGROUND;
                 value.bottom = STANDARD_LINE;
@@ -160,7 +160,7 @@ public class PeriodSummary_Model<P extends Pool> extends AbstractTableModel impl
                 }
             }
 
-            value.coreObject = dataRow.getValue(pool, currency, sectionIndex - 5);
+            value.dataObject = dataRow.getValue(pool, currency, sectionIndex - 5);
 
             value.bottom = STANDARD_LINE;
             if (columns.isDescription(columnIndex)) {

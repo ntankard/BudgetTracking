@@ -1,6 +1,6 @@
 package com.ntankard.Tracking.DataBase.Core.Transfer.Bank;
 
-import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;

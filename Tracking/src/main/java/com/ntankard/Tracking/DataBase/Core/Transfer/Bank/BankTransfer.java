@@ -1,7 +1,5 @@
 package com.ntankard.Tracking.DataBase.Core.Transfer.Bank;
 
-import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Tracking_DataField;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
@@ -10,23 +8,21 @@ import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Transfer;
-import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
-import com.ntankard.dynamicGUI.CoreObject.CoreObject;
-import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.Derived_DataCore;
-import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.MethodSet_DataCore;
-import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.ValueRead_DataCore;
-import com.ntankard.dynamicGUI.CoreObject.Field.DataField;
-import com.ntankard.dynamicGUI.CoreObject.Field.Filter.Dependant_FieldFilter;
-import com.ntankard.dynamicGUI.CoreObject.Field.Filter.FieldFilter;
-import com.ntankard.dynamicGUI.CoreObject.Field.Listener.FieldChangeListener;
-import com.ntankard.dynamicGUI.CoreObject.Field.Listener.Marked_FieldChangeListener;
-import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataCore.Derived_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataCore.ValueRead_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.Filter.Dependant_FieldFilter;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.Filter.FieldFilter;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.Listener.FieldChangeListener;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.Listener.Marked_FieldChangeListener;
+import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank_Currency;
-import static com.ntankard.dynamicGUI.CoreObject.Field.Properties.Display_Properties.DataType.CURRENCY;
+import static com.ntankard.javaObjectDatabase.CoreObject.Field.Properties.Display_Properties.DataType.CURRENCY;
 
 public abstract class BankTransfer extends Transfer {
 
@@ -54,15 +50,15 @@ public abstract class BankTransfer extends Transfer {
         // Description
         // Period ======================================================================================================
         fieldContainer.<Period>get(Transfer_Period).setDataCore(new ValueRead_DataCore<>(true));
-        fieldContainer.<Period>get(Transfer_Period).addFilter(new FieldFilter<Period, CoreObject>() {
+        fieldContainer.<Period>get(Transfer_Period).addFilter(new FieldFilter<Period, DataObject>() {
             @Override
-            public boolean isValid(Period value, CoreObject container) {
+            public boolean isValid(Period value, DataObject container) {
                 BankTransfer bankTransfer = ((BankTransfer) container);
                 return bankTransfer.getDestinationPeriod() == null || !bankTransfer.getDestinationPeriod().equals(value);
             }
         });
         // Source ======================================================================================================
-        fieldContainer.add(Transfer_Period, new Tracking_DataField<>(Transfer_Source, Bank.class));
+        fieldContainer.add(Transfer_Period, new DataField<>(Transfer_Source, Bank.class));
         fieldContainer.get(Transfer_Source).addChangeListener(new Marked_FieldChangeListener<Object>(Transfer_Source_ListenerMark) {
             @Override
             public void valueChanged(DataField<Object> field, Object oldValue, Object newValue) {
@@ -82,7 +78,7 @@ public abstract class BankTransfer extends Transfer {
         // Currency ====================================================================================================
         fieldContainer.<Currency>get(Transfer_Currency).setDataCore(new Derived_DataCore<>(new Derived_DataCore.DirectExternalSource<>(fieldContainer.get(Transfer_Source), Bank_Currency)));
         // DestinationPeriod ===========================================================================================
-        fieldContainer.add(Transfer_Currency, new Tracking_DataField<>(BankTransfer_DestinationPeriod, Period.class, true));
+        fieldContainer.add(Transfer_Currency, new DataField<>(BankTransfer_DestinationPeriod, Period.class, true));
         fieldContainer.<Pool>get(BankTransfer_DestinationPeriod).setDataCore(new ValueRead_DataCore<>(true));
         fieldContainer.<Period>get(BankTransfer_DestinationPeriod).addFilter(new Dependant_FieldFilter<Period, BankTransfer>(Transfer_Period, Transfer_Destination) {
             @Override
@@ -149,7 +145,7 @@ public abstract class BankTransfer extends Transfer {
             }
         });
         // DestinationValue ============================================================================================
-        fieldContainer.add(Transfer_Destination, new Tracking_DataField<>(BankTransfer_DestinationValue, Double.class, true));
+        fieldContainer.add(Transfer_Destination, new DataField<>(BankTransfer_DestinationValue, Double.class, true));
         fieldContainer.get(BankTransfer_DestinationValue).getDisplayProperties().setDataType(CURRENCY);
         fieldContainer.get(BankTransfer_DestinationValue).setDataCore(new ValueRead_DataCore<>(true));
         // TODO probably best to replace this with a conversation step that takes 0 and makes it null so it dosnt fail
@@ -163,7 +159,7 @@ public abstract class BankTransfer extends Transfer {
             }
         });
         // DestinationCurrency =========================================================================================
-        fieldContainer.add(new Tracking_DataField<>(BankTransfer_DestinationCurrency, Currency.class, true));
+        fieldContainer.add(new DataField<>(BankTransfer_DestinationCurrency, Currency.class, true));
         fieldContainer.<Currency>get(BankTransfer_DestinationCurrency).setDataCore(
                 new Derived_DataCore<>(container -> {
                     BankTransfer bankTransfer = ((BankTransfer) container);

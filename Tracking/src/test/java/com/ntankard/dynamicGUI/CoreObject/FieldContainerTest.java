@@ -1,9 +1,8 @@
-package com.ntankard.dynamicGUI.CoreObject;
+package com.ntankard.dynamicGUI.DataObject;
 
-import com.ntankard.dynamicGUI.CoreObject.CoreObject;
-import com.ntankard.dynamicGUI.CoreObject.Field.DataField;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
+import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Modifier;
@@ -16,7 +15,7 @@ class FieldContainerTest {
 
     @Test
     void add() {
-        FieldContainer fieldContainer = Valid_Abstract_CoreObjectC.getFieldContainer();
+        FieldContainer fieldContainer = Valid_Abstract_DataObjectC.getFieldContainer();
         DataField<?> toAdd = new Test_DataField("Test1");
 
         // Check valid add
@@ -42,7 +41,7 @@ class FieldContainerTest {
 
         // Check you cant add after finalization
         DataField<?> toAdd4 = new Test_DataField("Test4");
-        fieldContainer.finaliseContainer(Valid_CoreObjectD.class);
+        fieldContainer.finaliseContainer(Valid_DataObjectD.class);
         assertThrows(IllegalStateException.class, () -> fieldContainer.add(toAdd4));
     }
 
@@ -51,84 +50,84 @@ class FieldContainerTest {
         FieldContainer fieldContainer = new FieldContainer();
 
         // check a valid stack
-        assertDoesNotThrow(() -> fieldContainer.endLayer(CoreObject.class));
-        assertDoesNotThrow(() -> fieldContainer.endLayer(Valid_Abstract_CoreObjectA.class));
-        assertDoesNotThrow(() -> fieldContainer.endLayer(Valid_Abstract_CoreObjectB.class));
-        assertDoesNotThrow(() -> fieldContainer.endLayer(Valid_Abstract_CoreObjectC.class));
+        assertDoesNotThrow(() -> fieldContainer.endLayer(DataObject.class));
+        assertDoesNotThrow(() -> fieldContainer.endLayer(Valid_Abstract_DataObjectA.class));
+        assertDoesNotThrow(() -> fieldContainer.endLayer(Valid_Abstract_DataObjectB.class));
+        assertDoesNotThrow(() -> fieldContainer.endLayer(Valid_Abstract_DataObjectC.class));
 
         // Check that you can no double end
-        assertThrows(IllegalArgumentException.class, () -> fieldContainer.endLayer(Valid_Abstract_CoreObjectB.class));
+        assertThrows(IllegalArgumentException.class, () -> fieldContainer.endLayer(Valid_Abstract_DataObjectB.class));
 
         // Check that you can not end a solid object
-        assertThrows(IllegalStateException.class, () -> fieldContainer.endLayer(Valid_CoreObjectD.class));
+        assertThrows(IllegalStateException.class, () -> fieldContainer.endLayer(Valid_DataObjectD.class));
 
         // check that you can not add after finalise
         FieldContainer fieldContainer2 = new FieldContainer();
-        assertDoesNotThrow(() -> fieldContainer2.endLayer(CoreObject.class));
-        assertDoesNotThrow(() -> fieldContainer2.endLayer(Valid_Abstract_CoreObjectA.class));
-        assertDoesNotThrow(() -> fieldContainer2.endLayer(Valid_Abstract_CoreObjectB.class));
-        assertDoesNotThrow(() -> fieldContainer2.endLayer(Valid_Abstract_CoreObjectC.class));
-        assertDoesNotThrow(() -> fieldContainer2.finaliseContainer(Valid_CoreObjectD.class));
-        assertThrows(IllegalStateException.class, () -> fieldContainer2.endLayer(Valid_Abstract_CoreObjectE.class));
+        assertDoesNotThrow(() -> fieldContainer2.endLayer(DataObject.class));
+        assertDoesNotThrow(() -> fieldContainer2.endLayer(Valid_Abstract_DataObjectA.class));
+        assertDoesNotThrow(() -> fieldContainer2.endLayer(Valid_Abstract_DataObjectB.class));
+        assertDoesNotThrow(() -> fieldContainer2.endLayer(Valid_Abstract_DataObjectC.class));
+        assertDoesNotThrow(() -> fieldContainer2.finaliseContainer(Valid_DataObjectD.class));
+        assertThrows(IllegalStateException.class, () -> fieldContainer2.endLayer(Valid_Abstract_DataObjectE.class));
     }
 
     @Test
     void finaliseContainer() {
         // Check valid sequence
         FieldContainer fieldContainer = new FieldContainer();
-        assertDoesNotThrow(() -> fieldContainer.endLayer(CoreObject.class));
-        assertDoesNotThrow(() -> fieldContainer.endLayer(Valid_Abstract_CoreObjectA.class));
-        assertDoesNotThrow(() -> fieldContainer.endLayer(Valid_Abstract_CoreObjectB.class));
-        assertDoesNotThrow(() -> fieldContainer.endLayer(Valid_Abstract_CoreObjectC.class));
-        assertDoesNotThrow(() -> fieldContainer.finaliseContainer(Valid_CoreObjectD.class));
+        assertDoesNotThrow(() -> fieldContainer.endLayer(DataObject.class));
+        assertDoesNotThrow(() -> fieldContainer.endLayer(Valid_Abstract_DataObjectA.class));
+        assertDoesNotThrow(() -> fieldContainer.endLayer(Valid_Abstract_DataObjectB.class));
+        assertDoesNotThrow(() -> fieldContainer.endLayer(Valid_Abstract_DataObjectC.class));
+        assertDoesNotThrow(() -> fieldContainer.finaliseContainer(Valid_DataObjectD.class));
 
         // Check you cant skip a layer
         FieldContainer fieldContainer2 = new FieldContainer();
-        assertDoesNotThrow(() -> fieldContainer2.endLayer(CoreObject.class));
-        assertDoesNotThrow(() -> fieldContainer2.endLayer(Valid_Abstract_CoreObjectA.class));
-        assertDoesNotThrow(() -> fieldContainer2.endLayer(Valid_Abstract_CoreObjectB.class));
-        assertThrows(IllegalStateException.class, () -> fieldContainer2.finaliseContainer(Valid_CoreObjectD.class));
+        assertDoesNotThrow(() -> fieldContainer2.endLayer(DataObject.class));
+        assertDoesNotThrow(() -> fieldContainer2.endLayer(Valid_Abstract_DataObjectA.class));
+        assertDoesNotThrow(() -> fieldContainer2.endLayer(Valid_Abstract_DataObjectB.class));
+        assertThrows(IllegalStateException.class, () -> fieldContainer2.finaliseContainer(Valid_DataObjectD.class));
 
         FieldContainer fieldContainer3 = new FieldContainer();
-        assertDoesNotThrow(() -> fieldContainer3.endLayer(CoreObject.class));
-        assertDoesNotThrow(() -> fieldContainer3.endLayer(Valid_Abstract_CoreObjectA.class));
-        assertDoesNotThrow(() -> fieldContainer3.endLayer(Valid_Abstract_CoreObjectC.class));
-        assertThrows(IllegalStateException.class, () -> fieldContainer3.finaliseContainer(Valid_CoreObjectD.class));
+        assertDoesNotThrow(() -> fieldContainer3.endLayer(DataObject.class));
+        assertDoesNotThrow(() -> fieldContainer3.endLayer(Valid_Abstract_DataObjectA.class));
+        assertDoesNotThrow(() -> fieldContainer3.endLayer(Valid_Abstract_DataObjectC.class));
+        assertThrows(IllegalStateException.class, () -> fieldContainer3.finaliseContainer(Valid_DataObjectD.class));
 
         FieldContainer fieldContainer4 = new FieldContainer();
-        assertDoesNotThrow(() -> fieldContainer4.endLayer(CoreObject.class));
-        assertDoesNotThrow(() -> fieldContainer4.endLayer(Valid_Abstract_CoreObjectB.class));
-        assertDoesNotThrow(() -> fieldContainer4.endLayer(Valid_Abstract_CoreObjectC.class));
-        assertThrows(IllegalStateException.class, () -> fieldContainer4.finaliseContainer(Valid_CoreObjectD.class));
+        assertDoesNotThrow(() -> fieldContainer4.endLayer(DataObject.class));
+        assertDoesNotThrow(() -> fieldContainer4.endLayer(Valid_Abstract_DataObjectB.class));
+        assertDoesNotThrow(() -> fieldContainer4.endLayer(Valid_Abstract_DataObjectC.class));
+        assertThrows(IllegalStateException.class, () -> fieldContainer4.finaliseContainer(Valid_DataObjectD.class));
 
         // Check you can't finalise an abstract layer
         FieldContainer fieldContainer5 = new FieldContainer();
-        assertDoesNotThrow(() -> fieldContainer5.endLayer(CoreObject.class));
-        assertDoesNotThrow(() -> fieldContainer5.endLayer(Valid_Abstract_CoreObjectA.class));
-        assertDoesNotThrow(() -> fieldContainer5.endLayer(Valid_Abstract_CoreObjectB.class));
-        assertThrows(IllegalStateException.class, () -> fieldContainer5.finaliseContainer(Valid_Abstract_CoreObjectC.class));
+        assertDoesNotThrow(() -> fieldContainer5.endLayer(DataObject.class));
+        assertDoesNotThrow(() -> fieldContainer5.endLayer(Valid_Abstract_DataObjectA.class));
+        assertDoesNotThrow(() -> fieldContainer5.endLayer(Valid_Abstract_DataObjectB.class));
+        assertThrows(IllegalStateException.class, () -> fieldContainer5.finaliseContainer(Valid_Abstract_DataObjectC.class));
 
         // Check you cant double run
         FieldContainer fieldContainer6 = new FieldContainer();
-        assertDoesNotThrow(() -> fieldContainer6.endLayer(CoreObject.class));
-        assertDoesNotThrow(() -> fieldContainer6.endLayer(Valid_Abstract_CoreObjectA.class));
-        assertDoesNotThrow(() -> fieldContainer6.endLayer(Valid_Abstract_CoreObjectB.class));
-        assertDoesNotThrow(() -> fieldContainer6.endLayer(Valid_Abstract_CoreObjectC.class));
-        assertDoesNotThrow(() -> fieldContainer6.finaliseContainer(Valid_CoreObjectD.class));
-        assertThrows(IllegalStateException.class, () -> fieldContainer6.finaliseContainer(Valid_CoreObjectD.class));
+        assertDoesNotThrow(() -> fieldContainer6.endLayer(DataObject.class));
+        assertDoesNotThrow(() -> fieldContainer6.endLayer(Valid_Abstract_DataObjectA.class));
+        assertDoesNotThrow(() -> fieldContainer6.endLayer(Valid_Abstract_DataObjectB.class));
+        assertDoesNotThrow(() -> fieldContainer6.endLayer(Valid_Abstract_DataObjectC.class));
+        assertDoesNotThrow(() -> fieldContainer6.finaliseContainer(Valid_DataObjectD.class));
+        assertThrows(IllegalStateException.class, () -> fieldContainer6.finaliseContainer(Valid_DataObjectD.class));
     }
 
     @Test
     void get() {
         // Check test objects
-        FieldContainer fieldContainer = Valid_CoreObjectD.getFieldContainer();
+        FieldContainer fieldContainer = Valid_DataObjectD.getFieldContainer();
         for (DataField<?> field : fieldContainer.getList()) {
             assertEquals(field, fieldContainer.get(field.getIdentifierName()));
         }
 
         // Check all real objects
         for (Class<? extends DataObject> dClass : getAllClasses()) {
-            fieldContainer = CoreObject.getFieldContainer(dClass);
+            fieldContainer = DataObject.getFieldContainer(dClass);
             for (DataField<?> field : fieldContainer.getList()) {
                 assertEquals(field, fieldContainer.get(field.getIdentifierName()));
             }
@@ -138,7 +137,7 @@ class FieldContainerTest {
     @Test
     void getList() {
         // Check test objects
-        FieldContainer fieldContainer = Valid_CoreObjectD.getFieldContainer();
+        FieldContainer fieldContainer = Valid_DataObjectD.getFieldContainer();
         assertEquals(fieldContainer.masterMap.size(), fieldContainer.getList().size());
         for (DataField<?> field : fieldContainer.getList()) {
             assertEquals(field, fieldContainer.masterMap.get(field.getIdentifierName()));
@@ -146,7 +145,7 @@ class FieldContainerTest {
 
         // Check all real objects
         for (Class<? extends DataObject> dClass : getAllClasses()) {
-            fieldContainer = CoreObject.getFieldContainer(dClass);
+            fieldContainer = DataObject.getFieldContainer(dClass);
             assertEquals(fieldContainer.masterMap.size(), fieldContainer.getList().size());
             for (DataField<?> field : fieldContainer.getList()) {
                 assertEquals(field, fieldContainer.masterMap.get(field.getIdentifierName()));
@@ -168,7 +167,7 @@ class FieldContainerTest {
             assertEquals(toAddB, fieldContainer.getLast());
         }
 
-        fieldContainer.endLayer(CoreObject.class);
+        fieldContainer.endLayer(DataObject.class);
 
         for (int i = 0; i < 100; i++) {
             Test_DataField toAddA = new Test_DataField(i + "A2");
@@ -179,7 +178,7 @@ class FieldContainerTest {
             assertEquals(toAddB, fieldContainer.getLast());
         }
 
-        fieldContainer.endLayer(Valid_Abstract_CoreObjectA.class);
+        fieldContainer.endLayer(Valid_Abstract_DataObjectA.class);
 
         for (int i = 0; i < 100; i++) {
             Test_DataField toAddA = new Test_DataField(i + "A3");
@@ -197,9 +196,9 @@ class FieldContainerTest {
     }
 
     @Test
-    void testCoreObjects() {
+    void testDataObjects() {
         for (Class<? extends DataObject> dClass : getAllClasses()) {
-            FieldContainer fieldContainer = CoreObject.getFieldContainer(dClass);
+            FieldContainer fieldContainer = DataObject.getFieldContainer(dClass);
             if (Modifier.isAbstract(dClass.getModifiers())) {
                 assertEquals(dClass, fieldContainer.inheritedObjects.get(fieldContainer.inheritedObjects.size() - 1));
             } else {
@@ -215,35 +214,35 @@ class FieldContainerTest {
     //################################################## Test Objects ##################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    abstract static class Valid_Abstract_CoreObjectA extends CoreObject {
+    abstract static class Valid_Abstract_DataObjectA extends DataObject {
         public static FieldContainer getFieldContainer() {
-            FieldContainer fieldContainer = CoreObject.getFieldContainer();
-            return fieldContainer.endLayer(Valid_Abstract_CoreObjectA.class);
+            FieldContainer fieldContainer = DataObject.getFieldContainer();
+            return fieldContainer.endLayer(Valid_Abstract_DataObjectA.class);
         }
     }
 
-    abstract static class Valid_Abstract_CoreObjectB extends Valid_Abstract_CoreObjectA {
+    abstract static class Valid_Abstract_DataObjectB extends Valid_Abstract_DataObjectA {
         public static FieldContainer getFieldContainer() {
-            FieldContainer fieldContainer = Valid_Abstract_CoreObjectA.getFieldContainer();
-            return fieldContainer.endLayer(Valid_Abstract_CoreObjectB.class);
+            FieldContainer fieldContainer = Valid_Abstract_DataObjectA.getFieldContainer();
+            return fieldContainer.endLayer(Valid_Abstract_DataObjectB.class);
         }
     }
 
-    abstract static class Valid_Abstract_CoreObjectC extends Valid_Abstract_CoreObjectB {
+    abstract static class Valid_Abstract_DataObjectC extends Valid_Abstract_DataObjectB {
         public static FieldContainer getFieldContainer() {
-            FieldContainer fieldContainer = Valid_Abstract_CoreObjectB.getFieldContainer();
-            return fieldContainer.endLayer(Valid_Abstract_CoreObjectC.class);
+            FieldContainer fieldContainer = Valid_Abstract_DataObjectB.getFieldContainer();
+            return fieldContainer.endLayer(Valid_Abstract_DataObjectC.class);
         }
     }
 
-    static class Valid_CoreObjectD extends Valid_Abstract_CoreObjectC {
+    static class Valid_DataObjectD extends Valid_Abstract_DataObjectC {
         public static FieldContainer getFieldContainer() {
-            FieldContainer fieldContainer = Valid_Abstract_CoreObjectC.getFieldContainer();
-            return fieldContainer.finaliseContainer(Valid_CoreObjectD.class);
+            FieldContainer fieldContainer = Valid_Abstract_DataObjectC.getFieldContainer();
+            return fieldContainer.finaliseContainer(Valid_DataObjectD.class);
         }
     }
 
-    abstract static class Valid_Abstract_CoreObjectE extends Valid_Abstract_CoreObjectC {
+    abstract static class Valid_Abstract_DataObjectE extends Valid_Abstract_DataObjectC {
     }
 
     static class Test_DataField extends DataField<Object> {

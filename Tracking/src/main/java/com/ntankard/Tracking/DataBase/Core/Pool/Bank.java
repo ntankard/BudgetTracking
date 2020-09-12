@@ -1,22 +1,19 @@
 package com.ntankard.Tracking.DataBase.Core.Pool;
 
-import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Factory.DoubleParentFactory;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.HasDefault;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Tracking_DataField;
+import com.ntankard.javaObjectDatabase.CoreObject.Interface.HasDefault;
+import com.ntankard.javaObjectDatabase.CoreObject.Interface.Ordered;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.StatementEnd;
-import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
-import com.ntankard.Tracking.DataBase.Interface.Set.TwoParent_Children_Set;
+import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Bank_Summary;
-import com.ntankard.dynamicGUI.CoreObject.Factory.Dummy_Factory;
-import com.ntankard.dynamicGUI.CoreObject.Factory.ObjectFactory;
-import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.CoreObject.Factory.ObjectFactory;
+import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
 
-import static com.ntankard.dynamicGUI.CoreObject.Field.Properties.Display_Properties.INFO_DISPLAY;
+import static com.ntankard.javaObjectDatabase.CoreObject.Field.Properties.Display_Properties.INFO_DISPLAY;
 
 public class Bank extends Pool implements CurrencyBound, Ordered, HasDefault {
 
@@ -49,15 +46,15 @@ public class Bank extends Pool implements CurrencyBound, Ordered, HasDefault {
         // ID
         // Name
         // Currency ========================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(Bank_Currency, Currency.class));
+        fieldContainer.add(new DataField<>(Bank_Currency, Currency.class));
         // Start ========================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(Bank_Start, Double.class));
+        fieldContainer.add(new DataField<>(Bank_Start, Double.class));
         fieldContainer.get(Bank_Start).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
         // Default ========================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(Bank_Default, Boolean.class));
+        fieldContainer.add(new DataField<>(Bank_Default, Boolean.class));
         fieldContainer.get(Bank_Default).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
         // Order ========================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(Bank_Order, Integer.class));
+        fieldContainer.add(new DataField<>(Bank_Order, Integer.class));
         fieldContainer.get(Bank_Order).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
         //==============================================================================================================
         // Parents

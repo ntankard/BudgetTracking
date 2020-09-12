@@ -1,12 +1,12 @@
 package com.ntankard.Tracking.DataBase.Core.Pool.FundEvent;
 
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Factory.DoubleParentFactory;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Tracking_DataField;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePay.TaxRePayFundTransfer;
-import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
-import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
 
 public class TaxFundEvent extends FundEvent {
 
@@ -37,7 +37,7 @@ public class TaxFundEvent extends FundEvent {
         // Name
         // Category
         // Percentage ==================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(TaxFundEvent_Percentage, Double.class));
+        fieldContainer.add(new DataField<>(TaxFundEvent_Percentage, Double.class));
         //==============================================================================================================
         // Parents
         // Children

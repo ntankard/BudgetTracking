@@ -1,7 +1,9 @@
 package com.ntankard.Tracking.DataBase.Core.BaseObject;
 
-import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.ValueRead_DataCore;
-import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataCore.ValueRead_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
 
 public abstract class NamedDataObject extends DataObject {
 
@@ -19,7 +21,7 @@ public abstract class NamedDataObject extends DataObject {
 
         // ID
         // Name ========================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(NamedDataObject_Name, String.class));
+        fieldContainer.add(new DataField<>(NamedDataObject_Name, String.class));
         fieldContainer.getLast().setDataCore(new ValueRead_DataCore<>(true));
         //==============================================================================================================
         // Parents

@@ -1,6 +1,6 @@
 package com.ntankard.Tracking.DataBase.Core.Pool;
 
-import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.NamedDataObject;
 
 public abstract class Pool extends NamedDataObject {

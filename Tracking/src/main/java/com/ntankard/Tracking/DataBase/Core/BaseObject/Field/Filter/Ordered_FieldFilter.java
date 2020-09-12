@@ -1,10 +1,10 @@
 package com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Filter;
 
-import com.ntankard.dynamicGUI.CoreObject.CoreObject;
-import com.ntankard.dynamicGUI.CoreObject.Field.Filter.FieldFilter;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.Filter.FieldFilter;
+import com.ntankard.javaObjectDatabase.CoreObject.Interface.Ordered;
+import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
 
-public class Ordered_FieldFilter<T extends Ordered, ContainerType extends CoreObject> extends FieldFilter<T, ContainerType> {
+public class Ordered_FieldFilter<T extends Ordered, ContainerType extends DataObject> extends FieldFilter<T, ContainerType> {
 
     /**
      * The type of order

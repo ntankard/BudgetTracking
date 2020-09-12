@@ -1,9 +1,9 @@
 package com.ntankard.Tracking.DataBase.Core.BaseObject.Factory;
 
-import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
+import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.TwoParent_Children_Set;
-import com.ntankard.dynamicGUI.CoreObject.Factory.ObjectFactory;
+import com.ntankard.javaObjectDatabase.CoreObject.Factory.ObjectFactory;
 
 public class DoubleParentFactory<GeneratedType extends DataObject, GeneratorType extends DataObject, SecondaryGeneratorType extends DataObject> extends ObjectFactory<GeneratedType, GeneratorType> {
 

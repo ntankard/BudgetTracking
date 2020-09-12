@@ -1,14 +1,18 @@
 package com.ntankard.Tracking.DataBase.Core.Links;
 
-import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.ValueRead_DataCore;
-import com.ntankard.dynamicGUI.CoreObject.Field.Filter.Dependant_FieldFilter;
-import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Tracking_DataField;
+import com.ntankard.Tracking.DataBase.Core.CategorySet;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataCore.Derived_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataCore.ValueRead_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.Filter.Dependant_FieldFilter;
+import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.VirtualCategory;
 
 import java.util.List;
+
+import static com.ntankard.Tracking.DataBase.Core.Pool.Category.VirtualCategory.VirtualCategory_CategorySet;
 
 public class CategoryToVirtualCategory extends DataObject {
 
@@ -27,9 +31,9 @@ public class CategoryToVirtualCategory extends DataObject {
 
         // ID
         // VirtualCategory =============================================================================================
-        fieldContainer.add(new Tracking_DataField<>(CategoryToVirtualCategory_VirtualCategory, VirtualCategory.class));
+        fieldContainer.add(new DataField<>(CategoryToVirtualCategory_VirtualCategory, VirtualCategory.class));
         // SolidCategory ===============================================================================================
-        fieldContainer.add(new Tracking_DataField<>(CategoryToVirtualCategory_SolidCategory, SolidCategory.class));
+        fieldContainer.add(new DataField<>(CategoryToVirtualCategory_SolidCategory, SolidCategory.class));
         fieldContainer.<SolidCategory>get(CategoryToVirtualCategory_SolidCategory).setDataCore(new ValueRead_DataCore<>(true));
         fieldContainer.<SolidCategory>get(CategoryToVirtualCategory_SolidCategory).addFilter(new Dependant_FieldFilter<SolidCategory, CategoryToVirtualCategory>(CategoryToVirtualCategory_VirtualCategory) {
             @Override

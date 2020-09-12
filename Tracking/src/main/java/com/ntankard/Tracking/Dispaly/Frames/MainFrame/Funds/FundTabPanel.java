@@ -3,7 +3,7 @@ package com.ntankard.Tracking.Dispaly.Frames.MainFrame.Funds;
 import com.ntankard.dynamicGUI.Gui.Util.Update.Updatable;
 import com.ntankard.dynamicGUI.Gui.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
-import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
 import com.ntankard.Tracking.Dispaly.Frames.MainFrame.Funds.IndividualFund.IndividualFundPanel;
 
 import javax.swing.*;

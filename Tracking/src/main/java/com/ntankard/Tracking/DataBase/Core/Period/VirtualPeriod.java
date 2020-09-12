@@ -1,9 +1,9 @@
 package com.ntankard.Tracking.DataBase.Core.Period;
 
-import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Tracking_DataField;
+import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
 
-import static com.ntankard.dynamicGUI.CoreObject.Field.Properties.Display_Properties.INFO_DISPLAY;
+import static com.ntankard.javaObjectDatabase.CoreObject.Field.Properties.Display_Properties.INFO_DISPLAY;
 
 public class VirtualPeriod extends Period {
 
@@ -22,9 +22,9 @@ public class VirtualPeriod extends Period {
 
         // ID
         // Name ========================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(VirtualPeriod_Name, String.class));
+        fieldContainer.add(new DataField<>(VirtualPeriod_Name, String.class));
         // Order =======================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(VirtualPeriod_Order, Integer.class));
+        fieldContainer.add(new DataField<>(VirtualPeriod_Order, Integer.class));
         fieldContainer.get(VirtualPeriod_Order).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
         //==============================================================================================================
         // Parents

@@ -1,18 +1,18 @@
 package com.ntankard.Tracking.DataBase.Core.Links;
 
-import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.Derived_DataCore;
-import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.ValueRead_DataCore;
-import com.ntankard.dynamicGUI.CoreObject.Field.Filter.Dependant_FieldFilter;
-import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Tracking_DataField;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataCore.Derived_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataCore.ValueRead_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.Filter.Dependant_FieldFilter;
+import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
+import com.ntankard.javaObjectDatabase.CoreObject.Interface.Ordered;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
 import com.ntankard.Tracking.DataBase.Core.CategorySet;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 
 import java.util.List;
 
-import static com.ntankard.dynamicGUI.CoreObject.Field.Properties.Display_Properties.DEBUG_DISPLAY;
+import static com.ntankard.javaObjectDatabase.CoreObject.Field.Properties.Display_Properties.DEBUG_DISPLAY;
 import static com.ntankard.Tracking.DataBase.Core.CategorySet.CategorySet_Order;
 
 public class CategoryToCategorySet extends DataObject implements Ordered {
@@ -35,9 +35,9 @@ public class CategoryToCategorySet extends DataObject implements Ordered {
 
         // ID
         // CategorySet ========================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(CategoryToCategorySet_CategorySet, CategorySet.class));
+        fieldContainer.add(new DataField<>(CategoryToCategorySet_CategorySet, CategorySet.class));
         // SolidCategory ========================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(CategoryToCategorySet_SolidCategory, SolidCategory.class));
+        fieldContainer.add(new DataField<>(CategoryToCategorySet_SolidCategory, SolidCategory.class));
         fieldContainer.<SolidCategory>get(CategoryToCategorySet_SolidCategory).setDataCore(new ValueRead_DataCore<>(true));
         fieldContainer.<SolidCategory>get(CategoryToCategorySet_SolidCategory).addFilter(new Dependant_FieldFilter<SolidCategory, CategoryToCategorySet>(CategoryToCategorySet_CategorySet) {
             @Override
@@ -46,11 +46,11 @@ public class CategoryToCategorySet extends DataObject implements Ordered {
             }
         });
         // OrderImpl ========================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(CategoryToCategorySet_OrderImpl, Integer.class));
+        fieldContainer.add(new DataField<>(CategoryToCategorySet_OrderImpl, Integer.class));
         fieldContainer.get(CategoryToCategorySet_OrderImpl).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
         fieldContainer.get(CategoryToCategorySet_OrderImpl).setDataCore(new ValueRead_DataCore<>(true));
         // Order ========================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(CategoryToCategorySet_Order, Integer.class));
+        fieldContainer.add(new DataField<>(CategoryToCategorySet_Order, Integer.class));
         fieldContainer.get(CategoryToCategorySet_Order).setDataCore(
                 new Derived_DataCore<>
                         (container -> ((CategoryToCategorySet) container).getCategorySet().getOrder() * 1000 + ((CategoryToCategorySet) container).getOrderImpl()

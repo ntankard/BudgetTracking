@@ -1,6 +1,6 @@
 package com.ntankard.Tracking.Dispaly.DataObjectPanels.PeriodSummary.ModelData.Rows;
 
-import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
+import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;

@@ -8,7 +8,7 @@ import java.awt.*;
 public class PeriodSummary_Renderer extends DefaultTableCellRenderer {
 
     public static class RendererObject {
-        public Object coreObject = "";
+        public Object dataObject = "";
 
         public int top = 0;
         public int left = 0;
@@ -22,8 +22,8 @@ public class PeriodSummary_Renderer extends DefaultTableCellRenderer {
 
         @Override
         public String toString() {
-            if (coreObject != null) {
-                return coreObject.toString();
+            if (dataObject != null) {
+                return dataObject.toString();
             }
             return "";
         }

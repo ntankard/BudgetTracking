@@ -1,15 +1,15 @@
 package com.ntankard.Tracking.DataBase.Core.Transfer.Fund;
 
-import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Tracking_DataField;
+import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Transfer;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ntankard.dynamicGUI.CoreObject.Field.Properties.Display_Properties.ALWAYS_DISPLAY;
+import static com.ntankard.javaObjectDatabase.CoreObject.Field.Properties.Display_Properties.ALWAYS_DISPLAY;
 
 public abstract class FundTransfer extends Transfer {
 
@@ -28,7 +28,7 @@ public abstract class FundTransfer extends Transfer {
         // Description
         // Period
         // Source ======================================================================================================
-        fieldContainer.add(Transfer_Period, new Tracking_DataField<>(Transfer_Source, FundEvent.class));
+        fieldContainer.add(Transfer_Period, new DataField<>(Transfer_Source, FundEvent.class));
         // Value
         // Currency ====================================================================================================
         fieldContainer.get(Transfer_Currency).getDisplayProperties().setVerbosityLevel(ALWAYS_DISPLAY);

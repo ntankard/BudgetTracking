@@ -1,15 +1,15 @@
 package com.ntankard.Tracking.DataBase.Core.Pool.Category;
 
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Factory.DoubleParentFactory;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.HasDefault;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.SpecialValues;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Tracking_DataField;
+import com.ntankard.javaObjectDatabase.CoreObject.Interface.HasDefault;
+import com.ntankard.javaObjectDatabase.CoreObject.Interface.Ordered;
+import com.ntankard.javaObjectDatabase.CoreObject.Interface.SpecialValues;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
-import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Category_Summary;
-import com.ntankard.dynamicGUI.CoreObject.Field.Properties.Display_Properties;
-import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.Properties.Display_Properties;
+import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,22 +45,22 @@ public class SolidCategory extends Category implements HasDefault, SpecialValues
         // ID
         // Name
         // Default =====================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(SolidCategory_Default, Boolean.class));
+        fieldContainer.add(new DataField<>(SolidCategory_Default, Boolean.class));
         fieldContainer.get(SolidCategory_Default).getDisplayProperties().setVerbosityLevel(Display_Properties.DEBUG_DISPLAY);
         // Savings =====================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(SolidCategory_Savings, Boolean.class));
+        fieldContainer.add(new DataField<>(SolidCategory_Savings, Boolean.class));
         fieldContainer.get(SolidCategory_Savings).getDisplayProperties().setVerbosityLevel(Display_Properties.DEBUG_DISPLAY);
         // Taxable =====================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(SolidCategory_Taxable, Boolean.class));
+        fieldContainer.add(new DataField<>(SolidCategory_Taxable, Boolean.class));
         fieldContainer.get(SolidCategory_Taxable).getDisplayProperties().setVerbosityLevel(Display_Properties.DEBUG_DISPLAY);
         // Set =========================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(SolidCategory_Set, Integer.class));
+        fieldContainer.add(new DataField<>(SolidCategory_Set, Integer.class));
         fieldContainer.get(SolidCategory_Set).getDisplayProperties().setVerbosityLevel(Display_Properties.INFO_DISPLAY);
         // SetName =====================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(SolidCategory_SetName, String.class));
+        fieldContainer.add(new DataField<>(SolidCategory_SetName, String.class));
         fieldContainer.get(SolidCategory_SetName).getDisplayProperties().setVerbosityLevel(Display_Properties.INFO_DISPLAY);
         // Order =======================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(SolidCategory_Order, Integer.class));
+        fieldContainer.add(new DataField<>(SolidCategory_Order, Integer.class));
         fieldContainer.get(SolidCategory_Order).getDisplayProperties().setVerbosityLevel(Display_Properties.INFO_DISPLAY);
         //==============================================================================================================
         // Parents

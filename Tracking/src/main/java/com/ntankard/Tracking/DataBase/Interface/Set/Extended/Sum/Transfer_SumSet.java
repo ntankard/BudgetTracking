@@ -2,7 +2,7 @@ package com.ntankard.Tracking.DataBase.Interface.Set.Extended.Sum;
 
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Transfer.HalfTransfer;
-import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.ObjectSet;
 
 import java.util.ArrayList;

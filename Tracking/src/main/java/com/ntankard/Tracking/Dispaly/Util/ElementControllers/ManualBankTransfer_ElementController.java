@@ -6,7 +6,7 @@ import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.BankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.ManualBankTransfer;
-import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
 import com.ntankard.Tracking.Dispaly.Util.Panels.TrackingDatabase_ElementController;
 
 public class ManualBankTransfer_ElementController extends TrackingDatabase_ElementController<BankTransfer> {

@@ -1,19 +1,19 @@
 package com.ntankard.Tracking.DataBase.Core.Transfer;
 
-import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
+import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Tracking_DataField;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
-import com.ntankard.Tracking.DataBase.Database.ParameterMap;
-import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.Derived_DataCore;
-import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.Database.ParameterMap;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataCore.Derived_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
 
 import static com.ntankard.Tracking.DataBase.Core.Transfer.Transfer.*;
-import static com.ntankard.dynamicGUI.CoreObject.Field.Properties.Display_Properties.DataType.CURRENCY;
-import static com.ntankard.dynamicGUI.CoreObject.Field.Properties.Display_Properties.INFO_DISPLAY;
-import static com.ntankard.dynamicGUI.CoreObject.Field.Properties.Display_Properties.TRACE_DISPLAY;
+import static com.ntankard.javaObjectDatabase.CoreObject.Field.Properties.Display_Properties.DataType.CURRENCY;
+import static com.ntankard.javaObjectDatabase.CoreObject.Field.Properties.Display_Properties.INFO_DISPLAY;
+import static com.ntankard.javaObjectDatabase.CoreObject.Field.Properties.Display_Properties.TRACE_DISPLAY;
 
 /**
  * One half of the transaction
@@ -40,10 +40,10 @@ public class HalfTransfer extends DataObject implements CurrencyBound {
 
         // ID
         // Transfer ====================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(HalfTransfer_Transfer, Transfer.class));
+        fieldContainer.add(new DataField<>(HalfTransfer_Transfer, Transfer.class));
         fieldContainer.get(HalfTransfer_Transfer).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
         // Period ======================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(HalfTransfer_Period, Period.class));
+        fieldContainer.add(new DataField<>(HalfTransfer_Period, Period.class));
         fieldContainer.<Period>get(HalfTransfer_Period).setDataCore(
                 new Derived_DataCore<>(
                         (Derived_DataCore.Converter<Period, HalfTransfer>) container -> {
@@ -57,7 +57,7 @@ public class HalfTransfer extends DataObject implements CurrencyBound {
                         , new Derived_DataCore.ExternalSource<>(fieldContainer.get(HalfTransfer_Transfer), Transfer_DestinationPeriodGet)));
         fieldContainer.<Pool>get(HalfTransfer_Period).getDisplayProperties().setDisplaySet(false);
         // Pool ========================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(HalfTransfer_Pool, Pool.class));
+        fieldContainer.add(new DataField<>(HalfTransfer_Pool, Pool.class));
         fieldContainer.<Pool>get(HalfTransfer_Pool).setDataCore(
                 new Derived_DataCore<>(
                         (Derived_DataCore.Converter<Pool, HalfTransfer>) container -> {
@@ -71,7 +71,7 @@ public class HalfTransfer extends DataObject implements CurrencyBound {
                         , new Derived_DataCore.ExternalSource<>(fieldContainer.get(HalfTransfer_Transfer), Transfer_Destination)));
         fieldContainer.<Pool>get(HalfTransfer_Pool).getDisplayProperties().setDisplaySet(false);
         // Value =======================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(HalfTransfer_Value, Double.class));
+        fieldContainer.add(new DataField<>(HalfTransfer_Value, Double.class));
         fieldContainer.get(HalfTransfer_Value).getDisplayProperties().setDataType(CURRENCY);
         fieldContainer.<Double>get(HalfTransfer_Value).setDataCore(
                 new Derived_DataCore<>(
@@ -84,7 +84,7 @@ public class HalfTransfer extends DataObject implements CurrencyBound {
                         }
                         , new Derived_DataCore.ExternalSource<>(fieldContainer.get(HalfTransfer_Transfer), Transfer_Value)));
         // Currency ====================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(HalfTransfer_Currency, Currency.class));
+        fieldContainer.add(new DataField<>(HalfTransfer_Currency, Currency.class));
         fieldContainer.get(HalfTransfer_Currency).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
         fieldContainer.<Currency>get(HalfTransfer_Currency).setDataCore(
                 new Derived_DataCore<>(
@@ -99,7 +99,7 @@ public class HalfTransfer extends DataObject implements CurrencyBound {
                         , new Derived_DataCore.ExternalSource<>(fieldContainer.get(HalfTransfer_Transfer), Transfer_DestinationCurrencyGet)));
         fieldContainer.<Pool>get(HalfTransfer_Currency).getDisplayProperties().setDisplaySet(false);
         // Source ======================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(HalfTransfer_Source, Boolean.class));
+        fieldContainer.add(new DataField<>(HalfTransfer_Source, Boolean.class));
         fieldContainer.<Pool>get(HalfTransfer_Source).getDisplayProperties().setVerbosityLevel(TRACE_DISPLAY);
         //==============================================================================================================
         // Parents

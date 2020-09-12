@@ -10,7 +10,7 @@ import com.ntankard.Tracking.Dispaly.Util.Panels.Object_DisplayList;
 import javax.swing.*;
 import java.awt.*;
 
-import static com.ntankard.dynamicGUI.CoreObject.Field.Properties.Display_Properties.INFO_DISPLAY;
+import static com.ntankard.javaObjectDatabase.CoreObject.Field.Properties.Display_Properties.INFO_DISPLAY;
 
 public class IndividualFundPanel extends UpdatableJPanel {
 

@@ -1,10 +1,10 @@
 package com.ntankard.TestUtil;
 
-import com.ntankard.dynamicGUI.ClassExtension.Util;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.HasDefault;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.SpecialValues;
-import com.ntankard.Tracking.DataBase.Database.SubContainers.DataObjectClassTree;
+import com.ntankard.javaObjectDatabase.util.SourceCodeInspector;
+import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
+import com.ntankard.javaObjectDatabase.CoreObject.Interface.HasDefault;
+import com.ntankard.javaObjectDatabase.CoreObject.Interface.SpecialValues;
+import com.ntankard.javaObjectDatabase.Database.SubContainers.DataObjectClassTree;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ public class ClassInspectionUtil {
     public static List<Class<? extends DataObject>> getSolidClasses() {
         // Get all classes
         final Class[][] classes = {new Class[0]};
-        assertDoesNotThrow(() -> classes[0] = Util.getClasses(PATH));
+        assertDoesNotThrow(() -> classes[0] = SourceCodeInspector.getClasses(PATH));
 
         // Filter to solid
         List<Class<? extends DataObject>> toReturn = new ArrayList<>();
@@ -54,7 +54,7 @@ public class ClassInspectionUtil {
     public static List<Class<? extends DataObject>> getAbstractClasses() {
         // Get all classes
         final Class[][] classes = {new Class[0]};
-        assertDoesNotThrow(() -> classes[0] = Util.getClasses(PATH));
+        assertDoesNotThrow(() -> classes[0] = SourceCodeInspector.getClasses(PATH));
 
         // Filter to abstract
         List<Class<? extends DataObject>> toReturn = new ArrayList<>();
@@ -79,7 +79,7 @@ public class ClassInspectionUtil {
     public static List<Class<DataObject>> getAllClasses() {
         // Get all classes
         final Class[][] classes = {new Class[0]};
-        assertDoesNotThrow(() -> classes[0] = Util.getClasses(PATH));
+        assertDoesNotThrow(() -> classes[0] = SourceCodeInspector.getClasses(PATH));
 
         // Filter to HasDefault
         List<Class<DataObject>> toReturn = new ArrayList<>();
@@ -102,7 +102,7 @@ public class ClassInspectionUtil {
     public static List<Class<? extends DataObject>> getHasDefaultClasses() {
         // Get all classes
         final Class[][] classes = {new Class[0]};
-        assertDoesNotThrow(() -> classes[0] = Util.getClasses(PATH));
+        assertDoesNotThrow(() -> classes[0] = SourceCodeInspector.getClasses(PATH));
 
         // Filter to HasDefault
         List<Class<? extends DataObject>> toReturn = new ArrayList<>();
@@ -127,7 +127,7 @@ public class ClassInspectionUtil {
     public static List<Class<? extends DataObject>> getSpecialValueClasses() {
         // Get all classes
         final Class[][] classes = {new Class[0]};
-        assertDoesNotThrow(() -> classes[0] = Util.getClasses(PATH));
+        assertDoesNotThrow(() -> classes[0] = SourceCodeInspector.getClasses(PATH));
 
         // Filter to SpecialValues
         List<Class<? extends DataObject>> toReturn = new ArrayList<>();

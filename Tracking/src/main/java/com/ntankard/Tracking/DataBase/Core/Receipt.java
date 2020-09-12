@@ -1,9 +1,9 @@
 package com.ntankard.Tracking.DataBase.Core;
 
-import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.ValueRead_DataCore;
-import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Tracking_DataField;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataCore.ValueRead_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.BankTransfer;
 
 public class Receipt extends DataObject {
@@ -23,9 +23,9 @@ public class Receipt extends DataObject {
 
         // ID
         // FileName ======================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(Receipt_FileName, String.class));
+        fieldContainer.add(new DataField<>(Receipt_FileName, String.class));
         // BankTransfer ========================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(Receipt_BankTransfer, BankTransfer.class));
+        fieldContainer.add(new DataField<>(Receipt_BankTransfer, BankTransfer.class));
         fieldContainer.get(Receipt_BankTransfer).setDataCore(new ValueRead_DataCore<>(true));
         //==============================================================================================================
         // Parents

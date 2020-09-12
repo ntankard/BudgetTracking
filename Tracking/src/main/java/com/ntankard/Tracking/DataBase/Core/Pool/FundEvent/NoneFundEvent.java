@@ -1,7 +1,7 @@
 package com.ntankard.Tracking.DataBase.Core.Pool.FundEvent;
 
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
-import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
 
 public class NoneFundEvent extends FundEvent {
 

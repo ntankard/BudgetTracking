@@ -1,8 +1,5 @@
 package com.ntankard.Tracking.Dispaly.Util.Panels;
 
-import com.ntankard.dynamicGUI.CoreObject.CoreObject;
-import com.ntankard.dynamicGUI.Gui.Containers.DynamicGUI_DisplayList;
-import com.ntankard.dynamicGUI.Gui.Util.Update.Updatable;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
 import com.ntankard.Tracking.DataBase.Core.Transfer.HalfTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Transfer;
@@ -10,10 +7,13 @@ import com.ntankard.Tracking.DataBase.Interface.Set.ObjectSet;
 import com.ntankard.Tracking.Dispaly.Util.LocaleInspectors.CurrencyBound_LocaleSource;
 import com.ntankard.Tracking.Dispaly.Util.LocaleInspectors.HalfTransfer_LocaleSource;
 import com.ntankard.Tracking.Dispaly.Util.LocaleInspectors.SetTransfer_LocaleSource;
+import com.ntankard.dynamicGUI.Gui.Containers.DynamicGUI_DisplayList;
+import com.ntankard.dynamicGUI.Gui.Util.Update.Updatable;
+import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
 
 import java.util.ArrayList;
 
-public class Object_DisplayList<T extends CoreObject> extends DynamicGUI_DisplayList<T> {
+public class Object_DisplayList<T extends DataObject> extends DynamicGUI_DisplayList<T> {
 
     /**
      * The source of data for the list

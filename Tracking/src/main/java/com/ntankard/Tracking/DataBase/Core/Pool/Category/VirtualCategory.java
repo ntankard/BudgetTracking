@@ -1,13 +1,13 @@
 package com.ntankard.Tracking.DataBase.Core.Pool.Category;
 
-import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.Derived_DataCore;
-import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.ValueRead_DataCore;
-import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Tracking_DataField;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataCore.Derived_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataCore.ValueRead_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.CoreObject.Interface.Ordered;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
 import com.ntankard.Tracking.DataBase.Core.CategorySet;
 
-import static com.ntankard.dynamicGUI.CoreObject.Field.Properties.Display_Properties.DEBUG_DISPLAY;
+import static com.ntankard.javaObjectDatabase.CoreObject.Field.Properties.Display_Properties.DEBUG_DISPLAY;
 import static com.ntankard.Tracking.DataBase.Core.CategorySet.CategorySet_Order;
 
 public class VirtualCategory extends Category implements Ordered {
@@ -29,13 +29,13 @@ public class VirtualCategory extends Category implements Ordered {
         // ID
         // Name
         // CategorySet =================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(VirtualCategory_CategorySet, CategorySet.class));
+        fieldContainer.add(new DataField<>(VirtualCategory_CategorySet, CategorySet.class));
         // OrderImpl ===================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(VirtualCategory_OrderImpl, Integer.class));
+        fieldContainer.add(new DataField<>(VirtualCategory_OrderImpl, Integer.class));
         fieldContainer.get(VirtualCategory_OrderImpl).setDataCore(new ValueRead_DataCore<>(true));
         fieldContainer.get(VirtualCategory_OrderImpl).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
         // Order =======================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(VirtualCategory_Order, Integer.class));
+        fieldContainer.add(new DataField<>(VirtualCategory_Order, Integer.class));
         fieldContainer.get(VirtualCategory_Order).setDataCore(
                 new Derived_DataCore<>
                         (container -> ((VirtualCategory) container).getCategorySet().getOrder() * 1000 + ((VirtualCategory) container).getOrderImpl()
