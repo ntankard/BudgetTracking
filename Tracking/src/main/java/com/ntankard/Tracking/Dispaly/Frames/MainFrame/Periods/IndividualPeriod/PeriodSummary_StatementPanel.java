@@ -14,7 +14,7 @@ import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.FundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.ManualFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePay.RePayFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.HalfTransfer;
-import com.ntankard.Tracking.DataBase.Interface.Set.Filter.SetFilter;
+import com.ntankard.javaObjectDatabase.util.SetFilter;
 import com.ntankard.Tracking.DataBase.Interface.Set.OneParent_Children_Set;
 import com.ntankard.Tracking.DataBase.Interface.Set.TwoParent_Children_Set;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Bank_Summary;

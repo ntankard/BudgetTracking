@@ -1,10 +1,11 @@
 package com.ntankard.Tracking.DataBase.Database;
 
-import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.dynamicGUI.CoreObject.Field.DataField;
 import com.ntankard.Tracking.DataBase.Core.Links.CategoryToCategorySet;
 import com.ntankard.Tracking.DataBase.Core.Links.CategoryToVirtualCategory;
-import com.ntankard.Tracking.Util.FileUtil;
+import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
+import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.util.FileUtil;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.ntankard.Tracking.DataBase.Database.TrackingDatabase_Reader.*;
+import static com.ntankard.javaObjectDatabase.Database.TrackingDatabase_Reader.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TrackingDatabase_ReaderTest {
@@ -25,7 +26,6 @@ class TrackingDatabase_ReaderTest {
         TrackingDatabase.reset();
         String savePath = "C:\\Users\\Nicholas\\Google Drive\\BudgetTrackingData";
         read(savePath, new HashMap<>());
-        TrackingDatabase.get().finalizeCore();
     }
 
     @Test
@@ -75,7 +75,6 @@ class TrackingDatabase_ReaderTest {
 
         TrackingDatabase.reset();
         read(savePath, new HashMap<>());
-        TrackingDatabase.get().finalizeCore();
 
         new File(testPath).mkdir();
         new File(testPath + ROOT_DATA_PATH).mkdir();

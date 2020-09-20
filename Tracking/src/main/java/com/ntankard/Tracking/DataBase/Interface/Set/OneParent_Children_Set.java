@@ -1,7 +1,7 @@
 package com.ntankard.Tracking.DataBase.Interface.Set;
 
 import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
-import com.ntankard.Tracking.DataBase.Interface.Set.Filter.SetFilter;
+import com.ntankard.javaObjectDatabase.util.SetFilter;
 
 import java.util.ArrayList;
 import java.util.List;

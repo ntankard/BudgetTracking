@@ -1,9 +1,8 @@
 package com.ntankard.Tracking;
 
+import com.ntankard.Tracking.Dispaly.Frames.MainFrame.Master_Frame;
 import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
 import com.ntankard.javaObjectDatabase.Database.TrackingDatabase_Reader;
-import com.ntankard.Tracking.DataBase.TrackingDatabase_Repair;
-import com.ntankard.Tracking.Dispaly.Frames.MainFrame.Master_Frame;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +16,6 @@ public class Main {
 
         TrackingDatabase.reset();
         TrackingDatabase_Reader.read(savePath, nameMap);
-        TrackingDatabase.get().finalizeCore();
         Master_Frame.open(savePath);
     }
 }

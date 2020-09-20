@@ -1,8 +1,8 @@
 package com.ntankard.TestUtil;
 
-import com.ntankard.Tracking.DataBase.Core.BaseObject.DataObject;
-import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
-import com.ntankard.Tracking.DataBase.Database.TrackingDatabase_Reader;
+import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
+import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.Database.TrackingDatabase_Reader;
 
 import java.util.HashMap;
 
@@ -17,7 +17,6 @@ public class DataAccessUntil {
         TrackingDatabase.reset();
         String savePath = "C:\\Users\\Nicholas\\Google Drive\\BudgetTrackingData";
         TrackingDatabase_Reader.read(savePath, new HashMap<>());
-        TrackingDatabase.get().finalizeCore();
     }
 
     /**

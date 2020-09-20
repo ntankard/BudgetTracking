@@ -5,7 +5,7 @@ import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FixedPeriodFundEvent;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
 import com.ntankard.javaObjectDatabase.Database.ParameterMap;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataCore.Derived_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.Derived_DataCore;
 import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
 
 import static com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FixedPeriodFundEvent.*;
