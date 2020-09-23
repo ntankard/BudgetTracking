@@ -1,11 +1,12 @@
 package com.ntankard.Tracking.DataBase.Core.BaseObject;
 
-import com.ntankard.dynamicGUI.CoreObject.CoreObject;
-import com.ntankard.dynamicGUI.CoreObject.Field.DataField;
-import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
+import com.ntankard.Tracking.DataBase.Core.Currency;
+import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
+import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
 import com.ntankard.TestUtil.ClassInspectionUtil;
 import com.ntankard.TestUtil.DataAccessUntil;
-import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -56,11 +57,11 @@ class DataObjectTest {
             if (!Modifier.isAbstract(testClass.getModifiers())) {
                 for (DataObject dataObject : TrackingDatabase.get().get(testClass)) {
                     Class<? extends DataObject> aClass = dataObject.getClass();
-                    List<DataField<?>> members = CoreObject.getFieldContainer(aClass).getVerbosityDataFields(Integer.MAX_VALUE);
+                    List<DataField<?>> members = DataObject.getFieldContainer(aClass).getVerbosityDataFields(Integer.MAX_VALUE);
 
                     // Find the setters
                     for (DataField member : members) {
-                        if (member.getDataCore().canEdit() && member.getDisplayProperties().getDisplaySet() && DataObject.class.isAssignableFrom(member.getType())) {
+                        if (member.getCanEdit() && member.getDisplayProperties().getDisplaySet() && DataObject.class.isAssignableFrom(member.getType())) {
                             // Get the data
                             AtomicReference<List<DataObject>> expectedOptions = new AtomicReference<>();
                             assertDoesNotThrow(() -> expectedOptions.set((List) member.getSource().invoke(dataObject, member.getType(), member.getDisplayName())));
@@ -78,7 +79,7 @@ class DataObjectTest {
                             }
 
                             // Check null
-                            if (!((Tracking_DataField<?>) member).isCanBeNull()) {
+                            if (!(member).isCanBeNull()) {
                                 assertThrows(IllegalArgumentException.class, () -> dataObject.set(member.getIdentifierName(), null));
                             }
                         }
@@ -115,7 +116,7 @@ class DataObjectTest {
     @Test
     void checkNonPrimitive() {
         for (Class<? extends DataObject> toTest : ClassInspectionUtil.getAllClasses()) {
-            List<DataField<?>> members = CoreObject.getFieldContainer(toTest).getVerbosityDataFields(Integer.MAX_VALUE);
+            List<DataField<?>> members = DataObject.getFieldContainer(toTest).getVerbosityDataFields(Integer.MAX_VALUE);
 
             // Find the setters
             for (DataField member : members) {
@@ -166,8 +167,10 @@ class DataObjectTest {
         for (DataObject dataObject : TrackingDatabase.get().getAll()) {
             dataObject.validateParents();
             for (DataObject parent : dataObject.getParents()) {
-                assertNotNull(parent, "Core Database error. Null parent detected");
-                assertTrue(parent.getChildren().contains(dataObject), "Core Database error. Parent has not been notified");
+                if (!(parent instanceof Currency)) {
+                    assertNotNull(parent, "Core Database error. Null parent detected");
+                    assertTrue(parent.getChildren().contains(dataObject), "Core Database error. Parent has not been notified");
+                }
             }
         }
     }

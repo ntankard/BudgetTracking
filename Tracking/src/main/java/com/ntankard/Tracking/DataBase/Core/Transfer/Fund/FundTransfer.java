@@ -1,5 +1,9 @@
 package com.ntankard.Tracking.DataBase.Core.Transfer.Fund;
 
+import com.ntankard.Tracking.DataBase.Core.Currency;
+import com.ntankard.Tracking.DataBase.Core.Period.Period;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.Derived_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.LocalSource;
 import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
 import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
@@ -34,9 +38,17 @@ public abstract class FundTransfer extends Transfer {
         fieldContainer.get(Transfer_Currency).getDisplayProperties().setVerbosityLevel(ALWAYS_DISPLAY);
         // Destination
         // SourceCurrencyGet
-        // DestinationCurrencyGet
+        // DestinationCurrencyGet ======================================================================================
+        fieldContainer.<Currency>get(Transfer_DestinationCurrencyGet).setDataCore(
+                new Derived_DataCore<>
+                        (container -> ((Transfer) container).getCurrency()
+                                , new LocalSource<>(fieldContainer.get(Transfer_Currency))));
         // SourcePeriodGet
-        // DestinationPeriodGet
+        // DestinationPeriodGet ========================================================================================
+        fieldContainer.<Period>get(Transfer_DestinationPeriodGet).setDataCore(
+                new Derived_DataCore<>
+                        (container -> ((Transfer) container).getPeriod()
+                                , new LocalSource<>(fieldContainer.get(Transfer_Period))));
         // Parents
         // Children
 

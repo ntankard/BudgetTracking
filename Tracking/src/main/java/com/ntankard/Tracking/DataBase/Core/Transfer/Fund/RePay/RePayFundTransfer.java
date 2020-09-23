@@ -1,8 +1,9 @@
 package com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePay;
 
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.FundTransfer;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.DirectExternalSource;
 import com.ntankard.javaObjectDatabase.Database.ParameterMap;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.Derived_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.Derived_DataCore;
 import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
 
 import static com.ntankard.Tracking.DataBase.Core.BaseObject.NamedDataObject.NamedDataObject_Name;
@@ -25,7 +26,7 @@ public abstract class RePayFundTransfer extends FundTransfer {
         // Description =================================================================================================
         fieldContainer.get(Transfer_Description).setDataCore(
                 new Derived_DataCore<>(
-                        new Derived_DataCore.DirectExternalSource<>(fieldContainer.get(Transfer_Source), NamedDataObject_Name,
+                        new DirectExternalSource<>(fieldContainer.get(Transfer_Source), NamedDataObject_Name,
                                 original -> "RP " + original)));
         // Period
         // Source
@@ -34,7 +35,7 @@ public abstract class RePayFundTransfer extends FundTransfer {
         // Destination =================================================================================================
         fieldContainer.get(Transfer_Destination).setDataCore(
                 new Derived_DataCore<>(
-                        new Derived_DataCore.DirectExternalSource<>(fieldContainer.get(Transfer_Source), FundEvent_Category)));
+                        new DirectExternalSource<>(fieldContainer.get(Transfer_Source), FundEvent_Category)));
         // SourceCurrencyGet
         // DestinationCurrencyGet
         // SourcePeriodGet

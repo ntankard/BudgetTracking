@@ -1,7 +1,8 @@
 package com.ntankard.Tracking.DataBase.Core.Pool.Category;
 
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataCore.Derived_DataCore;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataCore.ValueRead_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.Derived_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.ExternalSource;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.LocalSource;
 import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
 import com.ntankard.javaObjectDatabase.CoreObject.Interface.Ordered;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
@@ -32,15 +33,15 @@ public class VirtualCategory extends Category implements Ordered {
         fieldContainer.add(new DataField<>(VirtualCategory_CategorySet, CategorySet.class));
         // OrderImpl ===================================================================================================
         fieldContainer.add(new DataField<>(VirtualCategory_OrderImpl, Integer.class));
-        fieldContainer.get(VirtualCategory_OrderImpl).setDataCore(new ValueRead_DataCore<>(true));
+        fieldContainer.get(VirtualCategory_OrderImpl).setCanEdit(true);
         fieldContainer.get(VirtualCategory_OrderImpl).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
         // Order =======================================================================================================
         fieldContainer.add(new DataField<>(VirtualCategory_Order, Integer.class));
         fieldContainer.get(VirtualCategory_Order).setDataCore(
                 new Derived_DataCore<>
                         (container -> ((VirtualCategory) container).getCategorySet().getOrder() * 1000 + ((VirtualCategory) container).getOrderImpl()
-                                , new Derived_DataCore.LocalSource<>(fieldContainer.get(VirtualCategory_OrderImpl))
-                                , new Derived_DataCore.ExternalSource<>(fieldContainer.get(VirtualCategory_CategorySet), CategorySet_Order)));
+                                , new LocalSource<>(fieldContainer.get(VirtualCategory_OrderImpl))
+                                , new ExternalSource<>(fieldContainer.get(VirtualCategory_CategorySet), CategorySet_Order)));
         //==============================================================================================================
         // Parents
         // Children

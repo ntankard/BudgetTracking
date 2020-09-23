@@ -33,10 +33,10 @@ public class Ordered_FieldFilter<T extends Ordered, ContainerType extends DataOb
      * {@inheritDoc
      */
     @Override
-    public boolean isValid(T value, ContainerType container) {
-        if (value != null && container.getField(toCompare).get() != null) {
-            Integer order1 = value.getOrder();
-            Integer order2 = ((Ordered) container.getField(toCompare).get()).getOrder();
+    public boolean isValid(T newValue, T pastValue, ContainerType container) {
+        if (newValue != null && pastValue != null) {
+            Integer order1 = newValue.getOrder();
+            Integer order2 = pastValue.getOrder();
 
             if (orderSequence.equals(OrderSequence.BELOW)) {
                 return order1 < order2;

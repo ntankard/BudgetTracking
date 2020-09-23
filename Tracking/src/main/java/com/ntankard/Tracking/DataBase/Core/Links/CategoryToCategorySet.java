@@ -1,8 +1,9 @@
 package com.ntankard.Tracking.DataBase.Core.Links;
 
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataCore.Derived_DataCore;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataCore.ValueRead_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.Derived_DataCore;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.Filter.Dependant_FieldFilter;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.ExternalSource;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.LocalSource;
 import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
 import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
 import com.ntankard.javaObjectDatabase.CoreObject.Interface.Ordered;
@@ -38,24 +39,24 @@ public class CategoryToCategorySet extends DataObject implements Ordered {
         fieldContainer.add(new DataField<>(CategoryToCategorySet_CategorySet, CategorySet.class));
         // SolidCategory ========================================================================================================
         fieldContainer.add(new DataField<>(CategoryToCategorySet_SolidCategory, SolidCategory.class));
-        fieldContainer.<SolidCategory>get(CategoryToCategorySet_SolidCategory).setDataCore(new ValueRead_DataCore<>(true));
+        fieldContainer.get(CategoryToCategorySet_SolidCategory).setCanEdit(true);
         fieldContainer.<SolidCategory>get(CategoryToCategorySet_SolidCategory).addFilter(new Dependant_FieldFilter<SolidCategory, CategoryToCategorySet>(CategoryToCategorySet_CategorySet) {
             @Override
-            public boolean isValid(SolidCategory value, CategoryToCategorySet categoryToCategorySet) {
-                return !categoryToCategorySet.getCategorySet().getUsedCategories().contains(value) || value.equals(categoryToCategorySet.getSolidCategory());
+            public boolean isValid(SolidCategory newValue, SolidCategory pastValue, CategoryToCategorySet categoryToCategorySet) {
+                return !categoryToCategorySet.getCategorySet().getUsedCategories().contains(newValue) || newValue.equals(categoryToCategorySet.getSolidCategory());
             }
         });
         // OrderImpl ========================================================================================================
         fieldContainer.add(new DataField<>(CategoryToCategorySet_OrderImpl, Integer.class));
         fieldContainer.get(CategoryToCategorySet_OrderImpl).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
-        fieldContainer.get(CategoryToCategorySet_OrderImpl).setDataCore(new ValueRead_DataCore<>(true));
+        fieldContainer.get(CategoryToCategorySet_OrderImpl).setCanEdit(true);
         // Order ========================================================================================================
         fieldContainer.add(new DataField<>(CategoryToCategorySet_Order, Integer.class));
         fieldContainer.get(CategoryToCategorySet_Order).setDataCore(
                 new Derived_DataCore<>
                         (container -> ((CategoryToCategorySet) container).getCategorySet().getOrder() * 1000 + ((CategoryToCategorySet) container).getOrderImpl()
-                                , new Derived_DataCore.LocalSource<>(fieldContainer.get(CategoryToCategorySet_OrderImpl))
-                                , new Derived_DataCore.ExternalSource<>(fieldContainer.get(CategoryToCategorySet_CategorySet), CategorySet_Order)));
+                                , new LocalSource<>(fieldContainer.get(CategoryToCategorySet_OrderImpl))
+                                , new ExternalSource<>(fieldContainer.get(CategoryToCategorySet_CategorySet), CategorySet_Order)));
         //==============================================================================================================
         // Parents
         // Children

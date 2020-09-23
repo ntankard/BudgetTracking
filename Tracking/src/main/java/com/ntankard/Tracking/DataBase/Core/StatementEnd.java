@@ -1,8 +1,8 @@
 package com.ntankard.Tracking.DataBase.Core;
 
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataCore.Derived_DataCore;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataCore.Derived_DataCore.DirectExternalSource;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataCore.ValueRead_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.Derived_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.DirectExternalSource;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.ExternalSource;
 import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
 import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
@@ -10,6 +10,8 @@ import com.ntankard.javaObjectDatabase.CoreObject.Interface.Ordered;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
+
+import java.util.List;
 
 import static com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod.ExistingPeriod_Order;
 import static com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank_Order;
@@ -19,6 +21,9 @@ import static com.ntankard.javaObjectDatabase.CoreObject.Field.Properties.Displa
 import static com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank_Currency;
 
 public class StatementEnd extends DataObject implements CurrencyBound, Ordered {
+
+    public interface StatementEndList extends List<StatementEnd> {
+    }
 
     //------------------------------------------------------------------------------------------------------------------
     //################################################### Constructor ##################################################
@@ -45,7 +50,7 @@ public class StatementEnd extends DataObject implements CurrencyBound, Ordered {
         // End =========================================================================================================
         fieldContainer.add(new DataField<>(StatementEnd_End, Double.class));
         fieldContainer.get(StatementEnd_End).getDisplayProperties().setDataType(CURRENCY);
-        fieldContainer.get(StatementEnd_End).setDataCore(new ValueRead_DataCore<>(true));
+        fieldContainer.get(StatementEnd_End).setCanEdit(true);
         // Currency ====================================================================================================
         fieldContainer.add(new DataField<>(StatementEnd_Currency, Currency.class));
         fieldContainer.get(StatementEnd_Currency).setDataCore(
@@ -56,9 +61,9 @@ public class StatementEnd extends DataObject implements CurrencyBound, Ordered {
         fieldContainer.get(StatementEnd_Order).getDisplayProperties().setVerbosityLevel(TRACE_DISPLAY);
         fieldContainer.<Integer>get(StatementEnd_Order).setDataCore(
                 new Derived_DataCore<Integer, StatementEnd>
-                        (coreObject -> coreObject.getBank().getOrder() + coreObject.getPeriod().getOrder() * 1000
-                                , new Derived_DataCore.LocalSource<>(fieldContainer.get(StatementEnd_Bank))
-                                , new Derived_DataCore.LocalSource<>(fieldContainer.get(StatementEnd_Period))));
+                        (dataObject -> dataObject.getBank().getOrder() + dataObject.getPeriod().getOrder() * 1000
+                                , new ExternalSource<>(fieldContainer.get(StatementEnd_Bank), Bank_Order)
+                                , new ExternalSource<>(fieldContainer.get(StatementEnd_Period), ExistingPeriod_Order)));
         //==============================================================================================================
         // Parents
         // Children

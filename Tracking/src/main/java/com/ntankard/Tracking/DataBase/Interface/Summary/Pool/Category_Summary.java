@@ -1,22 +1,27 @@
 package com.ntankard.Tracking.DataBase.Interface.Summary.Pool;
 
-import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
-import com.ntankard.dynamicGUI.CoreObject.Field.DataCore.Method_DataCore;
-import com.ntankard.dynamicGUI.CoreObject.Field.DataField;
-import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.Ordered;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Tracking_DataField;
+import com.ntankard.Tracking.DataBase.Core.Pool.Category.Category;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.Derived_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.Static_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.ExternalSource;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.LocalSource;
+import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.CoreObject.Interface.Ordered;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
-import com.ntankard.Tracking.DataBase.Database.ParameterMap;
+import com.ntankard.javaObjectDatabase.Database.ParameterMap;
 
-import java.util.Map;
+import java.util.List;
 
-import static com.ntankard.dynamicGUI.CoreObject.Field.Properties.Display_Properties.TRACE_DISPLAY;
+import static com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory.SolidCategory_Order;
 
 @ParameterMap(shouldSave = false)
 public class Category_Summary extends PoolSummary<SolidCategory> implements Ordered {
+
+    public interface Category_SummaryList extends List<Category_Summary> {
+    }
 
     public static final String Category_Summary_Order = "getOrder";
 
@@ -31,18 +36,27 @@ public class Category_Summary extends PoolSummary<SolidCategory> implements Orde
         // Pool
         // Currency
         // Start =======================================================================================================
-        fieldContainer.get(PoolSummary_Start).setDataCore(new Method_DataCore<>(container -> -1.0));
+        fieldContainer.get(PoolSummary_Start).setDataCore(new Static_DataCore<>(-1.0));
         // End =========================================================================================================
-        fieldContainer.get(PoolSummary_End).setDataCore(new Method_DataCore<>(container -> -1.0));
+        fieldContainer.get(PoolSummary_End).setDataCore(new Static_DataCore<>(-1.0));
+        // =============================================================================================================
         // Net
-        // TransferSum
+        // TransferSum =================================================================================================
+        fieldContainer.<Double>get(PoolSummary_TransferSum).setDataCore(
+                new Derived_DataCore<>(
+                        (Derived_DataCore.Calculator<Double, PoolSummary<Category>>) PoolSummary::getTransferSetSum
+                        , new LocalSource<>(fieldContainer.get(PoolSummary_TransferSetSum))));
+        // =============================================================================================================
         // Missing
-        // Valid =========================================================================================================
-        fieldContainer.get(PoolSummary_Valid).setDataCore(new Method_DataCore<>(container -> true));
+        // Valid =======================================================================================================
+        fieldContainer.get(PoolSummary_Valid).setDataCore(new Static_DataCore<>(true));
         // Order =======================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(Category_Summary_Order, Integer.class));
-        fieldContainer.get(Category_Summary_Order).getDisplayProperties().setVerbosityLevel(TRACE_DISPLAY);
-        fieldContainer.get(Category_Summary_Order).setDataCore(new Method_DataCore<>(container -> ((Category_Summary) container).getPool().getOrder()));
+        fieldContainer.add(new DataField<>(Category_Summary_Order, Integer.class));
+        fieldContainer.<Integer>get(Category_Summary_Order).setDataCore(
+                new Derived_DataCore<>(
+                        (Derived_DataCore.Calculator<Integer, Category_Summary>) container ->
+                                container.getPeriod().getOrder()
+                        , new ExternalSource<>(fieldContainer.get(PoolSummary_Pool), SolidCategory_Order)));
         //==============================================================================================================
         // Parents
         // Children

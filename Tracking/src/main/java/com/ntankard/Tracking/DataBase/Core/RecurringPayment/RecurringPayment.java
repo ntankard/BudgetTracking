@@ -11,8 +11,8 @@ import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePay.RePayFundTransfer;
 import com.ntankard.javaObjectDatabase.CoreObject.Factory.Dummy_Factory;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataCore.Derived_DataCore;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataCore.ValueRead_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.Derived_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.DirectExternalSource;
 import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
 
 import java.util.List;
@@ -47,7 +47,7 @@ public abstract class RecurringPayment extends NamedDataObject implements Curren
         // Name
         // Start =======================================================================================================
         fieldContainer.add(new DataField<>(RecurringPayment_Start, ExistingPeriod.class, true));
-        fieldContainer.<ExistingPeriod>get(RecurringPayment_Start).setDataCore(new ValueRead_DataCore<>(true));
+        fieldContainer.get(RecurringPayment_Start).setCanEdit(true);
         fieldContainer.get(RecurringPayment_Start).addChangeListener((field, oldValue, newValue) -> {
             if (field.getState().equals(DataField.NewFieldState.N_ACTIVE)) {
                 ((RecurringPayment) field.getContainer()).regenerateChildren();
@@ -55,7 +55,7 @@ public abstract class RecurringPayment extends NamedDataObject implements Curren
         });
         // End =========================================================================================================
         fieldContainer.add(new DataField<>(RecurringPayment_End, ExistingPeriod.class, true));
-        fieldContainer.<ExistingPeriod>get(RecurringPayment_End).setDataCore(new ValueRead_DataCore<>(true));
+        fieldContainer.get(RecurringPayment_End).setCanEdit(true);
         fieldContainer.get(RecurringPayment_End).addChangeListener((field, oldValue, newValue) -> {
             if (field.getState().equals(DataField.NewFieldState.N_ACTIVE)) {
                 ((RecurringPayment) field.getContainer()).regenerateChildren();
@@ -63,7 +63,7 @@ public abstract class RecurringPayment extends NamedDataObject implements Curren
         });
         // Bank ========================================================================================================
         fieldContainer.add(new DataField<>(RecurringPayment_Bank, Bank.class));
-        fieldContainer.<Bank>get(RecurringPayment_Bank).setDataCore(new ValueRead_DataCore<>(true));
+        fieldContainer.get(RecurringPayment_Bank).setCanEdit(true);
         fieldContainer.get(RecurringPayment_Bank).addChangeListener((field, oldValue, newValue) -> {
             if (field.getState().equals(DataField.NewFieldState.N_ACTIVE)) {
                 ((RecurringPayment) field.getContainer()).regenerateChildren();
@@ -71,7 +71,7 @@ public abstract class RecurringPayment extends NamedDataObject implements Curren
         });
         // Category ====================================================================================================
         fieldContainer.add(new DataField<>(RecurringPayment_Category, SolidCategory.class));
-        fieldContainer.<SolidCategory>get(RecurringPayment_Category).setDataCore(new ValueRead_DataCore<>(true));
+        fieldContainer.get(RecurringPayment_Category).setCanEdit(true);
         fieldContainer.get(RecurringPayment_Category).addChangeListener((field, oldValue, newValue) -> {
             if (field.getState().equals(DataField.NewFieldState.N_ACTIVE)) {
                 ((RecurringPayment) field.getContainer()).regenerateChildren();
@@ -79,11 +79,11 @@ public abstract class RecurringPayment extends NamedDataObject implements Curren
         });
         // Value =======================================================================================================
         fieldContainer.add(new DataField<>(RecurringPayment_Value, Double.class));
-        fieldContainer.<Double>get(RecurringPayment_Value).setDataCore(new ValueRead_DataCore<>(true));
+        fieldContainer.get(RecurringPayment_Value).setCanEdit(true);
         fieldContainer.get(RecurringPayment_Value).getDisplayProperties().setDataType(CURRENCY);
         // Currency ====================================================================================================
         fieldContainer.add(new DataField<>(RecurringPayment_Currency, Currency.class));
-        fieldContainer.<Currency>get(RecurringPayment_Currency).setDataCore(new Derived_DataCore<>(new Derived_DataCore.DirectExternalSource<>(fieldContainer.get(RecurringPayment_Bank), Bank_Currency)));
+        fieldContainer.<Currency>get(RecurringPayment_Currency).setDataCore(new Derived_DataCore<>(new DirectExternalSource<>(fieldContainer.get(RecurringPayment_Bank), Bank_Currency)));
         fieldContainer.get(RecurringPayment_Currency).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
         //==============================================================================================================
         // Parents

@@ -6,9 +6,12 @@ import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.ExternalSource;
 import com.ntankard.javaObjectDatabase.Database.ParameterMap;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.Derived_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.Derived_DataCore;
 import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
+
+import java.util.List;
 
 import static com.ntankard.Tracking.DataBase.Core.Transfer.Transfer.*;
 import static com.ntankard.javaObjectDatabase.CoreObject.Field.Properties.Display_Properties.DataType.CURRENCY;
@@ -20,6 +23,9 @@ import static com.ntankard.javaObjectDatabase.CoreObject.Field.Properties.Displa
  */
 @ParameterMap(shouldSave = false)
 public class HalfTransfer extends DataObject implements CurrencyBound {
+
+    public interface HalfTransferList extends List<HalfTransfer> {
+    }
 
     //------------------------------------------------------------------------------------------------------------------
     //################################################### Constructor ##################################################
@@ -46,57 +52,57 @@ public class HalfTransfer extends DataObject implements CurrencyBound {
         fieldContainer.add(new DataField<>(HalfTransfer_Period, Period.class));
         fieldContainer.<Period>get(HalfTransfer_Period).setDataCore(
                 new Derived_DataCore<>(
-                        (Derived_DataCore.Converter<Period, HalfTransfer>) container -> {
+                        (Derived_DataCore.Calculator<Period, HalfTransfer>) container -> {
                             if (container.isSource()) {
                                 return container.getTransfer().getSourcePeriodGet();
                             }
                             return container.getTransfer().getDestinationPeriodGet();
 
                         }
-                        , new Derived_DataCore.ExternalSource<>(fieldContainer.get(HalfTransfer_Transfer), Transfer_SourcePeriodGet)
-                        , new Derived_DataCore.ExternalSource<>(fieldContainer.get(HalfTransfer_Transfer), Transfer_DestinationPeriodGet)));
+                        , new ExternalSource<>(fieldContainer.get(HalfTransfer_Transfer), Transfer_SourcePeriodGet)
+                        , new ExternalSource<>(fieldContainer.get(HalfTransfer_Transfer), Transfer_DestinationPeriodGet)));
         fieldContainer.<Pool>get(HalfTransfer_Period).getDisplayProperties().setDisplaySet(false);
         // Pool ========================================================================================================
         fieldContainer.add(new DataField<>(HalfTransfer_Pool, Pool.class));
         fieldContainer.<Pool>get(HalfTransfer_Pool).setDataCore(
                 new Derived_DataCore<>(
-                        (Derived_DataCore.Converter<Pool, HalfTransfer>) container -> {
+                        (Derived_DataCore.Calculator<Pool, HalfTransfer>) container -> {
                             if (container.isSource()) {
                                 return container.getTransfer().getSource();
                             }
                             return container.getTransfer().getDestination();
 
                         }
-                        , new Derived_DataCore.ExternalSource<>(fieldContainer.get(HalfTransfer_Transfer), Transfer_Source)
-                        , new Derived_DataCore.ExternalSource<>(fieldContainer.get(HalfTransfer_Transfer), Transfer_Destination)));
+                        , new ExternalSource<>(fieldContainer.get(HalfTransfer_Transfer), Transfer_Source)
+                        , new ExternalSource<>(fieldContainer.get(HalfTransfer_Transfer), Transfer_Destination)));
         fieldContainer.<Pool>get(HalfTransfer_Pool).getDisplayProperties().setDisplaySet(false);
         // Value =======================================================================================================
         fieldContainer.add(new DataField<>(HalfTransfer_Value, Double.class));
         fieldContainer.get(HalfTransfer_Value).getDisplayProperties().setDataType(CURRENCY);
         fieldContainer.<Double>get(HalfTransfer_Value).setDataCore(
                 new Derived_DataCore<>(
-                        (Derived_DataCore.Converter<Double, HalfTransfer>) container -> {
+                        (Derived_DataCore.Calculator<Double, HalfTransfer>) container -> {
                             if (container.isSource()) {
                                 return container.getTransfer().getValue(true);
                             } else {
                                 return container.getTransfer().getValue(false);
                             }
                         }
-                        , new Derived_DataCore.ExternalSource<>(fieldContainer.get(HalfTransfer_Transfer), Transfer_Value)));
+                        , new ExternalSource<>(fieldContainer.get(HalfTransfer_Transfer), Transfer_Value)));
         // Currency ====================================================================================================
         fieldContainer.add(new DataField<>(HalfTransfer_Currency, Currency.class));
         fieldContainer.get(HalfTransfer_Currency).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
         fieldContainer.<Currency>get(HalfTransfer_Currency).setDataCore(
                 new Derived_DataCore<>(
-                        (Derived_DataCore.Converter<Currency, HalfTransfer>) container -> {
+                        (Derived_DataCore.Calculator<Currency, HalfTransfer>) container -> {
                             if (container.isSource()) {
                                 return container.getTransfer().getSourceCurrencyGet();
                             }
                             return container.getTransfer().getDestinationCurrencyGet();
 
                         }
-                        , new Derived_DataCore.ExternalSource<>(fieldContainer.get(HalfTransfer_Transfer), Transfer_SourceCurrencyGet)
-                        , new Derived_DataCore.ExternalSource<>(fieldContainer.get(HalfTransfer_Transfer), Transfer_DestinationCurrencyGet)));
+                        , new ExternalSource<>(fieldContainer.get(HalfTransfer_Transfer), Transfer_SourceCurrencyGet)
+                        , new ExternalSource<>(fieldContainer.get(HalfTransfer_Transfer), Transfer_DestinationCurrencyGet)));
         fieldContainer.<Pool>get(HalfTransfer_Currency).getDisplayProperties().setDisplaySet(false);
         // Source ======================================================================================================
         fieldContainer.add(new DataField<>(HalfTransfer_Source, Boolean.class));

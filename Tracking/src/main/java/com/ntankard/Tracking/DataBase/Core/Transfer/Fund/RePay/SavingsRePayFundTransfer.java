@@ -1,19 +1,24 @@
 package com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePay;
 
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.DataCore.HalfTransferSetSum_DataCore;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.DataCore.SingleParentSet_DataCore;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.SavingsFundEvent;
 import com.ntankard.Tracking.DataBase.Core.Transfer.HalfTransfer;
-import com.ntankard.javaObjectDatabase.Database.ParameterMap;
-import com.ntankard.Tracking.DataBase.Interface.Set.Filter.SetFilter;
+import com.ntankard.Tracking.DataBase.Core.Transfer.HalfTransfer.HalfTransferList;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.ListDataField;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.Children_ListDataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.Derived_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.ListSource;
 import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.Database.ParameterMap;
+import com.ntankard.javaObjectDatabase.util.SetFilter;
 
 import java.util.List;
+
+import static com.ntankard.Tracking.DataBase.Core.Transfer.HalfTransfer.HalfTransfer_Currency;
+import static com.ntankard.Tracking.DataBase.Core.Transfer.HalfTransfer.HalfTransfer_Value;
 
 @ParameterMap(shouldSave = false)
 public class SavingsRePayFundTransfer extends RePayFundTransfer {
@@ -36,11 +41,10 @@ public class SavingsRePayFundTransfer extends RePayFundTransfer {
         // Period
         // Source
         // NonSavingsSet ===============================================================================================
-        fieldContainer.add(new DataField<>(SavingsRePayFundTransfer_NonSavingsSet, List.class));
+        fieldContainer.add(new ListDataField<>(SavingsRePayFundTransfer_NonSavingsSet, HalfTransferList.class));
         fieldContainer.<List<HalfTransfer>>get(SavingsRePayFundTransfer_NonSavingsSet).setDataCore(
-                new SingleParentSet_DataCore<>(
+                new Children_ListDataCore<>(
                         HalfTransfer.class,
-                        fieldContainer.get(Transfer_Period),
                         new SetFilter<HalfTransfer>(null) {
                             @Override
                             protected boolean shouldAdd_Impl(HalfTransfer dataObject) {
@@ -53,11 +57,23 @@ public class SavingsRePayFundTransfer extends RePayFundTransfer {
                                 }
                                 return false;
                             }
-                        }));
+                        },
+                        new Children_ListDataCore.ParentAccess<>(fieldContainer.get(Transfer_Period))));
         // Value =======================================================================================================
         fieldContainer.<Double>get(Transfer_Value).setDataCore(
-                new HalfTransferSetSum_DataCore(
-                        fieldContainer.get(SavingsRePayFundTransfer_NonSavingsSet), value -> -value));
+                new Derived_DataCore<Double, SavingsRePayFundTransfer>(
+                        container -> {
+                            double sum = 0.0;
+                            for (HalfTransfer halfTransfer : container.<List<HalfTransfer>>get(SavingsRePayFundTransfer_NonSavingsSet)) {
+                                sum += halfTransfer.getValue() * halfTransfer.getCurrency().getToPrimary();
+                            }
+                            return -Currency.round(sum);
+                        }
+                        , new ListSource<>(
+                        (ListDataField<HalfTransfer>) fieldContainer.<List<HalfTransfer>>get(SavingsRePayFundTransfer_NonSavingsSet),
+                        HalfTransfer_Value,
+                        HalfTransfer_Currency
+                )));
         // =============================================================================================================
         // Currency
         // Destination

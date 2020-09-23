@@ -8,15 +8,16 @@ import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Transfer;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataCore.Derived_DataCore;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataCore.ValueRead_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.Filter.Dependant_FieldFilter;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.Filter.FieldFilter;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.Listener.FieldChangeListener;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.Listener.Marked_FieldChangeListener;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.Derived_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.DirectExternalSource;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.LocalSource;
 import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
-import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,9 @@ import static com.ntankard.Tracking.DataBase.Core.Pool.Bank.Bank_Currency;
 import static com.ntankard.javaObjectDatabase.CoreObject.Field.Properties.Display_Properties.DataType.CURRENCY;
 
 public abstract class BankTransfer extends Transfer {
+
+    public interface BankTransferList extends List<BankTransfer> {
+    }
 
     //------------------------------------------------------------------------------------------------------------------
     //################################################### Constructor ##################################################
@@ -49,12 +53,15 @@ public abstract class BankTransfer extends Transfer {
         // ID
         // Description
         // Period ======================================================================================================
-        fieldContainer.<Period>get(Transfer_Period).setDataCore(new ValueRead_DataCore<>(true));
+        fieldContainer.get(Transfer_Period).setCanEdit(true);
         fieldContainer.<Period>get(Transfer_Period).addFilter(new FieldFilter<Period, DataObject>() {
             @Override
-            public boolean isValid(Period value, DataObject container) {
+            public boolean isValid(Period newValue, Period pastValue, DataObject container) {
                 BankTransfer bankTransfer = ((BankTransfer) container);
-                return bankTransfer.getDestinationPeriod() == null || !bankTransfer.getDestinationPeriod().equals(value);
+                if (bankTransfer.isAllValid()) {
+                    return bankTransfer.getDestinationPeriod() == null || !bankTransfer.getDestinationPeriod().equals(newValue);
+                }
+                return true;
             }
         });
         // Source ======================================================================================================
@@ -74,56 +81,65 @@ public abstract class BankTransfer extends Transfer {
             }
         });
         // Value =======================================================================================================
-        fieldContainer.get(Transfer_Value).setDataCore(new ValueRead_DataCore<>(true));
+        fieldContainer.get(Transfer_Value).setCanEdit(true);
         // Currency ====================================================================================================
-        fieldContainer.<Currency>get(Transfer_Currency).setDataCore(new Derived_DataCore<>(new Derived_DataCore.DirectExternalSource<>(fieldContainer.get(Transfer_Source), Bank_Currency)));
+        fieldContainer.<Currency>get(Transfer_Currency).setDataCore(new Derived_DataCore<>(new DirectExternalSource<>(fieldContainer.get(Transfer_Source), Bank_Currency)));
         // DestinationPeriod ===========================================================================================
         fieldContainer.add(Transfer_Currency, new DataField<>(BankTransfer_DestinationPeriod, Period.class, true));
-        fieldContainer.<Pool>get(BankTransfer_DestinationPeriod).setDataCore(new ValueRead_DataCore<>(true));
+        fieldContainer.get(BankTransfer_DestinationPeriod).setCanEdit(true);
         fieldContainer.<Period>get(BankTransfer_DestinationPeriod).addFilter(new Dependant_FieldFilter<Period, BankTransfer>(Transfer_Period, Transfer_Destination) {
             @Override
-            public boolean isValid(Period value, BankTransfer bankTransfer) {
-                if (value != null && !bankTransfer.doseSupportDestinationPeriod())
+            public boolean isValid(Period newValue, Period pastValue, BankTransfer bankTransfer) {
+                if (newValue != null && !bankTransfer.doseSupportDestinationPeriod())
                     return false;
-                return !bankTransfer.getPeriod().equals(value);
+                return !bankTransfer.getPeriod().equals(newValue);
             }
         });
         // Category ====================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(BankTransfer_Category, Category.class, true));
-        fieldContainer.<Category>get(BankTransfer_Category).setDataCore(new MethodSet_DataCore<>(
-                container -> {
-                    if (((BankTransfer) container).getDestination() instanceof SolidCategory) {
-                        return (SolidCategory) ((BankTransfer) container).getDestination();
+        fieldContainer.add(new DataField<>(BankTransfer_Category, Category.class, true));
+        fieldContainer.get(BankTransfer_Category).setTellParent(false);
+        fieldContainer.<Category>get(BankTransfer_Category).setSetterFunction((toSet, container) -> {
+            ((BankTransfer) container).setDestination(toSet);
+        });
+        fieldContainer.<Category>get(BankTransfer_Category).setDataCore(
+                new Derived_DataCore<Category, BankTransfer>(container -> {
+                    if (container.getDestination() instanceof SolidCategory) {
+                        return (SolidCategory) container.getDestination();
                     }
                     return null;
-                },
-                (container, toSet) -> ((BankTransfer) container).setDestination(toSet)));
+                }, new LocalSource<>(fieldContainer.get(Transfer_Destination))));
         // Bank ========================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(BankTransfer_Bank, Bank.class, true));
-        fieldContainer.<Bank>get(BankTransfer_Bank).setDataCore(new MethodSet_DataCore<>(
-                container -> {
-                    if (((BankTransfer) container).getDestination() instanceof Bank) {
-                        return (Bank) ((BankTransfer) container).getDestination();
+        fieldContainer.add(new DataField<>(BankTransfer_Bank, Bank.class, true));
+        fieldContainer.get(BankTransfer_Bank).setTellParent(false);
+        fieldContainer.<Bank>get(BankTransfer_Bank).setSetterFunction((toSet, container) -> {
+            ((BankTransfer) container).setDestination(toSet);
+        });
+        fieldContainer.<Bank>get(BankTransfer_Bank).setDataCore(
+                new Derived_DataCore<Bank, BankTransfer>(container -> {
+                    if (container.getDestination() instanceof Bank) {
+                        return (Bank) container.getDestination();
                     }
                     return null;
-                },
-                (container, toSet) -> ((BankTransfer) container).setDestination(toSet)));
+                }, new LocalSource<>(fieldContainer.get(Transfer_Destination))));
         // FundEvent ===================================================================================================
-        fieldContainer.add(new Tracking_DataField<>(BankTransfer_FundEvent, FundEvent.class, true));
-        fieldContainer.<FundEvent>get(BankTransfer_FundEvent).setDataCore(new MethodSet_DataCore<>(
-                container -> {
-                    if (((BankTransfer) container).getDestination() instanceof FundEvent) {
-                        return (FundEvent) ((BankTransfer) container).getDestination();
+        fieldContainer.add(new DataField<>(BankTransfer_FundEvent, FundEvent.class, true));
+        fieldContainer.get(BankTransfer_FundEvent).setTellParent(false);
+        fieldContainer.<FundEvent>get(BankTransfer_FundEvent).setSetterFunction((toSet, container) -> {
+            ((BankTransfer) container).setDestination(toSet);
+        });
+        fieldContainer.<FundEvent>get(BankTransfer_FundEvent).setDataCore(
+                new Derived_DataCore<FundEvent, BankTransfer>(container -> {
+                    if (container.getDestination() instanceof FundEvent) {
+                        return (FundEvent) container.getDestination();
                     }
                     return null;
-                },
-                (container, toSet) -> ((BankTransfer) container).setDestination(toSet)));
+                }, new LocalSource<>(fieldContainer.get(Transfer_Destination))));
         // Destination =================================================================================================
-        fieldContainer.<Pool>get(Transfer_Destination).setDataCore(new ValueRead_DataCore<>(true));
+        fieldContainer.get(Transfer_Destination).setCanEdit(true);
         fieldContainer.<Pool>get(Transfer_Destination).addFilter(new Dependant_FieldFilter<Pool, BankTransfer>(Transfer_Source) {
             @Override
-            public boolean isValid(Pool value, BankTransfer bankTransfer) {
-                return !bankTransfer.getSource().equals(value);
+            public boolean isValid(Pool newValue, Pool pastValue, BankTransfer bankTransfer) {
+                return !bankTransfer.getSource().equals(newValue);
             }
         });
         // TODO This might be a problem, its only safe because it goes through the impl method below, if it was ever set directly it would break
@@ -147,15 +163,15 @@ public abstract class BankTransfer extends Transfer {
         // DestinationValue ============================================================================================
         fieldContainer.add(Transfer_Destination, new DataField<>(BankTransfer_DestinationValue, Double.class, true));
         fieldContainer.get(BankTransfer_DestinationValue).getDisplayProperties().setDataType(CURRENCY);
-        fieldContainer.get(BankTransfer_DestinationValue).setDataCore(new ValueRead_DataCore<>(true));
+        fieldContainer.get(BankTransfer_DestinationValue).setCanEdit(true);
         // TODO probably best to replace this with a conversation step that takes 0 and makes it null so it dosnt fail
         fieldContainer.<Double>get(BankTransfer_DestinationValue).addFilter(new Dependant_FieldFilter<Double, BankTransfer>(Transfer_Destination, Transfer_Source) {
             @Override
-            public boolean isValid(Double value, BankTransfer bankTransfer) {
-                if (value != null && !bankTransfer.doseSupportDestinationValue()) {
+            public boolean isValid(Double newValue, Double pastValue, BankTransfer bankTransfer) {
+                if (newValue != null && !bankTransfer.doseSupportDestinationValue()) {
                     return false;
                 }
-                return value == null || !value.equals(0.0);
+                return newValue == null || !newValue.equals(0.0);
             }
         });
         // DestinationCurrency =========================================================================================
@@ -168,32 +184,32 @@ public abstract class BankTransfer extends Transfer {
                     }
                     return null;
                 }
-                        , new Derived_DataCore.LocalSource<>(fieldContainer.get(Transfer_Destination))
-                        , new Derived_DataCore.LocalSource<>(fieldContainer.get(Transfer_Source))));
+                        , new LocalSource<>(fieldContainer.get(Transfer_Destination))
+                        , new LocalSource<>(fieldContainer.get(Transfer_Source))));
         // SourceCurrencyGet
         // DestinationCurrencyGet ======================================================================================
         fieldContainer.<Currency>get(Transfer_DestinationCurrencyGet).setDataCore(
-                new Derived_DataCore<>((Derived_DataCore.Converter<Currency, BankTransfer>) container -> {
+                new Derived_DataCore<>((Derived_DataCore.Calculator<Currency, BankTransfer>) container -> {
                     if (container.getDestinationCurrency() != null) {
                         return container.getDestinationCurrency();
                     } else {
                         return container.getCurrency();
                     }
                 }
-                        , new Derived_DataCore.LocalSource<>(fieldContainer.get(Transfer_Currency))
-                        , new Derived_DataCore.LocalSource<>(fieldContainer.get(BankTransfer_DestinationCurrency))));
+                        , new LocalSource<>(fieldContainer.get(Transfer_Currency))
+                        , new LocalSource<>(fieldContainer.get(BankTransfer_DestinationCurrency))));
         // SourcePeriodGet
         // DestinationPeriodGet ========================================================================================
         fieldContainer.<Period>get(Transfer_DestinationPeriodGet).setDataCore(
-                new Derived_DataCore<>((Derived_DataCore.Converter<Period, BankTransfer>) container -> {
+                new Derived_DataCore<>((Derived_DataCore.Calculator<Period, BankTransfer>) container -> {
                     if (container.getDestinationPeriod() != null) {
                         return container.getDestinationPeriod();
                     } else {
                         return container.getPeriod();
                     }
                 }
-                        , new Derived_DataCore.LocalSource<>(fieldContainer.get(Transfer_Period))
-                        , new Derived_DataCore.LocalSource<>(fieldContainer.get(BankTransfer_DestinationPeriod))));
+                        , new LocalSource<>(fieldContainer.get(Transfer_Period))
+                        , new LocalSource<>(fieldContainer.get(BankTransfer_DestinationPeriod))));
         //==============================================================================================================
         // Parents
         // Children

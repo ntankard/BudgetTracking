@@ -1,7 +1,7 @@
 package com.ntankard.Tracking.DataBase.Core.Transfer.Fund;
 
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataCore.Derived_DataCore;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataCore.ValueRead_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.Derived_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.DirectExternalSource;
 import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
@@ -26,13 +26,13 @@ public class ManualFundTransfer extends FundTransfer {
         // Description
         // Period
         // Source ======================================================================================================
-        fieldContainer.<FundEvent>get(Transfer_Source).setDataCore(new ValueRead_DataCore<>(true));
+        fieldContainer.get(Transfer_Source).setCanEdit(true);
         // Value =======================================================================================================
-        fieldContainer.get(Transfer_Value).setDataCore(new ValueRead_DataCore<>(true));
+        fieldContainer.get(Transfer_Value).setCanEdit(true);
         // Currency
         // Destination =================================================================================================
         // TODO this was failing when it was set on the RePay, this might be because they were being recreated or because there is a problem here, test
-        fieldContainer.<Pool>get(Transfer_Destination).setDataCore(new Derived_DataCore<>(new Derived_DataCore.DirectExternalSource<>(fieldContainer.get(Transfer_Source), FundEvent_Category)));
+        fieldContainer.<Pool>get(Transfer_Destination).setDataCore(new Derived_DataCore<>(new DirectExternalSource<>(fieldContainer.get(Transfer_Source), FundEvent_Category)));
         // SourceCurrencyGet
         // DestinationCurrencyGet
         // SourcePeriodGet

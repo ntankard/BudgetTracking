@@ -5,8 +5,8 @@ import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.Tracking.DataBase.Core.RecurringPayment.FixedRecurringPayment;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataCore.Derived_DataCore;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataCore.ValueRead_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.Derived_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.DirectExternalSource;
 import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
 
 import static com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FixedPeriodFundEvent.NamedDataObject_Name;
@@ -29,7 +29,7 @@ public class RecurringBankTransfer extends BankTransfer {
         // Description (Below)
         // Period
         // Source ======================================================================================================
-        fieldContainer.<Bank>get(Transfer_Source).setDataCore(new ValueRead_DataCore<>(true));
+        fieldContainer.get(Transfer_Source).setCanEdit(true);
         //==============================================================================================================
         // Value
         // Currency
@@ -53,7 +53,7 @@ public class RecurringBankTransfer extends BankTransfer {
         // Description =================================================================================================
         fieldContainer.<String>get(Transfer_Description).setDataCore(
                 new Derived_DataCore<>(
-                        new Derived_DataCore.DirectExternalSource<>(fieldContainer.get(RecurringBankTransfer_ParentPayment), NamedDataObject_Name)));
+                        new DirectExternalSource<>(fieldContainer.get(RecurringBankTransfer_ParentPayment), NamedDataObject_Name)));
         //==============================================================================================================
 
         return fieldContainer.finaliseContainer(RecurringBankTransfer.class);

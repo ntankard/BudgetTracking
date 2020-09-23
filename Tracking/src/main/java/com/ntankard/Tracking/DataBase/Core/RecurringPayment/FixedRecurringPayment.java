@@ -5,11 +5,11 @@ import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.RecurringBankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePay.RePayFundTransfer;
-import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
-import com.ntankard.Tracking.DataBase.Interface.Set.Filter.SetFilter;
+import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.util.SetFilter;
 import com.ntankard.Tracking.DataBase.Interface.Set.TwoParent_Children_Set;
-import com.ntankard.dynamicGUI.CoreObject.Factory.Dummy_Factory;
-import com.ntankard.dynamicGUI.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.CoreObject.Factory.Dummy_Factory;
+import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
 
 public class FixedRecurringPayment extends RecurringPayment {
 
@@ -79,7 +79,7 @@ public class FixedRecurringPayment extends RecurringPayment {
                 int size = new TwoParent_Children_Set<>(RecurringBankTransfer.class, period, this, new SetFilter<RecurringBankTransfer>(null) {
                     @Override
                     protected boolean shouldAdd_Impl(RecurringBankTransfer dataObject) {
-                        return dataObject.toChangeGetDestinationTransfer().getPeriod().equals(period);
+                        return dataObject.getDestinationPeriodGet().equals(period);
                     }
                 }).get().size();
                 if (size > 1) {

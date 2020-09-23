@@ -1,24 +1,28 @@
 package com.ntankard.Tracking.DataBase.Core.Pool.FundEvent;
 
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Factory.DoubleParentFactory;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.DataCore.HalfTransferSetSum_DataCore;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.DataCore.SingleParentSet_DataCore;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePay.FixedPeriodRePayFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePay.RePayFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.HalfTransfer;
-import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.Filter.NotTransferType_HalfTransfer_Filter;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataCore.Derived_DataCore;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataCore.Static_DataCore;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataCore.ValueRead_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.Filter.IntegerRange_FieldFilter;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.ListDataField;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.Children_ListDataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.Derived_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.Static_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.ListSource;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.LocalSource;
 import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
 
 import java.util.List;
+
+import static com.ntankard.Tracking.DataBase.Core.Transfer.HalfTransfer.HalfTransfer_Currency;
+import static com.ntankard.Tracking.DataBase.Core.Transfer.HalfTransfer.HalfTransfer_Value;
 
 public class FixedPeriodFundEvent extends FundEvent {
 
@@ -53,42 +57,49 @@ public class FixedPeriodFundEvent extends FundEvent {
         // ID
         // Name
         // Category ====================================================================================================
-        fieldContainer.<SolidCategory>get(FundEvent_Category).setDataCore(new ValueRead_DataCore<>(true));
+        fieldContainer.get(FundEvent_Category).setCanEdit(true);
         // Start =======================================================================================================
         fieldContainer.add(new DataField<>(FixedPeriodFundEvent_Start, ExistingPeriod.class));
-        fieldContainer.<ExistingPeriod>get(FixedPeriodFundEvent_Start).setDataCore(new ValueRead_DataCore<>(true));
+        fieldContainer.get(FixedPeriodFundEvent_Start).setCanEdit(true);
         // Duration ====================================================================================================
         fieldContainer.add(new DataField<>(FixedPeriodFundEvent_Duration, Integer.class));
         fieldContainer.<Integer>get(FixedPeriodFundEvent_Duration).addFilter(new IntegerRange_FieldFilter<>(1, null));
-        fieldContainer.get(FixedPeriodFundEvent_Duration).setDataCore(new ValueRead_DataCore<>(true));
+        fieldContainer.get(FixedPeriodFundEvent_Duration).setCanEdit(true);
         // Self ========================================================================================================
         fieldContainer.add(new DataField<>(FixedPeriodFundEvent_Self, FixedPeriodFundEvent.class));
-        fieldContainer.<FixedPeriodFundEvent>get(FixedPeriodFundEvent_Self).setDataCore(new Static_DataCore<FixedPeriodFundEvent>(null) {
-            @Override
-            public FixedPeriodFundEvent get() {
-                return (FixedPeriodFundEvent) getDataField().getContainer();
-            }
-        });
+        fieldContainer.<FixedPeriodFundEvent>get(FixedPeriodFundEvent_Self).setDataCore(
+                new Static_DataCore<>(dataField ->
+                        (FixedPeriodFundEvent) dataField.getContainer()));
         // NonRepaySet =================================================================================================
-        fieldContainer.add(new DataField<>(FixedPeriodFundEvent_NonRepaySet, List.class));
+        fieldContainer.add(new ListDataField<>(FixedPeriodFundEvent_NonRepaySet, HalfTransfer.HalfTransferList.class));
         fieldContainer.<List<HalfTransfer>>get(FixedPeriodFundEvent_NonRepaySet).setDataCore(
-                new SingleParentSet_DataCore<>(
+                new Children_ListDataCore<>(
                         HalfTransfer.class,
-                        fieldContainer.get(FixedPeriodFundEvent_Self),
-                        new NotTransferType_HalfTransfer_Filter(RePayFundTransfer.class)));
+                        new NotTransferType_HalfTransfer_Filter(RePayFundTransfer.class),
+                        new Children_ListDataCore.ParentAccess<FixedPeriodFundEvent, HalfTransfer>(fieldContainer.get(FixedPeriodFundEvent_Self))));
         // NonRepaySum =================================================================================================
         fieldContainer.add(new DataField<>(FixedPeriodFundEvent_NonRepaySum, Double.class));
         fieldContainer.<Double>get(FixedPeriodFundEvent_NonRepaySum).setDataCore(
-                new HalfTransferSetSum_DataCore(
-                        fieldContainer.get(FixedPeriodFundEvent_NonRepaySet)));
+                new Derived_DataCore<Double, FixedPeriodFundEvent>(
+                        container -> {
+                            double sum = 0.0;
+                            for (HalfTransfer halfTransfer : container.getNonRepaySet()) {
+                                sum += halfTransfer.getValue() * halfTransfer.getCurrency().getToPrimary();
+                            }
+                            return Currency.round(sum);
+                        }
+                        , new ListSource<>(
+                        (ListDataField<HalfTransfer>) fieldContainer.<List<HalfTransfer>>get(FixedPeriodFundEvent_NonRepaySet),
+                        HalfTransfer_Value,
+                        HalfTransfer_Currency))); // TODO possible problem here, we have a 3 layer nested dependency. getToPrimary
         // RepayAmount =================================================================================================
         fieldContainer.add(new DataField<>(FixedPeriodFundEvent_RepayAmount, Double.class));
         fieldContainer.<Double>get(FixedPeriodFundEvent_RepayAmount).setDataCore(
                 new Derived_DataCore<>(
-                        (Derived_DataCore.Converter<Double, FixedPeriodFundEvent>)
+                        (Derived_DataCore.Calculator<Double, FixedPeriodFundEvent>)
                                 container -> container.getNonRepaySum() / container.getDuration()
-                        , new Derived_DataCore.LocalSource<>(fieldContainer.get(FixedPeriodFundEvent_NonRepaySum))
-                        , new Derived_DataCore.LocalSource<>(fieldContainer.get(FixedPeriodFundEvent_Duration))));
+                        , new LocalSource<>(fieldContainer.get(FixedPeriodFundEvent_NonRepaySum))
+                        , new LocalSource<>(fieldContainer.get(FixedPeriodFundEvent_Duration))));
         //==============================================================================================================
         // Parents
         // Children
@@ -127,6 +138,10 @@ public class FixedPeriodFundEvent extends FundEvent {
 
     public Double getNonRepaySum() {
         return get(FixedPeriodFundEvent_NonRepaySum);
+    }
+
+    public List<HalfTransfer> getNonRepaySet() {
+        return get(FixedPeriodFundEvent_NonRepaySet);
     }
 
     //------------------------------------------------------------------------------------------------------------------

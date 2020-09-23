@@ -1,11 +1,13 @@
 package com.ntankard.Tracking.Dispaly.Frames.MainFrame.Periods.IndividualPeriod;
 
+import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
+import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePay.SavingsRePayFundTransfer;
 import com.ntankard.Tracking.DataBase.Interface.Set.Single_OneParent_Children_Set;
 import com.ntankard.dynamicGUI.Gui.Util.Update.Updatable;
 import com.ntankard.dynamicGUI.Gui.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
-import com.ntankard.Tracking.DataBase.Database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Period_Summary;
 
 import javax.swing.*;
@@ -90,8 +92,11 @@ public class SummaryPanel extends UpdatableJPanel {
             netMoney_txt.setBackground(new Color(255, scale, scale));
         }
 
-        nonSave_txt.setText(formatter.format(period_summary.getNonSaveCategoryDelta() * YEN.getToPrimary()));
-
+        if (core instanceof ExistingPeriod) {
+            nonSave_txt.setText(formatter.format(new Single_OneParent_Children_Set<>(SavingsRePayFundTransfer.class, core).getItem().getValue() * YEN.getToPrimary()));
+        } else {
+            nonSave_txt.setText("-");
+        }
         // Check that all spends are accounted for
         if (period_summary.isValid()) {
             isValid_lbl.setText(" All Valid ");

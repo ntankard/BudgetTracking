@@ -4,8 +4,10 @@ import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FixedPeriodFundEvent;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.ExternalSource;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.LocalSource;
 import com.ntankard.javaObjectDatabase.Database.ParameterMap;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.Derived_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.Derived_DataCore;
 import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
 
 import static com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FixedPeriodFundEvent.*;
@@ -30,17 +32,17 @@ public class FixedPeriodRePayFundTransfer extends RePayFundTransfer {
         // Value =======================================================================================================
         fieldContainer.<Double>get(Transfer_Value).setDataCore(
                 new Derived_DataCore<>(
-                        (Derived_DataCore.Converter<Double, FixedPeriodRePayFundTransfer>) container -> {
+                        (Derived_DataCore.Calculator<Double, FixedPeriodRePayFundTransfer>) container -> {
                             FixedPeriodFundEvent fixedPeriodFundEvent = (FixedPeriodFundEvent) container.getSource();
                             if (!container.getPeriod().isWithin(fixedPeriodFundEvent.getStart(), fixedPeriodFundEvent.getDuration())) {
                                 return -0.0;
                             }
                             return fixedPeriodFundEvent.getRepayAmount();
                         }
-                        , new Derived_DataCore.LocalSource<>(fieldContainer.get(Transfer_Period))
-                        , new Derived_DataCore.ExternalSource<>(fieldContainer.get(Transfer_Source), FixedPeriodFundEvent_Start)
-                        , new Derived_DataCore.ExternalSource<>(fieldContainer.get(Transfer_Source), FixedPeriodFundEvent_Duration)
-                        , new Derived_DataCore.ExternalSource<>(fieldContainer.get(Transfer_Source), FixedPeriodFundEvent_RepayAmount)));
+                        , new LocalSource<>(fieldContainer.get(Transfer_Period))
+                        , new ExternalSource<>(fieldContainer.get(Transfer_Source), FixedPeriodFundEvent_Start)
+                        , new ExternalSource<>(fieldContainer.get(Transfer_Source), FixedPeriodFundEvent_Duration)
+                        , new ExternalSource<>(fieldContainer.get(Transfer_Source), FixedPeriodFundEvent_RepayAmount)));
         // =============================================================================================================
         // Currency
         // Destination

@@ -1,7 +1,7 @@
 package com.ntankard.Tracking.DataBase.Core.Transfer;
 
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataCore.Derived_DataCore;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataCore.ValueRead_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.Derived_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.LocalSource;
 import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
 import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
@@ -50,7 +50,7 @@ public abstract class Transfer extends DataObject implements CurrencyBound {
         // ID
         // Description =================================================================================================
         fieldContainer.add(new DataField<>(Transfer_Description, String.class));
-        fieldContainer.get(Transfer_Description).setDataCore(new ValueRead_DataCore<>(true));
+        fieldContainer.get(Transfer_Description).setCanEdit(true);
         // Period ======================================================================================================
         fieldContainer.add(new DataField<>(Transfer_Period, Period.class));
         //==============================================================================================================
@@ -64,29 +64,25 @@ public abstract class Transfer extends DataObject implements CurrencyBound {
         // Destination =================================================================================================
         fieldContainer.add(new DataField<>(Transfer_Destination, Pool.class));
         // SourceCurrencyGet ===========================================================================================
-        fieldContainer.add(new DataField<>(Transfer_SourceCurrencyGet, Currency.class, false, false));
+        fieldContainer.add(new DataField<>(Transfer_SourceCurrencyGet, Currency.class));
+        fieldContainer.get(Transfer_SourceCurrencyGet).setTellParent(false);
         fieldContainer.<Currency>get(Transfer_SourceCurrencyGet).setDataCore(
                 new Derived_DataCore<>
                         (container -> ((Transfer) container).getCurrency()
-                                , new Derived_DataCore.LocalSource<>(fieldContainer.get(Transfer_Currency))));
+                                , new LocalSource<>(fieldContainer.get(Transfer_Currency))));
         // DestinationCurrencyGet  =====================================================================================
-        fieldContainer.add(new DataField<>(Transfer_DestinationCurrencyGet, Currency.class, false, false));
-        fieldContainer.<Currency>get(Transfer_DestinationCurrencyGet).setDataCore(
-                new Derived_DataCore<>
-                        (container -> ((Transfer) container).getCurrency()
-                                , new Derived_DataCore.LocalSource<>(fieldContainer.get(Transfer_Currency))));
+        fieldContainer.add(new DataField<>(Transfer_DestinationCurrencyGet, Currency.class));
+        fieldContainer.get(Transfer_DestinationCurrencyGet).setTellParent(false);
         // SourcePeriodGet =================================================================================================
-        fieldContainer.add(new DataField<>(Transfer_SourcePeriodGet, Period.class, false, false));
+        fieldContainer.add(new DataField<>(Transfer_SourcePeriodGet, Period.class));
+        fieldContainer.get(Transfer_SourcePeriodGet).setTellParent(false);
         fieldContainer.<Period>get(Transfer_SourcePeriodGet).setDataCore(
                 new Derived_DataCore<>
                         (container -> ((Transfer) container).getPeriod()
-                                , new Derived_DataCore.LocalSource<>(fieldContainer.get(Transfer_Period))));
+                                , new LocalSource<>(fieldContainer.get(Transfer_Period))));
         // DestinationPeriodGet =================================================================================================
-        fieldContainer.add(new DataField<>(Transfer_DestinationPeriodGet, Period.class, false, false));
-        fieldContainer.<Period>get(Transfer_DestinationPeriodGet).setDataCore(
-                new Derived_DataCore<>
-                        (container -> ((Transfer) container).getPeriod()
-                                , new Derived_DataCore.LocalSource<>(fieldContainer.get(Transfer_Period))));
+        fieldContainer.add(new DataField<>(Transfer_DestinationPeriodGet, Period.class));
+        fieldContainer.get(Transfer_DestinationPeriodGet).setTellParent(false);
         //==============================================================================================================
         // Parents
         // Children

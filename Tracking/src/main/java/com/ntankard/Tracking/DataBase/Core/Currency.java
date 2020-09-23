@@ -1,6 +1,7 @@
 package com.ntankard.Tracking.DataBase.Core;
 
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataCore.Derived_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.Derived_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.LocalSource;
 import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
 import com.ntankard.javaObjectDatabase.CoreObject.Interface.HasDefault;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.NamedDataObject;
@@ -58,8 +59,8 @@ public class Currency extends NamedDataObject implements HasDefault {
         fieldContainer.<NumberFormat>get(Currency_NumberFormat).setDataCore(
                 new Derived_DataCore<NumberFormat, Currency>
                         (dataObject -> NumberFormat.getCurrencyInstance(new Locale(dataObject.getLanguage(), dataObject.getCountry()))
-                                , new Derived_DataCore.LocalSource<>(fieldContainer.get(Currency_Country))
-                                , new Derived_DataCore.LocalSource<>(fieldContainer.get(Currency_Language))));
+                                , new LocalSource<>(fieldContainer.get(Currency_Country))
+                                , new LocalSource<>(fieldContainer.get(Currency_Language))));
         //==============================================================================================================
         // Parents
         // Children
