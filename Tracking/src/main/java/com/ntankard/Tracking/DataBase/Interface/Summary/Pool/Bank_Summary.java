@@ -2,6 +2,7 @@ package com.ntankard.Tracking.DataBase.Interface.Summary.Pool;
 
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
 import com.ntankard.Tracking.DataBase.Core.Currency;
+import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
@@ -12,6 +13,7 @@ import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.BankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.HalfTransfer;
 import com.ntankard.Tracking.DataBase.Interface.Set.Filter.TransferDestination_HalfTransfer_Filter;
 import com.ntankard.Tracking.DataBase.Interface.Set.Filter.TransferType_HalfTransfer_Filter;
+import com.ntankard.javaObjectDatabase.CoreObject.Factory.DoubleParentFactory;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.ListDataField;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.Children_ListDataCore;
@@ -23,6 +25,7 @@ import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.
 import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
 import com.ntankard.javaObjectDatabase.CoreObject.Interface.Ordered;
 import com.ntankard.javaObjectDatabase.Database.ParameterMap;
+import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
 
 import java.util.List;
 
@@ -54,11 +57,21 @@ public class Bank_Summary extends PoolSummary<Bank> implements CurrencyBound, Or
     public static final String Bank_Summary_Spend = "getSpend";
     public static final String Bank_Summary_Order = "getOrder";
 
+    public static DoubleParentFactory<?, ?, ?> Factory = new DoubleParentFactory<>(
+            Bank_Summary.class,
+            Bank.class,
+            PoolSummary_Pool, ExistingPeriod.class,
+            PoolSummary_Period, (generator, secondaryGenerator) -> Bank_Summary.make(TrackingDatabase.get().getNextId(), secondaryGenerator, generator)
+    );
+
     /**
      * Get all the fields for this object
      */
     public static FieldContainer getFieldContainer() {
         FieldContainer fieldContainer = PoolSummary.getFieldContainer();
+
+        // Class behavior
+        fieldContainer.setMyFactory(Factory);
 
         // ID
         // Period

@@ -1,25 +1,16 @@
 package com.ntankard.Tracking.DataBase.Core.Period;
 
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Factory.DoubleParentFactory;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
-import com.ntankard.Tracking.DataBase.Core.Currency;
-import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
-import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FixedPeriodFundEvent;
-import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.SavingsFundEvent;
-import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.TaxFundEvent;
-import com.ntankard.Tracking.DataBase.Core.RecurringPayment.FixedRecurringPayment;
 import com.ntankard.Tracking.DataBase.Core.StatementEnd;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.RecurringBankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePay.FixedPeriodRePayFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePay.SavingsRePayFundTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePay.TaxRePayFundTransfer;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.LocalSource;
-import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Bank_Summary;
-import com.ntankard.javaObjectDatabase.CoreObject.Factory.Dummy_Factory;
-import com.ntankard.javaObjectDatabase.CoreObject.Factory.ObjectFactory;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.Derived_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.LocalSource;
 import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
 
 import static com.ntankard.javaObjectDatabase.CoreObject.Field.Properties.Display_Properties.INFO_DISPLAY;
 
@@ -40,50 +31,12 @@ public class ExistingPeriod extends Period {
         FieldContainer fieldContainer = Period.getFieldContainer();
 
         // Class behavior
-        fieldContainer.addObjectFactory(new Dummy_Factory(RecurringBankTransfer.class));
-        fieldContainer.addObjectFactory(new DoubleParentFactory<StatementEnd, ExistingPeriod, Bank>(
-                StatementEnd.class,
-                Bank.class,
-                (generator, secondaryGenerator) -> StatementEnd.make(
-                        TrackingDatabase.get().getNextId(),
-                        generator,
-                        secondaryGenerator,
-                        0.0),
-                ObjectFactory.GeneratorMode.SINGLE));
-        fieldContainer.addObjectFactory(new DoubleParentFactory<Bank_Summary, ExistingPeriod, Bank>(
-                Bank_Summary.class,
-                Bank.class,
-                (generator, secondaryGenerator) -> Bank_Summary.make(
-                        TrackingDatabase.get().getNextId(),
-                        generator,
-                        secondaryGenerator)));
-        fieldContainer.addObjectFactory(new DoubleParentFactory<SavingsRePayFundTransfer, ExistingPeriod, SavingsFundEvent>(
-                SavingsRePayFundTransfer.class,
-                SavingsFundEvent.class,
-                (generator, secondaryGenerator) -> SavingsRePayFundTransfer.make(
-                        TrackingDatabase.get().getNextId(),
-                        generator,
-                        secondaryGenerator,
-                        TrackingDatabase.get().getDefault(Currency.class))
-        ));
-        fieldContainer.addObjectFactory(new DoubleParentFactory<TaxRePayFundTransfer, ExistingPeriod, TaxFundEvent>(
-                TaxRePayFundTransfer.class,
-                TaxFundEvent.class,
-                (generator, secondaryGenerator) -> TaxRePayFundTransfer.make(
-                        TrackingDatabase.get().getNextId(),
-                        generator,
-                        secondaryGenerator,
-                        TrackingDatabase.get().getDefault(Currency.class))
-        ));
-        fieldContainer.addObjectFactory(new DoubleParentFactory<FixedPeriodRePayFundTransfer, ExistingPeriod, FixedPeriodFundEvent>(
-                FixedPeriodRePayFundTransfer.class,
-                FixedPeriodFundEvent.class,
-                (generator, secondaryGenerator) -> FixedPeriodRePayFundTransfer.make(
-                        TrackingDatabase.get().getNextId(),
-                        generator,
-                        secondaryGenerator,
-                        TrackingDatabase.get().getDefault(Currency.class))
-        ));
+        fieldContainer.addObjectFactory(StatementEnd.Factory);
+        fieldContainer.addObjectFactory(Bank_Summary.Factory);
+        fieldContainer.addObjectFactory(SavingsRePayFundTransfer.Factory);
+        fieldContainer.addObjectFactory(TaxRePayFundTransfer.Factory);
+        fieldContainer.addObjectFactory(FixedPeriodRePayFundTransfer.Factory);
+        fieldContainer.addObjectFactory(RecurringBankTransfer.Factory);
 
         // ID
         // Month =======================================================================================================
@@ -114,17 +67,6 @@ public class ExistingPeriod extends Period {
                 , ExistingPeriod_Month, month
                 , ExistingPeriod_Year, year
         );
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public void add() {
-        super.add();
-        for (FixedRecurringPayment fixedRecurringPayment : TrackingDatabase.get().get(FixedRecurringPayment.class)) {
-            fixedRecurringPayment.regenerateChildren();
-        }
     }
 
     //------------------------------------------------------------------------------------------------------------------

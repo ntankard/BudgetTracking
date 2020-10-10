@@ -2,6 +2,7 @@ package com.ntankard.TestUtil;
 
 import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
+import com.ntankard.javaObjectDatabase.CoreObject.TrackingDatabase_Schema;
 import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
 
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public class DataObjectTestUtil {
     public static void testStandardParents(Class<? extends DataObject> aClass, List<String> exclude) {
         assertNotEquals(0, TrackingDatabase.get().get(aClass).size());
         for (DataObject toTest : TrackingDatabase.get().get(aClass)) {
-            List<DataField<?>> members = DataObject.getFieldContainer(toTest.getClass()).getVerbosityDataFields(Integer.MAX_VALUE);
+            List<DataField<?>> members = TrackingDatabase_Schema.getFieldContainer(toTest.getClass()).getVerbosityDataFields(Integer.MAX_VALUE);
 
             // Find the getters
             List<DataField<?>> expectedMember = new ArrayList<>();
@@ -70,7 +71,7 @@ public class DataObjectTestUtil {
     public static void checkDataObjectNotNull(Class<? extends DataObject> aClass, List<String> exclude) {
         assertNotEquals(0, TrackingDatabase.get().getAll().size());
         for (DataObject toTest : TrackingDatabase.get().get(aClass)) {
-            List<DataField<?>> members = DataObject.getFieldContainer(toTest.getClass()).getVerbosityDataFields(Integer.MAX_VALUE);
+            List<DataField<?>> members = TrackingDatabase_Schema.getFieldContainer(toTest.getClass()).getVerbosityDataFields(Integer.MAX_VALUE);
 
             // Find the getters
             List<DataField<?>> expectedMember = new ArrayList<>();

@@ -39,14 +39,6 @@ public class NoneFundEvent extends FundEvent {
      * {@inheritDoc
      */
     @Override
-    public void add() {
-        super.add();
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
     public void remove() {
         super.remove_impl();
     }

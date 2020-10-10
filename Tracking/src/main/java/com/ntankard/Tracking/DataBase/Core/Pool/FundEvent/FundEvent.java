@@ -1,12 +1,9 @@
 package com.ntankard.Tracking.DataBase.Core.Pool.FundEvent;
 
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Factory.DoubleParentFactory;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
-import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
-import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.FundEvent_Summary;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
 import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
 
 public abstract class FundEvent extends Pool {
@@ -24,10 +21,7 @@ public abstract class FundEvent extends Pool {
         FieldContainer fieldContainer = Pool.getFieldContainer();
 
         // Class behavior
-        fieldContainer.addObjectFactory(new DoubleParentFactory<FundEvent_Summary, FundEvent, Period>(
-                FundEvent_Summary.class,
-                Period.class,
-                (generator, secondaryGenerator) -> FundEvent_Summary.make(TrackingDatabase.get().getNextId(), secondaryGenerator, generator)));
+        fieldContainer.addObjectFactory(FundEvent_Summary.Factory);
 
         // ID
         // Name

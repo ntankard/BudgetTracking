@@ -1,6 +1,7 @@
 package com.ntankard.Tracking.DataBase.Interface.Summary.Pool;
 
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.Category;
+import com.ntankard.javaObjectDatabase.CoreObject.Factory.DoubleParentFactory;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.Derived_DataCore;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.Static_DataCore;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.ExternalSource;
@@ -12,6 +13,7 @@ import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.javaObjectDatabase.Database.ParameterMap;
+import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
 
 import java.util.List;
 
@@ -25,11 +27,21 @@ public class Category_Summary extends PoolSummary<SolidCategory> implements Orde
 
     public static final String Category_Summary_Order = "getOrder";
 
+    public static DoubleParentFactory<?, ?, ?> Factory = new DoubleParentFactory<>(
+            Category_Summary.class,
+            Period.class,
+            PoolSummary_Period, SolidCategory.class,
+            PoolSummary_Pool, (generator, secondaryGenerator) -> Category_Summary.make(TrackingDatabase.get().getNextId(), generator, secondaryGenerator)
+    );
+
     /**
      * Get all the fields for this object
      */
     public static FieldContainer getFieldContainer() {
         FieldContainer fieldContainer = PoolSummary.getFieldContainer();
+
+        // Class behavior
+        fieldContainer.setMyFactory(Factory);
 
         // ID
         // Period

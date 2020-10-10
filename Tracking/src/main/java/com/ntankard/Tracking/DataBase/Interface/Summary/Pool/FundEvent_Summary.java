@@ -3,6 +3,7 @@ package com.ntankard.Tracking.DataBase.Interface.Summary.Pool;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
+import com.ntankard.javaObjectDatabase.CoreObject.Factory.DoubleParentFactory;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.ListDataField;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.Children_ListDataCore;
@@ -11,6 +12,7 @@ import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.
 import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.LocalSource;
 import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
 import com.ntankard.javaObjectDatabase.Database.ParameterMap;
+import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
 
 import java.util.List;
 
@@ -25,11 +27,21 @@ public class FundEvent_Summary extends PoolSummary<FundEvent> {
     public static final String FundEvent_Summary_FundEventSummarySet = "getFundEventSummarySet";
     public static final String FundEvent_Summary_PreviousFundEventSummary = "getPreviousFundEventSummary";
 
+    public static DoubleParentFactory<?, ?, ?> Factory = new DoubleParentFactory<>(
+            FundEvent_Summary.class,
+            Period.class,
+            PoolSummary_Period, FundEvent.class,
+            PoolSummary_Pool, (generator, secondaryGenerator) -> FundEvent_Summary.make(TrackingDatabase.get().getNextId(), generator, secondaryGenerator)
+    );
+
     /**
      * Get all the fields for this object
      */
     public static FieldContainer getFieldContainer() {
         FieldContainer fieldContainer = PoolSummary.getFieldContainer();
+
+        // Class behavior
+        fieldContainer.setMyFactory(Factory);
 
         // ID
         // Period

@@ -8,8 +8,6 @@ import com.ntankard.Tracking.DataBase.Core.Period.VirtualPeriod;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.BankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.HalfTransfer;
-import com.ntankard.Tracking.DataBase.Interface.Set.OneParent_Children_Set;
-import com.ntankard.Tracking.DataBase.Interface.Set.TwoParent_Children_Set;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Bank_Summary;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Bank_Summary.Bank_SummaryList;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Category_Summary;
@@ -17,6 +15,7 @@ import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Category_Summary.Ca
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.FundEvent_Summary;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.FundEvent_Summary.FundEvent_SummaryList;
 import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
+import com.ntankard.javaObjectDatabase.CoreObject.Factory.SingleParentFactory;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.ListDataField;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.Children_ListDataCore;
@@ -28,6 +27,8 @@ import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
 import com.ntankard.javaObjectDatabase.CoreObject.Interface.Ordered;
 import com.ntankard.javaObjectDatabase.Database.ParameterMap;
 import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.util.OneParent_Children_Set;
+import com.ntankard.javaObjectDatabase.util.TwoParent_Children_Set;
 
 import java.util.List;
 
@@ -70,11 +71,16 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
     public static final String Period_Summary_Valid = "isValid";
     public static final String Period_Summary_Order = "getOrder";
 
+    public static SingleParentFactory<?, ?> Factory = new SingleParentFactory<>(Period_Summary.class, Period.class, Period_Summary::make);
+
     /**
      * Get all the fields for this object
      */
     public static FieldContainer getFieldContainer() {
         FieldContainer fieldContainer = DataObject.getFieldContainer();
+
+        // Class behavior
+        fieldContainer.setMyFactory(Factory);
 
         // ID
         // Period ======================================================================================================

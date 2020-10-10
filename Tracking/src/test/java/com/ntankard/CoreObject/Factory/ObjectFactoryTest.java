@@ -1,10 +1,11 @@
-package com.ntankard.DataObject.Factory;
+package com.ntankard.CoreObject.Factory;
 
 import com.ntankard.TestUtil.ClassInspectionUtil;
 import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Factory.DoubleParentFactory;
+import com.ntankard.javaObjectDatabase.CoreObject.Factory.DoubleParentFactory;
 import com.ntankard.javaObjectDatabase.CoreObject.Factory.ObjectFactory;
 import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.CoreObject.TrackingDatabase_Schema;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,17 +18,17 @@ class ObjectFactoryTest {
         for (Class<? extends DataObject> aClass : ClassInspectionUtil.getSolidClasses()) {
 
             // For each class, check each factory
-            FieldContainer container = DataObject.getFieldContainer(aClass);
-            for (ObjectFactory<?, ?> factory : container.getObjectFactories()) {
+            FieldContainer container = TrackingDatabase_Schema.getFieldContainer(aClass);
+            for (ObjectFactory<?> factory : container.getObjectFactories()) {
 
                 // If the factory is DoubleParentFactory
                 if (DoubleParentFactory.class.isAssignableFrom(factory.getClass())) {
                     DoubleParentFactory<?, ?, ?> doubleParentFactory = ((DoubleParentFactory<?, ?, ?>) factory);
 
                     // Check the secondary generator type
-                    FieldContainer containerToCheck = DataObject.getFieldContainer(doubleParentFactory.getSecondaryGeneratorType());
+                    FieldContainer containerToCheck = TrackingDatabase_Schema.getFieldContainer(doubleParentFactory.getSecondaryGeneratorType());
                     boolean found = false;
-                    for (ObjectFactory<?, ?> factoryToCheck : containerToCheck.getObjectFactories()) {
+                    for (ObjectFactory<?> factoryToCheck : containerToCheck.getObjectFactories()) {
 
                         // Check at least 1 of the factories also has the original class as secondary
                         if (DoubleParentFactory.class.isAssignableFrom(factoryToCheck.getClass())) {

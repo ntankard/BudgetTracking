@@ -4,11 +4,6 @@ import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.RecurringBankTransfer;
-import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePay.RePayFundTransfer;
-import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
-import com.ntankard.javaObjectDatabase.util.SetFilter;
-import com.ntankard.Tracking.DataBase.Interface.Set.TwoParent_Children_Set;
-import com.ntankard.javaObjectDatabase.CoreObject.Factory.Dummy_Factory;
 import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
 
 public class FixedRecurringPayment extends RecurringPayment {
@@ -24,7 +19,7 @@ public class FixedRecurringPayment extends RecurringPayment {
         FieldContainer fieldContainer = RecurringPayment.getFieldContainer();
 
         // Class behavior
-        fieldContainer.addObjectFactory(new Dummy_Factory(RePayFundTransfer.class));
+        fieldContainer.addObjectFactory(RecurringBankTransfer.Factory);
 
         // ID
         // Name
@@ -53,42 +48,5 @@ public class FixedRecurringPayment extends RecurringPayment {
                 , RecurringPayment_Bank, bank
                 , RecurringPayment_Category, solidCategory
         );
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public void add() {
-        super.add();
-    }
-
-    /**
-     * Create all the children transactions
-     */
-    public void regenerateChildren() {
-        // TODO this is totally broken, because other objects like receits can link to this is means there are tons of duplicates left over, this all has to be reworked to set the values instead of remaking
-
-        for (ExistingPeriod period : TrackingDatabase.get().get(ExistingPeriod.class)) {
-            if (period.getOrder() >= getStart().getOrder()) {
-                if (getEnd() != null) {
-                    if (getEnd().getOrder() < period.getOrder()) {
-                        continue;
-                    }
-                }
-                int size = new TwoParent_Children_Set<>(RecurringBankTransfer.class, period, this, new SetFilter<RecurringBankTransfer>(null) {
-                    @Override
-                    protected boolean shouldAdd_Impl(RecurringBankTransfer dataObject) {
-                        return dataObject.getDestinationPeriodGet().equals(period);
-                    }
-                }).get().size();
-                if (size > 1) {
-                    //throw new RuntimeException("Duplicate payment"); // @TODO need a better check for this, mby warning?
-                }
-                if (size == 0) {
-                    RecurringBankTransfer.make(TrackingDatabase.get().getNextId(), period, getBank(), getValue(), null, getCategory(), null, this).add();
-                }
-            }
-        }
     }
 }

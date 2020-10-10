@@ -3,6 +3,7 @@ package com.ntankard.dynamicGUI.DataObject;
 import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
 import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.CoreObject.TrackingDatabase_Schema;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Modifier;
@@ -127,7 +128,7 @@ class FieldContainerTest {
 
         // Check all real objects
         for (Class<? extends DataObject> dClass : getAllClasses()) {
-            fieldContainer = DataObject.getFieldContainer(dClass);
+            fieldContainer = TrackingDatabase_Schema.getFieldContainer(dClass);
             for (DataField<?> field : fieldContainer.getList()) {
                 assertEquals(field, fieldContainer.get(field.getIdentifierName()));
             }
@@ -145,7 +146,7 @@ class FieldContainerTest {
 
         // Check all real objects
         for (Class<? extends DataObject> dClass : getAllClasses()) {
-            fieldContainer = DataObject.getFieldContainer(dClass);
+            fieldContainer = TrackingDatabase_Schema.getFieldContainer(dClass);
             assertEquals(fieldContainer.masterMap.size(), fieldContainer.getList().size());
             for (DataField<?> field : fieldContainer.getList()) {
                 assertEquals(field, fieldContainer.masterMap.get(field.getIdentifierName()));
@@ -198,7 +199,7 @@ class FieldContainerTest {
     @Test
     void testDataObjects() {
         for (Class<? extends DataObject> dClass : getAllClasses()) {
-            FieldContainer fieldContainer = DataObject.getFieldContainer(dClass);
+            FieldContainer fieldContainer = TrackingDatabase_Schema.getFieldContainer(dClass);
             if (Modifier.isAbstract(dClass.getModifiers())) {
                 assertEquals(dClass, fieldContainer.inheritedObjects.get(fieldContainer.inheritedObjects.size() - 1));
             } else {

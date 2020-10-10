@@ -1,11 +1,7 @@
 package com.ntankard.Tracking.DataBase.Core.Pool.FundEvent;
 
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Factory.DoubleParentFactory;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
-import com.ntankard.Tracking.DataBase.Core.Currency;
-import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePay.TaxRePayFundTransfer;
-import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
 import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
 
 public class TaxFundEvent extends FundEvent {
@@ -23,15 +19,7 @@ public class TaxFundEvent extends FundEvent {
         FieldContainer fieldContainer = FundEvent.getFieldContainer();
 
         // Class behavior
-        fieldContainer.addObjectFactory(new DoubleParentFactory<TaxRePayFundTransfer, TaxFundEvent, ExistingPeriod>(
-                TaxRePayFundTransfer.class,
-                ExistingPeriod.class,
-                (generator, secondaryGenerator) -> TaxRePayFundTransfer.make(
-                        TrackingDatabase.get().getNextId(),
-                        secondaryGenerator,
-                        generator,
-                        TrackingDatabase.get().getDefault(Currency.class))
-        ));
+        fieldContainer.addObjectFactory(TaxRePayFundTransfer.Factory);
 
         // ID
         // Name
@@ -43,14 +31,6 @@ public class TaxFundEvent extends FundEvent {
         // Children
 
         return fieldContainer.finaliseContainer(TaxFundEvent.class);
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public void add() {
-        super.add();
     }
 
     //------------------------------------------------------------------------------------------------------------------

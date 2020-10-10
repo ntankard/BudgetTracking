@@ -2,8 +2,8 @@ package com.ntankard.Tracking.Dispaly.Util.Panels;
 
 import com.ntankard.dynamicGUI.Gui.Util.Update.Updatable;
 import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
-import com.ntankard.Tracking.DataBase.Interface.Set.Full_Set;
-import com.ntankard.Tracking.DataBase.Interface.Set.ObjectSet;
+import com.ntankard.javaObjectDatabase.util.Full_Set;
+import com.ntankard.javaObjectDatabase.util.ObjectSet;
 
 public class DataObject_DisplayList<T extends DataObject> extends Object_DisplayList<T> {
 

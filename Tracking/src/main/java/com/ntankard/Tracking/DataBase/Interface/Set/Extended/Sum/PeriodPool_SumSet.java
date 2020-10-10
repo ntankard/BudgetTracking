@@ -6,7 +6,7 @@ import com.ntankard.Tracking.DataBase.Core.Transfer.HalfTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Transfer;
 import com.ntankard.Tracking.DataBase.Interface.Set.Filter.TransferDestination_HalfTransfer_Filter;
 import com.ntankard.Tracking.DataBase.Interface.Set.Filter.TransferType_HalfTransfer_Filter;
-import com.ntankard.Tracking.DataBase.Interface.Set.TwoParent_Children_Set;
+import com.ntankard.javaObjectDatabase.util.TwoParent_Children_Set;
 
 public class PeriodPool_SumSet extends Transfer_SumSet<TwoParent_Children_Set<HalfTransfer, Period, Pool>> {
 

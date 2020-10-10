@@ -1,17 +1,13 @@
 package com.ntankard.Tracking.DataBase.Core.Pool;
 
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Factory.DoubleParentFactory;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
+import com.ntankard.Tracking.DataBase.Core.Currency;
+import com.ntankard.Tracking.DataBase.Core.StatementEnd;
+import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Bank_Summary;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
+import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
 import com.ntankard.javaObjectDatabase.CoreObject.Interface.HasDefault;
 import com.ntankard.javaObjectDatabase.CoreObject.Interface.Ordered;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
-import com.ntankard.Tracking.DataBase.Core.Currency;
-import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
-import com.ntankard.Tracking.DataBase.Core.StatementEnd;
-import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
-import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Bank_Summary;
-import com.ntankard.javaObjectDatabase.CoreObject.Factory.ObjectFactory;
-import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
 
 import static com.ntankard.javaObjectDatabase.CoreObject.Field.Properties.Display_Properties.INFO_DISPLAY;
 
@@ -33,15 +29,8 @@ public class Bank extends Pool implements CurrencyBound, Ordered, HasDefault {
         FieldContainer fieldContainer = Pool.getFieldContainer();
 
         // Class behavior
-        fieldContainer.addObjectFactory(new DoubleParentFactory<StatementEnd, Bank, ExistingPeriod>(
-                StatementEnd.class,
-                ExistingPeriod.class,
-                (generator, secondaryGenerator) -> StatementEnd.make(TrackingDatabase.get().getNextId(), secondaryGenerator, generator, 0.0),
-                ObjectFactory.GeneratorMode.SINGLE));
-        fieldContainer.addObjectFactory(new DoubleParentFactory<Bank_Summary, Bank, ExistingPeriod>(
-                Bank_Summary.class,
-                ExistingPeriod.class,
-                (generator, secondaryGenerator) -> Bank_Summary.make(TrackingDatabase.get().getNextId(), secondaryGenerator, generator)));
+        fieldContainer.addObjectFactory(StatementEnd.Factory);
+        fieldContainer.addObjectFactory(Bank_Summary.Factory);
 
         // ID
         // Name

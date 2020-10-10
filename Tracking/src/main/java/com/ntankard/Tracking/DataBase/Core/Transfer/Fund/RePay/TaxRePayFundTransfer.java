@@ -1,12 +1,14 @@
 package com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePay;
 
 import com.ntankard.Tracking.DataBase.Core.Currency;
+import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.Category;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.TaxFundEvent;
 import com.ntankard.Tracking.DataBase.Core.Transfer.HalfTransfer;
+import com.ntankard.javaObjectDatabase.CoreObject.Factory.DoubleParentFactory;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.ListDataField;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.Children_ListDataCore;
@@ -36,11 +38,25 @@ public class TaxRePayFundTransfer extends RePayFundTransfer {
     public static final String TaxRePayFundTransfer_TaxableSet = "getTaxableSet";
     public static final String TaxRePayFundTransfer_TaxableAmount = "getTaxableAmount";
 
+    public static DoubleParentFactory<?, ?, ?> Factory = new DoubleParentFactory<>(
+            TaxRePayFundTransfer.class,
+            ExistingPeriod.class,
+            Transfer_Period, TaxFundEvent.class,
+            Transfer_Source, (generator, secondaryGenerator) -> TaxRePayFundTransfer.make(
+            TrackingDatabase.get().getNextId(),
+            generator,
+            secondaryGenerator,
+            TrackingDatabase.get().getDefault(Currency.class))
+    );
+
     /**
      * Get all the fields for this object
      */
     public static FieldContainer getFieldContainer() {
         FieldContainer fieldContainer = RePayFundTransfer.getFieldContainer();
+
+        // Class behavior
+        fieldContainer.setMyFactory(Factory);
 
         // ID
         // Description

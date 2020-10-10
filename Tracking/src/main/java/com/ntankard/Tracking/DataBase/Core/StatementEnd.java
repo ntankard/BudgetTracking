@@ -1,5 +1,7 @@
 package com.ntankard.Tracking.DataBase.Core;
 
+import com.ntankard.javaObjectDatabase.CoreObject.Factory.DoubleParentFactory;
+import com.ntankard.javaObjectDatabase.CoreObject.Factory.ObjectFactory;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.Derived_DataCore;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.DirectExternalSource;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.ExternalSource;
@@ -10,6 +12,7 @@ import com.ntankard.javaObjectDatabase.CoreObject.Interface.Ordered;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
+import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
 
 import java.util.List;
 
@@ -35,11 +38,21 @@ public class StatementEnd extends DataObject implements CurrencyBound, Ordered {
     public static final String StatementEnd_Currency = "getCurrency";
     public static final String StatementEnd_Order = "getOrder";
 
+    public static DoubleParentFactory<?, ?, ?> Factory = new DoubleParentFactory<>(
+            StatementEnd.class,
+            Bank.class,
+            StatementEnd_Bank, ExistingPeriod.class,
+            StatementEnd_Period, (generator, secondaryGenerator) -> StatementEnd.make(TrackingDatabase.get().getNextId(), secondaryGenerator, generator, 0.0),
+            ObjectFactory.GeneratorMode.SINGLE);
+
     /**
      * Get all the fields for this object
      */
     public static FieldContainer getFieldContainer() {
         FieldContainer fieldContainer = DataObject.getFieldContainer();
+
+        // Class behavior
+        fieldContainer.setMyFactory(Factory);
 
         // ID
         // Period ======================================================================================================

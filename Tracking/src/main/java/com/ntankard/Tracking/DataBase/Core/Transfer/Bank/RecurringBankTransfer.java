@@ -1,5 +1,7 @@
 package com.ntankard.Tracking.DataBase.Core.Transfer.Bank;
 
+import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
+import com.ntankard.javaObjectDatabase.CoreObject.Factory.DoubleParentFactory;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
@@ -8,8 +10,10 @@ import com.ntankard.Tracking.DataBase.Core.RecurringPayment.FixedRecurringPaymen
 import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.Derived_DataCore;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.DirectExternalSource;
 import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
 
 import static com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FixedPeriodFundEvent.NamedDataObject_Name;
+import static com.ntankard.javaObjectDatabase.CoreObject.Factory.ObjectFactory.GeneratorMode.MULTIPLE_NO_ADD;
 
 public class RecurringBankTransfer extends BankTransfer {
 
@@ -19,11 +23,29 @@ public class RecurringBankTransfer extends BankTransfer {
 
     public static final String RecurringBankTransfer_ParentPayment = "getParentPayment";
 
+    public static DoubleParentFactory<?, ?, ?> Factory = new DoubleParentFactory<>(
+            RecurringBankTransfer.class,
+            ExistingPeriod.class,
+            Transfer_Period, FixedRecurringPayment.class,
+            RecurringBankTransfer_ParentPayment, (generator, secondaryGenerator) ->
+            RecurringBankTransfer.make(
+                    TrackingDatabase.get().getNextId(),
+                    generator,
+                    secondaryGenerator.getBank(),
+                    null,
+                    secondaryGenerator.getCategory(),
+                    null, secondaryGenerator),
+            MULTIPLE_NO_ADD
+    );
+
     /**
      * Get all the fields for this object
      */
     public static FieldContainer getFieldContainer() {
         FieldContainer fieldContainer = BankTransfer.getFieldContainer();
+
+        // Class behavior
+        fieldContainer.setMyFactory(Factory);
 
         // ID
         // Description (Below)

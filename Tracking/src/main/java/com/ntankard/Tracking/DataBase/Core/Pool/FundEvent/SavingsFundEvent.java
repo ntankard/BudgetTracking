@@ -1,11 +1,7 @@
 package com.ntankard.Tracking.DataBase.Core.Pool.FundEvent;
 
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Factory.DoubleParentFactory;
-import com.ntankard.Tracking.DataBase.Core.Currency;
-import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePay.SavingsRePayFundTransfer;
-import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.Static_DataCore;
 import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
 
@@ -22,15 +18,7 @@ public class SavingsFundEvent extends FundEvent {
         FieldContainer fieldContainer = FundEvent.getFieldContainer();
 
         // Class behavior
-        fieldContainer.addObjectFactory(new DoubleParentFactory<SavingsRePayFundTransfer, SavingsFundEvent, ExistingPeriod>(
-                SavingsRePayFundTransfer.class,
-                ExistingPeriod.class,
-                (generator, secondaryGenerator) -> SavingsRePayFundTransfer.make(
-                        TrackingDatabase.get().getNextId(),
-                        secondaryGenerator,
-                        generator,
-                        TrackingDatabase.get().getDefault(Currency.class))
-        ));
+        fieldContainer.addObjectFactory(SavingsRePayFundTransfer.Factory);
 
         // ID
         // Name ========================================================================================================
@@ -51,14 +39,6 @@ public class SavingsFundEvent extends FundEvent {
                 , DataObject_Id, id
                 , FundEvent_Category, solidCategory
         );
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public void add() {
-        super.add();
     }
 
     //------------------------------------------------------------------------------------------------------------------

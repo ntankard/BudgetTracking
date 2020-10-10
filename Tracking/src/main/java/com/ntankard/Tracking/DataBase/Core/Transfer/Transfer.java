@@ -1,17 +1,16 @@
 package com.ntankard.Tracking.DataBase.Core.Transfer;
 
-import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.Derived_DataCore;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.LocalSource;
-import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
-import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
-import com.ntankard.Tracking.DataBase.Core.Receipt;
-import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.Derived_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.LocalSource;
+import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.util.Single_OneParent_Children_Set;
 
 import java.util.List;
 
@@ -19,10 +18,6 @@ import static com.ntankard.javaObjectDatabase.CoreObject.Field.Properties.Displa
 import static com.ntankard.javaObjectDatabase.CoreObject.Field.Properties.Display_Properties.INFO_DISPLAY;
 
 public abstract class Transfer extends DataObject implements CurrencyBound {
-
-    // Not parents on purpose
-    private HalfTransfer sourceTransfer = null;
-    private HalfTransfer destinationTransfer = null;
 
     //------------------------------------------------------------------------------------------------------------------
     //################################################### Constructor ##################################################
@@ -46,6 +41,10 @@ public abstract class Transfer extends DataObject implements CurrencyBound {
      */
     public static FieldContainer getFieldContainer() {
         FieldContainer fieldContainer = DataObject.getFieldContainer();
+
+        // Class behavior
+        fieldContainer.addObjectFactory(Source_HalfTransfer.Factory);
+        fieldContainer.addObjectFactory(Destination_HalfTransfer.Factory);
 
         // ID
         // Description =================================================================================================
@@ -94,35 +93,6 @@ public abstract class Transfer extends DataObject implements CurrencyBound {
      * {@inheritDoc
      */
     @Override
-    public void add() {
-        if (sourceTransfer != null) throw new IllegalStateException("This object has already been added");
-        if (destinationTransfer != null) throw new IllegalStateException("This object has already been added");
-        super.add();
-        sourceTransfer = HalfTransfer.make(TrackingDatabase.get().getNextId(), this, true);
-        sourceTransfer.add();
-        destinationTransfer = HalfTransfer.make(TrackingDatabase.get().getNextId(), this, false);
-        destinationTransfer.add();
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public void remove() {
-        if (sourceTransfer == null) throw new IllegalStateException("This object has already been removed");
-        if (destinationTransfer == null) throw new IllegalStateException("This object has already been removed");
-        sourceTransfer.remove();
-        destinationTransfer.remove();
-        if (getChildren(Receipt.class).size() != 0) {
-            getChildren(Receipt.class).get(0).remove();
-        }
-        remove_impl();
-    }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
     @SuppressWarnings("SuspiciousMethodCalls")
     public <T extends DataObject> List<T> sourceOptions(Class<T> type, String fieldName) {
         if (fieldName.equals("Source")) {
@@ -164,11 +134,11 @@ public abstract class Transfer extends DataObject implements CurrencyBound {
     }
 
     public HalfTransfer toChaneGetSourceTransfer() {
-        return sourceTransfer;
+        return new Single_OneParent_Children_Set<>(Source_HalfTransfer.class, this).getItem();
     }
 
     public HalfTransfer toChangeGetDestinationTransfer() {
-        return destinationTransfer;
+        return new Single_OneParent_Children_Set<>(Destination_HalfTransfer.class, this).getItem();
     }
 
     public Currency getDestinationCurrencyGet() {

@@ -1,15 +1,15 @@
 package com.ntankard.Tracking.DataBase.Core.Transfer;
 
-import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.ExternalSource;
-import com.ntankard.javaObjectDatabase.Database.ParameterMap;
+import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.Derived_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.ExternalSource;
 import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.Database.ParameterMap;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ import static com.ntankard.javaObjectDatabase.CoreObject.Field.Properties.Displa
  * One half of the transaction
  */
 @ParameterMap(shouldSave = false)
-public class HalfTransfer extends DataObject implements CurrencyBound {
+public abstract class HalfTransfer extends DataObject implements CurrencyBound {
 
     public interface HalfTransferList extends List<HalfTransfer> {
     }
@@ -111,18 +111,7 @@ public class HalfTransfer extends DataObject implements CurrencyBound {
         // Parents
         // Children
 
-        return fieldContainer.finaliseContainer(HalfTransfer.class);
-    }
-
-    /**
-     * Create a new HalfTransfer object
-     */
-    public static HalfTransfer make(Integer id, Transfer transfer, Boolean isSource) {
-        return assembleDataObject(HalfTransfer.getFieldContainer(), new HalfTransfer()
-                , DataObject_Id, id
-                , HalfTransfer_Source, isSource
-                , HalfTransfer_Transfer, transfer
-        );
+        return fieldContainer.endLayer(HalfTransfer.class);
     }
 
     /**

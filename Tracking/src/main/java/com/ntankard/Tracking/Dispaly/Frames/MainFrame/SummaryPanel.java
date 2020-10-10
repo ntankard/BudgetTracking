@@ -1,7 +1,5 @@
 package com.ntankard.Tracking.Dispaly.Frames.MainFrame;
 
-import com.ntankard.Tracking.DataBase.Interface.Set.Full_Set;
-import com.ntankard.Tracking.DataBase.Interface.Set.OneParent_Children_Set;
 import com.ntankard.dynamicGUI.Gui.Util.Update.Updatable;
 import com.ntankard.dynamicGUI.Gui.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
@@ -12,6 +10,8 @@ import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Bank_Summary;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Category_Summary;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.FundEvent_Summary;
 import com.ntankard.Tracking.Dispaly.Util.Panels.DataObject_VerbosityDisplayList;
+import com.ntankard.javaObjectDatabase.util.Full_Set;
+import com.ntankard.javaObjectDatabase.util.OneParent_Children_Set;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,6 +1,5 @@
 package com.ntankard.Tracking.DataBase.Core.Pool.FundEvent;
 
-import com.ntankard.Tracking.DataBase.Core.BaseObject.Factory.DoubleParentFactory;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
@@ -12,12 +11,11 @@ import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.Filter.IntegerRange_FieldFilter;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.ListDataField;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.Children_ListDataCore;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.Derived_DataCore;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.Static_DataCore;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.Derived_DataCore;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.ListSource;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.LocalSource;
 import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
-import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
 
 import java.util.List;
 
@@ -44,15 +42,7 @@ public class FixedPeriodFundEvent extends FundEvent {
         FieldContainer fieldContainer = FundEvent.getFieldContainer();
 
         // Class behavior
-        fieldContainer.addObjectFactory(new DoubleParentFactory<FixedPeriodRePayFundTransfer, FixedPeriodFundEvent, ExistingPeriod>(
-                FixedPeriodRePayFundTransfer.class,
-                ExistingPeriod.class,
-                (generator, secondaryGenerator) -> FixedPeriodRePayFundTransfer.make(
-                        TrackingDatabase.get().getNextId(),
-                        secondaryGenerator,
-                        generator,
-                        TrackingDatabase.get().getDefault(Currency.class))
-        ));
+        fieldContainer.addObjectFactory(FixedPeriodRePayFundTransfer.Factory);
 
         // ID
         // Name

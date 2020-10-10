@@ -1,6 +1,6 @@
 package com.ntankard.Tracking.Dispaly.Frames.MainFrame.Periods;
 
-import com.ntankard.Tracking.DataBase.Interface.Set.Single_OneParent_Children_Set;
+import com.ntankard.javaObjectDatabase.util.Single_OneParent_Children_Set;
 import com.ntankard.dynamicGUI.Gui.Util.Update.Updatable;
 import com.ntankard.dynamicGUI.Gui.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;

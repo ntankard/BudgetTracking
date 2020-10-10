@@ -4,10 +4,10 @@ import com.ntankard.dynamicGUI.Gui.Util.Update.Updatable;
 import com.ntankard.dynamicGUI.Gui.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.RecurringPayment.FixedRecurringPayment;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.RecurringBankTransfer;
-import com.ntankard.Tracking.DataBase.Interface.Set.OneParent_Children_Set;
-import com.ntankard.Tracking.DataBase.Interface.Set.Full_Set;
 import com.ntankard.Tracking.Dispaly.Util.ElementControllers.FixedRecurringPayment_ElementController;
 import com.ntankard.Tracking.Dispaly.Util.Panels.DataObject_DisplayList;
+import com.ntankard.javaObjectDatabase.util.Full_Set;
+import com.ntankard.javaObjectDatabase.util.OneParent_Children_Set;
 
 import java.awt.*;
 import java.util.List;

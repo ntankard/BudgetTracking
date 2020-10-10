@@ -1,16 +1,14 @@
 package com.ntankard.Tracking.DataBase.Core.RecurringPayment;
 
-import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Field.Filter.Ordered_FieldFilter;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.NamedDataObject;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
-import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePay.RePayFundTransfer;
-import com.ntankard.javaObjectDatabase.CoreObject.Factory.Dummy_Factory;
+import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.Derived_DataCore;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.DirectExternalSource;
 import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
@@ -40,43 +38,20 @@ public abstract class RecurringPayment extends NamedDataObject implements Curren
     public static FieldContainer getFieldContainer() {
         FieldContainer fieldContainer = NamedDataObject.getFieldContainer();
 
-        // Class behavior
-        fieldContainer.addObjectFactory(new Dummy_Factory(RePayFundTransfer.class));
-
         // ID
         // Name
         // Start =======================================================================================================
         fieldContainer.add(new DataField<>(RecurringPayment_Start, ExistingPeriod.class, true));
         fieldContainer.get(RecurringPayment_Start).setCanEdit(true);
-        fieldContainer.get(RecurringPayment_Start).addChangeListener((field, oldValue, newValue) -> {
-            if (field.getState().equals(DataField.NewFieldState.N_ACTIVE)) {
-                ((RecurringPayment) field.getContainer()).regenerateChildren();
-            }
-        });
         // End =========================================================================================================
         fieldContainer.add(new DataField<>(RecurringPayment_End, ExistingPeriod.class, true));
         fieldContainer.get(RecurringPayment_End).setCanEdit(true);
-        fieldContainer.get(RecurringPayment_End).addChangeListener((field, oldValue, newValue) -> {
-            if (field.getState().equals(DataField.NewFieldState.N_ACTIVE)) {
-                ((RecurringPayment) field.getContainer()).regenerateChildren();
-            }
-        });
         // Bank ========================================================================================================
         fieldContainer.add(new DataField<>(RecurringPayment_Bank, Bank.class));
         fieldContainer.get(RecurringPayment_Bank).setCanEdit(true);
-        fieldContainer.get(RecurringPayment_Bank).addChangeListener((field, oldValue, newValue) -> {
-            if (field.getState().equals(DataField.NewFieldState.N_ACTIVE)) {
-                ((RecurringPayment) field.getContainer()).regenerateChildren();
-            }
-        });
         // Category ====================================================================================================
         fieldContainer.add(new DataField<>(RecurringPayment_Category, SolidCategory.class));
         fieldContainer.get(RecurringPayment_Category).setCanEdit(true);
-        fieldContainer.get(RecurringPayment_Category).addChangeListener((field, oldValue, newValue) -> {
-            if (field.getState().equals(DataField.NewFieldState.N_ACTIVE)) {
-                ((RecurringPayment) field.getContainer()).regenerateChildren();
-            }
-        });
         // Value =======================================================================================================
         fieldContainer.add(new DataField<>(RecurringPayment_Value, Double.class));
         fieldContainer.get(RecurringPayment_Value).setCanEdit(true);
@@ -94,20 +69,6 @@ public abstract class RecurringPayment extends NamedDataObject implements Curren
 
         return fieldContainer.endLayer(RecurringPayment.class);
     }
-
-    /**
-     * {@inheritDoc
-     */
-    @Override
-    public void add() {
-        super.add();
-        regenerateChildren();
-    }
-
-    /**
-     * Create all the children transactions
-     */
-    public abstract void regenerateChildren();
 
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Getters #####################################################

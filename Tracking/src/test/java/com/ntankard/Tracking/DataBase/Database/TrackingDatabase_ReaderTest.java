@@ -5,6 +5,7 @@ import com.ntankard.Tracking.DataBase.Core.Links.CategoryToVirtualCategory;
 import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
 import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.Database.TrackingDatabase_Reader_Util;
 import com.ntankard.javaObjectDatabase.util.FileUtil;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,9 @@ import java.util.List;
 import java.util.Map;
 
 import static com.ntankard.javaObjectDatabase.Database.TrackingDatabase_Reader.*;
+import static com.ntankard.javaObjectDatabase.Database.TrackingDatabase_Reader_Read.dataObjectFromString;
+import static com.ntankard.javaObjectDatabase.Database.TrackingDatabase_Reader_Save.dataObjectToString;
+import static com.ntankard.javaObjectDatabase.Database.TrackingDatabase_Reader_Util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TrackingDatabase_ReaderTest {
@@ -30,13 +34,6 @@ class TrackingDatabase_ReaderTest {
 
     @Test
     void testReadWrite() {
-
-        // Generate a list of all objects in the database linked to there ID
-        Map<Integer, DataObject> allObjects = new HashMap<>();
-        for (DataObject toAdd : TrackingDatabase.get().getAll()) {
-            allObjects.put(toAdd.getId(), toAdd);
-        }
-
         for (Class<? extends DataObject> aClass : TrackingDatabase.get().getDataObjectTypes()) {
             if (Modifier.isAbstract(aClass.getModifiers())) {
                 continue;
@@ -47,15 +44,11 @@ class TrackingDatabase_ReaderTest {
             for (DataObject dataObject : TrackingDatabase.get().get(aClass)) {
 
                 List<DataField<?>> constructorParameters = getSaveFields(dataObject.getClass());
-                List<SavedField<?>> savedFields = new ArrayList<>();
-                for (DataField<?> dataField : constructorParameters) {
-                    savedFields.add(new SavedField<>(dataField.getIdentifierName(), dataField.getType()));
-                }
 
                 if (shouldSave(dataObject.getClass())) {
                     List<String> first = dataObjectToString(dataObject, constructorParameters);
 
-                    DataObject newObj = dataObjectFromString(dataObject.getClass(), first.toArray(new String[0]), allObjects, savedFields);
+                    DataObject newObj = dataObjectFromString(dataObject.getClass(), first.toArray(new String[0]), null);
 
                     List<String> second = dataObjectToString(newObj, constructorParameters);
 
@@ -81,10 +74,10 @@ class TrackingDatabase_ReaderTest {
         new File(testPath + ROOT_FILE_PATH).mkdir();
         save(testPath);
 
-        String saveDir = FileUtil.getLatestSaveDirectory(savePath + ROOT_DATA_PATH);
+        String saveDir = TrackingDatabase_Reader_Util.getLatestSaveDirectory(savePath + ROOT_DATA_PATH);
         List<String> saveFiles = FileUtil.findFilesInDirectory(saveDir + INSTANCE_CLASSES_PATH);
 
-        String testDir = FileUtil.getLatestSaveDirectory(testPath + ROOT_DATA_PATH);
+        String testDir = TrackingDatabase_Reader_Util.getLatestSaveDirectory(testPath + ROOT_DATA_PATH);
         List<String> testFiles = FileUtil.findFilesInDirectory(testDir + INSTANCE_CLASSES_PATH);
 
         assertEquals(saveFiles.size(), testFiles.size());

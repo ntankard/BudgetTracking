@@ -6,13 +6,13 @@ import com.ntankard.Tracking.DataBase.Core.CategorySet;
 import com.ntankard.Tracking.DataBase.Core.Links.CategoryToCategorySet;
 import com.ntankard.Tracking.DataBase.Core.Links.CategoryToVirtualCategory;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.VirtualCategory;
-import com.ntankard.Tracking.DataBase.Interface.Set.Full_Set;
-import com.ntankard.Tracking.DataBase.Interface.Set.OneParent_Children_Set;
 import com.ntankard.Tracking.Dispaly.Util.ElementControllers.CategorySet_ElementController;
 import com.ntankard.Tracking.Dispaly.Util.ElementControllers.CategoryToCategorySet_ElementController;
 import com.ntankard.Tracking.Dispaly.Util.ElementControllers.CategoryToVirtualCategory_ElementController;
 import com.ntankard.Tracking.Dispaly.Util.ElementControllers.VirtualCategory_ElementController;
 import com.ntankard.Tracking.Dispaly.Util.Panels.DataObject_DisplayList;
+import com.ntankard.javaObjectDatabase.util.Full_Set;
+import com.ntankard.javaObjectDatabase.util.OneParent_Children_Set;
 
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;

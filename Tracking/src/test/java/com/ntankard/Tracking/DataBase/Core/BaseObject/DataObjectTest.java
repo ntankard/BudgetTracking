@@ -6,6 +6,7 @@ import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
 import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
 import com.ntankard.TestUtil.ClassInspectionUtil;
 import com.ntankard.TestUtil.DataAccessUntil;
+import com.ntankard.javaObjectDatabase.CoreObject.TrackingDatabase_Schema;
 import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -57,7 +58,7 @@ class DataObjectTest {
             if (!Modifier.isAbstract(testClass.getModifiers())) {
                 for (DataObject dataObject : TrackingDatabase.get().get(testClass)) {
                     Class<? extends DataObject> aClass = dataObject.getClass();
-                    List<DataField<?>> members = DataObject.getFieldContainer(aClass).getVerbosityDataFields(Integer.MAX_VALUE);
+                    List<DataField<?>> members = TrackingDatabase_Schema.getFieldContainer(aClass).getVerbosityDataFields(Integer.MAX_VALUE);
 
                     // Find the setters
                     for (DataField member : members) {
@@ -116,7 +117,7 @@ class DataObjectTest {
     @Test
     void checkNonPrimitive() {
         for (Class<? extends DataObject> toTest : ClassInspectionUtil.getAllClasses()) {
-            List<DataField<?>> members = DataObject.getFieldContainer(toTest).getVerbosityDataFields(Integer.MAX_VALUE);
+            List<DataField<?>> members = TrackingDatabase_Schema.getFieldContainer(toTest).getVerbosityDataFields(Integer.MAX_VALUE);
 
             // Find the setters
             for (DataField member : members) {
