@@ -46,11 +46,11 @@ public class ExistingPeriod extends Period {
         // Order =======================================================================================================
         fieldContainer.add(new DataField<>(ExistingPeriod_Order, Integer.class));
         fieldContainer.get(ExistingPeriod_Order).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
-        fieldContainer.get(ExistingPeriod_Order).setDataCore(
-                new Derived_DataCore<>
+        fieldContainer.get(ExistingPeriod_Order).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>
                         (container -> ((ExistingPeriod) container).getYear() * 12 + ((ExistingPeriod) container).getMonth()
-                                , new LocalSource<>(fieldContainer.get(ExistingPeriod_Month))
-                                , new LocalSource<>(fieldContainer.get(ExistingPeriod_Year))));
+                                , new LocalSource.LocalSource_Factory<>(ExistingPeriod_Month)
+                                , new LocalSource.LocalSource_Factory<>(ExistingPeriod_Year)));
         //==============================================================================================================
         // Parents
         // Children

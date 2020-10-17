@@ -24,18 +24,19 @@ public abstract class RePayFundTransfer extends FundTransfer {
 
         // ID
         // Description =================================================================================================
-        fieldContainer.get(Transfer_Description).setDataCore(
-                new Derived_DataCore<>(
-                        new DirectExternalSource<>(fieldContainer.get(Transfer_Source), NamedDataObject_Name,
+        fieldContainer.get(Transfer_Description).setManualCanEdit(false);
+        fieldContainer.get(Transfer_Description).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>(
+                        new DirectExternalSource.DirectExternalSource_Factory<>(Transfer_Source, NamedDataObject_Name,
                                 original -> "RP " + original)));
         // Period
         // Source
         // Value
         // Currency
         // Destination =================================================================================================
-        fieldContainer.get(Transfer_Destination).setDataCore(
-                new Derived_DataCore<>(
-                        new DirectExternalSource<>(fieldContainer.get(Transfer_Source), FundEvent_Category)));
+        fieldContainer.get(Transfer_Destination).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>(
+                        new DirectExternalSource.DirectExternalSource_Factory<>(Transfer_Source, FundEvent_Category)));
         // SourceCurrencyGet
         // DestinationCurrencyGet
         // SourcePeriodGet

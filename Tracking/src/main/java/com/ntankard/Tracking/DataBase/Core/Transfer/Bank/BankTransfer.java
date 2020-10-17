@@ -53,7 +53,7 @@ public abstract class BankTransfer extends Transfer {
         // ID
         // Description
         // Period ======================================================================================================
-        fieldContainer.get(Transfer_Period).setCanEdit(true);
+        fieldContainer.get(Transfer_Period).setManualCanEdit(true);
         fieldContainer.<Period>get(Transfer_Period).addFilter(new FieldFilter<Period, DataObject>() {
             @Override
             public boolean isValid(Period newValue, Period pastValue, DataObject container) {
@@ -66,27 +66,27 @@ public abstract class BankTransfer extends Transfer {
         });
         // Source ======================================================================================================
         fieldContainer.add(Transfer_Period, new DataField<>(Transfer_Source, Bank.class));
-        fieldContainer.get(Transfer_Source).addChangeListener(new Marked_FieldChangeListener<Object>(Transfer_Source_ListenerMark) {
-            @Override
-            public void valueChanged(DataField<Object> field, Object oldValue, Object newValue) {
-                // TODO Hidden error here, basically when this object setups up it triggers the change listener but when an object is being build the fields have not been added yet. This check patches the problem but may be a larger issue
-                if (field.getState().equals(DataField.NewFieldState.N_ACTIVE)) {
-                    BankTransfer thisTransfer = (BankTransfer) field.getContainer();
-                    if (!(thisTransfer.getDestination() instanceof Bank && thisTransfer.getDestinationCurrency() != null)) {
-
-                        thisTransfer.setDestinationValue(null);
-                    }
-                    thisTransfer.validateParents();
-                }
-            }
-        });
+//        fieldContainer.get(Transfer_Source).addChangeListener(new Marked_FieldChangeListener<Object>(Transfer_Source_ListenerMark) {
+//            @Override
+//            public void valueChanged(DataField<Object> field, Object oldValue, Object newValue) {
+//                // TODO Hidden error here, basically when this object setups up it triggers the change listener but when an object is being build the fields have not been added yet. This check patches the problem but may be a larger issue
+//                if (field.getState().equals(DataField.NewFieldState.N_ACTIVE)) {
+//                    BankTransfer thisTransfer = (BankTransfer) field.getContainer();
+//                    if (!(thisTransfer.getDestination() instanceof Bank && thisTransfer.getDestinationCurrency() != null)) {
+//
+//                        thisTransfer.setDestinationValue(null);
+//                    }
+//                    thisTransfer.validateParents();
+//                }
+//            }
+//        });
         // Value =======================================================================================================
-        fieldContainer.get(Transfer_Value).setCanEdit(true);
+        fieldContainer.get(Transfer_Value).setManualCanEdit(true);
         // Currency ====================================================================================================
-        fieldContainer.<Currency>get(Transfer_Currency).setDataCore(new Derived_DataCore<>(new DirectExternalSource<>(fieldContainer.get(Transfer_Source), Bank_Currency)));
+        fieldContainer.<Currency>get(Transfer_Currency).setDataCore_factory(new Derived_DataCore.Derived_DataCore_Factory<>(new DirectExternalSource.DirectExternalSource_Factory<>((Transfer_Source), Bank_Currency)));
         // DestinationPeriod ===========================================================================================
         fieldContainer.add(Transfer_Currency, new DataField<>(BankTransfer_DestinationPeriod, Period.class, true));
-        fieldContainer.get(BankTransfer_DestinationPeriod).setCanEdit(true);
+        fieldContainer.get(BankTransfer_DestinationPeriod).setManualCanEdit(true);
         fieldContainer.<Period>get(BankTransfer_DestinationPeriod).addFilter(new Dependant_FieldFilter<Period, BankTransfer>(Transfer_Period, Transfer_Destination) {
             @Override
             public boolean isValid(Period newValue, Period pastValue, BankTransfer bankTransfer) {
@@ -101,41 +101,41 @@ public abstract class BankTransfer extends Transfer {
         fieldContainer.<Category>get(BankTransfer_Category).setSetterFunction((toSet, container) -> {
             ((BankTransfer) container).setDestination(toSet);
         });
-        fieldContainer.<Category>get(BankTransfer_Category).setDataCore(
-                new Derived_DataCore<Category, BankTransfer>(container -> {
+        fieldContainer.<Category>get(BankTransfer_Category).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<Category, BankTransfer>(container -> {
                     if (container.getDestination() instanceof SolidCategory) {
                         return (SolidCategory) container.getDestination();
                     }
                     return null;
-                }, new LocalSource<>(fieldContainer.get(Transfer_Destination))));
+                }, new LocalSource.LocalSource_Factory<>((Transfer_Destination))));
         // Bank ========================================================================================================
         fieldContainer.add(new DataField<>(BankTransfer_Bank, Bank.class, true));
         fieldContainer.get(BankTransfer_Bank).setTellParent(false);
         fieldContainer.<Bank>get(BankTransfer_Bank).setSetterFunction((toSet, container) -> {
             ((BankTransfer) container).setDestination(toSet);
         });
-        fieldContainer.<Bank>get(BankTransfer_Bank).setDataCore(
-                new Derived_DataCore<Bank, BankTransfer>(container -> {
+        fieldContainer.<Bank>get(BankTransfer_Bank).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<Bank, BankTransfer>(container -> {
                     if (container.getDestination() instanceof Bank) {
                         return (Bank) container.getDestination();
                     }
                     return null;
-                }, new LocalSource<>(fieldContainer.get(Transfer_Destination))));
+                }, new LocalSource.LocalSource_Factory<>((Transfer_Destination))));
         // FundEvent ===================================================================================================
         fieldContainer.add(new DataField<>(BankTransfer_FundEvent, FundEvent.class, true));
         fieldContainer.get(BankTransfer_FundEvent).setTellParent(false);
         fieldContainer.<FundEvent>get(BankTransfer_FundEvent).setSetterFunction((toSet, container) -> {
             ((BankTransfer) container).setDestination(toSet);
         });
-        fieldContainer.<FundEvent>get(BankTransfer_FundEvent).setDataCore(
-                new Derived_DataCore<FundEvent, BankTransfer>(container -> {
+        fieldContainer.<FundEvent>get(BankTransfer_FundEvent).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<FundEvent, BankTransfer>(container -> {
                     if (container.getDestination() instanceof FundEvent) {
                         return (FundEvent) container.getDestination();
                     }
                     return null;
-                }, new LocalSource<>(fieldContainer.get(Transfer_Destination))));
+                }, new LocalSource.LocalSource_Factory<>((Transfer_Destination))));
         // Destination =================================================================================================
-        fieldContainer.get(Transfer_Destination).setCanEdit(true);
+        fieldContainer.get(Transfer_Destination).setManualCanEdit(true);
         fieldContainer.<Pool>get(Transfer_Destination).addFilter(new Dependant_FieldFilter<Pool, BankTransfer>(Transfer_Source) {
             @Override
             public boolean isValid(Pool newValue, Pool pastValue, BankTransfer bankTransfer) {
@@ -143,27 +143,27 @@ public abstract class BankTransfer extends Transfer {
             }
         });
         // TODO This might be a problem, its only safe because it goes through the impl method below, if it was ever set directly it would break
-        fieldContainer.<Pool>get(Transfer_Destination).addChangeListener(new Marked_FieldChangeListener<Pool>(Transfer_Destination_ListenerMark) {
-            @Override
-            public void valueChanged(DataField<Pool> field, Pool oldValue, Pool newValue) {
-                if (field.getState().equals(DataField.NewFieldState.N_ACTIVE)) {
-                    BankTransfer bankTransfer = ((BankTransfer) field.getContainer());
-                    // Destination Period can only be maintained if its a Bank to Bank transfer
-                    if (!bankTransfer.doseSupportDestinationPeriod()) {
-                        bankTransfer.setDestinationPeriod(null);
-                    }
-
-                    // Destination value can only be maintained if its a bank to bank transfer with different currencies
-                    if (!bankTransfer.doseSupportDestinationValue()) {
-                        bankTransfer.setDestinationValue(null);
-                    }
-                }
-            }
-        });
+//        fieldContainer.<Pool>get(Transfer_Destination).addChangeListener(new Marked_FieldChangeListener<Pool>(Transfer_Destination_ListenerMark) {
+//            @Override
+//            public void valueChanged(DataField<Pool> field, Pool oldValue, Pool newValue) {
+//                if (field.getState().equals(DataField.NewFieldState.N_ACTIVE)) {
+//                    BankTransfer bankTransfer = ((BankTransfer) field.getContainer());
+//                    // Destination Period can only be maintained if its a Bank to Bank transfer
+//                    if (!bankTransfer.doseSupportDestinationPeriod()) {
+//                        bankTransfer.setDestinationPeriod(null);
+//                    }
+//
+//                    // Destination value can only be maintained if its a bank to bank transfer with different currencies
+//                    if (!bankTransfer.doseSupportDestinationValue()) {
+//                        bankTransfer.setDestinationValue(null);
+//                    }
+//                }
+//            }
+//        });
         // DestinationValue ============================================================================================
         fieldContainer.add(Transfer_Destination, new DataField<>(BankTransfer_DestinationValue, Double.class, true));
         fieldContainer.get(BankTransfer_DestinationValue).getDisplayProperties().setDataType(CURRENCY);
-        fieldContainer.get(BankTransfer_DestinationValue).setCanEdit(true);
+        fieldContainer.get(BankTransfer_DestinationValue).setManualCanEdit(true);
         // TODO probably best to replace this with a conversation step that takes 0 and makes it null so it dosnt fail
         fieldContainer.<Double>get(BankTransfer_DestinationValue).addFilter(new Dependant_FieldFilter<Double, BankTransfer>(Transfer_Destination, Transfer_Source) {
             @Override
@@ -176,40 +176,40 @@ public abstract class BankTransfer extends Transfer {
         });
         // DestinationCurrency =========================================================================================
         fieldContainer.add(new DataField<>(BankTransfer_DestinationCurrency, Currency.class, true));
-        fieldContainer.<Currency>get(BankTransfer_DestinationCurrency).setDataCore(
-                new Derived_DataCore<>(container -> {
+        fieldContainer.<Currency>get(BankTransfer_DestinationCurrency).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>(container -> {
                     BankTransfer bankTransfer = ((BankTransfer) container);
                     if (bankTransfer.doseSupportDestinationCurrency()) {
                         return ((Bank) bankTransfer.getDestination()).getCurrency();
                     }
                     return null;
                 }
-                        , new LocalSource<>(fieldContainer.get(Transfer_Destination))
-                        , new LocalSource<>(fieldContainer.get(Transfer_Source))));
+                        , new LocalSource.LocalSource_Factory<>((Transfer_Destination))
+                        , new LocalSource.LocalSource_Factory<>((Transfer_Source))));
         // SourceCurrencyGet
         // DestinationCurrencyGet ======================================================================================
-        fieldContainer.<Currency>get(Transfer_DestinationCurrencyGet).setDataCore(
-                new Derived_DataCore<>((Derived_DataCore.Calculator<Currency, BankTransfer>) container -> {
+        fieldContainer.<Currency>get(Transfer_DestinationCurrencyGet).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>((Derived_DataCore.Calculator<Currency, BankTransfer>) container -> {
                     if (container.getDestinationCurrency() != null) {
                         return container.getDestinationCurrency();
                     } else {
                         return container.getCurrency();
                     }
                 }
-                        , new LocalSource<>(fieldContainer.get(Transfer_Currency))
-                        , new LocalSource<>(fieldContainer.get(BankTransfer_DestinationCurrency))));
+                        , new LocalSource.LocalSource_Factory<>((Transfer_Currency))
+                        , new LocalSource.LocalSource_Factory<>((BankTransfer_DestinationCurrency))));
         // SourcePeriodGet
         // DestinationPeriodGet ========================================================================================
-        fieldContainer.<Period>get(Transfer_DestinationPeriodGet).setDataCore(
-                new Derived_DataCore<>((Derived_DataCore.Calculator<Period, BankTransfer>) container -> {
+        fieldContainer.<Period>get(Transfer_DestinationPeriodGet).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>((Derived_DataCore.Calculator<Period, BankTransfer>) container -> {
                     if (container.getDestinationPeriod() != null) {
                         return container.getDestinationPeriod();
                     } else {
                         return container.getPeriod();
                     }
                 }
-                        , new LocalSource<>(fieldContainer.get(Transfer_Period))
-                        , new LocalSource<>(fieldContainer.get(BankTransfer_DestinationPeriod))));
+                        , new LocalSource.LocalSource_Factory<>((Transfer_Period))
+                        , new LocalSource.LocalSource_Factory<>((BankTransfer_DestinationPeriod))));
         //==============================================================================================================
         // Parents
         // Children

@@ -50,15 +50,15 @@ public class FundEvent_Summary extends PoolSummary<FundEvent> {
         // BankSummarySet ==============================================================================================
         fieldContainer.add(new ListDataField<>(FundEvent_Summary_FundEventSummarySet, FundEvent_SummaryList.class));
         fieldContainer.get(FundEvent_Summary_FundEventSummarySet).getDisplayProperties().setVerbosityLevel(TRACE_DISPLAY);
-        fieldContainer.<List<FundEvent_Summary>>get(FundEvent_Summary_FundEventSummarySet).setDataCore(
-                new Children_ListDataCore<>(
+        fieldContainer.<List<FundEvent_Summary>>get(FundEvent_Summary_FundEventSummarySet).setDataCore_factory(
+                new Children_ListDataCore.Children_ListDataCore_Factory<>(
                         FundEvent_Summary.class,
-                        new Children_ListDataCore.ParentAccess<>(fieldContainer.get(PoolSummary_Pool))));
+                        new Children_ListDataCore.ParentAccess.ParentAccess_Factory<>(PoolSummary_Pool)));
         // PreviousBankSummary =========================================================================================
         fieldContainer.add(new DataField<>(FundEvent_Summary_PreviousFundEventSummary, FundEvent_Summary.class, true));
         fieldContainer.get(FundEvent_Summary_PreviousFundEventSummary).getDisplayProperties().setVerbosityLevel(TRACE_DISPLAY);
-        fieldContainer.<FundEvent_Summary>get(FundEvent_Summary_PreviousFundEventSummary).setDataCore(
-                new Derived_DataCore<>(
+        fieldContainer.<FundEvent_Summary>get(FundEvent_Summary_PreviousFundEventSummary).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<FundEvent_Summary, FundEvent_Summary>) container -> {
                             for (FundEvent_Summary fundEvent_summary : container.getFundEventSummarySet()) {
                                 if (fundEvent_summary.getPeriod().getOrder() == container.getPeriod().getOrder() - 1) {
@@ -67,33 +67,33 @@ public class FundEvent_Summary extends PoolSummary<FundEvent> {
                             }
                             return null;
                         }
-                        , new LocalSource<>(fieldContainer.get(FundEvent_Summary_FundEventSummarySet))));
+                        , new LocalSource.LocalSource_Factory<>(FundEvent_Summary_FundEventSummarySet)));
         // Start =======================================================================================================
-        fieldContainer.<Double>get(PoolSummary_Start).setDataCore(
-                new Derived_DataCore<>(
+        fieldContainer.<Double>get(PoolSummary_Start).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Double, FundEvent_Summary>) container ->
                                 container.getPreviousFundEventSummary() == null ? 0.0 : container.getPreviousFundEventSummary().getEnd()
-                        , new ExternalSource<>(fieldContainer.get(FundEvent_Summary_PreviousFundEventSummary), PoolSummary_End)));
+                        , new ExternalSource.ExternalSource_Factory<>(FundEvent_Summary_PreviousFundEventSummary, PoolSummary_End)));
         // End =========================================================================================================
-        fieldContainer.<Double>get(PoolSummary_End).setDataCore(
-                new Derived_DataCore<>(
+        fieldContainer.<Double>get(PoolSummary_End).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Double, FundEvent_Summary>) container -> container.getStart() + container.getTransferSum()
-                        , new LocalSource<>(fieldContainer.get(PoolSummary_Start))
-                        , new LocalSource<>(fieldContainer.get(PoolSummary_TransferSum))));
+                        , new LocalSource.LocalSource_Factory<>(PoolSummary_Start)
+                        , new LocalSource.LocalSource_Factory<>(PoolSummary_TransferSum)));
         //==============================================================================================================
         // Net
         // TransferSum =================================================================================================
-        fieldContainer.<Double>get(PoolSummary_TransferSum).setDataCore(
-                new Derived_DataCore<>(
+        fieldContainer.<Double>get(PoolSummary_TransferSum).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Double, PoolSummary<FundEvent>>) PoolSummary::getTransferSetSum
-                        , new LocalSource<>(fieldContainer.get(PoolSummary_TransferSetSum))));
+                        , new LocalSource.LocalSource_Factory<>(PoolSummary_TransferSetSum)));
         //==============================================================================================================
         // Missing
         // Valid =======================================================================================================
-        fieldContainer.<Boolean>get(PoolSummary_Valid).setDataCore(
-                new Derived_DataCore<>(
+        fieldContainer.<Boolean>get(PoolSummary_Valid).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Boolean, PoolSummary<FundEvent>>) container -> container.getMissing().equals(0.00)
-                        , new LocalSource<>(fieldContainer.get(PoolSummary_Missing))));
+                        , new LocalSource.LocalSource_Factory<>(PoolSummary_Missing)));
         //==============================================================================================================
         // Parents
         // Children

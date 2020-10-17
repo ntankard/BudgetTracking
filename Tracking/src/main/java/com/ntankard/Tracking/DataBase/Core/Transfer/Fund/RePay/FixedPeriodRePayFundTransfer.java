@@ -47,8 +47,8 @@ public class FixedPeriodRePayFundTransfer extends RePayFundTransfer {
         // Period
         // Source
         // Value =======================================================================================================
-        fieldContainer.<Double>get(Transfer_Value).setDataCore(
-                new Derived_DataCore<>(
+        fieldContainer.<Double>get(Transfer_Value).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Double, FixedPeriodRePayFundTransfer>) container -> {
                             FixedPeriodFundEvent fixedPeriodFundEvent = (FixedPeriodFundEvent) container.getSource();
                             if (!container.getPeriod().isWithin(fixedPeriodFundEvent.getStart(), fixedPeriodFundEvent.getDuration())) {
@@ -56,10 +56,10 @@ public class FixedPeriodRePayFundTransfer extends RePayFundTransfer {
                             }
                             return fixedPeriodFundEvent.getRepayAmount();
                         }
-                        , new LocalSource<>(fieldContainer.get(Transfer_Period))
-                        , new ExternalSource<>(fieldContainer.get(Transfer_Source), FixedPeriodFundEvent_Start)
-                        , new ExternalSource<>(fieldContainer.get(Transfer_Source), FixedPeriodFundEvent_Duration)
-                        , new ExternalSource<>(fieldContainer.get(Transfer_Source), FixedPeriodFundEvent_RepayAmount)));
+                        , new LocalSource.LocalSource_Factory<>((Transfer_Period))
+                        , new ExternalSource.ExternalSource_Factory<>((Transfer_Source), FixedPeriodFundEvent_Start)
+                        , new ExternalSource.ExternalSource_Factory<>((Transfer_Source), FixedPeriodFundEvent_Duration)
+                        , new ExternalSource.ExternalSource_Factory<>((Transfer_Source), FixedPeriodFundEvent_RepayAmount)));
         // =============================================================================================================
         // Currency
         // Destination

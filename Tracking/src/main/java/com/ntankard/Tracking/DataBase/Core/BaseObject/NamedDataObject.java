@@ -21,7 +21,7 @@ public abstract class NamedDataObject extends DataObject {
         // ID
         // Name ========================================================================================================
         fieldContainer.add(new DataField<>(NamedDataObject_Name, String.class));
-        fieldContainer.get(NamedDataObject_Name).setCanEdit(true);
+        fieldContainer.get(NamedDataObject_Name).setManualCanEdit(true);
         //==============================================================================================================
         // Parents
         // Children

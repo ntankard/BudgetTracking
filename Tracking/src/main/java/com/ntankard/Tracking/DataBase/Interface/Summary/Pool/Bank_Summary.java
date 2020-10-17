@@ -79,15 +79,15 @@ public class Bank_Summary extends PoolSummary<Bank> implements CurrencyBound, Or
         // BankSummarySet ==============================================================================================
         fieldContainer.add(new ListDataField<>(Bank_Summary_BankSummarySet, Bank_SummaryList.class));
         fieldContainer.get(Bank_Summary_BankSummarySet).getDisplayProperties().setVerbosityLevel(TRACE_DISPLAY);
-        fieldContainer.<List<Bank_Summary>>get(Bank_Summary_BankSummarySet).setDataCore(
-                new Children_ListDataCore<>(
+        fieldContainer.<List<Bank_Summary>>get(Bank_Summary_BankSummarySet).setDataCore_factory(
+                new Children_ListDataCore.Children_ListDataCore_Factory<>(
                         Bank_Summary.class,
-                        new Children_ListDataCore.ParentAccess<>(fieldContainer.get(PoolSummary_Pool))));
+                        new Children_ListDataCore.ParentAccess.ParentAccess_Factory<>((PoolSummary_Pool))));
         // PreviousBankSummary =========================================================================================
         fieldContainer.add(new DataField<>(Bank_Summary_PreviousBankSummary, Bank_Summary.class, true));
         fieldContainer.get(Bank_Summary_PreviousBankSummary).getDisplayProperties().setVerbosityLevel(TRACE_DISPLAY);
-        fieldContainer.<Bank_Summary>get(Bank_Summary_PreviousBankSummary).setDataCore(
-                new Derived_DataCore<>(
+        fieldContainer.<Bank_Summary>get(Bank_Summary_PreviousBankSummary).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Bank_Summary, Bank_Summary>) container -> {
                             List<Bank_Summary> bank_summaries = container.getBankSummarySet();
                             for (Bank_Summary bankSummary : bank_summaries) {
@@ -97,36 +97,36 @@ public class Bank_Summary extends PoolSummary<Bank> implements CurrencyBound, Or
                             }
                             return null;
                         }
-                        , new LocalSource<>(fieldContainer.get(Bank_Summary_BankSummarySet)))); // TODO you need to watch period
+                        , new LocalSource.LocalSource_Factory<>((Bank_Summary_BankSummarySet)))); // TODO you need to watch period
         // StatementEndSet ================================================================================================
         fieldContainer.add(new ListDataField<>(Bank_Summary_StatementEndSet, StatementEndList.class));
         fieldContainer.get(Bank_Summary_StatementEndSet).getDisplayProperties().setVerbosityLevel(TRACE_DISPLAY);
-        fieldContainer.<List<StatementEnd>>get(Bank_Summary_StatementEndSet).setDataCore(
-                new Children_ListDataCore<>(
+        fieldContainer.<List<StatementEnd>>get(Bank_Summary_StatementEndSet).setDataCore_factory(
+                new Children_ListDataCore.Children_ListDataCore_Factory<>(
                         StatementEnd.class,
-                        new Children_ListDataCore.ParentAccess<>(fieldContainer.get(PoolSummary_Period)),
-                        new Children_ListDataCore.ParentAccess<>(fieldContainer.get(PoolSummary_Pool))));
+                        new Children_ListDataCore.ParentAccess.ParentAccess_Factory<>((PoolSummary_Period)),
+                        new Children_ListDataCore.ParentAccess.ParentAccess_Factory<>((PoolSummary_Pool))));
         // StatementEnd ================================================================================================`
         fieldContainer.add(new DataField<>(Bank_Summary_StatementEnd, StatementEnd.class));
-        fieldContainer.<StatementEnd>get(Bank_Summary_StatementEnd).setDataCore(
-                new Derived_DataCore<StatementEnd, Bank_Summary>(
+        fieldContainer.<StatementEnd>get(Bank_Summary_StatementEnd).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<StatementEnd, Bank_Summary>(
                         container -> {
                             if (container.getStatementEndSet().isEmpty()) {
                                 return null;
                             }
                             return container.getStatementEndSet().get(0);
                         },
-                        new LocalSource<>(fieldContainer.get(Bank_Summary_StatementEndSet))));
+                        new LocalSource.LocalSource_Factory<>((Bank_Summary_StatementEndSet))));
         // Currency ====================================================================================================
         fieldContainer.add(new DataField<>(Bank_Summary_Currency, Currency.class, false));
         fieldContainer.get(Bank_Summary_Currency).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
-        fieldContainer.<Currency>get(Bank_Summary_Currency).setDataCore(
-                new Derived_DataCore<>(
-                        new DirectExternalSource<>(
-                                fieldContainer.get(PoolSummary_Pool), Bank_Currency)));
+        fieldContainer.<Currency>get(Bank_Summary_Currency).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>(
+                        new DirectExternalSource.DirectExternalSource_Factory<>(
+                                (PoolSummary_Pool), Bank_Currency)));
         // Start =======================================================================================================
-        fieldContainer.<Double>get(PoolSummary_Start).setDataCore(
-                new Derived_DataCore<>(
+        fieldContainer.<Double>get(PoolSummary_Start).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Double, Bank_Summary>) container -> {
                             Bank_Summary previous = container.getPreviousBankSummary();
                             if (previous == null) {
@@ -134,44 +134,44 @@ public class Bank_Summary extends PoolSummary<Bank> implements CurrencyBound, Or
                             }
                             return previous.getStatementEnd().getEnd();
                         }
-                        , new ExternalSource<>(fieldContainer.get(Bank_Summary_PreviousBankSummary), Bank_Summary_StatementEnd)
-                        , new ExternalSource<>(fieldContainer.get(PoolSummary_Pool), Bank_Start)));
+                        , new ExternalSource.ExternalSource_Factory<>((Bank_Summary_PreviousBankSummary), Bank_Summary_StatementEnd)
+                        , new ExternalSource.ExternalSource_Factory<>((PoolSummary_Pool), Bank_Start)));
         // End =========================================================================================================
-        fieldContainer.<Double>get(PoolSummary_End).setDataCore(
-                new Derived_DataCore<Double, Bank_Summary>(
+        fieldContainer.<Double>get(PoolSummary_End).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<Double, Bank_Summary>(
                         container -> container.getStatementEnd().getEnd()
-                        , new ExternalSource<>(fieldContainer.get(Bank_Summary_StatementEnd), StatementEnd_End)));
+                        , new ExternalSource.ExternalSource_Factory<>((Bank_Summary_StatementEnd), StatementEnd_End)));
         fieldContainer.<Double>get(PoolSummary_End).setSetterFunction((toSet, container) -> {
             ((Bank_Summary) container).getStatementEnd().setEnd(toSet);
         });
         // TransferSum =================================================================================================
-        fieldContainer.<Double>get(PoolSummary_TransferSum).setDataCore(
-                new Derived_DataCore<>(
+        fieldContainer.<Double>get(PoolSummary_TransferSum).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Double, PoolSummary<Bank>>) container ->
                                 container.getTransferSetSum() / container.getCurrency().getToPrimary()
-                        , new LocalSource<>(fieldContainer.get(PoolSummary_TransferSetSum))
-                        , new ExternalSource<>(fieldContainer.get(Bank_Summary_Currency), Currency_ToPrimary)));
+                        , new LocalSource.LocalSource_Factory<>((PoolSummary_TransferSetSum))
+                        , new ExternalSource.ExternalSource_Factory<>((Bank_Summary_Currency), Currency_ToPrimary)));
         // Missing
         // Valid =======================================================================================================
-        fieldContainer.<Boolean>get(PoolSummary_Valid).setDataCore(
-                new Derived_DataCore<>(
+        fieldContainer.<Boolean>get(PoolSummary_Valid).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Boolean, PoolSummary<Bank>>) container -> container.getMissing().equals(0.00)
-                        , new LocalSource<>(fieldContainer.get(PoolSummary_Missing))));
+                        , new LocalSource.LocalSource_Factory<>((PoolSummary_Missing))));
         // NetTransferSet ==============================================================================================
         fieldContainer.add(new ListDataField<>(Bank_Summary_NetTransferSet, HalfTransferList.class));
         fieldContainer.get(Bank_Summary_NetTransferSet).getDisplayProperties().setVerbosityLevel(TRACE_DISPLAY);
-        fieldContainer.<List<HalfTransfer>>get(Bank_Summary_NetTransferSet).setDataCore(
-                new Children_ListDataCore<>(
+        fieldContainer.<List<HalfTransfer>>get(Bank_Summary_NetTransferSet).setDataCore_factory(
+                new Children_ListDataCore.Children_ListDataCore_Factory<>(
                         HalfTransfer.class,
                         new TransferType_HalfTransfer_Filter(BankTransfer.class,
                                 new TransferDestination_HalfTransfer_Filter(Bank.class)),
-                        new Children_ListDataCore.ParentAccess<>(fieldContainer.get(PoolSummary_Period)),
-                        new Children_ListDataCore.ParentAccess<>(fieldContainer.get(PoolSummary_Pool))));
+                        new Children_ListDataCore.ParentAccess.ParentAccess_Factory<>((PoolSummary_Period)),
+                        new Children_ListDataCore.ParentAccess.ParentAccess_Factory<>((PoolSummary_Pool))));
         // NetTransferSum ==============================================================================================
         fieldContainer.add(new DataField<>(Bank_Summary_NetTransferSum, Double.class, true));
         fieldContainer.get(Bank_Summary_NetTransferSum).getDisplayProperties().setVerbosityLevel(TRACE_DISPLAY);
-        fieldContainer.<Double>get(Bank_Summary_NetTransferSum).setDataCore(
-                new Derived_DataCore<Double, Bank_Summary>(
+        fieldContainer.<Double>get(Bank_Summary_NetTransferSum).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<Double, Bank_Summary>(
                         container -> {
                             double sum = 0.0;
                             for (HalfTransfer halfTransfer : container.<List<HalfTransfer>>get(Bank_Summary_NetTransferSet)) {
@@ -179,35 +179,35 @@ public class Bank_Summary extends PoolSummary<Bank> implements CurrencyBound, Or
                             }
                             return Currency.round(sum);
                         }
-                        , new ListSource<>(
-                        (ListDataField<HalfTransfer>) fieldContainer.<List<HalfTransfer>>get(Bank_Summary_NetTransferSet),
+                        , new ListSource.ListSource_Factory<>(
+                        Bank_Summary_NetTransferSet,
                         HalfTransfer_Value,
                         HalfTransfer_Currency
                 )));
         // NetTransfer =================================================================================================
         fieldContainer.add(new DataField<>(Bank_Summary_NetTransfer, Double.class));
         fieldContainer.get(Bank_Summary_NetTransfer).getDisplayProperties().setDataType(CURRENCY);
-        fieldContainer.<Double>get(Bank_Summary_NetTransfer).setDataCore(
-                new Derived_DataCore<>(
+        fieldContainer.<Double>get(Bank_Summary_NetTransfer).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Double, Bank_Summary>) container ->
                                 container.getNetTransferSum() / container.getCurrency().getToPrimary()
-                        , new LocalSource<>(fieldContainer.get(Bank_Summary_NetTransferSum))
-                        , new ExternalSource<>(fieldContainer.get(Bank_Summary_Currency), Currency_ToPrimary)));
+                        , new LocalSource.LocalSource_Factory<>((Bank_Summary_NetTransferSum))
+                        , new ExternalSource.ExternalSource_Factory<>((Bank_Summary_Currency), Currency_ToPrimary)));
         // SpendSet ====================================================================================================
         fieldContainer.add(new ListDataField<>(Bank_Summary_SpendSet, HalfTransferList.class));
         fieldContainer.get(Bank_Summary_SpendSet).getDisplayProperties().setVerbosityLevel(TRACE_DISPLAY);
-        fieldContainer.<List<HalfTransfer>>get(Bank_Summary_SpendSet).setDataCore(
-                new Children_ListDataCore<>(
+        fieldContainer.<List<HalfTransfer>>get(Bank_Summary_SpendSet).setDataCore_factory(
+                new Children_ListDataCore.Children_ListDataCore_Factory<>(
                         HalfTransfer.class,
                         new TransferType_HalfTransfer_Filter(BankTransfer.class,
                                 new TransferDestination_HalfTransfer_Filter(SolidCategory.class)),
-                        new Children_ListDataCore.ParentAccess<>(fieldContainer.get(PoolSummary_Period)),
-                        new Children_ListDataCore.ParentAccess<>(fieldContainer.get(PoolSummary_Pool))));
+                        new Children_ListDataCore.ParentAccess.ParentAccess_Factory<>((PoolSummary_Period)),
+                        new Children_ListDataCore.ParentAccess.ParentAccess_Factory<>((PoolSummary_Pool))));
         // SpendSum ====================================================================================================
         fieldContainer.add(new DataField<>(Bank_Summary_SpendSum, Double.class, true));
         fieldContainer.get(Bank_Summary_SpendSum).getDisplayProperties().setVerbosityLevel(TRACE_DISPLAY);
-        fieldContainer.<Double>get(Bank_Summary_SpendSum).setDataCore(
-                new Derived_DataCore<Double, Bank_Summary>(
+        fieldContainer.<Double>get(Bank_Summary_SpendSum).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<Double, Bank_Summary>(
                         container -> {
                             double sum = 0.0;
                             for (HalfTransfer halfTransfer : container.<List<HalfTransfer>>get(Bank_Summary_SpendSet)) {
@@ -215,28 +215,28 @@ public class Bank_Summary extends PoolSummary<Bank> implements CurrencyBound, Or
                             }
                             return Currency.round(sum);
                         }
-                        , new ListSource<>(
-                        (ListDataField<HalfTransfer>) fieldContainer.<List<HalfTransfer>>get(Bank_Summary_SpendSet),
+                        , new ListSource.ListSource_Factory<>(
+                        Bank_Summary_SpendSet,
                         HalfTransfer_Value,
                         HalfTransfer_Currency)));
         // Spend =======================================================================================================
         fieldContainer.add(new DataField<>(Bank_Summary_Spend, Double.class));
         fieldContainer.get(Bank_Summary_Spend).getDisplayProperties().setDataType(CURRENCY);
-        fieldContainer.<Double>get(Bank_Summary_Spend).setDataCore(
-                new Derived_DataCore<>(
+        fieldContainer.<Double>get(Bank_Summary_Spend).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Double, Bank_Summary>) container ->
                                 container.getSpendSum() / container.getCurrency().getToPrimary()
-                        , new LocalSource<>(fieldContainer.get(Bank_Summary_SpendSum))
-                        , new ExternalSource<>(fieldContainer.get(Bank_Summary_Currency), Currency_ToPrimary)));
+                        , new LocalSource.LocalSource_Factory<>((Bank_Summary_SpendSum))
+                        , new ExternalSource.ExternalSource_Factory<>((Bank_Summary_Currency), Currency_ToPrimary)));
         // Order =======================================================================================================
         fieldContainer.add(new DataField<>(Bank_Summary_Order, Integer.class));
         fieldContainer.get(Bank_Summary_Order).getDisplayProperties().setVerbosityLevel(TRACE_DISPLAY);
-        fieldContainer.<Integer>get(Bank_Summary_Order).setDataCore(
-                new Derived_DataCore<>(
+        fieldContainer.<Integer>get(Bank_Summary_Order).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Integer, Bank_Summary>) container ->
                                 container.getPeriod().getOrder() * 10000 + container.getPool().getOrder()
-                        , new ExternalSource<>(fieldContainer.get(PoolSummary_Pool), Bank_Order)
-                        , new ExternalSource<>(fieldContainer.get(PoolSummary_Period), ExistingPeriod_Order)));
+                        , new ExternalSource.ExternalSource_Factory<>((PoolSummary_Pool), Bank_Order)
+                        , new ExternalSource.ExternalSource_Factory<>((PoolSummary_Period), ExistingPeriod_Order)));
         //==============================================================================================================
         // Parents
         // Children

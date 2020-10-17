@@ -58,8 +58,8 @@ public class SavingsRePayFundTransfer extends RePayFundTransfer {
         // Source
         // NonSavingsSet ===============================================================================================
         fieldContainer.add(new ListDataField<>(SavingsRePayFundTransfer_NonSavingsSet, HalfTransferList.class));
-        fieldContainer.<List<HalfTransfer>>get(SavingsRePayFundTransfer_NonSavingsSet).setDataCore(
-                new Children_ListDataCore<>(
+        fieldContainer.<List<HalfTransfer>>get(SavingsRePayFundTransfer_NonSavingsSet).setDataCore_factory(
+                new Children_ListDataCore.Children_ListDataCore_Factory<>(
                         HalfTransfer.class,
                         new SetFilter<HalfTransfer>(null) {
                             @Override
@@ -74,10 +74,10 @@ public class SavingsRePayFundTransfer extends RePayFundTransfer {
                                 return false;
                             }
                         },
-                        new Children_ListDataCore.ParentAccess<>(fieldContainer.get(Transfer_Period))));
+                        new Children_ListDataCore.ParentAccess.ParentAccess_Factory<>((Transfer_Period))));
         // Value =======================================================================================================
-        fieldContainer.<Double>get(Transfer_Value).setDataCore(
-                new Derived_DataCore<Double, SavingsRePayFundTransfer>(
+        fieldContainer.<Double>get(Transfer_Value).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<Double, SavingsRePayFundTransfer>(
                         container -> {
                             double sum = 0.0;
                             for (HalfTransfer halfTransfer : container.<List<HalfTransfer>>get(SavingsRePayFundTransfer_NonSavingsSet)) {
@@ -85,8 +85,8 @@ public class SavingsRePayFundTransfer extends RePayFundTransfer {
                             }
                             return -Currency.round(sum);
                         }
-                        , new ListSource<>(
-                        (ListDataField<HalfTransfer>) fieldContainer.<List<HalfTransfer>>get(SavingsRePayFundTransfer_NonSavingsSet),
+                        , new ListSource.ListSource_Factory<>(
+                        SavingsRePayFundTransfer_NonSavingsSet,
                         HalfTransfer_Value,
                         HalfTransfer_Currency
                 )));

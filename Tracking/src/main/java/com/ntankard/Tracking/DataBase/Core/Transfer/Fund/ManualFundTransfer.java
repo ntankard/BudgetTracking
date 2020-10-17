@@ -26,13 +26,13 @@ public class ManualFundTransfer extends FundTransfer {
         // Description
         // Period
         // Source ======================================================================================================
-        fieldContainer.get(Transfer_Source).setCanEdit(true);
+        fieldContainer.get(Transfer_Source).setManualCanEdit(true);
         // Value =======================================================================================================
-        fieldContainer.get(Transfer_Value).setCanEdit(true);
+        fieldContainer.get(Transfer_Value).setManualCanEdit(true);
         // Currency
         // Destination =================================================================================================
         // TODO this was failing when it was set on the RePay, this might be because they were being recreated or because there is a problem here, test
-        fieldContainer.<Pool>get(Transfer_Destination).setDataCore(new Derived_DataCore<>(new DirectExternalSource<>(fieldContainer.get(Transfer_Source), FundEvent_Category)));
+        fieldContainer.<Pool>get(Transfer_Destination).setDataCore_factory(new Derived_DataCore.Derived_DataCore_Factory<>(new DirectExternalSource.DirectExternalSource_Factory<>((Transfer_Source), FundEvent_Category)));
         // SourceCurrencyGet
         // DestinationCurrencyGet
         // SourcePeriodGet

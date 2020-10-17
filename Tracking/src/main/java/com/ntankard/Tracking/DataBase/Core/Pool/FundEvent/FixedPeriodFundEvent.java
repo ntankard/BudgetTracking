@@ -47,30 +47,30 @@ public class FixedPeriodFundEvent extends FundEvent {
         // ID
         // Name
         // Category ====================================================================================================
-        fieldContainer.get(FundEvent_Category).setCanEdit(true);
+        fieldContainer.get(FundEvent_Category).setManualCanEdit(true);
         // Start =======================================================================================================
         fieldContainer.add(new DataField<>(FixedPeriodFundEvent_Start, ExistingPeriod.class));
-        fieldContainer.get(FixedPeriodFundEvent_Start).setCanEdit(true);
+        fieldContainer.get(FixedPeriodFundEvent_Start).setManualCanEdit(true);
         // Duration ====================================================================================================
         fieldContainer.add(new DataField<>(FixedPeriodFundEvent_Duration, Integer.class));
         fieldContainer.<Integer>get(FixedPeriodFundEvent_Duration).addFilter(new IntegerRange_FieldFilter<>(1, null));
-        fieldContainer.get(FixedPeriodFundEvent_Duration).setCanEdit(true);
+        fieldContainer.get(FixedPeriodFundEvent_Duration).setManualCanEdit(true);
         // Self ========================================================================================================
         fieldContainer.add(new DataField<>(FixedPeriodFundEvent_Self, FixedPeriodFundEvent.class));
-        fieldContainer.<FixedPeriodFundEvent>get(FixedPeriodFundEvent_Self).setDataCore(
-                new Static_DataCore<>(dataField ->
+        fieldContainer.<FixedPeriodFundEvent>get(FixedPeriodFundEvent_Self).setDataCore_factory(
+                new Static_DataCore.Static_DataCore_Factory<>(dataField ->
                         (FixedPeriodFundEvent) dataField.getContainer()));
         // NonRepaySet =================================================================================================
         fieldContainer.add(new ListDataField<>(FixedPeriodFundEvent_NonRepaySet, HalfTransfer.HalfTransferList.class));
-        fieldContainer.<List<HalfTransfer>>get(FixedPeriodFundEvent_NonRepaySet).setDataCore(
-                new Children_ListDataCore<>(
+        fieldContainer.<List<HalfTransfer>>get(FixedPeriodFundEvent_NonRepaySet).setDataCore_factory(
+                new Children_ListDataCore.Children_ListDataCore_Factory<HalfTransfer>(
                         HalfTransfer.class,
                         new NotTransferType_HalfTransfer_Filter(RePayFundTransfer.class),
-                        new Children_ListDataCore.ParentAccess<FixedPeriodFundEvent, HalfTransfer>(fieldContainer.get(FixedPeriodFundEvent_Self))));
+                        new Children_ListDataCore.ParentAccess.ParentAccess_Factory< HalfTransfer>(FixedPeriodFundEvent_Self)));
         // NonRepaySum =================================================================================================
         fieldContainer.add(new DataField<>(FixedPeriodFundEvent_NonRepaySum, Double.class));
-        fieldContainer.<Double>get(FixedPeriodFundEvent_NonRepaySum).setDataCore(
-                new Derived_DataCore<Double, FixedPeriodFundEvent>(
+        fieldContainer.<Double>get(FixedPeriodFundEvent_NonRepaySum).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<Double, FixedPeriodFundEvent>(
                         container -> {
                             double sum = 0.0;
                             for (HalfTransfer halfTransfer : container.getNonRepaySet()) {
@@ -78,18 +78,18 @@ public class FixedPeriodFundEvent extends FundEvent {
                             }
                             return Currency.round(sum);
                         }
-                        , new ListSource<>(
-                        (ListDataField<HalfTransfer>) fieldContainer.<List<HalfTransfer>>get(FixedPeriodFundEvent_NonRepaySet),
+                        , new ListSource.ListSource_Factory<>(
+                        FixedPeriodFundEvent_NonRepaySet,
                         HalfTransfer_Value,
                         HalfTransfer_Currency))); // TODO possible problem here, we have a 3 layer nested dependency. getToPrimary
         // RepayAmount =================================================================================================
         fieldContainer.add(new DataField<>(FixedPeriodFundEvent_RepayAmount, Double.class));
-        fieldContainer.<Double>get(FixedPeriodFundEvent_RepayAmount).setDataCore(
-                new Derived_DataCore<>(
+        fieldContainer.<Double>get(FixedPeriodFundEvent_RepayAmount).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Double, FixedPeriodFundEvent>)
                                 container -> container.getNonRepaySum() / container.getDuration()
-                        , new LocalSource<>(fieldContainer.get(FixedPeriodFundEvent_NonRepaySum))
-                        , new LocalSource<>(fieldContainer.get(FixedPeriodFundEvent_Duration))));
+                        , new LocalSource.LocalSource_Factory<>(FixedPeriodFundEvent_NonRepaySum)
+                        , new LocalSource.LocalSource_Factory<>(FixedPeriodFundEvent_Duration)));
         //==============================================================================================================
         // Parents
         // Children

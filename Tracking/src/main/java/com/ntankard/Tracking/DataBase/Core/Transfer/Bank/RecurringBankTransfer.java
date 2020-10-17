@@ -51,7 +51,7 @@ public class RecurringBankTransfer extends BankTransfer {
         // Description (Below)
         // Period
         // Source ======================================================================================================
-        fieldContainer.get(Transfer_Source).setCanEdit(true);
+        fieldContainer.get(Transfer_Source).setManualCanEdit(true);
         //==============================================================================================================
         // Value
         // Currency
@@ -73,9 +73,10 @@ public class RecurringBankTransfer extends BankTransfer {
         // Children
 
         // Description =================================================================================================
-        fieldContainer.<String>get(Transfer_Description).setDataCore(
-                new Derived_DataCore<>(
-                        new DirectExternalSource<>(fieldContainer.get(RecurringBankTransfer_ParentPayment), NamedDataObject_Name)));
+        fieldContainer.<String>get(Transfer_Description).setManualCanEdit(false);
+        fieldContainer.<String>get(Transfer_Description).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>(
+                        new DirectExternalSource.DirectExternalSource_Factory<>((RecurringBankTransfer_ParentPayment), NamedDataObject_Name)));
         //==============================================================================================================
 
         return fieldContainer.finaliseContainer(RecurringBankTransfer.class);

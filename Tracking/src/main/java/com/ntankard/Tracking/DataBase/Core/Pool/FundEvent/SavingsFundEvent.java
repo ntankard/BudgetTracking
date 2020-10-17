@@ -22,7 +22,8 @@ public class SavingsFundEvent extends FundEvent {
 
         // ID
         // Name ========================================================================================================
-        fieldContainer.get(NamedDataObject_Name).setDataCore(new Static_DataCore<>("Savings"));
+        fieldContainer.get(NamedDataObject_Name).setManualCanEdit(false);
+        fieldContainer.get(NamedDataObject_Name).setDataCore_factory(new Static_DataCore.Static_DataCore_Factory<>("Savings"));
         // =============================================================================================================
         // Category
         // Parents

@@ -64,20 +64,20 @@ public class TaxRePayFundTransfer extends RePayFundTransfer {
         // Source
         // TaxableCategory =============================================================================================
         fieldContainer.add(new DataField<>(TaxRePayFundTransfer_TaxableCategory, Category.class));
-        fieldContainer.<SolidCategory>get(TaxRePayFundTransfer_TaxableCategory).setDataCore(
-                new Static_DataCore<>(dataField ->
+        fieldContainer.<SolidCategory>get(TaxRePayFundTransfer_TaxableCategory).setDataCore_factory(
+                new Static_DataCore.Static_DataCore_Factory<>(dataField ->
                         TrackingDatabase.get().getSpecialValue(SolidCategory.class, SolidCategory.TAXABLE)));
         // TaxableSet ==================================================================================================
         fieldContainer.add(new ListDataField<>(TaxRePayFundTransfer_TaxableSet, HalfTransfer.HalfTransferList.class));
-        fieldContainer.<List<HalfTransfer>>get(TaxRePayFundTransfer_TaxableSet).setDataCore(
-                new Children_ListDataCore<>(
+        fieldContainer.<List<HalfTransfer>>get(TaxRePayFundTransfer_TaxableSet).setDataCore_factory(
+                new Children_ListDataCore.Children_ListDataCore_Factory<>(
                         HalfTransfer.class,
-                        new Children_ListDataCore.ParentAccess<>(fieldContainer.get(TaxRePayFundTransfer_TaxableCategory)),
-                        new Children_ListDataCore.ParentAccess<>(fieldContainer.get(Transfer_Period))));
+                        new Children_ListDataCore.ParentAccess.ParentAccess_Factory<>(TaxRePayFundTransfer_TaxableCategory),
+                        new Children_ListDataCore.ParentAccess.ParentAccess_Factory<>(Transfer_Period)));
         // TaxableAmount ===============================================================================================
         fieldContainer.add(new DataField<>(TaxRePayFundTransfer_TaxableAmount, Double.class));
-        fieldContainer.<Double>get(TaxRePayFundTransfer_TaxableAmount).setDataCore(
-                new Derived_DataCore<Double, TaxRePayFundTransfer>(
+        fieldContainer.<Double>get(TaxRePayFundTransfer_TaxableAmount).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<Double, TaxRePayFundTransfer>(
                         container -> {
                             double sum = 0.0;
                             for (HalfTransfer halfTransfer : container.<List<HalfTransfer>>get(TaxRePayFundTransfer_TaxableSet)) {
@@ -85,20 +85,20 @@ public class TaxRePayFundTransfer extends RePayFundTransfer {
                             }
                             return -Currency.round(sum);
                         }
-                        , new ListSource<>(
-                        (ListDataField<HalfTransfer>) fieldContainer.<List<HalfTransfer>>get(TaxRePayFundTransfer_TaxableSet),
+                        , new ListSource.ListSource_Factory<>(
+                        TaxRePayFundTransfer_TaxableSet,
                         HalfTransfer_Value,
                         HalfTransfer_Currency
                 )));
         // Value =======================================================================================================
-        fieldContainer.<Double>get(Transfer_Value).setDataCore(
-                new Derived_DataCore<>(
+        fieldContainer.<Double>get(Transfer_Value).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Double, TaxRePayFundTransfer>) container -> {
                             TaxFundEvent taxFundEvent = (TaxFundEvent) container.getSource();
                             return -Currency.round(container.getTaxableAmount() * taxFundEvent.getPercentage());
                         }
-                        , new LocalSource<>(fieldContainer.get(TaxRePayFundTransfer_TaxableAmount))
-                        , new ExternalSource<>(fieldContainer.get(Transfer_Source), TaxFundEvent_Percentage)));
+                        , new LocalSource.LocalSource_Factory<>(TaxRePayFundTransfer_TaxableAmount)
+                        , new ExternalSource.ExternalSource_Factory<>(Transfer_Source, TaxFundEvent_Percentage)));
         //==============================================================================================================
         // Currency
         // Destination

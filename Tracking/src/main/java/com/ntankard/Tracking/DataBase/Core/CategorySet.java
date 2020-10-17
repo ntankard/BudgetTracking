@@ -43,12 +43,12 @@ public class CategorySet extends NamedDataObject implements HasDefault, Ordered 
         fieldContainer.get(CategorySet_Default).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
         // Order =======================================================================================================
         fieldContainer.add(new DataField<>(CategorySet_Order, Integer.class));
-        fieldContainer.get(CategorySet_Order).setCanEdit(true);
+        fieldContainer.get(CategorySet_Order).setManualCanEdit(true);
         // UsedCategories ==============================================================================================
         fieldContainer.add(new DataField<>(CategorySet_UsedCategories, List.class)); // TODO this should be a list field
         fieldContainer.get(CategorySet_UsedCategories).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
-        fieldContainer.<List<SolidCategory>>get(CategorySet_UsedCategories).setDataCore(
-                new Derived_DataCore<>(
+        fieldContainer.<List<SolidCategory>>get(CategorySet_UsedCategories).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<List<SolidCategory>, CategorySet>) container -> {
                             List<SolidCategory> toReturn = new ArrayList<>();
                             for (CategoryToCategorySet categoryToCategorySet : container.getChildren(CategoryToCategorySet.class)) {
@@ -60,17 +60,17 @@ public class CategorySet extends NamedDataObject implements HasDefault, Ordered 
                             }
                             return toReturn;
                         }
-                        , new SelfChild<>()));
+                        , new SelfChild.SelfChildSource_Factory<>()));
         // AvailableCategories =========================================================================================
         fieldContainer.add(new DataField<>(CategorySet_AvailableCategories, List.class));
-        fieldContainer.<List<SolidCategory>>get(CategorySet_AvailableCategories).setDataCore(
-                new Derived_DataCore<>(
+        fieldContainer.<List<SolidCategory>>get(CategorySet_AvailableCategories).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<List<SolidCategory>, CategorySet>) container -> {
                             List<SolidCategory> toReturn = TrackingDatabase.get().get(SolidCategory.class); // TODO this is broken, you need to get alerts about this being updated
                             toReturn.removeAll(container.getUsedCategories());
                             return toReturn;
                         }
-                        , new LocalSource<>(fieldContainer.get(CategorySet_UsedCategories))));
+                        , new LocalSource.LocalSource_Factory<>(CategorySet_UsedCategories)));
         //==============================================================================================================
         // Parents
         // Children

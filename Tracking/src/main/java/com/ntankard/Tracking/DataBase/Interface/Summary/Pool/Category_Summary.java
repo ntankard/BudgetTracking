@@ -48,27 +48,27 @@ public class Category_Summary extends PoolSummary<SolidCategory> implements Orde
         // Pool
         // Currency
         // Start =======================================================================================================
-        fieldContainer.get(PoolSummary_Start).setDataCore(new Static_DataCore<>(-1.0));
+        fieldContainer.get(PoolSummary_Start).setDataCore_factory(new Static_DataCore.Static_DataCore_Factory<>(-1.0));
         // End =========================================================================================================
-        fieldContainer.get(PoolSummary_End).setDataCore(new Static_DataCore<>(-1.0));
+        fieldContainer.get(PoolSummary_End).setDataCore_factory(new Static_DataCore.Static_DataCore_Factory<>(-1.0));
         // =============================================================================================================
         // Net
         // TransferSum =================================================================================================
-        fieldContainer.<Double>get(PoolSummary_TransferSum).setDataCore(
-                new Derived_DataCore<>(
+        fieldContainer.<Double>get(PoolSummary_TransferSum).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Double, PoolSummary<Category>>) PoolSummary::getTransferSetSum
-                        , new LocalSource<>(fieldContainer.get(PoolSummary_TransferSetSum))));
+                        , new LocalSource.LocalSource_Factory<>(PoolSummary_TransferSetSum)));
         // =============================================================================================================
         // Missing
         // Valid =======================================================================================================
-        fieldContainer.get(PoolSummary_Valid).setDataCore(new Static_DataCore<>(true));
+        fieldContainer.get(PoolSummary_Valid).setDataCore_factory(new Static_DataCore.Static_DataCore_Factory<>(true));
         // Order =======================================================================================================
         fieldContainer.add(new DataField<>(Category_Summary_Order, Integer.class));
-        fieldContainer.<Integer>get(Category_Summary_Order).setDataCore(
-                new Derived_DataCore<>(
+        fieldContainer.<Integer>get(Category_Summary_Order).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Integer, Category_Summary>) container ->
                                 container.getPeriod().getOrder()
-                        , new ExternalSource<>(fieldContainer.get(PoolSummary_Pool), SolidCategory_Order)));
+                        , new ExternalSource.ExternalSource_Factory<>(PoolSummary_Pool, SolidCategory_Order)));
         //==============================================================================================================
         // Parents
         // Children

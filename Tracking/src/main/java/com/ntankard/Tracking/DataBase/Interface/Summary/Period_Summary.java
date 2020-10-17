@@ -88,30 +88,30 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
         // BankSummarySet ==============================================================================================
         fieldContainer.add(new ListDataField<>(Period_Summary_BankSummarySet, Bank_SummaryList.class));
         fieldContainer.get(Period_Summary_BankSummarySet).getDisplayProperties().setVerbosityLevel(TRACE_DISPLAY);
-        fieldContainer.<List<Bank_Summary>>get(Period_Summary_BankSummarySet).setDataCore(
-                new Children_ListDataCore<>(
+        fieldContainer.<List<Bank_Summary>>get(Period_Summary_BankSummarySet).setDataCore_factory(
+                new Children_ListDataCore.Children_ListDataCore_Factory<Bank_Summary>(
                         Bank_Summary.class,
-                        new Children_ListDataCore.ParentAccess<>(fieldContainer.get(Period_Summary_Period))));
+                        new Children_ListDataCore.ParentAccess.ParentAccess_Factory<Bank_Summary>((Period_Summary_Period))));
         // FundEventSummarySet =========================================================================================
         fieldContainer.add(new ListDataField<>(Period_Summary_FundEventSummarySet, FundEvent_SummaryList.class));
         fieldContainer.get(Period_Summary_FundEventSummarySet).getDisplayProperties().setVerbosityLevel(TRACE_DISPLAY);
-        fieldContainer.<List<FundEvent_Summary>>get(Period_Summary_FundEventSummarySet).setDataCore(
-                new Children_ListDataCore<>(
+        fieldContainer.<List<FundEvent_Summary>>get(Period_Summary_FundEventSummarySet).setDataCore_factory(
+                new Children_ListDataCore.Children_ListDataCore_Factory<>(
                         FundEvent_Summary.class,
-                        new Children_ListDataCore.ParentAccess<>(fieldContainer.get(Period_Summary_Period))));
+                        new Children_ListDataCore.ParentAccess.ParentAccess_Factory<>((Period_Summary_Period))));
         // CategorySummarySet ==========================================================================================
         fieldContainer.add(new ListDataField<>(Period_Summary_CategorySummarySet, Category_SummaryList.class));
         fieldContainer.get(Period_Summary_CategorySummarySet).getDisplayProperties().setVerbosityLevel(TRACE_DISPLAY);
-        fieldContainer.<List<Category_Summary>>get(Period_Summary_CategorySummarySet).setDataCore(
-                new Children_ListDataCore<>(
+        fieldContainer.<List<Category_Summary>>get(Period_Summary_CategorySummarySet).setDataCore_factory(
+                new Children_ListDataCore.Children_ListDataCore_Factory<>(
                         Category_Summary.class,
-                        new Children_ListDataCore.ParentAccess<>(fieldContainer.get(Period_Summary_Period))));
+                        new Children_ListDataCore.ParentAccess.ParentAccess_Factory<>((Period_Summary_Period))));
         // BankStart ===================================================================================================
         fieldContainer.add(new DataField<>(Period_Summary_BankStart, Double.class, true));
         fieldContainer.get(Period_Summary_BankStart).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
         fieldContainer.get(Period_Summary_BankStart).getDisplayProperties().setDataType(CURRENCY);
-        fieldContainer.<Double>get(Period_Summary_BankStart).setDataCore(
-                new Derived_DataCore<Double, Period_Summary>(
+        fieldContainer.<Double>get(Period_Summary_BankStart).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<Double, Period_Summary>(
                         container -> {
                             double sum = 0.0;
                             for (Bank_Summary bankSummary : container.getBankSummarySet()) {
@@ -119,16 +119,16 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
                             }
                             return Currency.round(sum);
                         }
-                        , new ListSource<>(
-                        (ListDataField<Bank_Summary>) fieldContainer.<List<Bank_Summary>>get(Period_Summary_BankSummarySet),
+                        , new ListSource.ListSource_Factory<>(
+                        Period_Summary_BankSummarySet,
                         PoolSummary_Start,
                         Bank_Summary_Currency // TODO possible problem here, we have a 3 layer nested dependency. getToPrimary
                 )));
         // BankEnd =====================================================================================================
         fieldContainer.add(new DataField<>(Period_Summary_BankEnd, Double.class, true));
         fieldContainer.get(Period_Summary_BankEnd).getDisplayProperties().setDataType(CURRENCY);
-        fieldContainer.<Double>get(Period_Summary_BankEnd).setDataCore(
-                new Derived_DataCore<Double, Period_Summary>(
+        fieldContainer.<Double>get(Period_Summary_BankEnd).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<Double, Period_Summary>(
                         container -> {
                             double sum = 0.0;
                             for (Bank_Summary bankSummary : container.getBankSummarySet()) {
@@ -136,8 +136,8 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
                             }
                             return Currency.round(sum);
                         }
-                        , new ListSource<>(
-                        (ListDataField<Bank_Summary>) fieldContainer.<List<Bank_Summary>>get(Period_Summary_BankSummarySet),
+                        , new ListSource.ListSource_Factory<>(
+                        Period_Summary_BankSummarySet,
                         PoolSummary_End,
                         Bank_Summary_Currency // TODO possible problem here, we have a 3 layer nested dependency. getToPrimary
                 )));
@@ -145,24 +145,24 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
         fieldContainer.add(new DataField<>(Period_Summary_BankDelta, Double.class));
         fieldContainer.get(Period_Summary_BankDelta).getDisplayProperties().setDataType(CURRENCY);
         fieldContainer.get(Period_Summary_BankDelta).getDisplayProperties().setDataContext(ZERO_SCALE);
-        fieldContainer.<Double>get(Period_Summary_BankDelta).setDataCore(
-                new Derived_DataCore<>(
+        fieldContainer.<Double>get(Period_Summary_BankDelta).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Double, Period_Summary>) container -> {
                             if (container.getPeriod() instanceof VirtualPeriod) {
                                 return 0.0;
                             }
                             return container.getBankEnd() - container.getBankStart();
                         }
-                        , new LocalSource<>(fieldContainer.get(Period_Summary_BankStart))
-                        , new LocalSource<>(fieldContainer.get(Period_Summary_BankEnd))
-                        , new LocalSource<>(fieldContainer.get(Period_Summary_Period))));
+                        , new LocalSource.LocalSource_Factory<>((Period_Summary_BankStart))
+                        , new LocalSource.LocalSource_Factory<>((Period_Summary_BankEnd))
+                        , new LocalSource.LocalSource_Factory<>((Period_Summary_Period))));
         // CategoryDelta ===============================================================================================
         fieldContainer.add(new DataField<>(Period_Summary_CategoryDelta, Double.class));
         fieldContainer.get(Period_Summary_CategoryDelta).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
         fieldContainer.get(Period_Summary_CategoryDelta).getDisplayProperties().setDataType(CURRENCY);
         fieldContainer.get(Period_Summary_CategoryDelta).getDisplayProperties().setDataContext(ZERO_TARGET);
-        fieldContainer.<Double>get(Period_Summary_CategoryDelta).setDataCore(
-                new Derived_DataCore<Double, Period_Summary>(
+        fieldContainer.<Double>get(Period_Summary_CategoryDelta).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<Double, Period_Summary>(
                         container -> {
                             double sum = 0.0;
                             for (Category_Summary categorySummary : container.getCategorySummarySet()) {
@@ -173,16 +173,16 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
                             }
                             return Currency.round(sum);
                         }
-                        , new ListSource<>(
-                        (ListDataField<Bank_Summary>) fieldContainer.<List<Bank_Summary>>get(Period_Summary_CategorySummarySet),
+                        , new ListSource.ListSource_Factory<>(
+                        Period_Summary_CategorySummarySet,
                         PoolSummary_TransferSum
                 )));
         // FundEventStart ==============================================================================================
         fieldContainer.add(new DataField<>(Period_Summary_FundEventStart, Double.class));
         fieldContainer.get(Period_Summary_FundEventStart).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
         fieldContainer.get(Period_Summary_FundEventStart).getDisplayProperties().setDataType(CURRENCY);
-        fieldContainer.<Double>get(Period_Summary_FundEventStart).setDataCore(
-                new Derived_DataCore<Double, Period_Summary>(
+        fieldContainer.<Double>get(Period_Summary_FundEventStart).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<Double, Period_Summary>(
                         container -> {
                             double sum = 0.0;
                             for (FundEvent_Summary fundEventSummary : container.getFundEventSummarySet()) {
@@ -190,16 +190,16 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
                             }
                             return Currency.round(sum);
                         }
-                        , new ListSource<>(
-                        (ListDataField<Bank_Summary>) fieldContainer.<List<Bank_Summary>>get(Period_Summary_FundEventSummarySet),
+                        , new ListSource.ListSource_Factory<>(
+                        Period_Summary_FundEventSummarySet,
                         PoolSummary_Start
                 )));
         // FundEventEnd ================================================================================================
         fieldContainer.add(new DataField<>(Period_Summary_FundEventEnd, Double.class));
         fieldContainer.get(Period_Summary_FundEventEnd).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
         fieldContainer.get(Period_Summary_FundEventEnd).getDisplayProperties().setDataType(CURRENCY);
-        fieldContainer.<Double>get(Period_Summary_FundEventEnd).setDataCore(
-                new Derived_DataCore<Double, Period_Summary>(
+        fieldContainer.<Double>get(Period_Summary_FundEventEnd).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<Double, Period_Summary>(
                         container -> {
                             double sum = 0.0;
                             for (FundEvent_Summary fundEventSummary : container.getFundEventSummarySet()) {
@@ -207,24 +207,24 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
                             }
                             return Currency.round(sum);
                         }
-                        , new ListSource<>(
-                        (ListDataField<Bank_Summary>) fieldContainer.<List<Bank_Summary>>get(Period_Summary_FundEventSummarySet),
+                        , new ListSource.ListSource_Factory<>(
+                        Period_Summary_FundEventSummarySet,
                         PoolSummary_End
                 )));
         // FundEventDelta ==============================================================================================
         fieldContainer.add(new DataField<>(Period_Summary_FundEventDelta, Double.class));
         fieldContainer.get(Period_Summary_FundEventDelta).getDisplayProperties().setDataType(CURRENCY);
         fieldContainer.get(Period_Summary_FundEventDelta).getDisplayProperties().setDataContext(ZERO_SCALE);
-        fieldContainer.<Double>get(Period_Summary_FundEventDelta).setDataCore(
-                new Derived_DataCore<>(
+        fieldContainer.<Double>get(Period_Summary_FundEventDelta).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Double, Period_Summary>) container ->
                                 container.getFundEventEnd() - container.getFundEventStart()
-                        , new LocalSource<>(fieldContainer.get(Period_Summary_FundEventEnd))
-                        , new LocalSource<>(fieldContainer.get(Period_Summary_FundEventStart))));
+                        , new LocalSource.LocalSource_Factory<>((Period_Summary_FundEventEnd))
+                        , new LocalSource.LocalSource_Factory<>((Period_Summary_FundEventStart))));
         // BankSummaryValid ============================================================================================
         fieldContainer.add(new DataField<>(Period_Summary_BankSummaryValid, Boolean.class, true));
-        fieldContainer.<Boolean>get(Period_Summary_BankSummaryValid).setDataCore(
-                new Derived_DataCore<Boolean, Period_Summary>(
+        fieldContainer.<Boolean>get(Period_Summary_BankSummaryValid).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<Boolean, Period_Summary>(
                         container -> {
                             for (Bank_Summary bankSummary : container.getBankSummarySet()) {
                                 if (!bankSummary.isValid()) {
@@ -233,14 +233,14 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
                             }
                             return true;
                         }
-                        , new ListSource<>(
-                        (ListDataField<Bank_Summary>) fieldContainer.<List<Bank_Summary>>get(Period_Summary_BankSummarySet),
+                        , new ListSource.ListSource_Factory<>(
+                        Period_Summary_BankSummarySet,
                         PoolSummary_Valid
                 )));
         // FundEventSummaryValid =======================================================================================
         fieldContainer.add(new DataField<>(Period_Summary_FundEventSummaryValid, Boolean.class, true));
-        fieldContainer.<Boolean>get(Period_Summary_FundEventSummaryValid).setDataCore(
-                new Derived_DataCore<Boolean, Period_Summary>(
+        fieldContainer.<Boolean>get(Period_Summary_FundEventSummaryValid).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<Boolean, Period_Summary>(
                         container -> {
                             for (FundEvent_Summary fundEventSummary : container.getFundEventSummarySet()) {
                                 if (!fundEventSummary.isValid()) {
@@ -249,14 +249,14 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
                             }
                             return true;
                         }
-                        , new ListSource<>(
-                        (ListDataField<FundEvent_Summary>) fieldContainer.<List<FundEvent_Summary>>get(Period_Summary_FundEventSummarySet),
+                        , new ListSource.ListSource_Factory<>(
+                        Period_Summary_FundEventSummarySet,
                         PoolSummary_Valid
                 )));
         // CategorySummaryValid ========================================================================================
         fieldContainer.add(new DataField<>(Period_Summary_CategorySummaryValid, Boolean.class, true));
-        fieldContainer.<Boolean>get(Period_Summary_CategorySummaryValid).setDataCore(
-                new Derived_DataCore<Boolean, Period_Summary>(
+        fieldContainer.<Boolean>get(Period_Summary_CategorySummaryValid).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<Boolean, Period_Summary>(
                         container -> {
                             for (Category_Summary categorySummary : container.getCategorySummarySet()) {
                                 if (!categorySummary.isValid()) {
@@ -265,43 +265,43 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
                             }
                             return true;
                         }
-                        , new ListSource<>(
-                        (ListDataField<Category_Summary>) fieldContainer.<List<Category_Summary>>get(Period_Summary_CategorySummarySet),
+                        , new ListSource.ListSource_Factory<>(
+                        Period_Summary_CategorySummarySet,
                         PoolSummary_Valid
                 )));
         // AllSummaryValid =============================================================================================
         fieldContainer.add(new DataField<>(Period_Summary_AllSummaryValid, Boolean.class));
         fieldContainer.get(Period_Summary_AllSummaryValid).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
         fieldContainer.get(Period_Summary_AllSummaryValid).getDisplayProperties().setDataContext(NOT_FALSE);
-        fieldContainer.<Boolean>get(Period_Summary_AllSummaryValid).setDataCore(
-                new Derived_DataCore<>(
+        fieldContainer.<Boolean>get(Period_Summary_AllSummaryValid).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Boolean, Period_Summary>) container ->
                                 ((Boolean) container.get(Period_Summary_BankSummaryValid)) & ((Boolean) container.get(Period_Summary_FundEventSummaryValid)) & ((Boolean) container.get(Period_Summary_CategorySummaryValid))
-                        , new LocalSource<>(fieldContainer.get(Period_Summary_BankSummaryValid))
-                        , new LocalSource<>(fieldContainer.get(Period_Summary_FundEventSummaryValid))
-                        , new LocalSource<>(fieldContainer.get(Period_Summary_CategorySummaryValid))));
+                        , new LocalSource.LocalSource_Factory<>((Period_Summary_BankSummaryValid))
+                        , new LocalSource.LocalSource_Factory<>((Period_Summary_FundEventSummaryValid))
+                        , new LocalSource.LocalSource_Factory<>((Period_Summary_CategorySummaryValid))));
         // CategoryClear ===============================================================================================
         fieldContainer.add(new DataField<>(Period_Summary_CategoryClear, Boolean.class));
         fieldContainer.get(Period_Summary_CategoryClear).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
         fieldContainer.get(Period_Summary_CategoryClear).getDisplayProperties().setDataContext(NOT_FALSE);
-        fieldContainer.<Boolean>get(Period_Summary_CategoryClear).setDataCore(
-                new Derived_DataCore<>(
+        fieldContainer.<Boolean>get(Period_Summary_CategoryClear).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Boolean, Period_Summary>) container ->
                                 !(Math.abs(container.getCategoryDelta()) > 1.0)
-                        , new LocalSource<>(fieldContainer.get(Period_Summary_CategoryDelta))));
+                        , new LocalSource.LocalSource_Factory<>((Period_Summary_CategoryDelta))));
         // BankTransferSet =============================================================================================
         fieldContainer.add(new ListDataField<>(Period_Summary_BankTransferSet, BankTransfer.BankTransferList.class));
         fieldContainer.get(Period_Summary_BankTransferSet).getDisplayProperties().setVerbosityLevel(TRACE_DISPLAY);
-        fieldContainer.<List<BankTransfer>>get(Period_Summary_BankTransferSet).setDataCore(
-                new Children_ListDataCore<>(
+        fieldContainer.<List<BankTransfer>>get(Period_Summary_BankTransferSet).setDataCore_factory(
+                new Children_ListDataCore.Children_ListDataCore_Factory<>(
                         BankTransfer.class,
-                        new Children_ListDataCore.ParentAccess<>(fieldContainer.get(Period_Summary_Period))));
+                        new Children_ListDataCore.ParentAccess.ParentAccess_Factory<>((Period_Summary_Period))));
         // CurrencyValueLoss ===========================================================================================
         fieldContainer.add(new DataField<>(Period_Summary_CurrencyValueLoss, Double.class));
         fieldContainer.get(Period_Summary_CurrencyValueLoss).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
         fieldContainer.get(Period_Summary_CurrencyValueLoss).getDisplayProperties().setDataType(CURRENCY);
-        fieldContainer.<Double>get(Period_Summary_CurrencyValueLoss).setDataCore(
-                new Derived_DataCore<>(
+        fieldContainer.<Double>get(Period_Summary_CurrencyValueLoss).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Double, Period_Summary>) container -> {
                             double value = 0.0;
                             for (BankTransfer bankTransfer : container.getBankTransferSet()) {
@@ -313,17 +313,17 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
                             }
                             return value;
                         }
-                        , new LocalSource<>(fieldContainer.get(Period_Summary_Period))
-                        , new ListSource<>(
-                        (ListDataField<BankTransfer>) fieldContainer.<List<BankTransfer>>get(Period_Summary_BankTransferSet),
+                        , new LocalSource.LocalSource_Factory<>((Period_Summary_Period))
+                        , new ListSource.ListSource_Factory<>(
+                        Period_Summary_BankTransferSet,
                         Transfer_Source,
                         Transfer_Destination, // TODO this is wrong, you are actually looking at the half transfer
                         Transfer_Currency,
                         Transfer_Value)));
         // ExchangeRate ================================================================================================
         fieldContainer.add(new DataField<>(Period_Summary_ExchangeRate, Double.class));
-        fieldContainer.<Double>get(Period_Summary_ExchangeRate).setDataCore(
-                new Derived_DataCore<>(
+        fieldContainer.<Double>get(Period_Summary_ExchangeRate).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Double, Period_Summary>) container -> {
                             Currency currency1 = null;
                             Currency currency2 = null;
@@ -361,17 +361,17 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
 
                             return primarySum / secondarySum;
                         }
-                        , new LocalSource<>(fieldContainer.get(Period_Summary_Period))
-                        , new ListSource<>(
-                        (ListDataField<BankTransfer>) fieldContainer.<List<BankTransfer>>get(Period_Summary_BankTransferSet),
+                        , new LocalSource.LocalSource_Factory<>((Period_Summary_Period))
+                        , new ListSource.ListSource_Factory<>(
+                        Period_Summary_BankTransferSet,
                         Transfer_Source,
                         Transfer_Destination, // TODO this is wrong, you are actually looking at the half transfer
                         Transfer_Currency,    // TODO this is wrong, you are reading currencies from the tracking database
                         Transfer_Value)));
         // ExchangeRateAcceptable ======================================================================================
         fieldContainer.add(new DataField<>(Period_Summary_ExchangeRateAcceptable, Boolean.class));
-        fieldContainer.<Boolean>get(Period_Summary_ExchangeRateAcceptable).setDataCore(
-                new Derived_DataCore<>(
+        fieldContainer.<Boolean>get(Period_Summary_ExchangeRateAcceptable).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Boolean, Period_Summary>) container -> {
                             Currency currency1 = null;
                             Currency currency2 = null;
@@ -393,25 +393,25 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
                             double delta = Math.abs(expectRate - rate);
                             return !(delta > expectRate * 0.1);
                         }
-                        , new LocalSource<>(fieldContainer.get(Period_Summary_Period))
-                        , new LocalSource<>(fieldContainer.get(Period_Summary_ExchangeRate))));
+                        , new LocalSource.LocalSource_Factory<>((Period_Summary_Period))
+                        , new LocalSource.LocalSource_Factory<>((Period_Summary_ExchangeRate))));
         // Valid =======================================================================================================
         fieldContainer.add(new DataField<>(Period_Summary_Valid, Boolean.class));
         fieldContainer.get(Period_Summary_Valid).getDisplayProperties().setDataContext(NOT_FALSE);
-        fieldContainer.<Boolean>get(Period_Summary_Valid).setDataCore(
-                new Derived_DataCore<>(
+        fieldContainer.<Boolean>get(Period_Summary_Valid).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Boolean, Period_Summary>) container ->
                                 container.isAllSummaryValid() && container.isCategoryClear() && container.isExchangeRateAcceptable()
-                        , new LocalSource<>(fieldContainer.get(Period_Summary_AllSummaryValid))
-                        , new LocalSource<>(fieldContainer.get(Period_Summary_CategoryClear))
-                        , new LocalSource<>(fieldContainer.get(Period_Summary_ExchangeRateAcceptable))));
+                        , new LocalSource.LocalSource_Factory<>((Period_Summary_AllSummaryValid))
+                        , new LocalSource.LocalSource_Factory<>((Period_Summary_CategoryClear))
+                        , new LocalSource.LocalSource_Factory<>((Period_Summary_ExchangeRateAcceptable))));
         // Order =======================================================================================================
         fieldContainer.add(new DataField<>(Period_Summary_Order, Integer.class));
-        fieldContainer.<Integer>get(Period_Summary_Order).setDataCore(
-                new Derived_DataCore<>(
+        fieldContainer.<Integer>get(Period_Summary_Order).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Integer, Period_Summary>) container ->
                                 container.getPeriod().getOrder()
-                        , new ExternalSource<>(fieldContainer.get(Period_Summary_Period), ExistingPeriod_Order)));
+                        , new ExternalSource.ExternalSource_Factory<>((Period_Summary_Period), ExistingPeriod_Order)));
         // Parents
         // Children
 

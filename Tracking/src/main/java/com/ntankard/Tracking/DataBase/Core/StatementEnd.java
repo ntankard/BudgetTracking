@@ -63,20 +63,20 @@ public class StatementEnd extends DataObject implements CurrencyBound, Ordered {
         // End =========================================================================================================
         fieldContainer.add(new DataField<>(StatementEnd_End, Double.class));
         fieldContainer.get(StatementEnd_End).getDisplayProperties().setDataType(CURRENCY);
-        fieldContainer.get(StatementEnd_End).setCanEdit(true);
+        fieldContainer.get(StatementEnd_End).setManualCanEdit(true);
         // Currency ====================================================================================================
         fieldContainer.add(new DataField<>(StatementEnd_Currency, Currency.class));
-        fieldContainer.get(StatementEnd_Currency).setDataCore(
-                new Derived_DataCore<>(
-                        new DirectExternalSource<>(fieldContainer.get(StatementEnd_Bank), Bank_Currency)));
+        fieldContainer.get(StatementEnd_Currency).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>(
+                        new DirectExternalSource.DirectExternalSource_Factory<>((StatementEnd_Bank), Bank_Currency)));
         // Order =======================================================================================================
         fieldContainer.add(new DataField<>(StatementEnd_Order, Integer.class));
         fieldContainer.get(StatementEnd_Order).getDisplayProperties().setVerbosityLevel(TRACE_DISPLAY);
-        fieldContainer.<Integer>get(StatementEnd_Order).setDataCore(
-                new Derived_DataCore<Integer, StatementEnd>
+        fieldContainer.<Integer>get(StatementEnd_Order).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<Integer, StatementEnd>
                         (dataObject -> dataObject.getBank().getOrder() + dataObject.getPeriod().getOrder() * 1000
-                                , new ExternalSource<>(fieldContainer.get(StatementEnd_Bank), Bank_Order)
-                                , new ExternalSource<>(fieldContainer.get(StatementEnd_Period), ExistingPeriod_Order)));
+                                , new ExternalSource.ExternalSource_Factory<>((StatementEnd_Bank), Bank_Order)
+                                , new ExternalSource.ExternalSource_Factory<>((StatementEnd_Period), ExistingPeriod_Order)));
         //==============================================================================================================
         // Parents
         // Children

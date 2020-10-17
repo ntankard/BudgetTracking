@@ -33,15 +33,15 @@ public class VirtualCategory extends Category implements Ordered {
         fieldContainer.add(new DataField<>(VirtualCategory_CategorySet, CategorySet.class));
         // OrderImpl ===================================================================================================
         fieldContainer.add(new DataField<>(VirtualCategory_OrderImpl, Integer.class));
-        fieldContainer.get(VirtualCategory_OrderImpl).setCanEdit(true);
+        fieldContainer.get(VirtualCategory_OrderImpl).setManualCanEdit(true);
         fieldContainer.get(VirtualCategory_OrderImpl).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
         // Order =======================================================================================================
         fieldContainer.add(new DataField<>(VirtualCategory_Order, Integer.class));
-        fieldContainer.get(VirtualCategory_Order).setDataCore(
-                new Derived_DataCore<>
+        fieldContainer.get(VirtualCategory_Order).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>
                         (container -> ((VirtualCategory) container).getCategorySet().getOrder() * 1000 + ((VirtualCategory) container).getOrderImpl()
-                                , new LocalSource<>(fieldContainer.get(VirtualCategory_OrderImpl))
-                                , new ExternalSource<>(fieldContainer.get(VirtualCategory_CategorySet), CategorySet_Order)));
+                                , new LocalSource.LocalSource_Factory<>(VirtualCategory_OrderImpl)
+                                , new ExternalSource.ExternalSource_Factory<>(VirtualCategory_CategorySet, CategorySet_Order)));
         //==============================================================================================================
         // Parents
         // Children

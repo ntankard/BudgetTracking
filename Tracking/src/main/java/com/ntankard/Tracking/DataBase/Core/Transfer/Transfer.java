@@ -49,7 +49,7 @@ public abstract class Transfer extends DataObject implements CurrencyBound {
         // ID
         // Description =================================================================================================
         fieldContainer.add(new DataField<>(Transfer_Description, String.class));
-        fieldContainer.get(Transfer_Description).setCanEdit(true);
+        fieldContainer.get(Transfer_Description).setManualCanEdit(true);
         // Period ======================================================================================================
         fieldContainer.add(new DataField<>(Transfer_Period, Period.class));
         //==============================================================================================================
@@ -65,20 +65,20 @@ public abstract class Transfer extends DataObject implements CurrencyBound {
         // SourceCurrencyGet ===========================================================================================
         fieldContainer.add(new DataField<>(Transfer_SourceCurrencyGet, Currency.class));
         fieldContainer.get(Transfer_SourceCurrencyGet).setTellParent(false);
-        fieldContainer.<Currency>get(Transfer_SourceCurrencyGet).setDataCore(
-                new Derived_DataCore<>
+        fieldContainer.<Currency>get(Transfer_SourceCurrencyGet).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>
                         (container -> ((Transfer) container).getCurrency()
-                                , new LocalSource<>(fieldContainer.get(Transfer_Currency))));
+                                , new LocalSource.LocalSource_Factory<>(Transfer_Currency)));
         // DestinationCurrencyGet  =====================================================================================
         fieldContainer.add(new DataField<>(Transfer_DestinationCurrencyGet, Currency.class));
         fieldContainer.get(Transfer_DestinationCurrencyGet).setTellParent(false);
         // SourcePeriodGet =================================================================================================
         fieldContainer.add(new DataField<>(Transfer_SourcePeriodGet, Period.class));
         fieldContainer.get(Transfer_SourcePeriodGet).setTellParent(false);
-        fieldContainer.<Period>get(Transfer_SourcePeriodGet).setDataCore(
-                new Derived_DataCore<>
+        fieldContainer.<Period>get(Transfer_SourcePeriodGet).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>
                         (container -> ((Transfer) container).getPeriod()
-                                , new LocalSource<>(fieldContainer.get(Transfer_Period))));
+                                , new LocalSource.LocalSource_Factory<>(Transfer_Period)));
         // DestinationPeriodGet =================================================================================================
         fieldContainer.add(new DataField<>(Transfer_DestinationPeriodGet, Period.class));
         fieldContainer.get(Transfer_DestinationPeriodGet).setTellParent(false);

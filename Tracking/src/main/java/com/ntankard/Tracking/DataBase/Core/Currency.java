@@ -56,11 +56,11 @@ public class Currency extends NamedDataObject implements HasDefault {
         // NumberFormat ================================================================================================
         fieldContainer.add(new DataField<>(Currency_NumberFormat, NumberFormat.class));
         fieldContainer.get(Currency_NumberFormat).getDisplayProperties().setVerbosityLevel(TRACE_DISPLAY);
-        fieldContainer.<NumberFormat>get(Currency_NumberFormat).setDataCore(
-                new Derived_DataCore<NumberFormat, Currency>
+        fieldContainer.<NumberFormat>get(Currency_NumberFormat).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<NumberFormat, Currency>
                         (dataObject -> NumberFormat.getCurrencyInstance(new Locale(dataObject.getLanguage(), dataObject.getCountry()))
-                                , new LocalSource<>(fieldContainer.get(Currency_Country))
-                                , new LocalSource<>(fieldContainer.get(Currency_Language))));
+                                , new LocalSource.LocalSource_Factory<>(Currency_Country)
+                                , new LocalSource.LocalSource_Factory<>(Currency_Language)));
         //==============================================================================================================
         // Parents
         // Children

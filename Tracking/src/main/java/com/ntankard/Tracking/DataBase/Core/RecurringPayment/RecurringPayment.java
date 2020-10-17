@@ -42,23 +42,23 @@ public abstract class RecurringPayment extends NamedDataObject implements Curren
         // Name
         // Start =======================================================================================================
         fieldContainer.add(new DataField<>(RecurringPayment_Start, ExistingPeriod.class, true));
-        fieldContainer.get(RecurringPayment_Start).setCanEdit(true);
+        fieldContainer.get(RecurringPayment_Start).setManualCanEdit(true);
         // End =========================================================================================================
         fieldContainer.add(new DataField<>(RecurringPayment_End, ExistingPeriod.class, true));
-        fieldContainer.get(RecurringPayment_End).setCanEdit(true);
+        fieldContainer.get(RecurringPayment_End).setManualCanEdit(true);
         // Bank ========================================================================================================
         fieldContainer.add(new DataField<>(RecurringPayment_Bank, Bank.class));
-        fieldContainer.get(RecurringPayment_Bank).setCanEdit(true);
+        fieldContainer.get(RecurringPayment_Bank).setManualCanEdit(true);
         // Category ====================================================================================================
         fieldContainer.add(new DataField<>(RecurringPayment_Category, SolidCategory.class));
-        fieldContainer.get(RecurringPayment_Category).setCanEdit(true);
+        fieldContainer.get(RecurringPayment_Category).setManualCanEdit(true);
         // Value =======================================================================================================
         fieldContainer.add(new DataField<>(RecurringPayment_Value, Double.class));
-        fieldContainer.get(RecurringPayment_Value).setCanEdit(true);
+        fieldContainer.get(RecurringPayment_Value).setManualCanEdit(true);
         fieldContainer.get(RecurringPayment_Value).getDisplayProperties().setDataType(CURRENCY);
         // Currency ====================================================================================================
         fieldContainer.add(new DataField<>(RecurringPayment_Currency, Currency.class));
-        fieldContainer.<Currency>get(RecurringPayment_Currency).setDataCore(new Derived_DataCore<>(new DirectExternalSource<>(fieldContainer.get(RecurringPayment_Bank), Bank_Currency)));
+        fieldContainer.<Currency>get(RecurringPayment_Currency).setDataCore_factory(new Derived_DataCore.Derived_DataCore_Factory<>(new DirectExternalSource.DirectExternalSource_Factory<>((RecurringPayment_Bank), Bank_Currency)));
         fieldContainer.get(RecurringPayment_Currency).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
         //==============================================================================================================
         // Parents

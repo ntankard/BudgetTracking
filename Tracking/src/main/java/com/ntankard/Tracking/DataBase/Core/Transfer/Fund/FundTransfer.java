@@ -39,16 +39,16 @@ public abstract class FundTransfer extends Transfer {
         // Destination
         // SourceCurrencyGet
         // DestinationCurrencyGet ======================================================================================
-        fieldContainer.<Currency>get(Transfer_DestinationCurrencyGet).setDataCore(
-                new Derived_DataCore<>
+        fieldContainer.<Currency>get(Transfer_DestinationCurrencyGet).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>
                         (container -> ((Transfer) container).getCurrency()
-                                , new LocalSource<>(fieldContainer.get(Transfer_Currency))));
+                                , new LocalSource.LocalSource_Factory<>(Transfer_Currency)));
         // SourcePeriodGet
         // DestinationPeriodGet ========================================================================================
-        fieldContainer.<Period>get(Transfer_DestinationPeriodGet).setDataCore(
-                new Derived_DataCore<>
+        fieldContainer.<Period>get(Transfer_DestinationPeriodGet).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>
                         (container -> ((Transfer) container).getPeriod()
-                                , new LocalSource<>(fieldContainer.get(Transfer_Period))));
+                                , new LocalSource.LocalSource_Factory<>(Transfer_Period)));
         // Parents
         // Children
 

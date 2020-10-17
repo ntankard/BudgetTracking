@@ -35,7 +35,7 @@ public class CategoryToVirtualCategory extends DataObject {
         fieldContainer.add(new DataField<>(CategoryToVirtualCategory_VirtualCategory, VirtualCategory.class));
         // SolidCategory ===============================================================================================
         fieldContainer.add(new DataField<>(CategoryToVirtualCategory_SolidCategory, SolidCategory.class));
-        fieldContainer.get(CategoryToVirtualCategory_SolidCategory).setCanEdit(true);
+        fieldContainer.get(CategoryToVirtualCategory_SolidCategory).setManualCanEdit(true);
         fieldContainer.<SolidCategory>get(CategoryToVirtualCategory_SolidCategory).addFilter(new Dependant_FieldFilter<SolidCategory, CategoryToVirtualCategory>(CategoryToVirtualCategory_VirtualCategory) {
             @Override
             public boolean isValid(SolidCategory newValue, SolidCategory pastValue, CategoryToVirtualCategory categoryToVirtualCategory) {
@@ -44,10 +44,10 @@ public class CategoryToVirtualCategory extends DataObject {
         });
         // CategorySet =================================================================================================
         fieldContainer.add(new DataField<>(CategoryToVirtualCategory_CategorySet, CategorySet.class));
-        fieldContainer.get(CategoryToVirtualCategory_CategorySet).setDataCore(
-                new Derived_DataCore<>(
-                        new DirectExternalSource<>(
-                                fieldContainer.get(CategoryToVirtualCategory_VirtualCategory), VirtualCategory_CategorySet)));
+        fieldContainer.get(CategoryToVirtualCategory_CategorySet).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>(
+                        new DirectExternalSource.DirectExternalSource_Factory<>(
+                                (CategoryToVirtualCategory_VirtualCategory), VirtualCategory_CategorySet)));
         //==============================================================================================================
         // Parents
         // Children

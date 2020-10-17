@@ -39,7 +39,7 @@ public class CategoryToCategorySet extends DataObject implements Ordered {
         fieldContainer.add(new DataField<>(CategoryToCategorySet_CategorySet, CategorySet.class));
         // SolidCategory ========================================================================================================
         fieldContainer.add(new DataField<>(CategoryToCategorySet_SolidCategory, SolidCategory.class));
-        fieldContainer.get(CategoryToCategorySet_SolidCategory).setCanEdit(true);
+        fieldContainer.get(CategoryToCategorySet_SolidCategory).setManualCanEdit(true);
         fieldContainer.<SolidCategory>get(CategoryToCategorySet_SolidCategory).addFilter(new Dependant_FieldFilter<SolidCategory, CategoryToCategorySet>(CategoryToCategorySet_CategorySet) {
             @Override
             public boolean isValid(SolidCategory newValue, SolidCategory pastValue, CategoryToCategorySet categoryToCategorySet) {
@@ -49,14 +49,14 @@ public class CategoryToCategorySet extends DataObject implements Ordered {
         // OrderImpl ========================================================================================================
         fieldContainer.add(new DataField<>(CategoryToCategorySet_OrderImpl, Integer.class));
         fieldContainer.get(CategoryToCategorySet_OrderImpl).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
-        fieldContainer.get(CategoryToCategorySet_OrderImpl).setCanEdit(true);
+        fieldContainer.get(CategoryToCategorySet_OrderImpl).setManualCanEdit(true);
         // Order ========================================================================================================
         fieldContainer.add(new DataField<>(CategoryToCategorySet_Order, Integer.class));
-        fieldContainer.get(CategoryToCategorySet_Order).setDataCore(
-                new Derived_DataCore<>
+        fieldContainer.get(CategoryToCategorySet_Order).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Factory<>
                         (container -> ((CategoryToCategorySet) container).getCategorySet().getOrder() * 1000 + ((CategoryToCategorySet) container).getOrderImpl()
-                                , new LocalSource<>(fieldContainer.get(CategoryToCategorySet_OrderImpl))
-                                , new ExternalSource<>(fieldContainer.get(CategoryToCategorySet_CategorySet), CategorySet_Order)));
+                                , new LocalSource.LocalSource_Factory<>((CategoryToCategorySet_OrderImpl))
+                                , new ExternalSource.ExternalSource_Factory<>((CategoryToCategorySet_CategorySet), CategorySet_Order)));
         //==============================================================================================================
         // Parents
         // Children
