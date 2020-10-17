@@ -5,10 +5,10 @@ import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
 import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField_Schema;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.Derived_DataCore;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.ExternalSource;
-import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.CoreObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.Database.ParameterMap;
 
 import java.util.List;
@@ -41,16 +41,16 @@ public abstract class HalfTransfer extends DataObject implements CurrencyBound {
     /**
      * Get all the fields for this object
      */
-    public static FieldContainer getFieldContainer() {
-        FieldContainer fieldContainer = DataObject.getFieldContainer();
+    public static DataObject_Schema getFieldContainer() {
+        DataObject_Schema dataObjectSchema = DataObject.getFieldContainer();
 
         // ID
         // Transfer ====================================================================================================
-        fieldContainer.add(new DataField<>(HalfTransfer_Transfer, Transfer.class));
-        fieldContainer.get(HalfTransfer_Transfer).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
+        dataObjectSchema.add(new DataField_Schema<>(HalfTransfer_Transfer, Transfer.class));
+        dataObjectSchema.get(HalfTransfer_Transfer).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
         // Period ======================================================================================================
-        fieldContainer.add(new DataField<>(HalfTransfer_Period, Period.class));
-        fieldContainer.<Period>get(HalfTransfer_Period).setDataCore_factory(
+        dataObjectSchema.add(new DataField_Schema<>(HalfTransfer_Period, Period.class));
+        dataObjectSchema.<Period>get(HalfTransfer_Period).setDataCore_factory(
                 new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Period, HalfTransfer>) container -> {
                             if (container.isSource()) {
@@ -61,10 +61,10 @@ public abstract class HalfTransfer extends DataObject implements CurrencyBound {
                         }
                         , new ExternalSource.ExternalSource_Factory<>(HalfTransfer_Transfer, Transfer_SourcePeriodGet)
                         , new ExternalSource.ExternalSource_Factory<>(HalfTransfer_Transfer, Transfer_DestinationPeriodGet)));
-        fieldContainer.<Pool>get(HalfTransfer_Period).getDisplayProperties().setDisplaySet(false);
+        dataObjectSchema.<Pool>get(HalfTransfer_Period).getDisplayProperties().setDisplaySet(false);
         // Pool ========================================================================================================
-        fieldContainer.add(new DataField<>(HalfTransfer_Pool, Pool.class));
-        fieldContainer.<Pool>get(HalfTransfer_Pool).setDataCore_factory(
+        dataObjectSchema.add(new DataField_Schema<>(HalfTransfer_Pool, Pool.class));
+        dataObjectSchema.<Pool>get(HalfTransfer_Pool).setDataCore_factory(
                 new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Pool, HalfTransfer>) container -> {
                             if (container.isSource()) {
@@ -75,11 +75,11 @@ public abstract class HalfTransfer extends DataObject implements CurrencyBound {
                         }
                         , new ExternalSource.ExternalSource_Factory<>(HalfTransfer_Transfer, Transfer_Source)
                         , new ExternalSource.ExternalSource_Factory<>(HalfTransfer_Transfer, Transfer_Destination)));
-        fieldContainer.<Pool>get(HalfTransfer_Pool).getDisplayProperties().setDisplaySet(false);
+        dataObjectSchema.<Pool>get(HalfTransfer_Pool).getDisplayProperties().setDisplaySet(false);
         // Value =======================================================================================================
-        fieldContainer.add(new DataField<>(HalfTransfer_Value, Double.class));
-        fieldContainer.get(HalfTransfer_Value).getDisplayProperties().setDataType(CURRENCY);
-        fieldContainer.<Double>get(HalfTransfer_Value).setDataCore_factory(
+        dataObjectSchema.add(new DataField_Schema<>(HalfTransfer_Value, Double.class));
+        dataObjectSchema.get(HalfTransfer_Value).getDisplayProperties().setDataType(CURRENCY);
+        dataObjectSchema.<Double>get(HalfTransfer_Value).setDataCore_factory(
                 new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Double, HalfTransfer>) container -> {
                             if (container.isSource()) {
@@ -90,9 +90,9 @@ public abstract class HalfTransfer extends DataObject implements CurrencyBound {
                         }
                         , new ExternalSource.ExternalSource_Factory<>(HalfTransfer_Transfer, Transfer_Value)));
         // Currency ====================================================================================================
-        fieldContainer.add(new DataField<>(HalfTransfer_Currency, Currency.class));
-        fieldContainer.get(HalfTransfer_Currency).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
-        fieldContainer.<Currency>get(HalfTransfer_Currency).setDataCore_factory(
+        dataObjectSchema.add(new DataField_Schema<>(HalfTransfer_Currency, Currency.class));
+        dataObjectSchema.get(HalfTransfer_Currency).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
+        dataObjectSchema.<Currency>get(HalfTransfer_Currency).setDataCore_factory(
                 new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Currency, HalfTransfer>) container -> {
                             if (container.isSource()) {
@@ -103,15 +103,15 @@ public abstract class HalfTransfer extends DataObject implements CurrencyBound {
                         }
                         , new ExternalSource.ExternalSource_Factory<>(HalfTransfer_Transfer, Transfer_SourceCurrencyGet)
                         , new ExternalSource.ExternalSource_Factory<>(HalfTransfer_Transfer, Transfer_DestinationCurrencyGet)));
-        fieldContainer.<Pool>get(HalfTransfer_Currency).getDisplayProperties().setDisplaySet(false);
+        dataObjectSchema.<Pool>get(HalfTransfer_Currency).getDisplayProperties().setDisplaySet(false);
         // Source ======================================================================================================
-        fieldContainer.add(new DataField<>(HalfTransfer_Source, Boolean.class));
-        fieldContainer.<Pool>get(HalfTransfer_Source).getDisplayProperties().setVerbosityLevel(TRACE_DISPLAY);
+        dataObjectSchema.add(new DataField_Schema<>(HalfTransfer_Source, Boolean.class));
+        dataObjectSchema.<Pool>get(HalfTransfer_Source).getDisplayProperties().setVerbosityLevel(TRACE_DISPLAY);
         //==============================================================================================================
         // Parents
         // Children
 
-        return fieldContainer.endLayer(HalfTransfer.class);
+        return dataObjectSchema.endLayer(HalfTransfer.class);
     }
 
     /**

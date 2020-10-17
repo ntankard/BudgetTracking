@@ -3,7 +3,7 @@ package com.ntankard.Tracking.Dispaly.Util.Panels;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
 import com.ntankard.Tracking.DataBase.Core.Transfer.HalfTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Transfer;
-import com.ntankard.javaObjectDatabase.util.ObjectSet;
+import com.ntankard.javaObjectDatabase.util.set.ObjectSet;
 import com.ntankard.Tracking.Dispaly.Util.LocaleInspectors.CurrencyBound_LocaleSource;
 import com.ntankard.Tracking.Dispaly.Util.LocaleInspectors.HalfTransfer_LocaleSource;
 import com.ntankard.Tracking.Dispaly.Util.LocaleInspectors.SetTransfer_LocaleSource;

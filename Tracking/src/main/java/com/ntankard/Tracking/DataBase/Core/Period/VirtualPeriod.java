@@ -1,7 +1,7 @@
 package com.ntankard.Tracking.DataBase.Core.Period;
 
-import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
+import com.ntankard.javaObjectDatabase.CoreObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField_Schema;
 
 import static com.ntankard.javaObjectDatabase.CoreObject.Field.Properties.Display_Properties.INFO_DISPLAY;
 
@@ -17,20 +17,20 @@ public class VirtualPeriod extends Period {
     /**
      * Get all the fields for this object
      */
-    public static FieldContainer getFieldContainer() {
-        FieldContainer fieldContainer = Period.getFieldContainer();
+    public static DataObject_Schema getFieldContainer() {
+        DataObject_Schema dataObjectSchema = Period.getFieldContainer();
 
         // ID
         // Name ========================================================================================================
-        fieldContainer.add(new DataField<>(VirtualPeriod_Name, String.class));
+        dataObjectSchema.add(new DataField_Schema<>(VirtualPeriod_Name, String.class));
         // Order =======================================================================================================
-        fieldContainer.add(new DataField<>(VirtualPeriod_Order, Integer.class));
-        fieldContainer.get(VirtualPeriod_Order).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
+        dataObjectSchema.add(new DataField_Schema<>(VirtualPeriod_Order, Integer.class));
+        dataObjectSchema.get(VirtualPeriod_Order).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
         //==============================================================================================================
         // Parents
         // Children
 
-        return fieldContainer.finaliseContainer(VirtualPeriod.class);
+        return dataObjectSchema.finaliseContainer(VirtualPeriod.class);
     }
 
     /**

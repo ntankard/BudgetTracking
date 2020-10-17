@@ -1,6 +1,6 @@
 package com.ntankard.Tracking.DataBase.Core.BaseObject;
 
-import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.CoreObject.DataObject_Schema;
 import com.ntankard.TestUtil.DataAccessUntil;
 import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
 import org.junit.jupiter.api.BeforeEach;
@@ -63,9 +63,9 @@ class NamedDataObjectTest {
 
     public static class NamedDataObject_Inst extends NamedDataObject {
 
-        public static FieldContainer getFieldContainer() {
-            FieldContainer fieldContainer = NamedDataObject.getFieldContainer();
-            return fieldContainer.finaliseContainer(NamedDataObject_Inst.class);
+        public static DataObject_Schema getFieldContainer() {
+            DataObject_Schema dataObjectSchema = NamedDataObject.getFieldContainer();
+            return dataObjectSchema.finaliseContainer(NamedDataObject_Inst.class);
         }
 
         public static NamedDataObject_Inst make(Integer id, String name) {

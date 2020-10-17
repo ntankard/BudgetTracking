@@ -1,6 +1,6 @@
 package com.ntankard.Tracking.DataBase.Core.Pool;
 
-import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.CoreObject.DataObject_Schema;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.NamedDataObject;
 
 public abstract class Pool extends NamedDataObject {
@@ -12,14 +12,14 @@ public abstract class Pool extends NamedDataObject {
     /**
      * Get all the fields for this object
      */
-    public static FieldContainer getFieldContainer() {
-        FieldContainer fieldContainer = NamedDataObject.getFieldContainer();
+    public static DataObject_Schema getFieldContainer() {
+        DataObject_Schema dataObjectSchema = NamedDataObject.getFieldContainer();
 
         // ID
         // Name
         // Parents
         // Children
 
-        return fieldContainer.endLayer(Pool.class);
+        return dataObjectSchema.endLayer(Pool.class);
     }
 }

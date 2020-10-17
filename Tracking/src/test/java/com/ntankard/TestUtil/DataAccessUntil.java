@@ -1,7 +1,7 @@
 package com.ntankard.TestUtil;
 
 import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
-import com.ntankard.javaObjectDatabase.CoreObject.TrackingDatabase_Schema;
+import com.ntankard.javaObjectDatabase.Database.TrackingDatabase_Schema;
 import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
 import com.ntankard.javaObjectDatabase.Database.TrackingDatabase_Reader;
 

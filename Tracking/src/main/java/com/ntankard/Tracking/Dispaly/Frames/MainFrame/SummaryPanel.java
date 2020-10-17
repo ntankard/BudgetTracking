@@ -10,8 +10,8 @@ import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Bank_Summary;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Category_Summary;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.FundEvent_Summary;
 import com.ntankard.Tracking.Dispaly.Util.Panels.DataObject_VerbosityDisplayList;
-import com.ntankard.javaObjectDatabase.util.Full_Set;
-import com.ntankard.javaObjectDatabase.util.OneParent_Children_Set;
+import com.ntankard.javaObjectDatabase.util.set.Full_Set;
+import com.ntankard.javaObjectDatabase.util.set.OneParent_Children_Set;
 
 import javax.swing.*;
 import java.awt.*;

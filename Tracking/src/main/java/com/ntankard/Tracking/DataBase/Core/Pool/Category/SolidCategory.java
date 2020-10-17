@@ -1,9 +1,9 @@
 package com.ntankard.Tracking.DataBase.Core.Pool.Category;
 
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Category_Summary;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField_Schema;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.Properties.Display_Properties;
-import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.CoreObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.CoreObject.Interface.HasDefault;
 import com.ntankard.javaObjectDatabase.CoreObject.Interface.Ordered;
 import com.ntankard.javaObjectDatabase.CoreObject.Interface.SpecialValues;
@@ -30,37 +30,37 @@ public class SolidCategory extends Category implements HasDefault, SpecialValues
     /**
      * Get all the fields for this object
      */
-    public static FieldContainer getFieldContainer() {
-        FieldContainer fieldContainer = Category.getFieldContainer();
+    public static DataObject_Schema getFieldContainer() {
+        DataObject_Schema dataObjectSchema = Category.getFieldContainer();
 
         // Class behavior
-        fieldContainer.addObjectFactory(Category_Summary.Factory);
+        dataObjectSchema.addObjectFactory(Category_Summary.Factory);
 
         // ID
         // Name
         // Default =====================================================================================================
-        fieldContainer.add(new DataField<>(SolidCategory_Default, Boolean.class));
-        fieldContainer.get(SolidCategory_Default).getDisplayProperties().setVerbosityLevel(Display_Properties.DEBUG_DISPLAY);
+        dataObjectSchema.add(new DataField_Schema<>(SolidCategory_Default, Boolean.class));
+        dataObjectSchema.get(SolidCategory_Default).getDisplayProperties().setVerbosityLevel(Display_Properties.DEBUG_DISPLAY);
         // Savings =====================================================================================================
-        fieldContainer.add(new DataField<>(SolidCategory_Savings, Boolean.class));
-        fieldContainer.get(SolidCategory_Savings).getDisplayProperties().setVerbosityLevel(Display_Properties.DEBUG_DISPLAY);
+        dataObjectSchema.add(new DataField_Schema<>(SolidCategory_Savings, Boolean.class));
+        dataObjectSchema.get(SolidCategory_Savings).getDisplayProperties().setVerbosityLevel(Display_Properties.DEBUG_DISPLAY);
         // Taxable =====================================================================================================
-        fieldContainer.add(new DataField<>(SolidCategory_Taxable, Boolean.class));
-        fieldContainer.get(SolidCategory_Taxable).getDisplayProperties().setVerbosityLevel(Display_Properties.DEBUG_DISPLAY);
+        dataObjectSchema.add(new DataField_Schema<>(SolidCategory_Taxable, Boolean.class));
+        dataObjectSchema.get(SolidCategory_Taxable).getDisplayProperties().setVerbosityLevel(Display_Properties.DEBUG_DISPLAY);
         // Set =========================================================================================================
-        fieldContainer.add(new DataField<>(SolidCategory_Set, Integer.class));
-        fieldContainer.get(SolidCategory_Set).getDisplayProperties().setVerbosityLevel(Display_Properties.INFO_DISPLAY);
+        dataObjectSchema.add(new DataField_Schema<>(SolidCategory_Set, Integer.class));
+        dataObjectSchema.get(SolidCategory_Set).getDisplayProperties().setVerbosityLevel(Display_Properties.INFO_DISPLAY);
         // SetName =====================================================================================================
-        fieldContainer.add(new DataField<>(SolidCategory_SetName, String.class));
-        fieldContainer.get(SolidCategory_SetName).getDisplayProperties().setVerbosityLevel(Display_Properties.INFO_DISPLAY);
+        dataObjectSchema.add(new DataField_Schema<>(SolidCategory_SetName, String.class));
+        dataObjectSchema.get(SolidCategory_SetName).getDisplayProperties().setVerbosityLevel(Display_Properties.INFO_DISPLAY);
         // Order =======================================================================================================
-        fieldContainer.add(new DataField<>(SolidCategory_Order, Integer.class));
-        fieldContainer.get(SolidCategory_Order).getDisplayProperties().setVerbosityLevel(Display_Properties.INFO_DISPLAY);
+        dataObjectSchema.add(new DataField_Schema<>(SolidCategory_Order, Integer.class));
+        dataObjectSchema.get(SolidCategory_Order).getDisplayProperties().setVerbosityLevel(Display_Properties.INFO_DISPLAY);
         //==============================================================================================================
         // Parents
         // Children
 
-        return fieldContainer.finaliseContainer(SolidCategory.class);
+        return dataObjectSchema.finaliseContainer(SolidCategory.class);
     }
 
     //------------------------------------------------------------------------------------------------------------------

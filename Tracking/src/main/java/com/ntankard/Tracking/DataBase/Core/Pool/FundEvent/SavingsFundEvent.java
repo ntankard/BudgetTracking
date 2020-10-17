@@ -3,7 +3,7 @@ package com.ntankard.Tracking.DataBase.Core.Pool.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Fund.RePay.SavingsRePayFundTransfer;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.Static_DataCore;
-import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.CoreObject.DataObject_Schema;
 
 public class SavingsFundEvent extends FundEvent {
 
@@ -14,22 +14,22 @@ public class SavingsFundEvent extends FundEvent {
     /**
      * Get all the fields for this object
      */
-    public static FieldContainer getFieldContainer() {
-        FieldContainer fieldContainer = FundEvent.getFieldContainer();
+    public static DataObject_Schema getFieldContainer() {
+        DataObject_Schema dataObjectSchema = FundEvent.getFieldContainer();
 
         // Class behavior
-        fieldContainer.addObjectFactory(SavingsRePayFundTransfer.Factory);
+        dataObjectSchema.addObjectFactory(SavingsRePayFundTransfer.Factory);
 
         // ID
         // Name ========================================================================================================
-        fieldContainer.get(NamedDataObject_Name).setManualCanEdit(false);
-        fieldContainer.get(NamedDataObject_Name).setDataCore_factory(new Static_DataCore.Static_DataCore_Factory<>("Savings"));
+        dataObjectSchema.get(NamedDataObject_Name).setManualCanEdit(false);
+        dataObjectSchema.get(NamedDataObject_Name).setDataCore_factory(new Static_DataCore.Static_DataCore_Factory<>("Savings"));
         // =============================================================================================================
         // Category
         // Parents
         // Children
 
-        return fieldContainer.finaliseContainer(SavingsFundEvent.class);
+        return dataObjectSchema.finaliseContainer(SavingsFundEvent.class);
     }
 
     /**

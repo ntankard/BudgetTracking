@@ -2,11 +2,11 @@ package com.ntankard.Tracking.DataBase.Core.BaseObject;
 
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
-import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField_Schema;
+import com.ntankard.javaObjectDatabase.CoreObject.DataObject_Schema;
 import com.ntankard.TestUtil.ClassInspectionUtil;
 import com.ntankard.TestUtil.DataAccessUntil;
-import com.ntankard.javaObjectDatabase.CoreObject.TrackingDatabase_Schema;
+import com.ntankard.javaObjectDatabase.Database.TrackingDatabase_Schema;
 import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -58,10 +58,10 @@ class DataObjectTest {
             if (!Modifier.isAbstract(testClass.getModifiers())) {
                 for (DataObject dataObject : TrackingDatabase.get().get(testClass)) {
                     Class<? extends DataObject> aClass = dataObject.getClass();
-                    List<DataField<?>> members = TrackingDatabase_Schema.getFieldContainer(aClass).getVerbosityDataFields(Integer.MAX_VALUE);
+                    List<DataField_Schema<?>> members = TrackingDatabase_Schema.getFieldContainer(aClass).getVerbosityDataFields(Integer.MAX_VALUE);
 
                     // Find the setters
-                    for (DataField member : members) {
+                    for (DataField_Schema member : members) {
                         if (member.getCanEdit() && member.getDisplayProperties().getDisplaySet() && DataObject.class.isAssignableFrom(member.getType())) {
                             // Get the data
                             AtomicReference<List<DataObject>> expectedOptions = new AtomicReference<>();
@@ -117,10 +117,10 @@ class DataObjectTest {
     @Test
     void checkNonPrimitive() {
         for (Class<? extends DataObject> toTest : ClassInspectionUtil.getAllClasses()) {
-            List<DataField<?>> members = TrackingDatabase_Schema.getFieldContainer(toTest).getVerbosityDataFields(Integer.MAX_VALUE);
+            List<DataField_Schema<?>> members = TrackingDatabase_Schema.getFieldContainer(toTest).getVerbosityDataFields(Integer.MAX_VALUE);
 
             // Find the setters
-            for (DataField member : members) {
+            for (DataField_Schema member : members) {
                 assertFalse(member.getType().isPrimitive(), "A member is defined primitive" + " Class:" + toTest.getSimpleName() + " Method:" + member.getDisplayName());
             }
         }
@@ -195,9 +195,9 @@ class DataObjectTest {
 
     private static class DataObject_Inst extends DataObject {
 
-        public static FieldContainer getFieldContainer() {
-            FieldContainer fieldContainer = DataObject.getFieldContainer();
-            return fieldContainer.finaliseContainer(DataObject_Inst.class);
+        public static DataObject_Schema getFieldContainer() {
+            DataObject_Schema dataObjectSchema = DataObject.getFieldContainer();
+            return dataObjectSchema.finaliseContainer(DataObject_Inst.class);
         }
 
         public static DataObject_Inst make(Integer id) {

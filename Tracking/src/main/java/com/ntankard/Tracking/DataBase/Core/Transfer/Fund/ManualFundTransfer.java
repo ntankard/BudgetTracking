@@ -2,7 +2,7 @@ package com.ntankard.Tracking.DataBase.Core.Transfer.Fund;
 
 import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.Derived_DataCore;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.DirectExternalSource;
-import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.CoreObject.DataObject_Schema;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
@@ -19,20 +19,20 @@ public class ManualFundTransfer extends FundTransfer {
     /**
      * Get all the fields for this object
      */
-    public static FieldContainer getFieldContainer() {
-        FieldContainer fieldContainer = FundTransfer.getFieldContainer();
+    public static DataObject_Schema getFieldContainer() {
+        DataObject_Schema dataObjectSchema = FundTransfer.getFieldContainer();
 
         // ID
         // Description
         // Period
         // Source ======================================================================================================
-        fieldContainer.get(Transfer_Source).setManualCanEdit(true);
+        dataObjectSchema.get(Transfer_Source).setManualCanEdit(true);
         // Value =======================================================================================================
-        fieldContainer.get(Transfer_Value).setManualCanEdit(true);
+        dataObjectSchema.get(Transfer_Value).setManualCanEdit(true);
         // Currency
         // Destination =================================================================================================
         // TODO this was failing when it was set on the RePay, this might be because they were being recreated or because there is a problem here, test
-        fieldContainer.<Pool>get(Transfer_Destination).setDataCore_factory(new Derived_DataCore.Derived_DataCore_Factory<>(new DirectExternalSource.DirectExternalSource_Factory<>((Transfer_Source), FundEvent_Category)));
+        dataObjectSchema.<Pool>get(Transfer_Destination).setDataCore_factory(new Derived_DataCore.Derived_DataCore_Factory<>(new DirectExternalSource.DirectExternalSource_Factory<>((Transfer_Source), FundEvent_Category)));
         // SourceCurrencyGet
         // DestinationCurrencyGet
         // SourcePeriodGet
@@ -40,7 +40,7 @@ public class ManualFundTransfer extends FundTransfer {
         // Parents
         // Children
 
-        return fieldContainer.finaliseContainer(ManualFundTransfer.class);
+        return dataObjectSchema.finaliseContainer(ManualFundTransfer.class);
     }
 
     /**

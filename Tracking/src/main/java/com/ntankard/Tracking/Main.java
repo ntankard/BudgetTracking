@@ -1,7 +1,7 @@
 package com.ntankard.Tracking;
 
 import com.ntankard.Tracking.Dispaly.Frames.MainFrame.Master_Frame;
-import com.ntankard.javaObjectDatabase.CoreObject.TrackingDatabase_Schema;
+import com.ntankard.javaObjectDatabase.Database.TrackingDatabase_Schema;
 import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
 import com.ntankard.javaObjectDatabase.Database.TrackingDatabase_Reader;
 

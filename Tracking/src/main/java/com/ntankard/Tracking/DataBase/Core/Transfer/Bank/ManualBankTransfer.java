@@ -1,6 +1,6 @@
 package com.ntankard.Tracking.DataBase.Core.Transfer.Bank;
 
-import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.CoreObject.DataObject_Schema;
 import com.ntankard.Tracking.DataBase.Core.Period.Period;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Pool;
@@ -14,8 +14,8 @@ public class ManualBankTransfer extends BankTransfer {
     /**
      * Get all the fields for this object
      */
-    public static FieldContainer getFieldContainer() {
-        FieldContainer fieldContainer = BankTransfer.getFieldContainer();
+    public static DataObject_Schema getFieldContainer() {
+        DataObject_Schema dataObjectSchema = BankTransfer.getFieldContainer();
 
         // ID
         // Description
@@ -37,7 +37,7 @@ public class ManualBankTransfer extends BankTransfer {
         // Parents
         // Children
 
-        return fieldContainer.finaliseContainer(ManualBankTransfer.class);
+        return dataObjectSchema.finaliseContainer(ManualBankTransfer.class);
     }
 
     /**

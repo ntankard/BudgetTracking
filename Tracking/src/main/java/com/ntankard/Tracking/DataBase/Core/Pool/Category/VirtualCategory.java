@@ -3,9 +3,9 @@ package com.ntankard.Tracking.DataBase.Core.Pool.Category;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.Derived_DataCore;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.ExternalSource;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.LocalSource;
-import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.CoreObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.CoreObject.Interface.Ordered;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField_Schema;
 import com.ntankard.Tracking.DataBase.Core.CategorySet;
 
 import static com.ntankard.javaObjectDatabase.CoreObject.Field.Properties.Display_Properties.DEBUG_DISPLAY;
@@ -24,20 +24,20 @@ public class VirtualCategory extends Category implements Ordered {
     /**
      * Get all the fields for this object
      */
-    public static FieldContainer getFieldContainer() {
-        FieldContainer fieldContainer = Category.getFieldContainer();
+    public static DataObject_Schema getFieldContainer() {
+        DataObject_Schema dataObjectSchema = Category.getFieldContainer();
 
         // ID
         // Name
         // CategorySet =================================================================================================
-        fieldContainer.add(new DataField<>(VirtualCategory_CategorySet, CategorySet.class));
+        dataObjectSchema.add(new DataField_Schema<>(VirtualCategory_CategorySet, CategorySet.class));
         // OrderImpl ===================================================================================================
-        fieldContainer.add(new DataField<>(VirtualCategory_OrderImpl, Integer.class));
-        fieldContainer.get(VirtualCategory_OrderImpl).setManualCanEdit(true);
-        fieldContainer.get(VirtualCategory_OrderImpl).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
+        dataObjectSchema.add(new DataField_Schema<>(VirtualCategory_OrderImpl, Integer.class));
+        dataObjectSchema.get(VirtualCategory_OrderImpl).setManualCanEdit(true);
+        dataObjectSchema.get(VirtualCategory_OrderImpl).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
         // Order =======================================================================================================
-        fieldContainer.add(new DataField<>(VirtualCategory_Order, Integer.class));
-        fieldContainer.get(VirtualCategory_Order).setDataCore_factory(
+        dataObjectSchema.add(new DataField_Schema<>(VirtualCategory_Order, Integer.class));
+        dataObjectSchema.get(VirtualCategory_Order).setDataCore_factory(
                 new Derived_DataCore.Derived_DataCore_Factory<>
                         (container -> ((VirtualCategory) container).getCategorySet().getOrder() * 1000 + ((VirtualCategory) container).getOrderImpl()
                                 , new LocalSource.LocalSource_Factory<>(VirtualCategory_OrderImpl)
@@ -46,7 +46,7 @@ public class VirtualCategory extends Category implements Ordered {
         // Parents
         // Children
 
-        return fieldContainer.finaliseContainer(VirtualCategory.class);
+        return dataObjectSchema.finaliseContainer(VirtualCategory.class);
     }
 
     /**

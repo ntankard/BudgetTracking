@@ -3,7 +3,7 @@ package com.ntankard.Tracking.Dispaly.Util.Panels;
 import com.ntankard.dynamicGUI.Gui.Util.Update.Updatable;
 import com.ntankard.dynamicGUI.Gui.Util.Update.UpdatableJPanel;
 import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
-import com.ntankard.javaObjectDatabase.util.ObjectSet;
+import com.ntankard.javaObjectDatabase.util.set.ObjectSet;
 
 import javax.swing.*;
 import java.awt.*;

@@ -3,7 +3,7 @@ package com.ntankard.Tracking.DataBase.Database;
 import com.ntankard.Tracking.DataBase.Core.Links.CategoryToCategorySet;
 import com.ntankard.Tracking.DataBase.Core.Links.CategoryToVirtualCategory;
 import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField_Schema;
 import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
 import com.ntankard.javaObjectDatabase.Database.TrackingDatabase_Reader_Util;
 import com.ntankard.javaObjectDatabase.util.FileUtil;
@@ -15,7 +15,6 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static com.ntankard.javaObjectDatabase.Database.TrackingDatabase_Reader.*;
 import static com.ntankard.javaObjectDatabase.Database.TrackingDatabase_Reader_Read.dataObjectFromString;
@@ -43,7 +42,7 @@ class TrackingDatabase_ReaderTest {
             }
             for (DataObject dataObject : TrackingDatabase.get().get(aClass)) {
 
-                List<DataField<?>> constructorParameters = getSaveFields(dataObject.getClass());
+                List<DataField_Schema<?>> constructorParameters = getSaveFields(dataObject.getClass());
 
                 if (shouldSave(dataObject.getClass())) {
                     List<String> first = dataObjectToString(dataObject, constructorParameters);

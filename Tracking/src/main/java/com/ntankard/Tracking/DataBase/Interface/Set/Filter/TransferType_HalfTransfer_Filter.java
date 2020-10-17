@@ -2,7 +2,7 @@ package com.ntankard.Tracking.DataBase.Interface.Set.Filter;
 
 import com.ntankard.Tracking.DataBase.Core.Transfer.HalfTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Transfer;
-import com.ntankard.javaObjectDatabase.util.SetFilter;
+import com.ntankard.javaObjectDatabase.util.set.SetFilter;
 
 @SuppressWarnings("rawtypes")
 public class TransferType_HalfTransfer_Filter extends SetFilter<HalfTransfer> {

@@ -9,13 +9,13 @@ import com.ntankard.Tracking.DataBase.Core.Transfer.Transfer;
 import com.ntankard.Tracking.DataBase.Interface.Set.Filter.TransferDestination_HalfTransfer_Filter;
 import com.ntankard.Tracking.DataBase.Interface.Set.Filter.TransferType_HalfTransfer_Filter;
 import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.ListDataField;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField_Schema;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.ListDataField_Schema;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.Children_ListDataCore;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.Derived_DataCore;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.ListSource;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.LocalSource;
-import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.CoreObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
 
 import java.util.List;
@@ -46,34 +46,34 @@ public abstract class PoolSummary<PoolType extends Pool> extends DataObject impl
     /**
      * Get all the fields for this object
      */
-    public static FieldContainer getFieldContainer() {
-        FieldContainer fieldContainer = DataObject.getFieldContainer();
+    public static DataObject_Schema getFieldContainer() {
+        DataObject_Schema dataObjectSchema = DataObject.getFieldContainer();
 
         // ID
         // Period ======================================================================================================
-        fieldContainer.add(new DataField<>(PoolSummary_Period, Period.class, false));
-        fieldContainer.get(PoolSummary_Period).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
+        dataObjectSchema.add(new DataField_Schema<>(PoolSummary_Period, Period.class, false));
+        dataObjectSchema.get(PoolSummary_Period).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
         // Pool ========================================================================================================
-        fieldContainer.add(new DataField<>(PoolSummary_Pool, Pool.class, false));
+        dataObjectSchema.add(new DataField_Schema<>(PoolSummary_Pool, Pool.class, false));
         // Start =======================================================================================================
-        fieldContainer.add(new DataField<>(PoolSummary_Start, Double.class));
-        fieldContainer.get(PoolSummary_Start).getDisplayProperties().setDataType(CURRENCY);
+        dataObjectSchema.add(new DataField_Schema<>(PoolSummary_Start, Double.class));
+        dataObjectSchema.get(PoolSummary_Start).getDisplayProperties().setDataType(CURRENCY);
         // End =========================================================================================================
-        fieldContainer.add(new DataField<>(PoolSummary_End, Double.class));
-        fieldContainer.get(PoolSummary_End).getDisplayProperties().setDataType(CURRENCY);
+        dataObjectSchema.add(new DataField_Schema<>(PoolSummary_End, Double.class));
+        dataObjectSchema.get(PoolSummary_End).getDisplayProperties().setDataType(CURRENCY);
         // Net =========================================================================================================
-        fieldContainer.add(new DataField<>(PoolSummary_Net, Double.class, true));
-        fieldContainer.get(PoolSummary_Net).getDisplayProperties().setDataType(CURRENCY);
-        fieldContainer.<Double>get(PoolSummary_Net).setDataCore_factory(
+        dataObjectSchema.add(new DataField_Schema<>(PoolSummary_Net, Double.class, true));
+        dataObjectSchema.get(PoolSummary_Net).getDisplayProperties().setDataType(CURRENCY);
+        dataObjectSchema.<Double>get(PoolSummary_Net).setDataCore_factory(
                 new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Double, PoolSummary<?>>) container ->
                                 container.getEnd() - container.getStart()
                         , new LocalSource.LocalSource_Factory<Double, PoolSummary<?>>(PoolSummary_Start)
                         , new LocalSource.LocalSource_Factory<Double, PoolSummary<?>>(PoolSummary_End)));
         // NetSet ======================================================================================================
-        fieldContainer.add(new ListDataField<>(PoolSummary_TransferSet, HalfTransfer.HalfTransferList.class));
-        fieldContainer.get(PoolSummary_TransferSet).getDisplayProperties().setVerbosityLevel(TRACE_DISPLAY);
-        fieldContainer.<List<HalfTransfer>>get(PoolSummary_TransferSet).setDataCore_factory(
+        dataObjectSchema.add(new ListDataField_Schema<>(PoolSummary_TransferSet, HalfTransfer.HalfTransferList.class));
+        dataObjectSchema.get(PoolSummary_TransferSet).getDisplayProperties().setVerbosityLevel(TRACE_DISPLAY);
+        dataObjectSchema.<List<HalfTransfer>>get(PoolSummary_TransferSet).setDataCore_factory(
                 new Children_ListDataCore.Children_ListDataCore_Factory<>(
                         HalfTransfer.class,
                         new TransferType_HalfTransfer_Filter(Transfer.class,
@@ -81,8 +81,8 @@ public abstract class PoolSummary<PoolType extends Pool> extends DataObject impl
                         new Children_ListDataCore.ParentAccess.ParentAccess_Factory<>(PoolSummary_Period),
                         new Children_ListDataCore.ParentAccess.ParentAccess_Factory<>(PoolSummary_Pool)));
         // NetSum ======================================================================================================
-        fieldContainer.add(new DataField<>(PoolSummary_TransferSetSum, Double.class));
-        fieldContainer.<Double>get(PoolSummary_TransferSetSum).setDataCore_factory(
+        dataObjectSchema.add(new DataField_Schema<>(PoolSummary_TransferSetSum, Double.class));
+        dataObjectSchema.<Double>get(PoolSummary_TransferSetSum).setDataCore_factory(
                 new Derived_DataCore.Derived_DataCore_Factory<Double, PoolSummary<?>>(
                         container -> {
                             double sum = 0.0;
@@ -96,25 +96,25 @@ public abstract class PoolSummary<PoolType extends Pool> extends DataObject impl
                         HalfTransfer_Value,
                         HalfTransfer_Currency)));
         // TransferSum =================================================================================================
-        fieldContainer.add(new DataField<>(PoolSummary_TransferSum, Double.class));
-        fieldContainer.get(PoolSummary_TransferSum).getDisplayProperties().setDataType(CURRENCY);
+        dataObjectSchema.add(new DataField_Schema<>(PoolSummary_TransferSum, Double.class));
+        dataObjectSchema.get(PoolSummary_TransferSum).getDisplayProperties().setDataType(CURRENCY);
         // Missing =====================================================================================================
-        fieldContainer.add(new DataField<>(PoolSummary_Missing, Double.class));
-        fieldContainer.get(PoolSummary_Missing).getDisplayProperties().setDataType(CURRENCY);
-        fieldContainer.get(PoolSummary_Missing).getDisplayProperties().setDataContext(ZERO_TARGET);
-        fieldContainer.<Double>get(PoolSummary_Missing).setDataCore_factory(
+        dataObjectSchema.add(new DataField_Schema<>(PoolSummary_Missing, Double.class));
+        dataObjectSchema.get(PoolSummary_Missing).getDisplayProperties().setDataType(CURRENCY);
+        dataObjectSchema.get(PoolSummary_Missing).getDisplayProperties().setDataContext(ZERO_TARGET);
+        dataObjectSchema.<Double>get(PoolSummary_Missing).setDataCore_factory(
                 new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Double, PoolSummary<?>>) container ->
                                 Currency.round(container.getTransferSum() - container.getNet())
                         , new LocalSource.LocalSource_Factory<>(PoolSummary_TransferSum)
                         , new LocalSource.LocalSource_Factory<>(PoolSummary_Net)));
         // Valid =======================================================================================================
-        fieldContainer.add(new DataField<>(PoolSummary_Valid, Boolean.class));
-        fieldContainer.get(PoolSummary_Valid).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
+        dataObjectSchema.add(new DataField_Schema<>(PoolSummary_Valid, Boolean.class));
+        dataObjectSchema.get(PoolSummary_Valid).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
         // Parents
         // Children
 
-        return fieldContainer.endLayer(PoolSummary.class);
+        return dataObjectSchema.endLayer(PoolSummary.class);
     }
 
     //------------------------------------------------------------------------------------------------------------------

@@ -8,10 +8,10 @@ import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField_Schema;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.Derived_DataCore;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.DirectExternalSource;
-import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.CoreObject.DataObject_Schema;
 
 import java.util.List;
 
@@ -35,39 +35,39 @@ public abstract class RecurringPayment extends NamedDataObject implements Curren
     /**
      * Get all the fields for this object
      */
-    public static FieldContainer getFieldContainer() {
-        FieldContainer fieldContainer = NamedDataObject.getFieldContainer();
+    public static DataObject_Schema getFieldContainer() {
+        DataObject_Schema dataObjectSchema = NamedDataObject.getFieldContainer();
 
         // ID
         // Name
         // Start =======================================================================================================
-        fieldContainer.add(new DataField<>(RecurringPayment_Start, ExistingPeriod.class, true));
-        fieldContainer.get(RecurringPayment_Start).setManualCanEdit(true);
+        dataObjectSchema.add(new DataField_Schema<>(RecurringPayment_Start, ExistingPeriod.class, true));
+        dataObjectSchema.get(RecurringPayment_Start).setManualCanEdit(true);
         // End =========================================================================================================
-        fieldContainer.add(new DataField<>(RecurringPayment_End, ExistingPeriod.class, true));
-        fieldContainer.get(RecurringPayment_End).setManualCanEdit(true);
+        dataObjectSchema.add(new DataField_Schema<>(RecurringPayment_End, ExistingPeriod.class, true));
+        dataObjectSchema.get(RecurringPayment_End).setManualCanEdit(true);
         // Bank ========================================================================================================
-        fieldContainer.add(new DataField<>(RecurringPayment_Bank, Bank.class));
-        fieldContainer.get(RecurringPayment_Bank).setManualCanEdit(true);
+        dataObjectSchema.add(new DataField_Schema<>(RecurringPayment_Bank, Bank.class));
+        dataObjectSchema.get(RecurringPayment_Bank).setManualCanEdit(true);
         // Category ====================================================================================================
-        fieldContainer.add(new DataField<>(RecurringPayment_Category, SolidCategory.class));
-        fieldContainer.get(RecurringPayment_Category).setManualCanEdit(true);
+        dataObjectSchema.add(new DataField_Schema<>(RecurringPayment_Category, SolidCategory.class));
+        dataObjectSchema.get(RecurringPayment_Category).setManualCanEdit(true);
         // Value =======================================================================================================
-        fieldContainer.add(new DataField<>(RecurringPayment_Value, Double.class));
-        fieldContainer.get(RecurringPayment_Value).setManualCanEdit(true);
-        fieldContainer.get(RecurringPayment_Value).getDisplayProperties().setDataType(CURRENCY);
+        dataObjectSchema.add(new DataField_Schema<>(RecurringPayment_Value, Double.class));
+        dataObjectSchema.get(RecurringPayment_Value).setManualCanEdit(true);
+        dataObjectSchema.get(RecurringPayment_Value).getDisplayProperties().setDataType(CURRENCY);
         // Currency ====================================================================================================
-        fieldContainer.add(new DataField<>(RecurringPayment_Currency, Currency.class));
-        fieldContainer.<Currency>get(RecurringPayment_Currency).setDataCore_factory(new Derived_DataCore.Derived_DataCore_Factory<>(new DirectExternalSource.DirectExternalSource_Factory<>((RecurringPayment_Bank), Bank_Currency)));
-        fieldContainer.get(RecurringPayment_Currency).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
+        dataObjectSchema.add(new DataField_Schema<>(RecurringPayment_Currency, Currency.class));
+        dataObjectSchema.<Currency>get(RecurringPayment_Currency).setDataCore_factory(new Derived_DataCore.Derived_DataCore_Factory<>(new DirectExternalSource.DirectExternalSource_Factory<>((RecurringPayment_Bank), Bank_Currency)));
+        dataObjectSchema.get(RecurringPayment_Currency).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
         //==============================================================================================================
         // Parents
         // Children
 
-        fieldContainer.<ExistingPeriod>get(RecurringPayment_End).addFilter(new Ordered_FieldFilter<>(RecurringPayment_Start, Ordered_FieldFilter.OrderSequence.ABOVE));
-        fieldContainer.<ExistingPeriod>get(RecurringPayment_Start).addFilter(new Ordered_FieldFilter<>(RecurringPayment_End, Ordered_FieldFilter.OrderSequence.BELOW));
+        dataObjectSchema.<ExistingPeriod>get(RecurringPayment_End).addFilter(new Ordered_FieldFilter<>(RecurringPayment_Start, Ordered_FieldFilter.OrderSequence.ABOVE));
+        dataObjectSchema.<ExistingPeriod>get(RecurringPayment_Start).addFilter(new Ordered_FieldFilter<>(RecurringPayment_End, Ordered_FieldFilter.OrderSequence.BELOW));
 
-        return fieldContainer.endLayer(RecurringPayment.class);
+        return dataObjectSchema.endLayer(RecurringPayment.class);
     }
 
     //------------------------------------------------------------------------------------------------------------------

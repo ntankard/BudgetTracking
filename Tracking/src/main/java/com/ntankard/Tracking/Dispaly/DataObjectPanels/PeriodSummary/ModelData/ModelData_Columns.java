@@ -7,7 +7,7 @@ import com.ntankard.Tracking.DataBase.Core.Transfer.HalfTransfer;
 import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
 import com.ntankard.Tracking.DataBase.Interface.Set.Extended.Sum.PeriodPool_SumSet;
 import com.ntankard.Tracking.DataBase.Interface.Set.Filter.TransferDestination_HalfTransfer_Filter;
-import com.ntankard.javaObjectDatabase.util.TwoParent_Children_Set;
+import com.ntankard.javaObjectDatabase.util.set.TwoParent_Children_Set;
 
 import java.util.ArrayList;
 import java.util.List;

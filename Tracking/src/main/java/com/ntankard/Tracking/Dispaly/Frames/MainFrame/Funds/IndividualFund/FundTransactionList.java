@@ -4,7 +4,7 @@ import com.ntankard.dynamicGUI.Gui.Util.Update.Updatable;
 import com.ntankard.dynamicGUI.Gui.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.Pool.FundEvent.FundEvent;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Transfer;
-import com.ntankard.javaObjectDatabase.util.OneParent_Children_Set;
+import com.ntankard.javaObjectDatabase.util.set.OneParent_Children_Set;
 import com.ntankard.Tracking.Dispaly.Util.Panels.DataObject_DisplayList;
 
 import java.awt.*;

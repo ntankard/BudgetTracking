@@ -4,8 +4,8 @@ import com.ntankard.Tracking.DataBase.Core.BaseObject.Interface.CurrencyBound;
 import com.ntankard.Tracking.DataBase.Core.Currency;
 import com.ntankard.Tracking.DataBase.Core.StatementEnd;
 import com.ntankard.Tracking.DataBase.Interface.Summary.Pool.Bank_Summary;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
-import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField_Schema;
+import com.ntankard.javaObjectDatabase.CoreObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.CoreObject.Interface.HasDefault;
 import com.ntankard.javaObjectDatabase.CoreObject.Interface.Ordered;
 
@@ -25,31 +25,31 @@ public class Bank extends Pool implements CurrencyBound, Ordered, HasDefault {
     /**
      * Get all the fields for this object
      */
-    public static FieldContainer getFieldContainer() {
-        FieldContainer fieldContainer = Pool.getFieldContainer();
+    public static DataObject_Schema getFieldContainer() {
+        DataObject_Schema dataObjectSchema = Pool.getFieldContainer();
 
         // Class behavior
-        fieldContainer.addObjectFactory(StatementEnd.Factory);
-        fieldContainer.addObjectFactory(Bank_Summary.Factory);
+        dataObjectSchema.addObjectFactory(StatementEnd.Factory);
+        dataObjectSchema.addObjectFactory(Bank_Summary.Factory);
 
         // ID
         // Name
         // Currency ========================================================================================================
-        fieldContainer.add(new DataField<>(Bank_Currency, Currency.class));
+        dataObjectSchema.add(new DataField_Schema<>(Bank_Currency, Currency.class));
         // Start ========================================================================================================
-        fieldContainer.add(new DataField<>(Bank_Start, Double.class));
-        fieldContainer.get(Bank_Start).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
+        dataObjectSchema.add(new DataField_Schema<>(Bank_Start, Double.class));
+        dataObjectSchema.get(Bank_Start).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
         // Default ========================================================================================================
-        fieldContainer.add(new DataField<>(Bank_Default, Boolean.class));
-        fieldContainer.get(Bank_Default).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
+        dataObjectSchema.add(new DataField_Schema<>(Bank_Default, Boolean.class));
+        dataObjectSchema.get(Bank_Default).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
         // Order ========================================================================================================
-        fieldContainer.add(new DataField<>(Bank_Order, Integer.class));
-        fieldContainer.get(Bank_Order).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
+        dataObjectSchema.add(new DataField_Schema<>(Bank_Order, Integer.class));
+        dataObjectSchema.get(Bank_Order).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
         //==============================================================================================================
         // Parents
         // Children
 
-        return fieldContainer.finaliseContainer(Bank.class);
+        return dataObjectSchema.finaliseContainer(Bank.class);
     }
 
     //------------------------------------------------------------------------------------------------------------------

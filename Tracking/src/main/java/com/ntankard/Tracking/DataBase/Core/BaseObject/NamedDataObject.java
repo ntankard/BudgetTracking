@@ -1,8 +1,8 @@
 package com.ntankard.Tracking.DataBase.Core.BaseObject;
 
 import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
-import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField_Schema;
+import com.ntankard.javaObjectDatabase.CoreObject.DataObject_Schema;
 
 public abstract class NamedDataObject extends DataObject {
 
@@ -15,18 +15,18 @@ public abstract class NamedDataObject extends DataObject {
     /**
      * Get all the fields for this object
      */
-    public static FieldContainer getFieldContainer() {
-        FieldContainer fieldContainer = DataObject.getFieldContainer();
+    public static DataObject_Schema getFieldContainer() {
+        DataObject_Schema dataObjectSchema = DataObject.getFieldContainer();
 
         // ID
         // Name ========================================================================================================
-        fieldContainer.add(new DataField<>(NamedDataObject_Name, String.class));
-        fieldContainer.get(NamedDataObject_Name).setManualCanEdit(true);
+        dataObjectSchema.add(new DataField_Schema<>(NamedDataObject_Name, String.class));
+        dataObjectSchema.get(NamedDataObject_Name).setManualCanEdit(true);
         //==============================================================================================================
         // Parents
         // Children
 
-        return fieldContainer.endLayer(NamedDataObject.class);
+        return dataObjectSchema.endLayer(NamedDataObject.class);
     }
 
     //------------------------------------------------------------------------------------------------------------------

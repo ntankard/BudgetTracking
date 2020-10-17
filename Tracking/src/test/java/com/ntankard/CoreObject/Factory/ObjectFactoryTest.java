@@ -4,8 +4,8 @@ import com.ntankard.TestUtil.ClassInspectionUtil;
 import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
 import com.ntankard.javaObjectDatabase.CoreObject.Factory.DoubleParentFactory;
 import com.ntankard.javaObjectDatabase.CoreObject.Factory.ObjectFactory;
-import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
-import com.ntankard.javaObjectDatabase.CoreObject.TrackingDatabase_Schema;
+import com.ntankard.javaObjectDatabase.CoreObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.Database.TrackingDatabase_Schema;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,7 +18,7 @@ class ObjectFactoryTest {
         for (Class<? extends DataObject> aClass : ClassInspectionUtil.getSolidClasses()) {
 
             // For each class, check each factory
-            FieldContainer container = TrackingDatabase_Schema.getFieldContainer(aClass);
+            DataObject_Schema container = TrackingDatabase_Schema.getFieldContainer(aClass);
             for (ObjectFactory<?> factory : container.getObjectFactories()) {
 
                 // If the factory is DoubleParentFactory
@@ -26,7 +26,7 @@ class ObjectFactoryTest {
                     DoubleParentFactory<?, ?, ?> doubleParentFactory = ((DoubleParentFactory<?, ?, ?>) factory);
 
                     // Check the secondary generator type
-                    FieldContainer containerToCheck = TrackingDatabase_Schema.getFieldContainer(doubleParentFactory.getSecondaryGeneratorType());
+                    DataObject_Schema containerToCheck = TrackingDatabase_Schema.getFieldContainer(doubleParentFactory.getSecondaryGeneratorType());
                     boolean found = false;
                     for (ObjectFactory<?> factoryToCheck : containerToCheck.getObjectFactories()) {
 

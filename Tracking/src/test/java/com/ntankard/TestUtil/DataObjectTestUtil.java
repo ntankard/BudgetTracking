@@ -1,8 +1,8 @@
 package com.ntankard.TestUtil;
 
 import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
-import com.ntankard.javaObjectDatabase.CoreObject.TrackingDatabase_Schema;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField_Schema;
+import com.ntankard.javaObjectDatabase.Database.TrackingDatabase_Schema;
 import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
 
 import java.util.ArrayList;
@@ -25,11 +25,11 @@ public class DataObjectTestUtil {
     public static void testStandardParents(Class<? extends DataObject> aClass, List<String> exclude) {
         assertNotEquals(0, TrackingDatabase.get().get(aClass).size());
         for (DataObject toTest : TrackingDatabase.get().get(aClass)) {
-            List<DataField<?>> members = TrackingDatabase_Schema.getFieldContainer(toTest.getClass()).getVerbosityDataFields(Integer.MAX_VALUE);
+            List<DataField_Schema<?>> members = TrackingDatabase_Schema.getFieldContainer(toTest.getClass()).getVerbosityDataFields(Integer.MAX_VALUE);
 
             // Find the getters
-            List<DataField<?>> expectedMember = new ArrayList<>();
-            for (DataField<?> candidate : members) {
+            List<DataField_Schema<?>> expectedMember = new ArrayList<>();
+            for (DataField_Schema<?> candidate : members) {
                 if (DataObject.class.isAssignableFrom(candidate.getType())) {
                     if (!exclude.contains(candidate.getDisplayName())) {
                         expectedMember.add(candidate);
@@ -39,7 +39,7 @@ public class DataObjectTestUtil {
 
             // Extract all the objects
             List<DataObject> expectedParents = new ArrayList<>();
-            for (DataField<?> getter : expectedMember) {
+            for (DataField_Schema<?> getter : expectedMember) {
                 assertDoesNotThrow(() -> {
                     DataObject toAdd = toTest.get(getter.getIdentifierName());
                     if (!expectedParents.contains(toAdd)) {
@@ -71,11 +71,11 @@ public class DataObjectTestUtil {
     public static void checkDataObjectNotNull(Class<? extends DataObject> aClass, List<String> exclude) {
         assertNotEquals(0, TrackingDatabase.get().getAll().size());
         for (DataObject toTest : TrackingDatabase.get().get(aClass)) {
-            List<DataField<?>> members = TrackingDatabase_Schema.getFieldContainer(toTest.getClass()).getVerbosityDataFields(Integer.MAX_VALUE);
+            List<DataField_Schema<?>> members = TrackingDatabase_Schema.getFieldContainer(toTest.getClass()).getVerbosityDataFields(Integer.MAX_VALUE);
 
             // Find the getters
-            List<DataField<?>> expectedMember = new ArrayList<>();
-            for (DataField<?> candidate : members) {
+            List<DataField_Schema<?>> expectedMember = new ArrayList<>();
+            for (DataField_Schema<?> candidate : members) {
                 if (DataObject.class.isAssignableFrom(candidate.getType())) {
                     if (!exclude.contains(candidate.getDisplayName())) {
                         expectedMember.add(candidate);
@@ -84,7 +84,7 @@ public class DataObjectTestUtil {
             }
 
             // Extract all the objects
-            for (DataField<?> getter : expectedMember) {
+            for (DataField_Schema<?> getter : expectedMember) {
                 assertDoesNotThrow(() -> {
                     DataObject toAdd = toTest.get(getter.getIdentifierName());
                     assertNotNull(toAdd);

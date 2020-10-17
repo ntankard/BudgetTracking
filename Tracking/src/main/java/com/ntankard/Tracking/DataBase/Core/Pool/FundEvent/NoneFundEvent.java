@@ -1,7 +1,7 @@
 package com.ntankard.Tracking.DataBase.Core.Pool.FundEvent;
 
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
-import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.CoreObject.DataObject_Schema;
 
 public class NoneFundEvent extends FundEvent {
 
@@ -12,8 +12,8 @@ public class NoneFundEvent extends FundEvent {
     /**
      * Get all the fields for this object
      */
-    public static FieldContainer getFieldContainer() {
-        FieldContainer fieldContainer = FundEvent.getFieldContainer();
+    public static DataObject_Schema getFieldContainer() {
+        DataObject_Schema dataObjectSchema = FundEvent.getFieldContainer();
 
         // ID
         // Name
@@ -21,7 +21,7 @@ public class NoneFundEvent extends FundEvent {
         // Parents
         // Children
 
-        return fieldContainer.finaliseContainer(NoneFundEvent.class);
+        return dataObjectSchema.finaliseContainer(NoneFundEvent.class);
     }
 
     /**

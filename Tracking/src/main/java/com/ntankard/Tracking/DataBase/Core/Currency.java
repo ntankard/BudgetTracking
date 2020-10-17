@@ -2,10 +2,10 @@ package com.ntankard.Tracking.DataBase.Core;
 
 import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.Derived_DataCore;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.dataCore.derived.source.LocalSource;
-import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.CoreObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.CoreObject.Interface.HasDefault;
 import com.ntankard.Tracking.DataBase.Core.BaseObject.NamedDataObject;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField_Schema;
 
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -38,25 +38,25 @@ public class Currency extends NamedDataObject implements HasDefault {
     /**
      * Get all the fields for this object
      */
-    public static FieldContainer getFieldContainer() {
-        FieldContainer fieldContainer = NamedDataObject.getFieldContainer();
+    public static DataObject_Schema getFieldContainer() {
+        DataObject_Schema dataObjectSchema = NamedDataObject.getFieldContainer();
 
         // ID
         // Name
         // Default =====================================================================================================
-        fieldContainer.add(new DataField<>(Currency_Default, Boolean.class));
+        dataObjectSchema.add(new DataField_Schema<>(Currency_Default, Boolean.class));
         // ToPrimary ===================================================================================================
-        fieldContainer.add(new DataField<>(Currency_ToPrimary, Double.class));
+        dataObjectSchema.add(new DataField_Schema<>(Currency_ToPrimary, Double.class));
         // Language ====================================================================================================
-        fieldContainer.add(new DataField<>(Currency_Language, String.class));
-        fieldContainer.get(Currency_Language).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
+        dataObjectSchema.add(new DataField_Schema<>(Currency_Language, String.class));
+        dataObjectSchema.get(Currency_Language).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
         // Country =====================================================================================================
-        fieldContainer.add(new DataField<>(Currency_Country, String.class));
-        fieldContainer.get(Currency_Country).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
+        dataObjectSchema.add(new DataField_Schema<>(Currency_Country, String.class));
+        dataObjectSchema.get(Currency_Country).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
         // NumberFormat ================================================================================================
-        fieldContainer.add(new DataField<>(Currency_NumberFormat, NumberFormat.class));
-        fieldContainer.get(Currency_NumberFormat).getDisplayProperties().setVerbosityLevel(TRACE_DISPLAY);
-        fieldContainer.<NumberFormat>get(Currency_NumberFormat).setDataCore_factory(
+        dataObjectSchema.add(new DataField_Schema<>(Currency_NumberFormat, NumberFormat.class));
+        dataObjectSchema.get(Currency_NumberFormat).getDisplayProperties().setVerbosityLevel(TRACE_DISPLAY);
+        dataObjectSchema.<NumberFormat>get(Currency_NumberFormat).setDataCore_factory(
                 new Derived_DataCore.Derived_DataCore_Factory<NumberFormat, Currency>
                         (dataObject -> NumberFormat.getCurrencyInstance(new Locale(dataObject.getLanguage(), dataObject.getCountry()))
                                 , new LocalSource.LocalSource_Factory<>(Currency_Country)
@@ -65,7 +65,7 @@ public class Currency extends NamedDataObject implements HasDefault {
         // Parents
         // Children
 
-        return fieldContainer.finaliseContainer(Currency.class);
+        return dataObjectSchema.finaliseContainer(Currency.class);
     }
 
     //------------------------------------------------------------------------------------------------------------------

@@ -25,7 +25,7 @@ class PeriodTest {
 
     @Test
     void isWithin() {
-        int testSize = 200;
+        int testSize = 20;
 
         // Generate test data
         List<Period> periods = new ArrayList<>();

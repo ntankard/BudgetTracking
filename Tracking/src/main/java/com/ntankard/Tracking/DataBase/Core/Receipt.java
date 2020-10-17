@@ -1,8 +1,8 @@
 package com.ntankard.Tracking.DataBase.Core;
 
-import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.CoreObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
-import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField;
+import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField_Schema;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.BankTransfer;
 
 public class Receipt extends DataObject {
@@ -17,20 +17,20 @@ public class Receipt extends DataObject {
     /**
      * Get all the fields for this object
      */
-    public static FieldContainer getFieldContainer() {
-        FieldContainer fieldContainer = DataObject.getFieldContainer();
+    public static DataObject_Schema getFieldContainer() {
+        DataObject_Schema dataObjectSchema = DataObject.getFieldContainer();
 
         // ID
         // FileName ======================================================================================================
-        fieldContainer.add(new DataField<>(Receipt_FileName, String.class));
+        dataObjectSchema.add(new DataField_Schema<>(Receipt_FileName, String.class));
         // BankTransfer ========================================================================================================
-        fieldContainer.add(new DataField<>(Receipt_BankTransfer, BankTransfer.class));
-        fieldContainer.get(Receipt_BankTransfer).setManualCanEdit(true);
+        dataObjectSchema.add(new DataField_Schema<>(Receipt_BankTransfer, BankTransfer.class));
+        dataObjectSchema.get(Receipt_BankTransfer).setManualCanEdit(true);
         //==============================================================================================================
         // Parents
         // Children
 
-        return fieldContainer.finaliseContainer(Receipt.class);
+        return dataObjectSchema.finaliseContainer(Receipt.class);
     }
 
     /**

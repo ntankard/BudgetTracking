@@ -11,8 +11,8 @@ import com.ntankard.Tracking.Dispaly.Util.ElementControllers.CategoryToCategoryS
 import com.ntankard.Tracking.Dispaly.Util.ElementControllers.CategoryToVirtualCategory_ElementController;
 import com.ntankard.Tracking.Dispaly.Util.ElementControllers.VirtualCategory_ElementController;
 import com.ntankard.Tracking.Dispaly.Util.Panels.DataObject_DisplayList;
-import com.ntankard.javaObjectDatabase.util.Full_Set;
-import com.ntankard.javaObjectDatabase.util.OneParent_Children_Set;
+import com.ntankard.javaObjectDatabase.util.set.Full_Set;
+import com.ntankard.javaObjectDatabase.util.set.OneParent_Children_Set;
 
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;

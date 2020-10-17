@@ -4,7 +4,7 @@ import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
 import com.ntankard.Tracking.DataBase.Core.Pool.Bank;
 import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.RecurringBankTransfer;
-import com.ntankard.javaObjectDatabase.CoreObject.FieldContainer;
+import com.ntankard.javaObjectDatabase.CoreObject.DataObject_Schema;
 
 public class FixedRecurringPayment extends RecurringPayment {
 
@@ -15,11 +15,11 @@ public class FixedRecurringPayment extends RecurringPayment {
     /**
      * Get all the fields for this object
      */
-    public static FieldContainer getFieldContainer() {
-        FieldContainer fieldContainer = RecurringPayment.getFieldContainer();
+    public static DataObject_Schema getFieldContainer() {
+        DataObject_Schema dataObjectSchema = RecurringPayment.getFieldContainer();
 
         // Class behavior
-        fieldContainer.addObjectFactory(RecurringBankTransfer.Factory);
+        dataObjectSchema.addObjectFactory(RecurringBankTransfer.Factory);
 
         // ID
         // Name
@@ -32,7 +32,7 @@ public class FixedRecurringPayment extends RecurringPayment {
         // Parents
         // Children
 
-        return fieldContainer.finaliseContainer(FixedRecurringPayment.class);
+        return dataObjectSchema.finaliseContainer(FixedRecurringPayment.class);
     }
 
     /**

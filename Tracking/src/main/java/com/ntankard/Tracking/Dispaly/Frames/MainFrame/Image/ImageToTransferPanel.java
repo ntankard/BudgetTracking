@@ -13,7 +13,7 @@ import com.ntankard.Tracking.DataBase.Core.Pool.Category.SolidCategory;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.BankTransfer;
 import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.ManualBankTransfer;
 import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
-import com.ntankard.javaObjectDatabase.util.TwoParent_Children_Set;
+import com.ntankard.javaObjectDatabase.util.set.TwoParent_Children_Set;
 import com.ntankard.Tracking.Util.Swing.ImageJPanel;
 
 import javax.swing.*;
