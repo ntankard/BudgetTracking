@@ -54,7 +54,7 @@ public abstract class BankTransfer extends Transfer {
         // Description
         // Period ======================================================================================================
         dataObjectSchema.get(Transfer_Period).setManualCanEdit(true);
-        dataObjectSchema.<Period>get(Transfer_Period).addFilter(new FieldFilter<Period, DataObject>() {
+        dataObjectSchema.<Period>get(Transfer_Period).addFilter(new FieldFilter<Period, DataObject>() { // Here
             @Override
             public boolean isValid(Period newValue, Period pastValue, DataObject container) {
                 BankTransfer bankTransfer = ((BankTransfer) container);
