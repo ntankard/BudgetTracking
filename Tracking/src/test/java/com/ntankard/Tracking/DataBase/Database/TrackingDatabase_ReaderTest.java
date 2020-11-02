@@ -5,7 +5,9 @@ import com.ntankard.Tracking.DataBase.Core.Links.CategoryToVirtualCategory;
 import com.ntankard.javaObjectDatabase.CoreObject.DataObject;
 import com.ntankard.javaObjectDatabase.CoreObject.Field.DataField_Schema;
 import com.ntankard.javaObjectDatabase.Database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.Database.TrackingDatabase_Reader;
 import com.ntankard.javaObjectDatabase.Database.TrackingDatabase_Reader_Util;
+import com.ntankard.javaObjectDatabase.Database.TrackingDatabase_Schema;
 import com.ntankard.javaObjectDatabase.util.FileUtil;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -15,6 +17,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.ntankard.javaObjectDatabase.Database.TrackingDatabase_Reader.*;
 import static com.ntankard.javaObjectDatabase.Database.TrackingDatabase_Reader_Read.dataObjectFromString;
@@ -26,8 +29,15 @@ class TrackingDatabase_ReaderTest {
 
     @BeforeAll
     static void setUp() {
-        TrackingDatabase.reset();
+        String databasePath = "com.ntankard.Tracking.DataBase.Core";
         String savePath = "C:\\Users\\Nicholas\\Google Drive\\BudgetTrackingData";
+        Map<String, String> nameMap = new HashMap<>();
+
+        if (!TrackingDatabase_Schema.get().isInitialized()) {
+            TrackingDatabase_Schema.get().init(databasePath, nameMap);
+        }
+
+        TrackingDatabase.reset();
         read(savePath, new HashMap<>());
     }
 
@@ -64,9 +74,16 @@ class TrackingDatabase_ReaderTest {
     void testFullIO() {
         String savePath = "C:\\Users\\Nicholas\\Google Drive\\BudgetTrackingData";
         String testPath = "testFiles\\";
+        String databasePath = "com.ntankard.Tracking.DataBase.Core";
+        Map<String, String> nameMap = new HashMap<>();
+
+
+        if (!TrackingDatabase_Schema.get().isInitialized()) {
+            TrackingDatabase_Schema.get().init(databasePath, nameMap);
+        }
 
         TrackingDatabase.reset();
-        read(savePath, new HashMap<>());
+        TrackingDatabase_Reader.read(savePath, new HashMap<>());
 
         new File(testPath).mkdir();
         new File(testPath + ROOT_DATA_PATH).mkdir();

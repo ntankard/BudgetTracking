@@ -38,15 +38,15 @@ public class FixedRecurringPayment extends RecurringPayment {
     /**
      * Create a new FixedRecurringPayment object
      */
-    public static FixedRecurringPayment make(Integer id, String name, Double value, ExistingPeriod start, ExistingPeriod end, Bank bank, SolidCategory solidCategory) {
+    public static FixedRecurringPayment make(Integer id, String name, Double value, ExistingPeriod start, Bank bank, SolidCategory solidCategory, Integer duration) {
         return assembleDataObject(FixedRecurringPayment.getFieldContainer(), new FixedRecurringPayment()
                 , DataObject_Id, id
                 , NamedDataObject_Name, name
                 , RecurringPayment_Value, value
                 , RecurringPayment_Start, start
-                , RecurringPayment_End, end
                 , RecurringPayment_Bank, bank
                 , RecurringPayment_Category, solidCategory
+                , RecurringPayment_Duration, duration
         );
     }
 }

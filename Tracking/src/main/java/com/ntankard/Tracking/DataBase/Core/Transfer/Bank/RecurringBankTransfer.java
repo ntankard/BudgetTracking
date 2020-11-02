@@ -27,14 +27,23 @@ public class RecurringBankTransfer extends BankTransfer {
             RecurringBankTransfer.class,
             ExistingPeriod.class,
             Transfer_Period, FixedRecurringPayment.class,
-            RecurringBankTransfer_ParentPayment, (generator, secondaryGenerator) ->
-            RecurringBankTransfer.make(
-                    TrackingDatabase.get().getNextId(),
-                    generator,
-                    secondaryGenerator.getBank(),
-                    null,
-                    secondaryGenerator.getCategory(),
-                    null, secondaryGenerator),
+            RecurringBankTransfer_ParentPayment,
+            (generator, secondaryGenerator) -> {
+                double value = 0.0;
+                if (secondaryGenerator.getDuration() != null) {
+                    if (secondaryGenerator.getStart().getOrder() + secondaryGenerator.getDuration() <= generator.getOrder()) {
+                        value = secondaryGenerator.getValue();
+                    }
+                }
+                return RecurringBankTransfer.make(
+                        TrackingDatabase.get().getNextId(),
+                        generator,
+                        secondaryGenerator.getBank(),
+                        value,
+                        null,
+                        secondaryGenerator.getCategory(),
+                        null, secondaryGenerator);
+            },
             MULTIPLE_NO_ADD
     );
 

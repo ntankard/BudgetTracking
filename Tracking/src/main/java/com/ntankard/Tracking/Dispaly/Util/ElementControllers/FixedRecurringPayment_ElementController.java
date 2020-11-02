@@ -26,8 +26,8 @@ public class FixedRecurringPayment_ElementController extends TrackingDatabase_El
                 "",
                 0.0,
                 TrackingDatabase.get().getDefault(ExistingPeriod.class),
-                null,
                 TrackingDatabase.get().getDefault(Bank.class),
-                TrackingDatabase.get().getDefault(SolidCategory.class));
+                TrackingDatabase.get().getDefault(SolidCategory.class),
+                null);
     }
 }
