@@ -237,7 +237,7 @@ public class ImageToTransferPanel extends UpdatableJPanel implements ListSelecti
         String description = description_txt.getText();
         SolidCategory solidCategory = (SolidCategory) category_combo.getSelectedItem();
 
-        ManualBankTransfer manualBankTransferN = ManualBankTransfer.make(TrackingDatabase.get().getNextId(), description, period, bank, cost, null, solidCategory, null);
+        ManualBankTransfer manualBankTransferN = ManualBankTransfer.make(TrackingDatabase.get().getNextId(), description, period, bank, cost, null, solidCategory);
         manualBankTransferN.add();
 
         Receipt receipt = Receipt.make(TrackingDatabase.get().getNextId(), imagePath, manualBankTransferN);

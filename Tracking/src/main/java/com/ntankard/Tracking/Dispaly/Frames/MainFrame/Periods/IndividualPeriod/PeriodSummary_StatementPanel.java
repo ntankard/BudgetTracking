@@ -1,5 +1,6 @@
 package com.ntankard.Tracking.Dispaly.Frames.MainFrame.Periods.IndividualPeriod;
 
+import com.ntankard.Tracking.DataBase.Core.Transfer.Bank.ManualBankTransfer;
 import com.ntankard.dynamicGUI.Gui.Util.Update.Updatable;
 import com.ntankard.dynamicGUI.Gui.Util.Update.UpdatableJPanel;
 import com.ntankard.Tracking.DataBase.Core.Period.ExistingPeriod;
@@ -141,16 +142,15 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
                     destinationSelected = transaction.toChangeGetDestinationTransfer().getPool().equals(selectedBank);
                 }
 
-
-                if (transaction.getDestinationPeriod() != null) {
-                    rendererObject.background = new Color(230, 204, 255);
-                } else {
-                    if (amSource && sourceSelected || !amSource && destinationSelected) {
-                        rendererObject.background = new Color(255, 255, 0);
-                    } else if (sourceSelected || destinationSelected) {
-                        rendererObject.background = new Color(255, 102, 0);
-                    }
+//                if (transaction.getDestinationPeriod() != null) {
+//                    rendererObject.background = new Color(230, 204, 255);
+//                } else {
+                if (amSource && sourceSelected || !amSource && destinationSelected) {
+                    rendererObject.background = new Color(255, 255, 0);
+                } else if (sourceSelected || destinationSelected) {
+                    rendererObject.background = new Color(255, 102, 0);
                 }
+                //}
             }
         };
 
@@ -206,6 +206,7 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
 
         // Statement transactions --------------------------------------------------------------------------------------
 
+        // TODO this needs to be over hauled to handle the different types of transfers
         bankCategoryTransfer_set = new TwoParent_Children_Set<>(BankTransfer.class, period, null, new SetFilter<BankTransfer>(null) {
             @Override
             protected boolean shouldAdd_Impl(BankTransfer dataObject) {
@@ -213,12 +214,16 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
                     if ((dataObject.getSource().equals(selectedBank) && dataObject.getPeriod().equals(period))) {
                         return true;
                     }
-                    if ((dataObject.getDestination().equals(selectedBank))) {
-                        if (dataObject.getDestinationPeriod() != null) {
-                            return dataObject.getDestinationPeriod().equals(period);
-                        } else {
-                            return dataObject.getPeriod().equals(period);
+                    if (dataObject instanceof ManualBankTransfer) {
+                        if ((dataObject.getDestination().equals(selectedBank))) {
+                            if (((ManualBankTransfer) dataObject).getDestinationPeriod() != null) {
+                                return ((ManualBankTransfer) dataObject).getDestinationPeriod().equals(period);
+                            } else {
+                                return dataObject.getPeriod().equals(period);
+                            }
                         }
+                    } else {
+                        return dataObject.getPeriod().equals(period);
                     }
                 }
                 return false;
