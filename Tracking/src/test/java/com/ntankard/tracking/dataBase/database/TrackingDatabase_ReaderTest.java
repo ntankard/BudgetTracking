@@ -29,8 +29,8 @@ class TrackingDatabase_ReaderTest {
 
     @BeforeAll
     static void setUp() {
-        String databasePath = "com.ntankard.Tracking.DataBase.Core";
-        String savePath = "C:\\Users\\Nicholas\\Pictures\\BudgetTrackingData";
+        String databasePath = "com.ntankard.tracking.dataBase.core";
+        String savePath = "C:\\Users\\Nicholas\\Google Drive\\BudgetTrackingData";
         Map<String, String> nameMap = new HashMap<>();
 
         if (!TrackingDatabase_Schema.get().isInitialized()) {
@@ -72,9 +72,9 @@ class TrackingDatabase_ReaderTest {
 
     @Test
     void testFullIO() {
-        String savePath = "C:\\Users\\Nicholas\\Pictures\\BudgetTrackingData";
+        String savePath = "C:\\Users\\Nicholas\\Google Drive\\BudgetTrackingData";
         String testPath = "testFiles\\";
-        String databasePath = "com.ntankard.Tracking.DataBase.Core";
+        String databasePath = "com.ntankard.tracking.dataBase.core";
         Map<String, String> nameMap = new HashMap<>();
 
 
@@ -88,6 +88,7 @@ class TrackingDatabase_ReaderTest {
         new File(testPath).mkdir();
         new File(testPath + ROOT_DATA_PATH).mkdir();
         new File(testPath + ROOT_FILE_PATH).mkdir();
+        new File(testPath + ROOT_IMAGE_PATH).mkdir();
         save(testPath);
 
         String saveDir = TrackingDatabase_Reader_Util.getLatestSaveDirectory(savePath + ROOT_DATA_PATH);

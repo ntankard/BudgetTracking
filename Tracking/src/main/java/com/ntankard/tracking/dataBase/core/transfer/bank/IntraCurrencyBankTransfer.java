@@ -31,18 +31,7 @@ public class IntraCurrencyBankTransfer extends BankTransfer {
 
         // ID
         // Description
-        // Period ======================================================================================================
-        dataObjectSchema.get(Transfer_Period).setManualCanEdit(true);
-        dataObjectSchema.<Period>get(Transfer_Period).addFilter(new FieldFilter<Period, DataObject>() { // Here
-            @Override
-            public boolean isValid(Period newValue, Period pastValue, DataObject container) {
-                BankTransfer bankTransfer = ((BankTransfer) container);
-                if (bankTransfer.isAllValid()) {
-                    return bankTransfer.getDestinationPeriod() == null || !bankTransfer.getDestinationPeriod().equals(newValue);
-                }
-                return true;
-            }
-        });
+        // Period
         // Source
         // Value
         // Currency
@@ -52,16 +41,9 @@ public class IntraCurrencyBankTransfer extends BankTransfer {
         // FundEvent
         // Destination
         // DestinationValue ============================================================================================
-        dataObjectSchema.add(Transfer_Destination, new DataField_Schema<>(BankTransfer_DestinationValue, Double.class, false));
+        dataObjectSchema.add(Transfer_Destination, new DataField_Schema<>(BankTransfer_DestinationValue, Double.class));
         dataObjectSchema.get(BankTransfer_DestinationValue).getDisplayProperties().setDataType(CURRENCY);
         dataObjectSchema.get(BankTransfer_DestinationValue).setManualCanEdit(true);
-        // TODO probably best to replace this with a conversation step that takes 0 and makes it null so it dosnt fail
-        dataObjectSchema.<Double>get(BankTransfer_DestinationValue).addFilter(new Dependant_FieldFilter<Double, BankTransfer>(Transfer_Destination, Transfer_Source) {
-            @Override
-            public boolean isValid(Double newValue, Double pastValue, BankTransfer bankTransfer) {
-                return !newValue.equals(0.0);
-            }
-        });
         // DestinationCurrency =========================================================================================
         dataObjectSchema.add(new DataField_Schema<>(BankTransfer_DestinationCurrency, Currency.class, false));
         dataObjectSchema.<Currency>get(BankTransfer_DestinationCurrency).setDataCore_factory(

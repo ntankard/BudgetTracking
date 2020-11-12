@@ -16,8 +16,8 @@ public class DataAccessUntil {
      * Load the read database
      */
     public static void loadDatabase() {
-        String databasePath = "com.ntankard.Tracking.DataBase.Core";
-        String savePath = "C:\\Users\\Nicholas\\Pictures\\BudgetTrackingData";
+        String databasePath = "com.ntankard.tracking.dataBase.core";
+        String savePath = "C:\\Users\\Nicholas\\Google Drive\\BudgetTrackingData";
         Map<String, String> nameMap = new HashMap<>();
 
         if (!TrackingDatabase_Schema.get().isInitialized()) {

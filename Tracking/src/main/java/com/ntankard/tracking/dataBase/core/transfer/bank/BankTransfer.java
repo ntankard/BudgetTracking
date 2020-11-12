@@ -1,5 +1,6 @@
 package com.ntankard.tracking.dataBase.core.transfer.bank;
 
+import com.ntankard.javaObjectDatabase.coreObject.field.filter.Shared_FieldFilter;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.period.Period;
 import com.ntankard.tracking.dataBase.core.pool.Bank;
@@ -42,22 +43,30 @@ public abstract class BankTransfer extends Transfer {
     public static DataObject_Schema getFieldContainer() {
         DataObject_Schema dataObjectSchema = Transfer.getFieldContainer();
 
+        Shared_FieldFilter<Period, Period, BankTransfer> period_sharedFilter = new Shared_FieldFilter<>(Transfer_Period, BankTransfer_DestinationPeriod,
+                (firstNewValue, firstPastValue, secondNewValue, secondPastValue, container) -> {
+                    if (secondNewValue != null) {
+                        return !firstNewValue.equals(secondNewValue);
+                    }
+                    return true;
+                });
+
+        Shared_FieldFilter<Pool, Pool, BankTransfer> pool_sharedFilter = new Shared_FieldFilter<>(Transfer_Source, Transfer_Destination,
+                (firstNewValue, firstPastValue, secondNewValue, secondPastValue, container) -> {
+                    if (secondNewValue != null) {
+                        return !firstNewValue.equals(secondNewValue);
+                    }
+                    return true;
+                });
+
         // ID
         // Description
         // Period ======================================================================================================
         dataObjectSchema.get(Transfer_Period).setManualCanEdit(true);
-        dataObjectSchema.<Period>get(Transfer_Period).addFilter(new FieldFilter<Period, DataObject>() { // Here
-            @Override
-            public boolean isValid(Period newValue, Period pastValue, DataObject container) {
-                BankTransfer bankTransfer = ((BankTransfer) container);
-                if (bankTransfer.isAllValid()) {
-                    return bankTransfer.getDestinationPeriod() == null || !bankTransfer.getDestinationPeriod().equals(newValue);
-                }
-                return true;
-            }
-        });
+        dataObjectSchema.<Period>get(Transfer_Period).addFilter(period_sharedFilter.getFirstFilter());
         // Source ======================================================================================================
         dataObjectSchema.add(Transfer_Period, new DataField_Schema<>(Transfer_Source, Bank.class));
+        dataObjectSchema.<Pool>get(Transfer_Source).addFilter(pool_sharedFilter.getFirstFilter());
         // Value =======================================================================================================
         dataObjectSchema.get(Transfer_Value).setManualCanEdit(true);
         // Currency ====================================================================================================
@@ -65,12 +74,7 @@ public abstract class BankTransfer extends Transfer {
         // DestinationPeriod ===========================================================================================
         dataObjectSchema.add(Transfer_Currency, new DataField_Schema<>(BankTransfer_DestinationPeriod, Period.class, true));
         dataObjectSchema.get(BankTransfer_DestinationPeriod).setManualCanEdit(true);
-        dataObjectSchema.<Period>get(BankTransfer_DestinationPeriod).addFilter(new Dependant_FieldFilter<Period, BankTransfer>(Transfer_Period, Transfer_Destination) {
-            @Override
-            public boolean isValid(Period newValue, Period pastValue, BankTransfer bankTransfer) {
-                return newValue == null || !bankTransfer.getPeriod().equals(newValue);
-            }
-        });
+        dataObjectSchema.<Period>get(BankTransfer_DestinationPeriod).addFilter(period_sharedFilter.getSecondFilter());
         // Category ====================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(BankTransfer_Category, Category.class, true));
         dataObjectSchema.get(BankTransfer_Category).setTellParent(false);
@@ -112,12 +116,7 @@ public abstract class BankTransfer extends Transfer {
                 }, new LocalSource.LocalSource_Factory<>((Transfer_Destination))));
         // Destination =================================================================================================
         dataObjectSchema.get(Transfer_Destination).setManualCanEdit(true);
-        dataObjectSchema.<Pool>get(Transfer_Destination).addFilter(new Dependant_FieldFilter<Pool, BankTransfer>(Transfer_Source) {
-            @Override
-            public boolean isValid(Pool newValue, Pool pastValue, BankTransfer bankTransfer) {
-                return !bankTransfer.getSource().equals(newValue);
-            }
-        });
+        dataObjectSchema.<Pool>get(Transfer_Destination).addFilter(pool_sharedFilter.getSecondFilter());
         // DestinationValue
         // DestinationCurrency
         // SourceCurrencyGet

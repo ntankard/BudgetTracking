@@ -11,8 +11,8 @@ import java.util.Map;
 public class Main {
 
     public static void main(String[] args) {
-        String databasePath = "com.ntankard.Tracking.DataBase.Core";
-        String savePath = "C:\\Users\\Nicholas\\Pictures\\BudgetTrackingData";
+        String databasePath = "com.ntankard.tracking.dataBase.core";
+        String savePath = "C:\\Users\\Nicholas\\Google Drive\\BudgetTrackingData";
         Map<String, String> nameMap = new HashMap<>();
 
         TrackingDatabase_Schema.get().init(databasePath, nameMap);

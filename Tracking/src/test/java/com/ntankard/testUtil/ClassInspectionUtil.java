@@ -18,7 +18,7 @@ public class ClassInspectionUtil {
     /**
      * The path to look for classes
      */
-    private static String PATH = "com.ntankard.Tracking.DataBase.Core";
+    private static String PATH = "com.ntankard.tracking.dataBase.core";
 
     /**
      * Get all instantiatable classes in the PATH that extend DataObject

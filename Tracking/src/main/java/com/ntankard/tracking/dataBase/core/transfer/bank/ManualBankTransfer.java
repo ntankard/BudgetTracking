@@ -23,18 +23,7 @@ public class ManualBankTransfer extends BankTransfer {
 
         // ID
         // Description
-        // Period ======================================================================================================
-        dataObjectSchema.get(Transfer_Period).setManualCanEdit(true);
-        dataObjectSchema.<Period>get(Transfer_Period).addFilter(new FieldFilter<Period, DataObject>() { // Here
-            @Override
-            public boolean isValid(Period newValue, Period pastValue, DataObject container) {
-                BankTransfer bankTransfer = ((BankTransfer) container);
-                if (bankTransfer.isAllValid()) {
-                    return bankTransfer.getDestinationPeriod() == null || !bankTransfer.getDestinationPeriod().equals(newValue);
-                }
-                return true;
-            }
-        });
+        // Period
         // Source
         // Value
         // Currency
