@@ -131,7 +131,7 @@ class DataObjectSchemaTest {
 
         // Check all real objects
         for (Class<? extends DataObject> dClass : getAllClasses()) {
-            dataObjectSchema = TrackingDatabase_Schema.getFieldContainer(dClass);
+            dataObjectSchema = TrackingDatabase_Schema.get().getClassSchema(dClass);
             for (DataField_Schema<?> field : dataObjectSchema.getList()) {
                 assertEquals(field, dataObjectSchema.get(field.getIdentifierName()));
             }
@@ -149,7 +149,7 @@ class DataObjectSchemaTest {
 
         // Check all real objects
         for (Class<? extends DataObject> dClass : getAllClasses()) {
-            dataObjectSchema = TrackingDatabase_Schema.getFieldContainer(dClass);
+            dataObjectSchema = TrackingDatabase_Schema.get().getClassSchema(dClass);
             assertEquals(dataObjectSchema.masterMap.size(), dataObjectSchema.getList().size());
             for (DataField_Schema<?> field : dataObjectSchema.getList()) {
                 assertEquals(field, dataObjectSchema.masterMap.get(field.getIdentifierName()));
@@ -202,7 +202,7 @@ class DataObjectSchemaTest {
     @Test
     void testDataObjects() {
         for (Class<? extends DataObject> dClass : getAllClasses()) {
-            DataObject_Schema dataObjectSchema = TrackingDatabase_Schema.getFieldContainer(dClass);
+            DataObject_Schema dataObjectSchema = TrackingDatabase_Schema.get().getClassSchema(dClass);
             if (Modifier.isAbstract(dClass.getModifiers())) {
                 assertEquals(dClass, dataObjectSchema.inheritedObjects.get(dataObjectSchema.inheritedObjects.size() - 1));
             } else {

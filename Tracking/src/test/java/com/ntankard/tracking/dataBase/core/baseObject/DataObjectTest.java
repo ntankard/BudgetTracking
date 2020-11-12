@@ -58,7 +58,7 @@ class DataObjectTest {
             if (!Modifier.isAbstract(testClass.getModifiers())) {
                 for (DataObject dataObject : TrackingDatabase.get().get(testClass)) {
                     Class<? extends DataObject> aClass = dataObject.getClass();
-                    List<DataField_Schema<?>> members = TrackingDatabase_Schema.getFieldContainer(aClass).getVerbosityDataFields(Integer.MAX_VALUE);
+                    List<DataField_Schema<?>> members = TrackingDatabase_Schema.get().getClassSchema(aClass).getVerbosityDataFields(Integer.MAX_VALUE);
 
                     // Find the setters
                     for (DataField_Schema member : members) {
@@ -117,7 +117,7 @@ class DataObjectTest {
     @Test
     void checkNonPrimitive() {
         for (Class<? extends DataObject> toTest : ClassInspectionUtil.getAllClasses()) {
-            List<DataField_Schema<?>> members = TrackingDatabase_Schema.getFieldContainer(toTest).getVerbosityDataFields(Integer.MAX_VALUE);
+            List<DataField_Schema<?>> members = TrackingDatabase_Schema.get().getClassSchema(toTest).getVerbosityDataFields(Integer.MAX_VALUE);
 
             // Find the setters
             for (DataField_Schema member : members) {

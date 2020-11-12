@@ -25,7 +25,7 @@ public class DataObjectTestUtil {
     public static void testStandardParents(Class<? extends DataObject> aClass, List<String> exclude) {
         assertNotEquals(0, TrackingDatabase.get().get(aClass).size());
         for (DataObject toTest : TrackingDatabase.get().get(aClass)) {
-            List<DataField_Schema<?>> members = TrackingDatabase_Schema.getFieldContainer(toTest.getClass()).getVerbosityDataFields(Integer.MAX_VALUE);
+            List<DataField_Schema<?>> members = TrackingDatabase_Schema.get().getClassSchema(toTest.getClass()).getVerbosityDataFields(Integer.MAX_VALUE);
 
             // Find the getters
             List<DataField_Schema<?>> expectedMember = new ArrayList<>();
@@ -71,7 +71,7 @@ public class DataObjectTestUtil {
     public static void checkDataObjectNotNull(Class<? extends DataObject> aClass, List<String> exclude) {
         assertNotEquals(0, TrackingDatabase.get().getAll().size());
         for (DataObject toTest : TrackingDatabase.get().get(aClass)) {
-            List<DataField_Schema<?>> members = TrackingDatabase_Schema.getFieldContainer(toTest.getClass()).getVerbosityDataFields(Integer.MAX_VALUE);
+            List<DataField_Schema<?>> members = TrackingDatabase_Schema.get().getClassSchema(toTest.getClass()).getVerbosityDataFields(Integer.MAX_VALUE);
 
             // Find the getters
             List<DataField_Schema<?>> expectedMember = new ArrayList<>();

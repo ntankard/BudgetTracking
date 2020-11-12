@@ -18,7 +18,7 @@ class ObjectFactoryTest {
         for (Class<? extends DataObject> aClass : ClassInspectionUtil.getSolidClasses()) {
 
             // For each class, check each factory
-            DataObject_Schema container = TrackingDatabase_Schema.getFieldContainer(aClass);
+            DataObject_Schema container = TrackingDatabase_Schema.get().getClassSchema(aClass);
             for (ObjectFactory<?> factory : container.getObjectFactories()) {
 
                 // If the factory is DoubleParentFactory
@@ -26,7 +26,7 @@ class ObjectFactoryTest {
                     DoubleParentFactory<?, ?, ?> doubleParentFactory = ((DoubleParentFactory<?, ?, ?>) factory);
 
                     // Check the secondary generator type
-                    DataObject_Schema containerToCheck = TrackingDatabase_Schema.getFieldContainer(doubleParentFactory.getSecondaryGeneratorType());
+                    DataObject_Schema containerToCheck = TrackingDatabase_Schema.get().getClassSchema(doubleParentFactory.getSecondaryGeneratorType());
                     boolean found = false;
                     for (ObjectFactory<?> factoryToCheck : containerToCheck.getObjectFactories()) {
 
