@@ -1,10 +1,12 @@
-package com.ntankard.dynamicGUI.DataObject;
+package com.ntankard.dynamicGUI.coreObject;
 
 import com.ntankard.javaObjectDatabase.coreObject.DataObject;
 import com.ntankard.javaObjectDatabase.coreObject.field.DataField_Schema;
 import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.TrackingDatabase_Schema;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import java.lang.reflect.Modifier;
 
@@ -12,6 +14,7 @@ import static com.ntankard.testUtil.ClassInspectionUtil.getAllClasses;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Execution(ExecutionMode.CONCURRENT)
 class DataObjectSchemaTest {
 
     @Test
