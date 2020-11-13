@@ -13,14 +13,14 @@ public class Main {
     public static String databasePath = "com.ntankard.tracking.dataBase.core";
     public static String savePath = "C:\\Users\\Nicholas\\Google Drive\\BudgetTrackingData";
 
-    public static void createDataBase(){
+    public static void createDataBase() {
         Map<String, String> nameMap = new HashMap<>();
 
         if (!TrackingDatabase_Schema.get().isInitialized()) {
             TrackingDatabase_Schema.get().init(databasePath, nameMap);
         }
 
-        TrackingDatabase_Reader.read(savePath, nameMap);
+        TrackingDatabase_Reader.read(TrackingDatabase_Schema.get(), savePath, nameMap);
     }
 
     public static void main(String[] args) {
