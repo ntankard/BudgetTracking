@@ -1,5 +1,7 @@
 package com.ntankard.tracking.dataBase.database;
 
+import com.ntankard.testUtil.DataAccessUntil;
+import com.ntankard.tracking.Main;
 import com.ntankard.tracking.dataBase.core.links.CategoryToCategorySet;
 import com.ntankard.tracking.dataBase.core.links.CategoryToVirtualCategory;
 import com.ntankard.javaObjectDatabase.coreObject.DataObject;
@@ -10,6 +12,7 @@ import com.ntankard.javaObjectDatabase.database.TrackingDatabase_Reader_Util;
 import com.ntankard.javaObjectDatabase.database.TrackingDatabase_Schema;
 import com.ntankard.javaObjectDatabase.util.FileUtil;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -20,70 +23,53 @@ import java.util.List;
 import java.util.Map;
 
 import static com.ntankard.javaObjectDatabase.database.TrackingDatabase_Reader.*;
-import static com.ntankard.javaObjectDatabase.database.TrackingDatabase_Reader_Read.dataObjectFromString;
 import static com.ntankard.javaObjectDatabase.database.TrackingDatabase_Reader_Save.dataObjectToString;
 import static com.ntankard.javaObjectDatabase.database.TrackingDatabase_Reader_Util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TrackingDatabase_ReaderTest {
 
-    @BeforeAll
-    static void setUp() {
-        String databasePath = "com.ntankard.tracking.dataBase.core";
-        String savePath = "C:\\Users\\Nicholas\\Google Drive\\BudgetTrackingData";
-        Map<String, String> nameMap = new HashMap<>();
-
-        if (!TrackingDatabase_Schema.get().isInitialized()) {
-            TrackingDatabase_Schema.get().init(databasePath, nameMap);
-        }
-
-        TrackingDatabase.reset();
-        read(savePath, new HashMap<>());
+    /**
+     * Load the database
+     */
+    @BeforeEach
+    void setUp() {
+        DataAccessUntil.loadDatabase();
     }
 
     @Test
     void testReadWrite() {
-        for (Class<? extends DataObject> aClass : TrackingDatabase.get().getDataObjectTypes()) {
-            if (Modifier.isAbstract(aClass.getModifiers())) {
-                continue;
-            }
-            if (aClass.equals(CategoryToCategorySet.class) || aClass.equals(CategoryToVirtualCategory.class)) { // This wont work because new object can not exist because all the categories are already filled
-                continue; // TODO might need a better solution here
-            }
-            for (DataObject dataObject : TrackingDatabase.get().get(aClass)) {
-
-                List<DataField_Schema<?>> constructorParameters = getSaveFields(dataObject.getClass());
-
-                if (shouldSave(dataObject.getClass())) {
-                    List<String> first = dataObjectToString(dataObject, constructorParameters);
-
-                    DataObject newObj = dataObjectFromString(dataObject.getClass(), first.toArray(new String[0]), null);
-
-                    List<String> second = dataObjectToString(newObj, constructorParameters);
-
-                    assertEquals(first.size(), second.size());
-                    for (int i = 0; i < second.size(); i++) {
-                        assertEquals(first.get(i), second.get(i));
-                    }
-                }
-            }
-        }
+        assertTrue(false);
+//        for (Class<? extends DataObject> aClass : TrackingDatabase.get().getDataObjectTypes()) {
+//            if (Modifier.isAbstract(aClass.getModifiers())) {
+//                continue;
+//            }
+//            if (aClass.equals(CategoryToCategorySet.class) || aClass.equals(CategoryToVirtualCategory.class)) { // This wont work because new object can not exist because all the categories are already filled
+//                continue; // TODO might need a better solution here
+//            }
+//            for (DataObject dataObject : TrackingDatabase.get().get(aClass)) {
+//
+//                List<DataField_Schema<?>> constructorParameters = getSaveFields(dataObject.getClass());
+//
+//                if (shouldSave(dataObject.getClass())) {
+//                    List<String> first = dataObjectToString(dataObject, constructorParameters);
+//
+//                    DataObject newObj = dataObjectFromString(dataObject.getClass(), first.toArray(new String[0]), null);
+//
+//                    List<String> second = dataObjectToString(newObj, constructorParameters);
+//
+//                    assertEquals(first.size(), second.size());
+//                    for (int i = 0; i < second.size(); i++) {
+//                        assertEquals(first.get(i), second.get(i));
+//                    }
+//                }
+//            }
+//        }
     }
 
     @Test
     void testFullIO() {
-        String savePath = "C:\\Users\\Nicholas\\Google Drive\\BudgetTrackingData";
         String testPath = "testFiles\\";
-        String databasePath = "com.ntankard.tracking.dataBase.core";
-        Map<String, String> nameMap = new HashMap<>();
-
-
-        if (!TrackingDatabase_Schema.get().isInitialized()) {
-            TrackingDatabase_Schema.get().init(databasePath, nameMap);
-        }
-
-        TrackingDatabase.reset();
-        TrackingDatabase_Reader.read(savePath, new HashMap<>());
 
         new File(testPath).mkdir();
         new File(testPath + ROOT_DATA_PATH).mkdir();
@@ -91,7 +77,7 @@ class TrackingDatabase_ReaderTest {
         new File(testPath + ROOT_IMAGE_PATH).mkdir();
         save(testPath);
 
-        String saveDir = TrackingDatabase_Reader_Util.getLatestSaveDirectory(savePath + ROOT_DATA_PATH);
+        String saveDir = TrackingDatabase_Reader_Util.getLatestSaveDirectory(Main.savePath + ROOT_DATA_PATH);
         List<String> saveFiles = FileUtil.findFilesInDirectory(saveDir + INSTANCE_CLASSES_PATH);
 
         String testDir = TrackingDatabase_Reader_Util.getLatestSaveDirectory(testPath + ROOT_DATA_PATH);

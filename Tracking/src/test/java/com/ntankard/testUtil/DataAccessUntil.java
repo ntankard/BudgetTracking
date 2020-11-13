@@ -4,6 +4,7 @@ import com.ntankard.javaObjectDatabase.coreObject.DataObject;
 import com.ntankard.javaObjectDatabase.database.TrackingDatabase_Schema;
 import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
 import com.ntankard.javaObjectDatabase.database.TrackingDatabase_Reader;
+import com.ntankard.tracking.Main;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,16 +17,7 @@ public class DataAccessUntil {
      * Load the read database
      */
     public static void loadDatabase() {
-        String databasePath = "com.ntankard.tracking.dataBase.core";
-        String savePath = "C:\\Users\\Nicholas\\Google Drive\\BudgetTrackingData";
-        Map<String, String> nameMap = new HashMap<>();
-
-        if (!TrackingDatabase_Schema.get().isInitialized()) {
-            TrackingDatabase_Schema.get().init(databasePath, nameMap);
-        }
-
-        TrackingDatabase.reset();
-        TrackingDatabase_Reader.read(savePath, new HashMap<>());
+        Main.createDataBase();
     }
 
     /**
