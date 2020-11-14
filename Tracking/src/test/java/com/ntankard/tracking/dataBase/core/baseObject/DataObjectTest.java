@@ -2,9 +2,9 @@ package com.ntankard.tracking.dataBase.core.baseObject;
 
 import com.ntankard.tracking.Main;
 import com.ntankard.tracking.dataBase.core.Currency;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject;
-import com.ntankard.javaObjectDatabase.coreObject.field.DataField_Schema;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject;
+import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.testUtil.ClassInspectionUtil;
 import com.ntankard.testUtil.DataAccessUntil;
 import com.ntankard.javaObjectDatabase.database.Database;

@@ -4,8 +4,8 @@ import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.javaObjectDatabase.database.Database_Schema;
 import com.ntankard.tracking.dataBase.core.pool.category.SolidCategory;
 import com.ntankard.tracking.dataBase.core.transfer.fund.rePay.SavingsRePayFundTransfer;
-import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.Static_DataCore;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.Static_DataCore;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 
 public class SavingsFundEvent extends FundEvent {
 

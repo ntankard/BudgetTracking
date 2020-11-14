@@ -1,8 +1,8 @@
 package com.ntankard.tracking.dataBase.core;
 
-import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject;
-import com.ntankard.javaObjectDatabase.coreObject.field.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject;
+import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.javaObjectDatabase.database.Database_Schema;
 import com.ntankard.tracking.dataBase.core.transfer.bank.BankTransfer;

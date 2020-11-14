@@ -2,16 +2,17 @@ package com.ntankard.tracking.dataBase.core.transfer.bank;
 
 import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.javaObjectDatabase.database.Database_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Local_Source;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.period.Period;
 import com.ntankard.tracking.dataBase.core.pool.Bank;
 import com.ntankard.tracking.dataBase.core.pool.Pool;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
-import com.ntankard.javaObjectDatabase.coreObject.field.DataField_Schema;
-import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.Derived_DataCore.Calculator;
-import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.Derived_DataCore.Derived_DataCore_Factory;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore.Calculator;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore.Derived_DataCore_Factory;
 
-import static com.ntankard.javaObjectDatabase.coreObject.field.properties.Display_Properties.DataType.CURRENCY;
+import static com.ntankard.javaObjectDatabase.dataField.properties.Display_Properties.DataType.CURRENCY;
 
 public class IntraCurrencyBankTransfer extends BankTransfer {
 
@@ -50,13 +51,13 @@ public class IntraCurrencyBankTransfer extends BankTransfer {
                     BankTransfer bankTransfer = ((BankTransfer) container);
                     return ((Bank) bankTransfer.getDestination()).getCurrency();
                 }
-                        , new com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.source.LocalSource.LocalSource_Factory<>((Transfer_Destination))));
+                        , new Local_Source.LocalSource_Factory<>((Transfer_Destination))));
         // SourceCurrencyGet
         // DestinationCurrencyGet ======================================================================================
         dataObjectSchema.<Currency>get(Transfer_DestinationCurrencyGet).setDataCore_factory(
                 new Derived_DataCore_Factory<>((Calculator<Currency, IntraCurrencyBankTransfer>) container ->
                         container.getDestinationCurrency()
-                        , new com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.source.LocalSource.LocalSource_Factory<>((BankTransfer_DestinationCurrency))));
+                        , new Local_Source.LocalSource_Factory<>((BankTransfer_DestinationCurrency))));
         // SourcePeriodGet
         // DestinationPeriodGet ========================================================================================
         dataObjectSchema.<Period>get(Transfer_DestinationPeriodGet).setDataCore_factory(
@@ -67,8 +68,8 @@ public class IntraCurrencyBankTransfer extends BankTransfer {
                         return container.getPeriod();
                     }
                 }
-                        , new com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.source.LocalSource.LocalSource_Factory<>((Transfer_Period))
-                        , new com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.source.LocalSource.LocalSource_Factory<>((BankTransfer_DestinationPeriod))));
+                        , new Local_Source.LocalSource_Factory<>((Transfer_Period))
+                        , new Local_Source.LocalSource_Factory<>((BankTransfer_DestinationPeriod))));
         // Parents
         // Children
 

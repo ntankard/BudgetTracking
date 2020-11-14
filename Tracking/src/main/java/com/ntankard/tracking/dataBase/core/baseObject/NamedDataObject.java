@@ -1,8 +1,8 @@
 package com.ntankard.tracking.dataBase.core.baseObject;
 
-import com.ntankard.javaObjectDatabase.coreObject.DataObject;
-import com.ntankard.javaObjectDatabase.coreObject.field.DataField_Schema;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject;
+import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 
 public abstract class NamedDataObject extends DataObject {
 

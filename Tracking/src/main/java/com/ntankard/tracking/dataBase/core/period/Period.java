@@ -3,9 +3,9 @@ package com.ntankard.tracking.dataBase.core.period;
 import com.ntankard.tracking.dataBase.interfaces.summary.Period_Summary;
 import com.ntankard.tracking.dataBase.interfaces.summary.pool.Category_Summary;
 import com.ntankard.tracking.dataBase.interfaces.summary.pool.FundEvent_Summary;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
-import com.ntankard.javaObjectDatabase.coreObject.interfaces.Ordered;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.interfaces.Ordered;
 
 public abstract class Period extends DataObject implements Ordered {
 

@@ -1,11 +1,11 @@
 package com.ntankard.tracking.dataBase.core.period;
 
-import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
-import com.ntankard.javaObjectDatabase.coreObject.field.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.javaObjectDatabase.database.Database_Schema;
 
-import static com.ntankard.javaObjectDatabase.coreObject.field.properties.Display_Properties.INFO_DISPLAY;
+import static com.ntankard.javaObjectDatabase.dataField.properties.Display_Properties.INFO_DISPLAY;
 
 public class VirtualPeriod extends Period {
 

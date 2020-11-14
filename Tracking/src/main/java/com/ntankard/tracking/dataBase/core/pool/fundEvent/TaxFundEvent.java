@@ -1,8 +1,8 @@
 package com.ntankard.tracking.dataBase.core.pool.fundEvent;
 
 import com.ntankard.tracking.dataBase.core.transfer.fund.rePay.TaxRePayFundTransfer;
-import com.ntankard.javaObjectDatabase.coreObject.field.DataField_Schema;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 
 public class TaxFundEvent extends FundEvent {
 

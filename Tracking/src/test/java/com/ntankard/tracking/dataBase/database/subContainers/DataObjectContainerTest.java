@@ -1,6 +1,6 @@
 package com.ntankard.tracking.dataBase.database.subContainers;
 
-import com.ntankard.javaObjectDatabase.coreObject.DataObject;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.database.subContainers.DataObjectContainer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;

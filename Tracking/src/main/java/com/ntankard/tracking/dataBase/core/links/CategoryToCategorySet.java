@@ -1,13 +1,13 @@
 package com.ntankard.tracking.dataBase.core.links;
 
-import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.Derived_DataCore;
-import com.ntankard.javaObjectDatabase.coreObject.field.filter.Dependant_FieldFilter;
-import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.source.ExternalSource;
-import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.source.LocalSource;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject;
-import com.ntankard.javaObjectDatabase.coreObject.interfaces.Ordered;
-import com.ntankard.javaObjectDatabase.coreObject.field.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore;
+import com.ntankard.javaObjectDatabase.dataField.filter.Dependant_FieldFilter;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.External_Source;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Local_Source;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject;
+import com.ntankard.javaObjectDatabase.dataObject.interfaces.Ordered;
+import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.javaObjectDatabase.database.Database_Schema;
 import com.ntankard.tracking.dataBase.core.CategorySet;
@@ -15,7 +15,7 @@ import com.ntankard.tracking.dataBase.core.pool.category.SolidCategory;
 
 import java.util.List;
 
-import static com.ntankard.javaObjectDatabase.coreObject.field.properties.Display_Properties.DEBUG_DISPLAY;
+import static com.ntankard.javaObjectDatabase.dataField.properties.Display_Properties.DEBUG_DISPLAY;
 import static com.ntankard.tracking.dataBase.core.CategorySet.CategorySet_Order;
 
 public class CategoryToCategorySet extends DataObject implements Ordered {
@@ -57,8 +57,8 @@ public class CategoryToCategorySet extends DataObject implements Ordered {
         dataObjectSchema.get(CategoryToCategorySet_Order).setDataCore_factory(
                 new Derived_DataCore.Derived_DataCore_Factory<>
                         (container -> ((CategoryToCategorySet) container).getCategorySet().getOrder() * 1000 + ((CategoryToCategorySet) container).getOrderImpl()
-                                , new LocalSource.LocalSource_Factory<>((CategoryToCategorySet_OrderImpl))
-                                , new ExternalSource.ExternalSource_Factory<>((CategoryToCategorySet_CategorySet), CategorySet_Order)));
+                                , new Local_Source.LocalSource_Factory<>((CategoryToCategorySet_OrderImpl))
+                                , new External_Source.ExternalSource_Factory<>((CategoryToCategorySet_CategorySet), CategorySet_Order)));
         //==============================================================================================================
         // Parents
         // Children

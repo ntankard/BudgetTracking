@@ -1,7 +1,7 @@
 package com.ntankard.tracking.dataBase.core.transfer;
 
-import com.ntankard.javaObjectDatabase.coreObject.factory.SingleParentFactory;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.factory.SingleParentFactory;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.ParameterMap;
 import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.javaObjectDatabase.database.Database_Schema;

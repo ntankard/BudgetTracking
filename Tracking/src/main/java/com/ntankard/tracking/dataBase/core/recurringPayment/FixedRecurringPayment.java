@@ -6,7 +6,7 @@ import com.ntankard.tracking.dataBase.core.period.ExistingPeriod;
 import com.ntankard.tracking.dataBase.core.pool.Bank;
 import com.ntankard.tracking.dataBase.core.pool.category.SolidCategory;
 import com.ntankard.tracking.dataBase.core.transfer.bank.RecurringBankTransfer;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 
 public class FixedRecurringPayment extends RecurringPayment {
 

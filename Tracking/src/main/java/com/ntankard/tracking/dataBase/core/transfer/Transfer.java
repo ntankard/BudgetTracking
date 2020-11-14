@@ -5,17 +5,17 @@ import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.period.Period;
 import com.ntankard.tracking.dataBase.core.pool.Bank;
 import com.ntankard.tracking.dataBase.core.pool.Pool;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject;
-import com.ntankard.javaObjectDatabase.coreObject.field.DataField_Schema;
-import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.Derived_DataCore;
-import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.source.LocalSource;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject;
+import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Local_Source;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.util.set.Single_OneParent_Children_Set;
 
 import java.util.List;
 
-import static com.ntankard.javaObjectDatabase.coreObject.field.properties.Display_Properties.DataType.CURRENCY;
-import static com.ntankard.javaObjectDatabase.coreObject.field.properties.Display_Properties.INFO_DISPLAY;
+import static com.ntankard.javaObjectDatabase.dataField.properties.Display_Properties.DataType.CURRENCY;
+import static com.ntankard.javaObjectDatabase.dataField.properties.Display_Properties.INFO_DISPLAY;
 
 public abstract class Transfer extends DataObject implements CurrencyBound {
 
@@ -68,7 +68,7 @@ public abstract class Transfer extends DataObject implements CurrencyBound {
         dataObjectSchema.<Currency>get(Transfer_SourceCurrencyGet).setDataCore_factory(
                 new Derived_DataCore.Derived_DataCore_Factory<>
                         (container -> ((Transfer) container).getCurrency()
-                                , new LocalSource.LocalSource_Factory<>(Transfer_Currency)));
+                                , new Local_Source.LocalSource_Factory<>(Transfer_Currency)));
         // DestinationCurrencyGet  =====================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Transfer_DestinationCurrencyGet, Currency.class));
         dataObjectSchema.get(Transfer_DestinationCurrencyGet).setTellParent(false);
@@ -78,7 +78,7 @@ public abstract class Transfer extends DataObject implements CurrencyBound {
         dataObjectSchema.<Period>get(Transfer_SourcePeriodGet).setDataCore_factory(
                 new Derived_DataCore.Derived_DataCore_Factory<>
                         (container -> ((Transfer) container).getPeriod()
-                                , new LocalSource.LocalSource_Factory<>(Transfer_Period)));
+                                , new Local_Source.LocalSource_Factory<>(Transfer_Period)));
         // DestinationPeriodGet =================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Transfer_DestinationPeriodGet, Period.class));
         dataObjectSchema.get(Transfer_DestinationPeriodGet).setTellParent(false);

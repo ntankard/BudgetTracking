@@ -3,12 +3,12 @@ package com.ntankard.tracking.dataBase.core.links;
 import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.javaObjectDatabase.database.Database_Schema;
 import com.ntankard.tracking.dataBase.core.CategorySet;
-import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.Derived_DataCore;
-import com.ntankard.javaObjectDatabase.coreObject.field.filter.Dependant_FieldFilter;
-import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.source.DirectExternalSource;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject;
-import com.ntankard.javaObjectDatabase.coreObject.field.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore;
+import com.ntankard.javaObjectDatabase.dataField.filter.Dependant_FieldFilter;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.DirectExternal_Source;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject;
+import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.tracking.dataBase.core.pool.category.SolidCategory;
 import com.ntankard.tracking.dataBase.core.pool.category.VirtualCategory;
 
@@ -48,7 +48,7 @@ public class CategoryToVirtualCategory extends DataObject {
         dataObjectSchema.add(new DataField_Schema<>(CategoryToVirtualCategory_CategorySet, CategorySet.class));
         dataObjectSchema.get(CategoryToVirtualCategory_CategorySet).setDataCore_factory(
                 new Derived_DataCore.Derived_DataCore_Factory<>(
-                        new DirectExternalSource.DirectExternalSource_Factory<>(
+                        new DirectExternal_Source.DirectExternalSource_Factory<>(
                                 (CategoryToVirtualCategory_VirtualCategory), VirtualCategory_CategorySet)));
         //==============================================================================================================
         // Parents

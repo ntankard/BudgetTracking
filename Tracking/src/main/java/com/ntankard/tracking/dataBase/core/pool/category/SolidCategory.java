@@ -1,12 +1,12 @@
 package com.ntankard.tracking.dataBase.core.pool.category;
 
 import com.ntankard.tracking.dataBase.interfaces.summary.pool.Category_Summary;
-import com.ntankard.javaObjectDatabase.coreObject.field.DataField_Schema;
-import com.ntankard.javaObjectDatabase.coreObject.field.properties.Display_Properties;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
-import com.ntankard.javaObjectDatabase.coreObject.interfaces.HasDefault;
-import com.ntankard.javaObjectDatabase.coreObject.interfaces.Ordered;
-import com.ntankard.javaObjectDatabase.coreObject.interfaces.SpecialValues;
+import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataField.properties.Display_Properties;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.interfaces.HasDefault;
+import com.ntankard.javaObjectDatabase.dataObject.interfaces.Ordered;
+import com.ntankard.javaObjectDatabase.dataObject.interfaces.SpecialValues;
 
 import java.util.ArrayList;
 import java.util.List;

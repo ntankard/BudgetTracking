@@ -3,7 +3,7 @@ package com.ntankard.tracking.dataBase.core.pool.fundEvent;
 import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.javaObjectDatabase.database.Database_Schema;
 import com.ntankard.tracking.dataBase.core.pool.category.SolidCategory;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 
 public class NoneFundEvent extends FundEvent {
 

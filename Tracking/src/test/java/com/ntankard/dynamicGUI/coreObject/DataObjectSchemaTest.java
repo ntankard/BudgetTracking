@@ -1,8 +1,8 @@
 package com.ntankard.dynamicGUI.coreObject;
 
-import com.ntankard.javaObjectDatabase.coreObject.DataObject;
-import com.ntankard.javaObjectDatabase.coreObject.field.DataField_Schema;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject;
+import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.Database_Schema;
 import com.ntankard.testUtil.DataAccessUntil;
 import org.junit.jupiter.api.BeforeEach;

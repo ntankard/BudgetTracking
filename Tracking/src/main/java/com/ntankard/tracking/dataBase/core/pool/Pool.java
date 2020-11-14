@@ -1,6 +1,6 @@
 package com.ntankard.tracking.dataBase.core.pool;
 
-import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.tracking.dataBase.core.baseObject.NamedDataObject;
 
 public abstract class Pool extends NamedDataObject {

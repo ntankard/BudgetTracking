@@ -6,19 +6,19 @@ import com.ntankard.tracking.dataBase.core.links.CategoryToCategorySet;
 import com.ntankard.tracking.dataBase.core.links.CategoryToVirtualCategory;
 import com.ntankard.tracking.dataBase.core.pool.category.SolidCategory;
 import com.ntankard.tracking.dataBase.core.pool.category.VirtualCategory;
-import com.ntankard.javaObjectDatabase.coreObject.field.DataField_Schema;
-import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.Derived_DataCore;
-import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.SelfChild;
-import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.source.LocalSource;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
-import com.ntankard.javaObjectDatabase.coreObject.interfaces.HasDefault;
-import com.ntankard.javaObjectDatabase.coreObject.interfaces.Ordered;
+import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.SelfChild;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Local_Source;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.interfaces.HasDefault;
+import com.ntankard.javaObjectDatabase.dataObject.interfaces.Ordered;
 import com.ntankard.javaObjectDatabase.database.Database;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ntankard.javaObjectDatabase.coreObject.field.properties.Display_Properties.DEBUG_DISPLAY;
+import static com.ntankard.javaObjectDatabase.dataField.properties.Display_Properties.DEBUG_DISPLAY;
 
 public class CategorySet extends NamedDataObject implements HasDefault, Ordered {
 
@@ -71,7 +71,7 @@ public class CategorySet extends NamedDataObject implements HasDefault, Ordered 
                             toReturn.removeAll(container.getUsedCategories());
                             return toReturn;
                         }
-                        , new LocalSource.LocalSource_Factory<>(CategorySet_UsedCategories)));
+                        , new Local_Source.LocalSource_Factory<>(CategorySet_UsedCategories)));
         //==============================================================================================================
         // Parents
         // Children

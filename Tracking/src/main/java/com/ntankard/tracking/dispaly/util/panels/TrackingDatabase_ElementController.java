@@ -2,7 +2,7 @@ package com.ntankard.tracking.dispaly.util.panels;
 
 import com.ntankard.dynamicGUI.gui.containers.DynamicGUI_DisplayList.ElementController;
 import com.ntankard.dynamicGUI.gui.util.update.Updatable;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.database.Database;
 
 public abstract class TrackingDatabase_ElementController<T extends DataObject> implements ElementController<T> {

@@ -5,7 +5,7 @@ import com.ntankard.dynamicGUI.gui.util.update.Updatable;
 import com.ntankard.tracking.dataBase.core.period.ExistingPeriod;
 import com.ntankard.tracking.dataBase.core.period.Period;
 import com.ntankard.javaObjectDatabase.database.Database;
-import com.ntankard.javaObjectDatabase.database.Database_IO;
+import com.ntankard.javaObjectDatabase.database.io.Database_IO;
 import com.ntankard.tracking.dispaly.frames.mainFrame.funds.FundPanel;
 import com.ntankard.tracking.dispaly.frames.mainFrame.image.ReceiptPanel;
 import com.ntankard.tracking.dispaly.frames.mainFrame.periods.PeriodTabPanel;

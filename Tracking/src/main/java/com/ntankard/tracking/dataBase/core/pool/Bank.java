@@ -4,12 +4,12 @@ import com.ntankard.tracking.dataBase.core.baseObject.interfaces.CurrencyBound;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.StatementEnd;
 import com.ntankard.tracking.dataBase.interfaces.summary.pool.Bank_Summary;
-import com.ntankard.javaObjectDatabase.coreObject.field.DataField_Schema;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
-import com.ntankard.javaObjectDatabase.coreObject.interfaces.HasDefault;
-import com.ntankard.javaObjectDatabase.coreObject.interfaces.Ordered;
+import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.interfaces.HasDefault;
+import com.ntankard.javaObjectDatabase.dataObject.interfaces.Ordered;
 
-import static com.ntankard.javaObjectDatabase.coreObject.field.properties.Display_Properties.INFO_DISPLAY;
+import static com.ntankard.javaObjectDatabase.dataField.properties.Display_Properties.INFO_DISPLAY;
 
 public class Bank extends Pool implements CurrencyBound, Ordered, HasDefault {
 
