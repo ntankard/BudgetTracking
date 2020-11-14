@@ -5,18 +5,26 @@ import com.ntankard.testUtil.DataAccessUntil;
 import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import static com.ntankard.tracking.dataBase.core.baseObject.NamedDataObject.NamedDataObject_Name;
 import static org.junit.jupiter.api.Assertions.*;
 
+@Execution(ExecutionMode.CONCURRENT)
 class NamedDataObjectTest {
 
     /**
-     * Load the data
+     * The database instance to use
+     */
+    private static TrackingDatabase trackingDatabase;
+
+    /**
+     * Load the database
      */
     @BeforeEach
     void setUp() {
-        DataAccessUntil.loadDatabase(); // TODO make this not needed by building the test objects directly for Unit Tests
+        trackingDatabase = DataAccessUntil.getDataBase();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -28,8 +36,8 @@ class NamedDataObjectTest {
      */
     @Test
     void constructor() {
-        assertDoesNotThrow(() -> NamedDataObject_Inst.make(0, "Test"));
-        assertThrows(IllegalArgumentException.class, () -> NamedDataObject_Inst.make(0, null));
+        assertDoesNotThrow(() -> NamedDataObject_Inst.make(trackingDatabase,0, "Test"));
+        assertThrows(IllegalArgumentException.class, () -> NamedDataObject_Inst.make(trackingDatabase,0, null));
     }
 
     /**
@@ -37,7 +45,7 @@ class NamedDataObjectTest {
      */
     @Test
     void setName() {
-        NamedDataObject_Inst namedDataObject_inst = NamedDataObject_Inst.make(0, "Test");
+        NamedDataObject_Inst namedDataObject_inst = NamedDataObject_Inst.make(trackingDatabase,0, "Test");
         namedDataObject_inst.add();
         assertDoesNotThrow(() -> namedDataObject_inst.set(NamedDataObject_Name, ""));
         assertThrows(IllegalArgumentException.class, () -> namedDataObject_inst.set(NamedDataObject_Name, null));
@@ -52,7 +60,7 @@ class NamedDataObjectTest {
      */
     @Test
     void getName() {
-        for (NamedDataObject namedDataObject : TrackingDatabase.get().get(NamedDataObject.class)) {
+        for (NamedDataObject namedDataObject : trackingDatabase.get(NamedDataObject.class)) {
             assertNotNull(namedDataObject.getName());
         }
     }
@@ -68,8 +76,8 @@ class NamedDataObjectTest {
             return dataObjectSchema.finaliseContainer(NamedDataObject_Inst.class);
         }
 
-        public static NamedDataObject_Inst make(Integer id, String name) {
-            return assembleDataObject(NamedDataObject_Inst.getFieldContainer(), new NamedDataObject_Inst()
+        public static NamedDataObject_Inst make(TrackingDatabase trackingDatabase, Integer id, String name) {
+            return assembleDataObject(trackingDatabase, NamedDataObject_Inst.getFieldContainer(), new NamedDataObject_Inst()
                     , DataObject_Id, id
                     , NamedDataObject_Name, name
             );

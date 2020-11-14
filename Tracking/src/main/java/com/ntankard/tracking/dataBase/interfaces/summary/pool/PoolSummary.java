@@ -131,7 +131,7 @@ public abstract class PoolSummary<PoolType extends Pool> extends DataObject impl
 
     @Override
     public Currency getCurrency() {
-        return TrackingDatabase.get().getDefault(Currency.class);
+        return getTrackingDatabase().getDefault(Currency.class);
     }
 
     public Double getStart() {

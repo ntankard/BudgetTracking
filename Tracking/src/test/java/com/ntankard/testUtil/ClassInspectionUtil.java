@@ -16,20 +16,15 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 public class ClassInspectionUtil {
 
     /**
-     * The path to look for classes
-     */
-    private static String PATH = "com.ntankard.tracking.dataBase.core";
-
-    /**
      * Get all instantiatable classes in the PATH that extend DataObject
      *
      * @return All instantiatable classes in the PATH that extend DataObject
      */
     @SuppressWarnings("unchecked")
-    public static List<Class<? extends DataObject>> getSolidClasses() {
+    public static List<Class<? extends DataObject>> getSolidClasses(String path) {
         // Get all classes
         final Class[][] classes = {new Class[0]};
-        assertDoesNotThrow(() -> classes[0] = SourceCodeInspector.getClasses(PATH));
+        assertDoesNotThrow(() -> classes[0] = SourceCodeInspector.getClasses(path));
 
         // Filter to solid
         List<Class<? extends DataObject>> toReturn = new ArrayList<>();
@@ -51,10 +46,10 @@ public class ClassInspectionUtil {
      * @return All abstract  classes in the PATH that extend DataObject
      */
     @SuppressWarnings("unchecked")
-    public static List<Class<? extends DataObject>> getAbstractClasses() {
+    public static List<Class<? extends DataObject>> getAbstractClasses(String path) {
         // Get all classes
         final Class[][] classes = {new Class[0]};
-        assertDoesNotThrow(() -> classes[0] = SourceCodeInspector.getClasses(PATH));
+        assertDoesNotThrow(() -> classes[0] = SourceCodeInspector.getClasses(path));
 
         // Filter to abstract
         List<Class<? extends DataObject>> toReturn = new ArrayList<>();
@@ -76,10 +71,10 @@ public class ClassInspectionUtil {
      * @return All classes in the PATH that extend DataObject
      */
     @SuppressWarnings("rawtypes")
-    public static List<Class<DataObject>> getAllClasses() {
+    public static List<Class<DataObject>> getAllClasses(String path) {
         // Get all classes
         final Class[][] classes = {new Class[0]};
-        assertDoesNotThrow(() -> classes[0] = SourceCodeInspector.getClasses(PATH));
+        assertDoesNotThrow(() -> classes[0] = SourceCodeInspector.getClasses(path));
 
         // Filter to HasDefault
         List<Class<DataObject>> toReturn = new ArrayList<>();
@@ -99,10 +94,10 @@ public class ClassInspectionUtil {
      * @return All abstract  classes in the PATH that extend DataObject
      */
     @SuppressWarnings("unchecked")
-    public static List<Class<? extends DataObject>> getHasDefaultClasses() {
+    public static List<Class<? extends DataObject>> getHasDefaultClasses(String path) {
         // Get all classes
         final Class[][] classes = {new Class[0]};
-        assertDoesNotThrow(() -> classes[0] = SourceCodeInspector.getClasses(PATH));
+        assertDoesNotThrow(() -> classes[0] = SourceCodeInspector.getClasses(path));
 
         // Filter to HasDefault
         List<Class<? extends DataObject>> toReturn = new ArrayList<>();
@@ -124,10 +119,10 @@ public class ClassInspectionUtil {
      * @return All abstract  classes in the PATH that extend DataObject
      */
     @SuppressWarnings("unchecked")
-    public static List<Class<? extends DataObject>> getSpecialValueClasses() {
+    public static List<Class<? extends DataObject>> getSpecialValueClasses(String path) {
         // Get all classes
         final Class[][] classes = {new Class[0]};
-        assertDoesNotThrow(() -> classes[0] = SourceCodeInspector.getClasses(PATH));
+        assertDoesNotThrow(() -> classes[0] = SourceCodeInspector.getClasses(path));
 
         // Filter to SpecialValues
         List<Class<? extends DataObject>> toReturn = new ArrayList<>();
@@ -149,12 +144,12 @@ public class ClassInspectionUtil {
      *
      * @return All the classes as a tree of there inheritance
      */
-    public static DataObjectClassTree getDataObjectClassTree() {
+    public static DataObjectClassTree getDataObjectClassTree(String path) {
         DataObjectClassTree dataObjectClassTree = new DataObjectClassTree();
-        for (Class<? extends DataObject> dataObjectClass : getAbstractClasses()) {
+        for (Class<? extends DataObject> dataObjectClass : getAbstractClasses(path)) {
             dataObjectClassTree.add(dataObjectClass);
         }
-        for (Class<? extends DataObject> dataObjectClass : getSolidClasses()) {
+        for (Class<? extends DataObject> dataObjectClass : getSolidClasses(path)) {
             dataObjectClassTree.add(dataObjectClass);
         }
         return dataObjectClassTree;

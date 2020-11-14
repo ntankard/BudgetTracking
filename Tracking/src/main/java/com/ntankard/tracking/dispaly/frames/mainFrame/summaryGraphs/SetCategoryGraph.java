@@ -26,13 +26,17 @@ import java.util.Map;
 
 public class SetCategoryGraph extends UpdatableJPanel {
 
+    // Core database
+    private final TrackingDatabase trackingDatabase;
+
     /**
      * Constructor
      *
      * @param master The parent of this object to be notified if data changes
      */
-    public SetCategoryGraph(Updatable master) {
+    public SetCategoryGraph(TrackingDatabase trackingDatabase, Updatable master) {
         super(master);
+        this.trackingDatabase = trackingDatabase;
         createUIComponents();
     }
 
@@ -57,9 +61,9 @@ public class SetCategoryGraph extends UpdatableJPanel {
         XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
         plot.setRenderer(renderer);
 
-        String[] axisLabel = new String[TrackingDatabase.get().get(ExistingPeriod.class).size()];
+        String[] axisLabel = new String[trackingDatabase.get(ExistingPeriod.class).size()];
         int i = 0;
-        for (ExistingPeriod period : TrackingDatabase.get().get(ExistingPeriod.class)) {
+        for (ExistingPeriod period : trackingDatabase.get(ExistingPeriod.class)) {
             axisLabel[i] = period.toString();
             i++;
         }
@@ -79,7 +83,7 @@ public class SetCategoryGraph extends UpdatableJPanel {
         Map<Integer, XYSeries> categories = new HashMap<>();
         Map<Integer, List<SolidCategory>> setCategories = new HashMap<>();
 
-        for (SolidCategory solidCategory : TrackingDatabase.get().get(SolidCategory.class)) {
+        for (SolidCategory solidCategory : trackingDatabase.get(SolidCategory.class)) {
             if (!setCategories.containsKey(solidCategory.getSet())) {
                 setCategories.put(solidCategory.getSet(), new ArrayList<>());
                 categories.put(solidCategory.getSet(), new XYSeries(solidCategory.getSetName()));
@@ -88,7 +92,7 @@ public class SetCategoryGraph extends UpdatableJPanel {
         }
 
         int i = 0;
-        for (ExistingPeriod period : TrackingDatabase.get().get(ExistingPeriod.class)) {
+        for (ExistingPeriod period : trackingDatabase.get(ExistingPeriod.class)) {
             for (Integer set : setCategories.keySet()) {
                 XYSeries series = categories.get(set);
                 List<SolidCategory> toSumCategories = setCategories.get(set);

@@ -7,18 +7,26 @@ import com.ntankard.tracking.dataBase.core.pool.Bank;
 import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import static com.ntankard.tracking.dataBase.core.StatementEnd.StatementEnd_End;
 import static org.junit.jupiter.api.Assertions.*;
 
+@Execution(ExecutionMode.CONCURRENT)
 class StatementEndTest {
+
+    /**
+     * The database instance to use
+     */
+    private static TrackingDatabase trackingDatabase;
 
     /**
      * Load the database
      */
     @BeforeEach
     void setUp() {
-        DataAccessUntil.loadDatabase();
+        trackingDatabase = DataAccessUntil.getDataBase();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -27,18 +35,18 @@ class StatementEndTest {
 
     @Test
     void constructor() {
-        ExistingPeriod period = DataAccessUntil.getObject(ExistingPeriod.class, 0);
-        Bank bank = DataAccessUntil.getObject(Bank.class, 0);
+        ExistingPeriod period = DataAccessUntil.getObject(trackingDatabase, ExistingPeriod.class, 0);
+        Bank bank = DataAccessUntil.getObject(trackingDatabase, Bank.class, 0);
 
         assertDoesNotThrow(() -> StatementEnd.make(-1, period, bank, 0.0));
-        assertThrows(IllegalStateException.class, () -> StatementEnd.make(-2, null, bank, 0.0));
+        assertThrows(NullPointerException.class, () -> StatementEnd.make(-2, null, bank, 0.0));
         assertThrows(IllegalStateException.class, () -> StatementEnd.make(-3, period, null, 0.0));
         assertThrows(IllegalArgumentException.class, () -> StatementEnd.make(-4, period, bank, null));
     }
 
     @Test
     void setEnd() {
-        StatementEnd statementEnd = DataAccessUntil.getObject(StatementEnd.class, 0);
+        StatementEnd statementEnd = DataAccessUntil.getObject(trackingDatabase, StatementEnd.class, 0);
 
         assertDoesNotThrow(() -> statementEnd.set(StatementEnd_End, 0.0));
         assertThrows(IllegalArgumentException.class, () -> statementEnd.set(StatementEnd_End, null));
@@ -50,21 +58,21 @@ class StatementEndTest {
 
     @Test
     void getPeriod() {
-        for (StatementEnd statementEnd : TrackingDatabase.get().get(StatementEnd.class)) {
+        for (StatementEnd statementEnd : trackingDatabase.get(StatementEnd.class)) {
             assertNotNull(statementEnd.getPeriod());
         }
     }
 
     @Test
     void getBank() {
-        for (StatementEnd statementEnd : TrackingDatabase.get().get(StatementEnd.class)) {
+        for (StatementEnd statementEnd : trackingDatabase.get(StatementEnd.class)) {
             assertNotNull(statementEnd.getBank());
         }
     }
 
     @Test
     void getEnd() {
-        for (StatementEnd statementEnd : TrackingDatabase.get().get(StatementEnd.class)) {
+        for (StatementEnd statementEnd : trackingDatabase.get(StatementEnd.class)) {
             assertNotNull(statementEnd.getEnd());
         }
     }
@@ -74,7 +82,7 @@ class StatementEndTest {
      */
     @Test
     void getParents() {
-        DataObjectTestUtil.testStandardParents(StatementEnd.class);
+        DataObjectTestUtil.testStandardParents(trackingDatabase, StatementEnd.class);
     }
 
     /**
@@ -82,7 +90,7 @@ class StatementEndTest {
      */
     @Test
     void getDataObject() {
-        DataObjectTestUtil.checkDataObjectNotNull(StatementEnd.class);
+        DataObjectTestUtil.checkDataObjectNotNull(trackingDatabase, StatementEnd.class);
     }
 
     //------------------------------------------------------------------------------------------------------------------

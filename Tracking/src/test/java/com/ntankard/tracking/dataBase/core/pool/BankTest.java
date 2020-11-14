@@ -1,18 +1,27 @@
 package com.ntankard.tracking.dataBase.core.pool;
 
+import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
 import com.ntankard.testUtil.DataAccessUntil;
 import com.ntankard.testUtil.DataObjectTestUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
+@Execution(ExecutionMode.CONCURRENT)
 class BankTest {
+
+    /**
+     * The database instance to use
+     */
+    private static TrackingDatabase trackingDatabase;
 
     /**
      * Load the database
      */
     @BeforeEach
     void setUp() {
-        DataAccessUntil.loadDatabase();
+        trackingDatabase = DataAccessUntil.getDataBase();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -28,7 +37,7 @@ class BankTest {
      */
     @Test
     void getParents() {
-        DataObjectTestUtil.testStandardParents(Bank.class);
+        DataObjectTestUtil.testStandardParents(trackingDatabase, Bank.class);
     }
 
     /**
@@ -36,7 +45,7 @@ class BankTest {
      */
     @Test
     void getDataObject() {
-        DataObjectTestUtil.checkDataObjectNotNull(Bank.class);
+        DataObjectTestUtil.checkDataObjectNotNull(trackingDatabase, Bank.class);
     }
 
     //------------------------------------------------------------------------------------------------------------------

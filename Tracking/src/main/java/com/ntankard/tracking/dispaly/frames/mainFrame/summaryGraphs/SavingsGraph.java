@@ -22,13 +22,17 @@ import java.awt.*;
 
 public class SavingsGraph extends UpdatableJPanel {
 
+    // Core database
+    private final TrackingDatabase trackingDatabase;
+
     /**
      * Constructor
      *
      * @param master The parent of this object to be notified if data changes
      */
-    public SavingsGraph(Updatable master) {
+    public SavingsGraph(TrackingDatabase trackingDatabase, Updatable master) {
         super(master);
+        this.trackingDatabase = trackingDatabase;
         createUIComponents();
     }
 
@@ -56,9 +60,9 @@ public class SavingsGraph extends UpdatableJPanel {
         renderer.setSeriesPaint(2, Color.RED);
         plot.setRenderer(renderer);
 
-        String[] axisLabel = new String[TrackingDatabase.get().get(ExistingPeriod.class).size()];
+        String[] axisLabel = new String[trackingDatabase.get(ExistingPeriod.class).size()];
         int i = 0;
-        for (ExistingPeriod period : TrackingDatabase.get().get(ExistingPeriod.class)) {
+        for (ExistingPeriod period : trackingDatabase.get(ExistingPeriod.class)) {
             axisLabel[i++] = period.toString();
         }
 
@@ -76,10 +80,10 @@ public class SavingsGraph extends UpdatableJPanel {
     private XYDataset createDataset() {
         final XYSeriesCollection dataset = new XYSeriesCollection();
 
-        for (Currency currency : TrackingDatabase.get().get(Currency.class)) {
+        for (Currency currency : trackingDatabase.get(Currency.class)) {
             final XYSeries cur = new XYSeries(currency.getName());
             int i = 0;
-            for (ExistingPeriod period : TrackingDatabase.get().get(ExistingPeriod.class)) {
+            for (ExistingPeriod period : trackingDatabase.get(ExistingPeriod.class)) {
                 cur.add(i++, new Single_OneParent_Children_Set<>(Period_Summary.class, period).getItem().getBankEnd(currency));
             }
             dataset.addSeries(cur);
@@ -87,7 +91,7 @@ public class SavingsGraph extends UpdatableJPanel {
 
         final XYSeries total = new XYSeries("Total");
         int i = 0;
-        for (ExistingPeriod period : TrackingDatabase.get().get(ExistingPeriod.class)) {
+        for (ExistingPeriod period : trackingDatabase.get(ExistingPeriod.class)) {
             total.add(i++, new Single_OneParent_Children_Set<>(Period_Summary.class, period).getItem().getBankEnd());
         }
         dataset.addSeries(total);

@@ -6,6 +6,8 @@ import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.source.
 import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.coreObject.interfaces.Ordered;
 import com.ntankard.javaObjectDatabase.coreObject.field.DataField_Schema;
+import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.database.TrackingDatabase_Schema;
 import com.ntankard.tracking.dataBase.core.CategorySet;
 
 import static com.ntankard.javaObjectDatabase.coreObject.field.properties.Display_Properties.DEBUG_DISPLAY;
@@ -53,7 +55,9 @@ public class VirtualCategory extends Category implements Ordered {
      * Create a new VirtualCategory object
      */
     public static VirtualCategory make(Integer id, String name, CategorySet categorySet, Integer orderImpl) {
-        return assembleDataObject(VirtualCategory.getFieldContainer(), new VirtualCategory()
+        TrackingDatabase trackingDatabase = categorySet.getTrackingDatabase();
+        TrackingDatabase_Schema trackingDatabase_schema = trackingDatabase.getSchema();
+        return assembleDataObject(trackingDatabase, trackingDatabase_schema.getClassSchema(VirtualCategory.class), new VirtualCategory()
                 , DataObject_Id, id
                 , NamedDataObject_Name, name
                 , VirtualCategory_CategorySet, categorySet

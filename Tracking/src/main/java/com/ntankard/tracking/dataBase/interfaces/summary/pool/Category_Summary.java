@@ -1,5 +1,6 @@
 package com.ntankard.tracking.dataBase.interfaces.summary.pool;
 
+import com.ntankard.javaObjectDatabase.database.TrackingDatabase_Schema;
 import com.ntankard.tracking.dataBase.core.pool.category.Category;
 import com.ntankard.javaObjectDatabase.coreObject.factory.DoubleParentFactory;
 import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.Derived_DataCore;
@@ -31,7 +32,7 @@ public class Category_Summary extends PoolSummary<SolidCategory> implements Orde
             Category_Summary.class,
             Period.class,
             PoolSummary_Period, SolidCategory.class,
-            PoolSummary_Pool, (generator, secondaryGenerator) -> Category_Summary.make(TrackingDatabase.get().getNextId(), generator, secondaryGenerator)
+            PoolSummary_Pool, (generator, secondaryGenerator) -> Category_Summary.make(generator.getTrackingDatabase().getNextId(), generator, secondaryGenerator)
     );
 
     /**
@@ -80,7 +81,9 @@ public class Category_Summary extends PoolSummary<SolidCategory> implements Orde
      * Create a new StatementEnd object
      */
     public static Category_Summary make(Integer id, Period period, Pool pool) {
-        return assembleDataObject(Category_Summary.getFieldContainer(), new Category_Summary()
+        TrackingDatabase trackingDatabase = period.getTrackingDatabase();
+        TrackingDatabase_Schema trackingDatabase_schema = trackingDatabase.getSchema();
+        return assembleDataObject(trackingDatabase, trackingDatabase_schema.getClassSchema(Category_Summary.class), new Category_Summary()
                 , DataObject_Id, id
                 , PoolSummary_Period, period
                 , PoolSummary_Pool, pool

@@ -18,13 +18,17 @@ public class NewReceiptPanel extends UpdatableJPanel {
      */
     private List<ImageToTransferPanel> imageToTransferPanels = new ArrayList<>();
 
+    // Core database
+    private final TrackingDatabase trackingDatabase;
+
     /**
      * Constructor
      *
      * @param master The parent of this object to be notified if data changes
      */
-    public NewReceiptPanel(Updatable master) {
+    public NewReceiptPanel(TrackingDatabase trackingDatabase, Updatable master) {
         super(master);
+        this.trackingDatabase = trackingDatabase;
         createUIComponents();
         update();
     }
@@ -36,8 +40,8 @@ public class NewReceiptPanel extends UpdatableJPanel {
         this.removeAll();
         this.setLayout(new BorderLayout());
 
-        List<String> possibleImages = FileUtil.findFilesInDirectory(TrackingDatabase.get().getImagePath());
-        for (Receipt receipt : TrackingDatabase.get().get(Receipt.class)) {
+        List<String> possibleImages = FileUtil.findFilesInDirectory(trackingDatabase.getImagePath());
+        for (Receipt receipt : trackingDatabase.get(Receipt.class)) {
             boolean shouldRemove = false;
             for (String name : possibleImages) {
                 if (receipt.getFileName().equals(name)) {
@@ -54,7 +58,7 @@ public class NewReceiptPanel extends UpdatableJPanel {
             JTabbedPane master_tPanel = new JTabbedPane();
             int i = 0;
             for (String image : possibleImages) {
-                ImageToTransferPanel toAdd = new ImageToTransferPanel(image, this);
+                ImageToTransferPanel toAdd = new ImageToTransferPanel(trackingDatabase, image, this);
                 imageToTransferPanels.add(toAdd);
                 master_tPanel.addTab(i++ + "", toAdd);
             }

@@ -10,21 +10,15 @@ import java.util.Map;
 
 public class Main {
 
-    public static String databasePath = "com.ntankard.tracking.dataBase.core";
+    public static String databasePath = "com.ntankard.tracking.dataBase";
     public static String savePath = "C:\\Users\\Nicholas\\Google Drive\\BudgetTrackingData";
 
-    public static void createDataBase() {
+    public static TrackingDatabase createDataBase() {
         Map<String, String> nameMap = new HashMap<>();
-
-        if (!TrackingDatabase_Schema.get().isInitialized()) {
-            TrackingDatabase_Schema.get().init(databasePath, nameMap);
-        }
-
-        TrackingDatabase_Reader.read(TrackingDatabase_Schema.get(), savePath, nameMap);
+        return TrackingDatabase_Reader.read(TrackingDatabase_Schema.getSchemaFromPackage(databasePath), savePath, nameMap);
     }
 
     public static void main(String[] args) {
-        createDataBase();
-        Master_Frame.open(savePath);
+        Master_Frame.open(createDataBase(), savePath);
     }
 }

@@ -22,6 +22,9 @@ public class ModelData_Columns<P extends Pool> {
     public final List<P> pools = new ArrayList<>();
     private final List<Column> columns = new ArrayList<>();
 
+    // Core database
+    private final TrackingDatabase trackingDatabase;
+
     /**
      * Constructor
      *
@@ -30,6 +33,7 @@ public class ModelData_Columns<P extends Pool> {
     public ModelData_Columns(Period core, Class<P> columnClass) {
         this.core = core;
         this.columnClass = columnClass;
+        this.trackingDatabase = core.getTrackingDatabase();
         update();
     }
 
@@ -41,7 +45,7 @@ public class ModelData_Columns<P extends Pool> {
         columns.clear();
 
         // Find all categories
-        pools.addAll(TrackingDatabase.get().get(columnClass));
+        pools.addAll(trackingDatabase.get(columnClass));
 
         for (P pool : pools) {
 
@@ -176,6 +180,6 @@ public class ModelData_Columns<P extends Pool> {
     }
 
     private PeriodPool_SumSet getSumSet(P pool) {
-        return new PeriodPool_SumSet(getSet(pool));
+        return new PeriodPool_SumSet(pool.getTrackingDatabase(), getSet(pool));
     }
 }

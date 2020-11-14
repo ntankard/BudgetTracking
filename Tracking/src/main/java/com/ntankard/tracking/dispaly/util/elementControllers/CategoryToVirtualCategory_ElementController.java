@@ -16,8 +16,8 @@ public class CategoryToVirtualCategory_ElementController extends TrackingDatabas
     /**
      * Constructor
      */
-    public CategoryToVirtualCategory_ElementController(Updatable master) {
-        super(master);
+    public CategoryToVirtualCategory_ElementController(TrackingDatabase trackingDatabase, Updatable master) {
+        super(trackingDatabase, master);
     }
 
     /**
@@ -28,7 +28,7 @@ public class CategoryToVirtualCategory_ElementController extends TrackingDatabas
         if (virtualCategory == null) {
             throw new RuntimeException("Creating an object without a VirtualCategory being provided");
         }
-        return CategoryToVirtualCategory.make(TrackingDatabase.get().getNextId(),
+        return CategoryToVirtualCategory.make(getTrackingDatabase().getNextId(),
                 virtualCategory,
                 virtualCategory.getCategorySet().getAvailableCategories().get(0));
     }

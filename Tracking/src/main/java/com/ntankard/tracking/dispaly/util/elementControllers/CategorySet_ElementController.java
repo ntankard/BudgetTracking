@@ -10,8 +10,8 @@ public class CategorySet_ElementController extends TrackingDatabase_ElementContr
     /**
      * Constructor
      */
-    public CategorySet_ElementController(Updatable master) {
-        super(master);
+    public CategorySet_ElementController(TrackingDatabase trackingDatabase, Updatable master) {
+        super(trackingDatabase, master);
     }
 
     /**
@@ -19,7 +19,7 @@ public class CategorySet_ElementController extends TrackingDatabase_ElementContr
      */
     @Override
     public CategorySet newElement() {
-        return CategorySet.make(TrackingDatabase.get().getNextId(),
+        return CategorySet.make(getTrackingDatabase(), getTrackingDatabase().getNextId(),
                 "",
                 false,
                 0);

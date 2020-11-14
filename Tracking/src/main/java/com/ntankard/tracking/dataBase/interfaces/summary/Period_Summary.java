@@ -1,5 +1,6 @@
 package com.ntankard.tracking.dataBase.interfaces.summary;
 
+import com.ntankard.javaObjectDatabase.database.TrackingDatabase_Schema;
 import com.ntankard.tracking.dataBase.core.baseObject.interfaces.CurrencyBound;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.period.ExistingPeriod;
@@ -328,7 +329,7 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
                             Currency currency1 = null;
                             Currency currency2 = null;
 
-                            for (Currency currency : TrackingDatabase.get().get(Currency.class)) {
+                            for (Currency currency : container.getTrackingDatabase().get(Currency.class)) {
                                 if (currency.isDefault()) {
                                     currency1 = currency;
                                 } else {
@@ -375,7 +376,7 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
                         (Derived_DataCore.Calculator<Boolean, Period_Summary>) container -> {
                             Currency currency1 = null;
                             Currency currency2 = null;
-                            for (Currency currency : TrackingDatabase.get().get(Currency.class)) {
+                            for (Currency currency : container.getTrackingDatabase().get(Currency.class)) {
                                 if (currency.isDefault()) {
                                     currency1 = currency;
                                 } else {
@@ -425,9 +426,10 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
         if (!period.getChildren(Period_Summary.class).isEmpty()) {
             throw new IllegalStateException("Making a second period summary");
         }
-
-        return assembleDataObject(Period_Summary.getFieldContainer(), new Period_Summary()
-                , DataObject_Id, TrackingDatabase.get().getNextId()
+        TrackingDatabase trackingDatabase = period.getTrackingDatabase();
+        TrackingDatabase_Schema trackingDatabase_schema = trackingDatabase.getSchema();
+        return assembleDataObject(trackingDatabase, trackingDatabase_schema.getClassSchema(Period_Summary.class), new Period_Summary()
+                , DataObject_Id, period.getTrackingDatabase().getNextId()
                 , Period_Summary_Period, period
         );
     }
@@ -461,7 +463,7 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
 
     @Override
     public Currency getCurrency() {
-        return TrackingDatabase.get().getDefault(Currency.class);
+        return getTrackingDatabase().getDefault(Currency.class);
     }
 
     public Double getBankStart() {

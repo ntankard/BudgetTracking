@@ -24,13 +24,17 @@ import java.util.Map;
 
 public class CategoryGraph extends UpdatableJPanel {
 
+    // Core database
+    private final TrackingDatabase trackingDatabase;
+
     /**
      * Constructor
      *
      * @param master The parent of this object to be notified if data changes
      */
-    public CategoryGraph(Updatable master) {
+    public CategoryGraph(TrackingDatabase trackingDatabase, Updatable master) {
         super(master);
+        this.trackingDatabase = trackingDatabase;
         createUIComponents();
     }
 
@@ -58,9 +62,9 @@ public class CategoryGraph extends UpdatableJPanel {
         //renderer.setSeriesPaint(2, Color.RED);
         plot.setRenderer(renderer);
 
-        String[] axisLabel = new String[TrackingDatabase.get().get(ExistingPeriod.class).size()];
+        String[] axisLabel = new String[trackingDatabase.get(ExistingPeriod.class).size()];
         int i = 0;
-        for (ExistingPeriod period : TrackingDatabase.get().get(ExistingPeriod.class)) {
+        for (ExistingPeriod period : trackingDatabase.get(ExistingPeriod.class)) {
             axisLabel[i] = period.toString();
             i++;
         }
@@ -79,20 +83,20 @@ public class CategoryGraph extends UpdatableJPanel {
     private XYDataset createDataset() {
         Map<SolidCategory, XYSeries> categories = new HashMap<>();
 
-        for (SolidCategory solidCategory : TrackingDatabase.get().get(SolidCategory.class)) {
+        for (SolidCategory solidCategory : trackingDatabase.get(SolidCategory.class)) {
             categories.put(solidCategory, new XYSeries(solidCategory.toString()));
         }
 
         int i = 0;
-        for (ExistingPeriod period : TrackingDatabase.get().get(ExistingPeriod.class)) {
-            for (SolidCategory solidCategory : TrackingDatabase.get().get(SolidCategory.class)) {
+        for (ExistingPeriod period : trackingDatabase.get(ExistingPeriod.class)) {
+            for (SolidCategory solidCategory : trackingDatabase.get(SolidCategory.class)) {
                 categories.get(solidCategory).add(i, new PeriodPool_SumSet(period, solidCategory).getTotal());
             }
             i++;
         }
 
         final XYSeriesCollection dataset = new XYSeriesCollection();
-        for (SolidCategory solidCategory : TrackingDatabase.get().get(SolidCategory.class)) {
+        for (SolidCategory solidCategory : trackingDatabase.get(SolidCategory.class)) {
             dataset.addSeries(categories.get(solidCategory));
         }
 

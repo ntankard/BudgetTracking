@@ -33,13 +33,17 @@ public class DatabasePanel extends UpdatableJPanel {
      */
     private int objectTypeSize = 0;
 
+    // Core database
+    private final TrackingDatabase trackingDatabase;
+
     /**
      * Constructor
      *
      * @param master The parent of this object to be notified if data changes
      */
-    protected DatabasePanel(Updatable master) {
+    protected DatabasePanel(TrackingDatabase trackingDatabase, Updatable master) {
         super(master);
+        this.trackingDatabase = trackingDatabase;
         createUIComponents();
         update();
     }
@@ -67,7 +71,7 @@ public class DatabasePanel extends UpdatableJPanel {
 
             // Build the bottom of the tree, the actual object
             if (!PoolSummary.class.isAssignableFrom(rootNode.data) && !Period_Summary.class.isAssignableFrom(rootNode.data)) {
-                DataObject_VerbosityDisplayList<?> list = new DataObject_VerbosityDisplayList<>(rootNode.data, this);
+                DataObject_VerbosityDisplayList<?> list = new DataObject_VerbosityDisplayList<>(trackingDatabase, rootNode.data, this);
                 parent.add(rootNode.data.getSimpleName(), list);
                 updatableList.add(list);
             }
@@ -87,7 +91,7 @@ public class DatabasePanel extends UpdatableJPanel {
                 // If this is a solid object display it as well
                 if (!Modifier.isAbstract(rootNode.data.getModifiers())) {
                     if (!PoolSummary.class.isAssignableFrom(rootNode.data) && !Period_Summary.class.isAssignableFrom(rootNode.data)) {
-                        DataObject_VerbosityDisplayList<?> list = new DataObject_VerbosityDisplayList<>(rootNode.data, this);
+                        DataObject_VerbosityDisplayList<?> list = new DataObject_VerbosityDisplayList<>(trackingDatabase, rootNode.data, this);
                         container.add(rootNode.data.getSimpleName(), list);
                         updatableList.add(list);
                     }
@@ -105,11 +109,11 @@ public class DatabasePanel extends UpdatableJPanel {
      */
     @Override
     public void update() {
-        if (TrackingDatabase.get().getClassTreeRoot().size() != objectTypeSize) {
+        if (trackingDatabase.getClassTreeRoot().size() != objectTypeSize) {
             rootTabbedPane.removeAll();
             updatableList.clear();
-            createBach(rootTabbedPane, TrackingDatabase.get().getClassTreeRoot());
-            objectTypeSize = TrackingDatabase.get().getClassTreeRoot().size();
+            createBach(rootTabbedPane, trackingDatabase.getClassTreeRoot());
+            objectTypeSize = trackingDatabase.getClassTreeRoot().size();
         }
         updatableList.forEach(DataObject_VerbosityDisplayList::update);
     }

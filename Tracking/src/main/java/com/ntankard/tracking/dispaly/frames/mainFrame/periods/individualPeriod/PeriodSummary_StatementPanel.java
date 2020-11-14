@@ -192,17 +192,17 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
 
         // Transfers ---------------------------------------------------------------------------------------------------
 
-        periodFundTransfer_panel = new DataObject_DisplayList<>(ManualFundTransfer.class, new OneParent_Children_Set<>(ManualFundTransfer.class, period), false, this);
+        periodFundTransfer_panel = new DataObject_DisplayList<>(period.getTrackingDatabase().getSchema(), ManualFundTransfer.class, new OneParent_Children_Set<>(ManualFundTransfer.class, period), false, this);
         periodFundTransfer_panel.addControlButtons(new ManualFundTransfer_ElementController(period, this));
 
         // Statement summary -------------------------------------------------------------------------------------------
 
         if (period instanceof ExistingPeriod) {
-            bankSummary_panel = new Object_DisplayList<>(Bank_Summary.class, new OneParent_Children_Set<>(Bank_Summary.class, (ExistingPeriod) period), false, this);
+            bankSummary_panel = new Object_DisplayList<>(period.getTrackingDatabase().getSchema(), Bank_Summary.class, new OneParent_Children_Set<>(Bank_Summary.class, (ExistingPeriod) period), false, this);
             bankSummary_panel.getMainPanel().getListSelectionModel().addListSelectionListener(e -> updateTransactions());
         }
 
-        fundEventSummary_panel = new Object_DisplayList<>(FundEvent_Summary.class, new OneParent_Children_Set<>(FundEvent_Summary.class, period), false, this);
+        fundEventSummary_panel = new Object_DisplayList<>(period.getTrackingDatabase().getSchema(), FundEvent_Summary.class, new OneParent_Children_Set<>(FundEvent_Summary.class, period), false, this);
 
         // Statement transactions --------------------------------------------------------------------------------------
 
@@ -230,12 +230,12 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
             }
         });
         bankCategoryTransfer_controller = new ManualBankTransfer_ElementController(period, this);
-        bankCategoryTransfer_panel = new DataObject_DisplayList<>(BankTransfer.class, bankCategoryTransfer_set, false, this);
+        bankCategoryTransfer_panel = new DataObject_DisplayList<>(period.getTrackingDatabase().getSchema(), BankTransfer.class, bankCategoryTransfer_set, false, this);
         bankCategoryTransfer_panel.addControlButtons(bankCategoryTransfer_controller);
 
         bankCategoryTransferAll_set = new TwoParent_Children_Set<>(BankTransfer.class, period, null);
         bankCategoryTransferAll_controller = new ManualBankTransfer_ElementController(period, this);
-        bankCategoryTransferAll_panel = new DataObject_DisplayList<>(BankTransfer.class, bankCategoryTransferAll_set, false, this);
+        bankCategoryTransferAll_panel = new DataObject_DisplayList<>(period.getTrackingDatabase().getSchema(), BankTransfer.class, bankCategoryTransferAll_set, false, this);
         bankCategoryTransferAll_panel.addControlButtons(bankCategoryTransferAll_controller);
 
         // Main layout -------------------------------------------------------------------------------------------------

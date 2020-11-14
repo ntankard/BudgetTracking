@@ -1,18 +1,27 @@
 package com.ntankard.tracking.dataBase.core.pool.fundEvent;
 
+import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
 import com.ntankard.testUtil.DataAccessUntil;
 import com.ntankard.testUtil.DataObjectTestUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
+@Execution(ExecutionMode.CONCURRENT)
 class TaxFundEventTest {
+
+    /**
+     * The database instance to use
+     */
+    private static TrackingDatabase trackingDatabase;
 
     /**
      * Load the database
      */
     @BeforeEach
     void setUp() {
-        DataAccessUntil.loadDatabase(); //TODO make this not needed by building the test objects directly for Unit Tests
+        trackingDatabase = DataAccessUntil.getDataBase();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -28,7 +37,7 @@ class TaxFundEventTest {
      */
     @Test
     void getParents() {
-        DataObjectTestUtil.testStandardParents(TaxFundEvent.class);
+        DataObjectTestUtil.testStandardParents(trackingDatabase, TaxFundEvent.class);
     }
 
     /**
@@ -36,6 +45,6 @@ class TaxFundEventTest {
      */
     @Test
     void getDataObject() {
-        DataObjectTestUtil.checkDataObjectNotNull(TaxFundEvent.class);
+        DataObjectTestUtil.checkDataObjectNotNull(trackingDatabase, TaxFundEvent.class);
     }
 }

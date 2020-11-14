@@ -1,5 +1,6 @@
 package com.ntankard.tracking.dataBase.core.period;
 
+import com.ntankard.javaObjectDatabase.database.TrackingDatabase_Schema;
 import com.ntankard.tracking.dataBase.core.StatementEnd;
 import com.ntankard.tracking.dataBase.core.transfer.bank.RecurringBankTransfer;
 import com.ntankard.tracking.dataBase.core.transfer.fund.rePay.FixedPeriodRePayFundTransfer;
@@ -61,8 +62,9 @@ public class ExistingPeriod extends Period {
     /**
      * Create a new ExistingPeriod object
      */
-    public static ExistingPeriod make(Integer id, Integer month, Integer year) {
-        return assembleDataObject(ExistingPeriod.getFieldContainer(), new ExistingPeriod()
+    public static ExistingPeriod make(TrackingDatabase trackingDatabase, Integer id, Integer month, Integer year) {
+        TrackingDatabase_Schema trackingDatabase_schema = trackingDatabase.getSchema();
+        return assembleDataObject(trackingDatabase, trackingDatabase_schema.getClassSchema(ExistingPeriod.class), new ExistingPeriod()
                 , DataObject_Id, id
                 , ExistingPeriod_Month, month
                 , ExistingPeriod_Year, year
@@ -87,7 +89,7 @@ public class ExistingPeriod extends Period {
             nextYear++;
         }
 
-        return ExistingPeriod.make(TrackingDatabase.get().getNextId(), nextMonth, nextYear);
+        return ExistingPeriod.make(getTrackingDatabase(), getTrackingDatabase().getNextId(), nextMonth, nextYear);
     }
 
     /**

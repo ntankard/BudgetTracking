@@ -1,5 +1,6 @@
 package com.ntankard.tracking.dataBase.interfaces.summary.pool;
 
+import com.ntankard.javaObjectDatabase.database.TrackingDatabase_Schema;
 import com.ntankard.tracking.dataBase.core.baseObject.interfaces.CurrencyBound;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.period.ExistingPeriod;
@@ -61,7 +62,7 @@ public class Bank_Summary extends PoolSummary<Bank> implements CurrencyBound, Or
             Bank_Summary.class,
             Bank.class,
             PoolSummary_Pool, ExistingPeriod.class,
-            PoolSummary_Period, (generator, secondaryGenerator) -> Bank_Summary.make(TrackingDatabase.get().getNextId(), secondaryGenerator, generator)
+            PoolSummary_Period, (generator, secondaryGenerator) -> Bank_Summary.make(generator.getTrackingDatabase().getNextId(), secondaryGenerator, generator)
     );
 
     /**
@@ -248,7 +249,9 @@ public class Bank_Summary extends PoolSummary<Bank> implements CurrencyBound, Or
      * Create a new StatementEnd object
      */
     public static Bank_Summary make(Integer id, Period period, Pool pool) {
-        return assembleDataObject(Bank_Summary.getFieldContainer(), new Bank_Summary()
+        TrackingDatabase trackingDatabase = period.getTrackingDatabase();
+        TrackingDatabase_Schema trackingDatabase_schema = trackingDatabase.getSchema();
+        return assembleDataObject(trackingDatabase, trackingDatabase_schema.getClassSchema(Bank_Summary.class), new Bank_Summary()
                 , DataObject_Id, id
                 , PoolSummary_Period, period
                 , PoolSummary_Pool, pool

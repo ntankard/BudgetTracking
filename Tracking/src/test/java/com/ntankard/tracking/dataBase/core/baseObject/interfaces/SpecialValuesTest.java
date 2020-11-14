@@ -5,8 +5,11 @@ import com.ntankard.testUtil.DataAccessUntil;
 import com.ntankard.javaObjectDatabase.coreObject.interfaces.SpecialValues;
 import com.ntankard.javaObjectDatabase.coreObject.DataObject;
 import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
+import com.ntankard.tracking.Main;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -16,14 +19,20 @@ import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Execution(ExecutionMode.CONCURRENT)
 class SpecialValuesTest {
 
     /**
-     * Load the data
+     * The database instance to use
+     */
+    private static TrackingDatabase trackingDatabase;
+
+    /**
+     * Load the database
      */
     @BeforeEach
     void setUp() {
-        DataAccessUntil.loadDatabase(); // TODO make this not needed by building the test objects directly for Unit Tests
+        trackingDatabase = DataAccessUntil.getDataBase();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -35,12 +44,12 @@ class SpecialValuesTest {
      */
     @Test
     void getKeys() {
-        assertNotEquals(0, ClassInspectionUtil.getSpecialValueClasses().size());
-        for (Class<? extends DataObject> toTest : ClassInspectionUtil.getSpecialValueClasses()) {
+        assertNotEquals(0, ClassInspectionUtil.getSpecialValueClasses(Main.databasePath).size());
+        for (Class<? extends DataObject> toTest : ClassInspectionUtil.getSpecialValueClasses(Main.databasePath)) {
 
             // Get the keys
-            assertTrue(TrackingDatabase.get().get(toTest).size() != 0, "No class of the test type exists in the current database." + " Class:" + toTest.getSimpleName());
-            SpecialValues specialValues = (SpecialValues) TrackingDatabase.get().get(toTest).get(0);
+            assertTrue(trackingDatabase.get(toTest).size() != 0, "No class of the test type exists in the current database." + " Class:" + toTest.getSimpleName());
+            SpecialValues specialValues = (SpecialValues) trackingDatabase.get(toTest).get(0);
             List<Integer> expected = specialValues.toChangeGetKeys();
 
             Field[] allFields = toTest.getDeclaredFields();
@@ -70,12 +79,12 @@ class SpecialValuesTest {
      */
     @Test
     void isValue() {
-        assertNotEquals(0, ClassInspectionUtil.getSpecialValueClasses().size());
-        for (Class<? extends DataObject> toTest : ClassInspectionUtil.getSpecialValueClasses()) {
+        assertNotEquals(0, ClassInspectionUtil.getSpecialValueClasses(Main.databasePath).size());
+        for (Class<? extends DataObject> toTest : ClassInspectionUtil.getSpecialValueClasses(Main.databasePath)) {
 
             // Get the valid keys
-            assertTrue(TrackingDatabase.get().get(toTest).size() != 0, "No class of the test type exists in the current database." + " Class:" + toTest.getSimpleName());
-            SpecialValues specialValues = (SpecialValues) TrackingDatabase.get().get(toTest).get(0);
+            assertTrue(trackingDatabase.get(toTest).size() != 0, "No class of the test type exists in the current database." + " Class:" + toTest.getSimpleName());
+            SpecialValues specialValues = (SpecialValues) trackingDatabase.get(toTest).get(0);
             List<Integer> validKeys = specialValues.toChangeGetKeys();
 
             // Get a range on invalid keys
@@ -104,11 +113,11 @@ class SpecialValuesTest {
      */
     @Test
     void validateSpecial() {
-        for (Class<? extends DataObject> aClass : TrackingDatabase.get().getDataObjectTypes()) {
-            if (TrackingDatabase.get().get(aClass).size() != 0) {
+        for (Class<? extends DataObject> aClass : trackingDatabase.getDataObjectTypes()) {
+            if (trackingDatabase.get(aClass).size() != 0) {
                 if (SpecialValues.class.isAssignableFrom(aClass)) {
-                    for (int key : ((SpecialValues) TrackingDatabase.get().get(aClass).get(0)).toChangeGetKeys()) {
-                        assertNotNull(TrackingDatabase.get().getSpecialValue(aClass, key), "Core Database error. An object with a special value has no special value set");
+                    for (int key : ((SpecialValues) trackingDatabase.get(aClass).get(0)).toChangeGetKeys()) {
+                        assertNotNull(trackingDatabase.getSpecialValue(aClass, key), "Core Database error. An object with a special value has no special value set");
                     }
                 }
             }

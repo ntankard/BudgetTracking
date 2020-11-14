@@ -25,13 +25,17 @@ public class SummaryPanel extends UpdatableJPanel {
     private final List<DataObject_VerbosityDisplayList<Category_Summary>> categorySummary_panels = new ArrayList<>();
     private final List<DataObject_VerbosityDisplayList<FundEvent_Summary>> fundEventSummary_panels = new ArrayList<>();
 
+    // Core database
+    private final TrackingDatabase trackingDatabase;
+
     /**
      * Constructor
      *
      * @param master The parent of this object to be notified if data changes
      */
-    protected SummaryPanel(Updatable master) {
+    protected SummaryPanel(TrackingDatabase trackingDatabase, Updatable master) {
         super(master);
+        this.trackingDatabase = trackingDatabase;
         createUIComponents();
     }
 
@@ -42,23 +46,23 @@ public class SummaryPanel extends UpdatableJPanel {
         this.removeAll();
         this.setLayout(new BorderLayout());
 
-        periodSummary_panel = new DataObject_VerbosityDisplayList<>(Period_Summary.class, new Full_Set<>(Period_Summary.class), this);
+        periodSummary_panel = new DataObject_VerbosityDisplayList<>(trackingDatabase, Period_Summary.class, new Full_Set<>(trackingDatabase, Period_Summary.class), this);
 
         JTabbedPane bank_tPanel = new JTabbedPane();
         JTabbedPane category_tPanel = new JTabbedPane();
         JTabbedPane fundEvent_tPanel = new JTabbedPane();
-        for (Period period : TrackingDatabase.get().get(ExistingPeriod.class)) { // TODO changed here to only do exiting, change back
+        for (Period period : trackingDatabase.get(ExistingPeriod.class)) { // TODO changed here to only do exiting, change back
             if (period instanceof ExistingPeriod) {
-                DataObject_VerbosityDisplayList<Bank_Summary> bankPanel = new DataObject_VerbosityDisplayList<>(Bank_Summary.class, new OneParent_Children_Set<>(Bank_Summary.class, (ExistingPeriod) period), this);
+                DataObject_VerbosityDisplayList<Bank_Summary> bankPanel = new DataObject_VerbosityDisplayList<>(trackingDatabase, Bank_Summary.class, new OneParent_Children_Set<>(Bank_Summary.class, (ExistingPeriod) period), this);
                 bankSummary_panels.add(bankPanel);
                 bank_tPanel.addTab(period.toString(), bankPanel);
             }
 
-            DataObject_VerbosityDisplayList<Category_Summary> categoryPanel = new DataObject_VerbosityDisplayList<>(Category_Summary.class, new OneParent_Children_Set<>(Category_Summary.class, period), this);
+            DataObject_VerbosityDisplayList<Category_Summary> categoryPanel = new DataObject_VerbosityDisplayList<>(trackingDatabase, Category_Summary.class, new OneParent_Children_Set<>(Category_Summary.class, period), this);
             categorySummary_panels.add(categoryPanel);
             category_tPanel.addTab(period.toString(), categoryPanel);
 
-            DataObject_VerbosityDisplayList<FundEvent_Summary> fundEventPanel = new DataObject_VerbosityDisplayList<>(FundEvent_Summary.class, new OneParent_Children_Set<>(FundEvent_Summary.class, period), this);
+            DataObject_VerbosityDisplayList<FundEvent_Summary> fundEventPanel = new DataObject_VerbosityDisplayList<>(trackingDatabase, FundEvent_Summary.class, new OneParent_Children_Set<>(FundEvent_Summary.class, period), this);
             fundEventSummary_panels.add(fundEventPanel);
             fundEvent_tPanel.addTab(period.toString(), fundEventPanel);
         }

@@ -14,6 +14,8 @@ import com.ntankard.javaObjectDatabase.util.FileUtil;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import java.io.File;
 import java.lang.reflect.Modifier;
@@ -27,27 +29,33 @@ import static com.ntankard.javaObjectDatabase.database.TrackingDatabase_Reader_S
 import static com.ntankard.javaObjectDatabase.database.TrackingDatabase_Reader_Util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+@Execution(ExecutionMode.CONCURRENT)
 class TrackingDatabase_ReaderTest {
+
+    /**
+     * The database instance to use
+     */
+    private static TrackingDatabase trackingDatabase;
 
     /**
      * Load the database
      */
     @BeforeEach
     void setUp() {
-        DataAccessUntil.loadDatabase();
+        trackingDatabase = DataAccessUntil.getDataBase();
     }
 
     @Test
     void testReadWrite() {
         assertTrue(false);
-//        for (Class<? extends DataObject> aClass : TrackingDatabase.get().getDataObjectTypes()) {
+//        for (Class<? extends DataObject> aClass : trackingDatabase.getDataObjectTypes()) {
 //            if (Modifier.isAbstract(aClass.getModifiers())) {
 //                continue;
 //            }
 //            if (aClass.equals(CategoryToCategorySet.class) || aClass.equals(CategoryToVirtualCategory.class)) { // This wont work because new object can not exist because all the categories are already filled
 //                continue; // TODO might need a better solution here
 //            }
-//            for (DataObject dataObject : TrackingDatabase.get().get(aClass)) {
+//            for (DataObject dataObject : trackingDatabase.get(aClass)) {
 //
 //                List<DataField_Schema<?>> constructorParameters = getSaveFields(dataObject.getClass());
 //
@@ -75,7 +83,7 @@ class TrackingDatabase_ReaderTest {
         new File(testPath + ROOT_DATA_PATH).mkdir();
         new File(testPath + ROOT_FILE_PATH).mkdir();
         new File(testPath + ROOT_IMAGE_PATH).mkdir();
-        save(testPath);
+        save(trackingDatabase, testPath);
 
         String saveDir = TrackingDatabase_Reader_Util.getLatestSaveDirectory(Main.savePath + ROOT_DATA_PATH);
         List<String> saveFiles = FileUtil.findFilesInDirectory(saveDir + INSTANCE_CLASSES_PATH);

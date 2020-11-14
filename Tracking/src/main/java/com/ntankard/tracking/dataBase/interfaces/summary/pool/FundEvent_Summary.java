@@ -1,5 +1,6 @@
 package com.ntankard.tracking.dataBase.interfaces.summary.pool;
 
+import com.ntankard.javaObjectDatabase.database.TrackingDatabase_Schema;
 import com.ntankard.tracking.dataBase.core.period.Period;
 import com.ntankard.tracking.dataBase.core.pool.fundEvent.FundEvent;
 import com.ntankard.tracking.dataBase.core.pool.Pool;
@@ -31,7 +32,7 @@ public class FundEvent_Summary extends PoolSummary<FundEvent> {
             FundEvent_Summary.class,
             Period.class,
             PoolSummary_Period, FundEvent.class,
-            PoolSummary_Pool, (generator, secondaryGenerator) -> FundEvent_Summary.make(TrackingDatabase.get().getNextId(), generator, secondaryGenerator)
+            PoolSummary_Pool, (generator, secondaryGenerator) -> FundEvent_Summary.make(generator.getTrackingDatabase().getNextId(), generator, secondaryGenerator)
     );
 
     /**
@@ -105,7 +106,9 @@ public class FundEvent_Summary extends PoolSummary<FundEvent> {
      * Create a new StatementEnd object
      */
     public static FundEvent_Summary make(Integer id, Period period, Pool pool) {
-        return assembleDataObject(FundEvent_Summary.getFieldContainer(), new FundEvent_Summary()
+        TrackingDatabase trackingDatabase = period.getTrackingDatabase();
+        TrackingDatabase_Schema trackingDatabase_schema = trackingDatabase.getSchema();
+        return assembleDataObject(trackingDatabase, trackingDatabase_schema.getClassSchema(FundEvent_Summary.class), new FundEvent_Summary()
                 , DataObject_Id, id
                 , PoolSummary_Period, period
                 , PoolSummary_Pool, pool

@@ -1,5 +1,7 @@
 package com.ntankard.tracking.dataBase.core.links;
 
+import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.database.TrackingDatabase_Schema;
 import com.ntankard.tracking.dataBase.core.CategorySet;
 import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.Derived_DataCore;
 import com.ntankard.javaObjectDatabase.coreObject.field.filter.Dependant_FieldFilter;
@@ -59,7 +61,9 @@ public class CategoryToVirtualCategory extends DataObject {
      * Create a new RePayFundTransfer object
      */
     public static CategoryToVirtualCategory make(Integer id, VirtualCategory virtualCategory, SolidCategory solidCategory) {
-        return assembleDataObject(CategoryToVirtualCategory.getFieldContainer(), new CategoryToVirtualCategory()
+        TrackingDatabase trackingDatabase = virtualCategory.getTrackingDatabase();
+        TrackingDatabase_Schema trackingDatabase_schema = trackingDatabase.getSchema();
+        return assembleDataObject(trackingDatabase, trackingDatabase_schema.getClassSchema(CategoryToVirtualCategory.class), new CategoryToVirtualCategory()
                 , DataObject_Id, id
                 , CategoryToVirtualCategory_VirtualCategory, virtualCategory
                 , CategoryToVirtualCategory_SolidCategory, solidCategory

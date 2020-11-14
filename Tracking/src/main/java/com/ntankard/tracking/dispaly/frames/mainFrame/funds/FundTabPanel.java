@@ -20,11 +20,15 @@ public class FundTabPanel extends UpdatableJPanel {
     private JTabbedPane master_tPanel = new JTabbedPane();
     private List<IndividualFundPanel> fundPanels = new ArrayList<>();
 
+    // Core database
+    private final TrackingDatabase trackingDatabase;
+
     /**
      * Constructor
      */
-    public FundTabPanel(Updatable master) {
+    public FundTabPanel(TrackingDatabase trackingDatabase, Updatable master) {
         super(master);
+        this.trackingDatabase = trackingDatabase;
         createUIComponents();
     }
 
@@ -58,12 +62,12 @@ public class FundTabPanel extends UpdatableJPanel {
      * @return True if there is new or removed period what warrant a complete panel regeneration
      */
     private boolean hasFundsChanged() {
-        if (TrackingDatabase.get().get(FundEvent.class).size() != fundEvents.size()) {
+        if (trackingDatabase.get(FundEvent.class).size() != fundEvents.size()) {
             return true;
         }
 
         for (int i = 0; i < fundEvents.size(); i++) {
-            if (!fundEvents.get(i).equals(TrackingDatabase.get().get(FundEvent.class).get(i))) {
+            if (!fundEvents.get(i).equals(trackingDatabase.get(FundEvent.class).get(i))) {
                 return true;
             }
         }
@@ -81,7 +85,7 @@ public class FundTabPanel extends UpdatableJPanel {
 
             master_tPanel.removeAll();
 
-            fundEvents.addAll(TrackingDatabase.get().get(FundEvent.class));
+            fundEvents.addAll(trackingDatabase.get(FundEvent.class));
             for (FundEvent fundEvent : fundEvents) {
                 IndividualFundPanel panel = new IndividualFundPanel(fundEvent, this);
                 fundPanels.add(panel);

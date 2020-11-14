@@ -21,7 +21,7 @@ public class ManualBankTransfer_ElementController extends TrackingDatabase_Eleme
      * Constructor
      */
     public ManualBankTransfer_ElementController(Period core, Bank bank, Updatable master) {
-        super(master);
+        super(core.getTrackingDatabase(), master);
         this.core = core;
         this.bank = bank;
     }
@@ -30,7 +30,7 @@ public class ManualBankTransfer_ElementController extends TrackingDatabase_Eleme
      * Constructor
      */
     public ManualBankTransfer_ElementController(Period core, Updatable master) {
-        super(master);
+        super(core.getTrackingDatabase(), master);
         this.core = core;
     }
 
@@ -39,9 +39,9 @@ public class ManualBankTransfer_ElementController extends TrackingDatabase_Eleme
      */
     @Override
     public BankTransfer newElement() {
-        return ManualBankTransfer.make(TrackingDatabase.get().getNextId(), "",
+        return ManualBankTransfer.make(getTrackingDatabase().getNextId(), "",
                 core, bank, 0.0,
-                null, TrackingDatabase.get().getDefault(SolidCategory.class));
+                null, getTrackingDatabase().getDefault(SolidCategory.class));
     }
 
     /**

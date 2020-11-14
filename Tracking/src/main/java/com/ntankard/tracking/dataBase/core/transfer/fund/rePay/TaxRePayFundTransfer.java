@@ -1,5 +1,6 @@
 package com.ntankard.tracking.dataBase.core.transfer.fund.rePay;
 
+import com.ntankard.javaObjectDatabase.database.TrackingDatabase_Schema;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.period.ExistingPeriod;
 import com.ntankard.tracking.dataBase.core.period.Period;
@@ -42,11 +43,10 @@ public class TaxRePayFundTransfer extends RePayFundTransfer {
             TaxRePayFundTransfer.class,
             ExistingPeriod.class,
             Transfer_Period, TaxFundEvent.class,
-            Transfer_Source, (generator, secondaryGenerator) -> TaxRePayFundTransfer.make(
-            TrackingDatabase.get().getNextId(),
+            Transfer_Source, (generator, secondaryGenerator) -> TaxRePayFundTransfer.make(generator.getTrackingDatabase().getNextId(),
             generator,
             secondaryGenerator,
-            TrackingDatabase.get().getDefault(Currency.class))
+            generator.getTrackingDatabase().getDefault(Currency.class))
     );
 
     /**
@@ -66,7 +66,7 @@ public class TaxRePayFundTransfer extends RePayFundTransfer {
         dataObjectSchema.add(new DataField_Schema<>(TaxRePayFundTransfer_TaxableCategory, Category.class));
         dataObjectSchema.<SolidCategory>get(TaxRePayFundTransfer_TaxableCategory).setDataCore_factory(
                 new Static_DataCore.Static_DataCore_Factory<>(dataField ->
-                        TrackingDatabase.get().getSpecialValue(SolidCategory.class, SolidCategory.TAXABLE)));
+                        dataField.getContainer().getTrackingDatabase().getSpecialValue(SolidCategory.class, SolidCategory.TAXABLE)));
         // TaxableSet ==================================================================================================
         dataObjectSchema.add(new ListDataField_Schema<>(TaxRePayFundTransfer_TaxableSet, HalfTransfer.HalfTransferList.class));
         dataObjectSchema.<List<HalfTransfer>>get(TaxRePayFundTransfer_TaxableSet).setDataCore_factory(
@@ -116,7 +116,9 @@ public class TaxRePayFundTransfer extends RePayFundTransfer {
      * Create a new RePayFundTransfer object
      */
     public static TaxRePayFundTransfer make(Integer id, Period period, FundEvent source, Currency currency) {
-        return assembleDataObject(TaxRePayFundTransfer.getFieldContainer(), new TaxRePayFundTransfer()
+        TrackingDatabase trackingDatabase = period.getTrackingDatabase();
+        TrackingDatabase_Schema trackingDatabase_schema = trackingDatabase.getSchema();
+        return assembleDataObject(trackingDatabase, trackingDatabase_schema.getClassSchema(TaxRePayFundTransfer.class), new TaxRePayFundTransfer()
                 , DataObject_Id, id
                 , Transfer_Period, period
                 , Transfer_Source, source

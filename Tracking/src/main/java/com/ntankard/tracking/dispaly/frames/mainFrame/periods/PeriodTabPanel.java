@@ -22,11 +22,15 @@ public class PeriodTabPanel extends UpdatableJPanel {
     // The GUI components
     private JTabbedPane master_tPanel = new JTabbedPane();
 
+    // Core database
+    private final TrackingDatabase trackingDatabase;
+
     /**
      * Constructor
      */
-    public PeriodTabPanel(Updatable master) {
+    public PeriodTabPanel(TrackingDatabase trackingDatabase, Updatable master) {
         super(master);
+        this.trackingDatabase = trackingDatabase;
         createUIComponents();
     }
 
@@ -69,12 +73,12 @@ public class PeriodTabPanel extends UpdatableJPanel {
      * @return True if there is new or removed period what warrant a complete panel regeneration
      */
     private boolean hasPeriodsChanged() {
-        if (TrackingDatabase.get().get(Period.class).size() != periods.size()) {
+        if (trackingDatabase.get(Period.class).size() != periods.size()) {
             return true;
         }
 
         for (int i = 0; i < periods.size(); i++) {
-            if (!periods.get(i).equals(TrackingDatabase.get().get(Period.class).get(i))) {
+            if (!periods.get(i).equals(trackingDatabase.get(Period.class).get(i))) {
                 return true;
             }
         }
@@ -93,7 +97,7 @@ public class PeriodTabPanel extends UpdatableJPanel {
 
             master_tPanel.removeAll();
 
-            periods.addAll(TrackingDatabase.get().get(Period.class));
+            periods.addAll(trackingDatabase.get(Period.class));
             for (Period period : periods) {
                 IndividualPeriodPanel panel = new IndividualPeriodPanel(period, this);
                 periodsPanels.add(panel);

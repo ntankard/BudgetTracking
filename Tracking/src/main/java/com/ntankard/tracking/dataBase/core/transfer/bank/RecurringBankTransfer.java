@@ -1,5 +1,6 @@
 package com.ntankard.tracking.dataBase.core.transfer.bank;
 
+import com.ntankard.javaObjectDatabase.database.TrackingDatabase_Schema;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.period.ExistingPeriod;
 import com.ntankard.javaObjectDatabase.coreObject.factory.DoubleParentFactory;
@@ -37,7 +38,7 @@ public class RecurringBankTransfer extends BankTransfer {
                     }
                 }
                 return RecurringBankTransfer.make(
-                        TrackingDatabase.get().getNextId(),
+                        generator.getTrackingDatabase().getNextId(),
                         generator,
                         secondaryGenerator.getBank(),
                         value,
@@ -108,7 +109,9 @@ public class RecurringBankTransfer extends BankTransfer {
                                              Period period, Bank source, Double value,
                                              Period destinationPeriod, Pool destination,
                                              FixedRecurringPayment parentPayment) {
-        return assembleDataObject(RecurringBankTransfer.getFieldContainer(), new RecurringBankTransfer()
+        TrackingDatabase trackingDatabase = period.getTrackingDatabase();
+        TrackingDatabase_Schema trackingDatabase_schema = trackingDatabase.getSchema();
+        return assembleDataObject(trackingDatabase, trackingDatabase_schema.getClassSchema(RecurringBankTransfer.class), new RecurringBankTransfer()
                 , DataObject_Id, id
                 , Transfer_Period, period
                 , Transfer_Source, source

@@ -40,7 +40,7 @@ public class FundTransactionList extends UpdatableJPanel {
         summaryContainer_C.weighty = 1;
         summaryContainer_C.gridwidth = 1;
 
-        periodFundPanel = new DataObject_DisplayList<>(Transfer.class, new OneParent_Children_Set<>(Transfer.class, core), this);
+        periodFundPanel = new DataObject_DisplayList<>(core.getTrackingDatabase().getSchema(), Transfer.class, new OneParent_Children_Set<>(Transfer.class, core), this);
         this.add(periodFundPanel, summaryContainer_C);
 
         summaryContainer_C.gridx = 1;

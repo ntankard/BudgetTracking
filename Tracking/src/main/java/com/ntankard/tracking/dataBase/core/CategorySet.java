@@ -1,5 +1,6 @@
 package com.ntankard.tracking.dataBase.core;
 
+import com.ntankard.javaObjectDatabase.database.TrackingDatabase_Schema;
 import com.ntankard.tracking.dataBase.core.baseObject.NamedDataObject;
 import com.ntankard.tracking.dataBase.core.links.CategoryToCategorySet;
 import com.ntankard.tracking.dataBase.core.links.CategoryToVirtualCategory;
@@ -66,7 +67,7 @@ public class CategorySet extends NamedDataObject implements HasDefault, Ordered 
         dataObjectSchema.<List<SolidCategory>>get(CategorySet_AvailableCategories).setDataCore_factory(
                 new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<List<SolidCategory>, CategorySet>) container -> {
-                            List<SolidCategory> toReturn = TrackingDatabase.get().get(SolidCategory.class); // TODO this is broken, you need to get alerts about this being updated
+                            List<SolidCategory> toReturn = container.getTrackingDatabase().get(SolidCategory.class); // TODO this is broken, you need to get alerts about this being updated
                             toReturn.removeAll(container.getUsedCategories());
                             return toReturn;
                         }
@@ -81,8 +82,9 @@ public class CategorySet extends NamedDataObject implements HasDefault, Ordered 
     /**
      * Create a new RePayFundTransfer object
      */
-    public static CategorySet make(Integer id, String name, Boolean isDefault, Integer order) {
-        return assembleDataObject(CategorySet.getFieldContainer(), new CategorySet()
+    public static CategorySet make(TrackingDatabase trackingDatabase, Integer id, String name, Boolean isDefault, Integer order) {
+        TrackingDatabase_Schema trackingDatabase_schema = trackingDatabase.getSchema();
+        return assembleDataObject(trackingDatabase, trackingDatabase_schema.getClassSchema(CategorySet.class), new CategorySet()
                 , DataObject_Id, id
                 , NamedDataObject_Name, name
                 , CategorySet_Default, isDefault
@@ -103,7 +105,7 @@ public class CategorySet extends NamedDataObject implements HasDefault, Ordered 
     //------------------------------------------------------------------------------------------------------------------
 
     private List<SolidCategory> getAvailableCategoriesImpl() {
-        List<SolidCategory> toReturn = TrackingDatabase.get().get(SolidCategory.class);
+        List<SolidCategory> toReturn = getTrackingDatabase().get(SolidCategory.class);
         toReturn.removeAll(getUsedCategories());
         return toReturn;
     }

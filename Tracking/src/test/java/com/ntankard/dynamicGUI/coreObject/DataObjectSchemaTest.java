@@ -3,7 +3,11 @@ package com.ntankard.dynamicGUI.coreObject;
 import com.ntankard.javaObjectDatabase.coreObject.DataObject;
 import com.ntankard.javaObjectDatabase.coreObject.field.DataField_Schema;
 import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
 import com.ntankard.javaObjectDatabase.database.TrackingDatabase_Schema;
+import com.ntankard.testUtil.DataAccessUntil;
+import com.ntankard.tracking.Main;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -16,6 +20,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Execution(ExecutionMode.CONCURRENT)
 class DataObjectSchemaTest {
+
+    /**
+     * The database instance to use
+     */
+    private static TrackingDatabase_Schema schema;
+
+    /**
+     * Load the database
+     */
+    @BeforeEach
+    void setUp() {
+        schema = DataAccessUntil.getSchema();
+    }
 
     @Test
     void add() {
@@ -130,8 +147,8 @@ class DataObjectSchemaTest {
         }
 
         // Check all real objects
-        for (Class<? extends DataObject> dClass : getAllClasses()) {
-            dataObjectSchema = TrackingDatabase_Schema.get().getClassSchema(dClass);
+        for (Class<? extends DataObject> dClass : schema.getSolidClasses()) {
+            dataObjectSchema = schema.getClassSchema(dClass);
             for (DataField_Schema<?> field : dataObjectSchema.getList()) {
                 assertEquals(field, dataObjectSchema.get(field.getIdentifierName()));
             }
@@ -148,8 +165,8 @@ class DataObjectSchemaTest {
         }
 
         // Check all real objects
-        for (Class<? extends DataObject> dClass : getAllClasses()) {
-            dataObjectSchema = TrackingDatabase_Schema.get().getClassSchema(dClass);
+        for (Class<? extends DataObject> dClass : schema.getSolidClasses()) {
+            dataObjectSchema = schema.getClassSchema(dClass);
             assertEquals(dataObjectSchema.masterMap.size(), dataObjectSchema.getList().size());
             for (DataField_Schema<?> field : dataObjectSchema.getList()) {
                 assertEquals(field, dataObjectSchema.masterMap.get(field.getIdentifierName()));
@@ -201,8 +218,8 @@ class DataObjectSchemaTest {
 
     @Test
     void testDataObjects() {
-        for (Class<? extends DataObject> dClass : getAllClasses()) {
-            DataObject_Schema dataObjectSchema = TrackingDatabase_Schema.get().getClassSchema(dClass);
+        for (Class<? extends DataObject> dClass : schema.getSolidClasses()) {
+            DataObject_Schema dataObjectSchema = schema.getClassSchema(dClass);
             if (Modifier.isAbstract(dClass.getModifiers())) {
                 assertEquals(dClass, dataObjectSchema.inheritedObjects.get(dataObjectSchema.inheritedObjects.size() - 1));
             } else {

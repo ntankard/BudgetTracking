@@ -3,6 +3,8 @@ package com.ntankard.tracking.dataBase.core.transfer.fund;
 import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.Derived_DataCore;
 import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.source.DirectExternalSource;
 import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.database.TrackingDatabase_Schema;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.period.Period;
 import com.ntankard.tracking.dataBase.core.pool.fundEvent.FundEvent;
@@ -47,7 +49,9 @@ public class ManualFundTransfer extends FundTransfer {
      * Create a new RePayFundTransfer object
      */
     public static ManualFundTransfer make(Integer id, String description, Period period, FundEvent source, Double value, Currency currency) {
-        return assembleDataObject(ManualFundTransfer.getFieldContainer(), new ManualFundTransfer()
+        TrackingDatabase trackingDatabase = period.getTrackingDatabase();
+        TrackingDatabase_Schema trackingDatabase_schema = trackingDatabase.getSchema();
+        return assembleDataObject(trackingDatabase, trackingDatabase_schema.getClassSchema(ManualFundTransfer.class), new ManualFundTransfer()
                 , DataObject_Id, id
                 , Transfer_Description, description
                 , Transfer_Period, period

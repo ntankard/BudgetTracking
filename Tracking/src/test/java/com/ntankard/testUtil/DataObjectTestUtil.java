@@ -15,17 +15,17 @@ public class DataObjectTestUtil {
     /**
      * Check that the exposed parents match all getter methods that return a DataObject. Not called in this test as this is not true for all objects. Should be called by all children
      */
-    public static void testStandardParents(Class<? extends DataObject> aClass) {
-        testStandardParents(aClass, new ArrayList<>());
+    public static void testStandardParents(TrackingDatabase trackingDatabase, Class<? extends DataObject> aClass) {
+        testStandardParents(trackingDatabase, aClass, new ArrayList<>());
     }
 
     /**
      * Check that the exposed parents match all getter methods that return a DataObject. Not called in this test as this is not true for all objects. Should be called by all children
      */
-    public static void testStandardParents(Class<? extends DataObject> aClass, List<String> exclude) {
-        assertNotEquals(0, TrackingDatabase.get().get(aClass).size());
-        for (DataObject toTest : TrackingDatabase.get().get(aClass)) {
-            List<DataField_Schema<?>> members = TrackingDatabase_Schema.get().getClassSchema(toTest.getClass()).getVerbosityDataFields(Integer.MAX_VALUE);
+    public static void testStandardParents(TrackingDatabase trackingDatabase, Class<? extends DataObject> aClass, List<String> exclude) {
+        assertNotEquals(0, trackingDatabase.get(aClass).size());
+        for (DataObject toTest : trackingDatabase.get(aClass)) {
+            List<DataField_Schema<?>> members = trackingDatabase.getSchema().getClassSchema(toTest.getClass()).getVerbosityDataFields(Integer.MAX_VALUE);
 
             // Find the getters
             List<DataField_Schema<?>> expectedMember = new ArrayList<>();
@@ -61,17 +61,17 @@ public class DataObjectTestUtil {
     /**
      * Check that data objects are not null
      */
-    public static void checkDataObjectNotNull(Class<? extends DataObject> aClass) {
-        checkDataObjectNotNull(aClass, new ArrayList<>());
+    public static void checkDataObjectNotNull(TrackingDatabase trackingDatabase, Class<? extends DataObject> aClass) {
+        checkDataObjectNotNull(trackingDatabase, aClass, new ArrayList<>());
     }
 
     /**
      * Check that data objects are not null
      */
-    public static void checkDataObjectNotNull(Class<? extends DataObject> aClass, List<String> exclude) {
-        assertNotEquals(0, TrackingDatabase.get().getAll().size());
-        for (DataObject toTest : TrackingDatabase.get().get(aClass)) {
-            List<DataField_Schema<?>> members = TrackingDatabase_Schema.get().getClassSchema(toTest.getClass()).getVerbosityDataFields(Integer.MAX_VALUE);
+    public static void checkDataObjectNotNull(TrackingDatabase trackingDatabase, Class<? extends DataObject> aClass, List<String> exclude) {
+        assertNotEquals(0, trackingDatabase.getAll().size());
+        for (DataObject toTest : trackingDatabase.get(aClass)) {
+            List<DataField_Schema<?>> members = trackingDatabase.getSchema().getClassSchema(toTest.getClass()).getVerbosityDataFields(Integer.MAX_VALUE);
 
             // Find the getters
             List<DataField_Schema<?>> expectedMember = new ArrayList<>();

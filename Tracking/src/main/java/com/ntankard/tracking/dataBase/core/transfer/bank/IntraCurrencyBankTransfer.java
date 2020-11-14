@@ -1,5 +1,7 @@
 package com.ntankard.tracking.dataBase.core.transfer.bank;
 
+import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.database.TrackingDatabase_Schema;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.period.Period;
 import com.ntankard.tracking.dataBase.core.pool.Bank;
@@ -82,7 +84,9 @@ public class IntraCurrencyBankTransfer extends BankTransfer {
     public static IntraCurrencyBankTransfer make(Integer id, String description,
                                                  Period period, Bank source, Double value,
                                                  Period destinationPeriod, Pool destination, Double destinationValue) {
-        return assembleDataObject(IntraCurrencyBankTransfer.getFieldContainer(), new IntraCurrencyBankTransfer()
+        TrackingDatabase trackingDatabase = period.getTrackingDatabase();
+        TrackingDatabase_Schema trackingDatabase_schema = trackingDatabase.getSchema();
+        return assembleDataObject(trackingDatabase, trackingDatabase_schema.getClassSchema(IntraCurrencyBankTransfer.class), new IntraCurrencyBankTransfer()
                 , DataObject_Id, id
                 , Transfer_Description, description
                 , Transfer_Period, period

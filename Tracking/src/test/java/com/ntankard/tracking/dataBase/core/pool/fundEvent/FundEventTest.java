@@ -1,18 +1,27 @@
 package com.ntankard.tracking.dataBase.core.pool.fundEvent;
 
+import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
 import com.ntankard.testUtil.DataAccessUntil;
 import com.ntankard.testUtil.DataObjectTestUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
+@Execution(ExecutionMode.CONCURRENT)
 class FundEventTest {
+
+    /**
+     * The database instance to use
+     */
+    private static TrackingDatabase trackingDatabase;
 
     /**
      * Load the database
      */
     @BeforeEach
     void setUp() {
-        DataAccessUntil.loadDatabase();
+        trackingDatabase = DataAccessUntil.getDataBase();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -24,7 +33,7 @@ class FundEventTest {
      */
     @Test
     void getParents() {
-        DataObjectTestUtil.testStandardParents(FundEvent.class);
+        DataObjectTestUtil.testStandardParents(trackingDatabase, FundEvent.class);
     }
 
     /**
@@ -32,6 +41,6 @@ class FundEventTest {
      */
     @Test
     void getDataObject() {
-        DataObjectTestUtil.checkDataObjectNotNull(FundEvent.class);
+        DataObjectTestUtil.checkDataObjectNotNull(trackingDatabase, FundEvent.class);
     }
 }

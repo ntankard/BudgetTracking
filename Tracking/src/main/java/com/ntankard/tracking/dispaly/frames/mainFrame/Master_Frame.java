@@ -28,13 +28,16 @@ public class Master_Frame extends JPanel implements Updatable {
 
     private String savePath;
 
+    // Core database
+    private final TrackingDatabase trackingDatabase;
+
     /**
      * Create and open the tracking frame
      */
-    public static void open(String savePath) {
+    public static void open(TrackingDatabase trackingDatabase, String savePath) {
         SwingUtilities.invokeLater(() -> {
             JFrame _frame = new JFrame("Budget");
-            _frame.setContentPane(new Master_Frame(savePath));
+            _frame.setContentPane(new Master_Frame(trackingDatabase, savePath));
             _frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
             _frame.pack();
             _frame.setVisible(true);
@@ -46,7 +49,8 @@ public class Master_Frame extends JPanel implements Updatable {
     /**
      * Constructor
      */
-    private Master_Frame(String savePath) {
+    private Master_Frame(TrackingDatabase trackingDatabase, String savePath) {
+        this.trackingDatabase = trackingDatabase;
         this.savePath = savePath;
         createUIComponents();
         update();
@@ -62,7 +66,7 @@ public class Master_Frame extends JPanel implements Updatable {
 
         JButton save_btn = new JButton("Save");
         save_btn.addActionListener(e -> {
-            TrackingDatabase_Reader.save(savePath);
+            TrackingDatabase_Reader.save(trackingDatabase, savePath);
         });
 
         JButton update_btn = new JButton("Update");
@@ -70,7 +74,7 @@ public class Master_Frame extends JPanel implements Updatable {
 
         JButton addPeriod_btn = new JButton("Add Period");
         addPeriod_btn.addActionListener(e -> {
-            ExistingPeriod last = TrackingDatabase.get().get(ExistingPeriod.class).get(TrackingDatabase.get().get(ExistingPeriod.class).size() - 1);
+            ExistingPeriod last = trackingDatabase.get(ExistingPeriod.class).get(trackingDatabase.get(ExistingPeriod.class).size() - 1);
             Period period = last.generateNext();
             period.add();
             notifyUpdate();
@@ -83,14 +87,14 @@ public class Master_Frame extends JPanel implements Updatable {
 
         this.add(btnPanel, BorderLayout.NORTH);
 
-        periodPanel = new PeriodTabPanel(this);
-        fundPanel = new FundPanel(this);
-        databasePanel = new DatabasePanel(this);
-        summaryGraphPanel = new SummaryGraphPanel(this);
-        summaryPanel = new SummaryPanel(this);
-        receiptPanel = new ReceiptPanel(this);
-        recurringPaymentPanel = new RecurringPaymentPanel(this);
-        categorySetPanel = new CategorySetPanel(this);
+        periodPanel = new PeriodTabPanel(trackingDatabase, this);
+        fundPanel = new FundPanel(trackingDatabase, this);
+        databasePanel = new DatabasePanel(trackingDatabase, this);
+        summaryGraphPanel = new SummaryGraphPanel(trackingDatabase, this);
+        summaryPanel = new SummaryPanel(trackingDatabase, this);
+        receiptPanel = new ReceiptPanel(trackingDatabase, this);
+        recurringPaymentPanel = new RecurringPaymentPanel(trackingDatabase, this);
+        categorySetPanel = new CategorySetPanel(trackingDatabase, this);
 
         JTabbedPane master_tPanel = new JTabbedPane();
         master_tPanel.addTab("Periods", periodPanel);

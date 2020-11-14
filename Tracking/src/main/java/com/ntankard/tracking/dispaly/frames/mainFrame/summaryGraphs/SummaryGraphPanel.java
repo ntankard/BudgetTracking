@@ -2,6 +2,7 @@ package com.ntankard.tracking.dispaly.frames.mainFrame.summaryGraphs;
 
 import com.ntankard.dynamicGUI.gui.util.update.UpdatableJPanel;
 import com.ntankard.dynamicGUI.gui.util.update.Updatable;
+import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,11 +16,15 @@ public class SummaryGraphPanel extends UpdatableJPanel {
 
     private JTabbedPane master_tPanel;
 
+    // Core database
+    private final TrackingDatabase trackingDatabase;
+
     /**
      * Constructor
      */
-    public SummaryGraphPanel(Updatable master) {
+    public SummaryGraphPanel(TrackingDatabase trackingDatabase, Updatable master) {
         super(master);
+        this.trackingDatabase = trackingDatabase;
         createUIComponents();
     }
 
@@ -30,9 +35,9 @@ public class SummaryGraphPanel extends UpdatableJPanel {
         this.removeAll();
         this.setLayout(new GridLayout(1, 1));
 
-        savingsGraph = new SavingsGraph(this);
-        categoryGraph = new CategoryGraph(this);
-        setCategoryGraph = new SetCategoryGraph(this);
+        savingsGraph = new SavingsGraph(trackingDatabase, this);
+        categoryGraph = new CategoryGraph(trackingDatabase, this);
+        setCategoryGraph = new SetCategoryGraph(trackingDatabase, this);
 
         master_tPanel = new JTabbedPane();
         master_tPanel.addTab("Savings", savingsGraph);

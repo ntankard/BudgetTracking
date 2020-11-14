@@ -45,11 +45,15 @@ public class ImageToTransferPanel extends UpdatableJPanel implements ListSelecti
     private JTextField price_txt = new JFormattedTextField();
     private JComboBox<SolidCategory> category_combo = new JComboBox<>();
 
+    // Core database
+    private final TrackingDatabase trackingDatabase;
+
     /**
      * Constructor
      */
-    public ImageToTransferPanel(String imagePath, Updatable master) {
+    public ImageToTransferPanel(TrackingDatabase trackingDatabase, String imagePath, Updatable master) {
         super(master);
+        this.trackingDatabase = trackingDatabase;
         this.imagePath = imagePath;
         createUIComponents();
     }
@@ -62,7 +66,7 @@ public class ImageToTransferPanel extends UpdatableJPanel implements ListSelecti
         this.setLayout(new BorderLayout());
 
         // Load the image
-        ImageIcon baseImage = new ImageIcon(TrackingDatabase.get().getImagePath() + imagePath);
+        ImageIcon baseImage = new ImageIcon(trackingDatabase.getImagePath() + imagePath);
         this.add(new ImageJPanel(baseImage), BorderLayout.CENTER);
 
         // Create Transfer Table
@@ -83,15 +87,15 @@ public class ImageToTransferPanel extends UpdatableJPanel implements ListSelecti
         JPanel period_panel = new JPanel();
         period_panel.setBorder(BorderFactory.createTitledBorder("Period"));
         period_panel.add(period_combo);
-        for (ExistingPeriod period : TrackingDatabase.get().get(ExistingPeriod.class))
+        for (ExistingPeriod period : trackingDatabase.get(ExistingPeriod.class))
             period_combo.addItem(period);
-        period_combo.setSelectedItem(TrackingDatabase.get().get(ExistingPeriod.class).get(TrackingDatabase.get().get(ExistingPeriod.class).size() - 1));
+        period_combo.setSelectedItem(trackingDatabase.get(ExistingPeriod.class).get(trackingDatabase.get(ExistingPeriod.class).size() - 1));
 
         // Create Currency combo box panel
         JPanel currency_panel = new JPanel();
         currency_panel.setBorder(BorderFactory.createTitledBorder("Currency"));
         currency_panel.add(currency_combo);
-        for (Currency currency : TrackingDatabase.get().get(Currency.class))
+        for (Currency currency : trackingDatabase.get(Currency.class))
             currency_combo.addItem(currency);
 
         // Create Bank combo box panel
@@ -194,7 +198,7 @@ public class ImageToTransferPanel extends UpdatableJPanel implements ListSelecti
             bank_combo.addItem(bank);
         }
 
-        Bank defaultBank = TrackingDatabase.get().getDefault(Bank.class);
+        Bank defaultBank = trackingDatabase.getDefault(Bank.class);
         if (defaultBank.getCurrency().equals(currency)) {
             bank_combo.setSelectedItem(defaultBank);
         }
@@ -218,7 +222,7 @@ public class ImageToTransferPanel extends UpdatableJPanel implements ListSelecti
         int index = transfer_table.getSelectionModel().getMaxSelectionIndex();
         BankTransfer transfer = displayedData.get(index);
 
-        Receipt receipt = Receipt.make(TrackingDatabase.get().getNextId(), imagePath, transfer);
+        Receipt receipt = Receipt.make(trackingDatabase.getNextId(), imagePath, transfer);
         receipt.add();
 
         notifyUpdate();
@@ -237,10 +241,10 @@ public class ImageToTransferPanel extends UpdatableJPanel implements ListSelecti
         String description = description_txt.getText();
         SolidCategory solidCategory = (SolidCategory) category_combo.getSelectedItem();
 
-        ManualBankTransfer manualBankTransferN = ManualBankTransfer.make(TrackingDatabase.get().getNextId(), description, period, bank, cost, null, solidCategory);
+        ManualBankTransfer manualBankTransferN = ManualBankTransfer.make(trackingDatabase.getNextId(), description, period, bank, cost, null, solidCategory);
         manualBankTransferN.add();
 
-        Receipt receipt = Receipt.make(TrackingDatabase.get().getNextId(), imagePath, manualBankTransferN);
+        Receipt receipt = Receipt.make(trackingDatabase.getNextId(), imagePath, manualBankTransferN);
         receipt.add();
 
         notifyUpdate();
@@ -265,10 +269,10 @@ public class ImageToTransferPanel extends UpdatableJPanel implements ListSelecti
         populateBank();
 
         category_combo.removeAllItems();
-        for (SolidCategory solidCategory : TrackingDatabase.get().get(SolidCategory.class)) {
+        for (SolidCategory solidCategory : trackingDatabase.get(SolidCategory.class)) {
             category_combo.addItem(solidCategory);
         }
-        category_combo.setSelectedItem(TrackingDatabase.get().getDefault(SolidCategory.class));
+        category_combo.setSelectedItem(trackingDatabase.getDefault(SolidCategory.class));
 
     }
 

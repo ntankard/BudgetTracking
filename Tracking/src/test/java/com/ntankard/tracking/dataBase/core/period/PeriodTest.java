@@ -1,22 +1,31 @@
 package com.ntankard.tracking.dataBase.core.period;
 
+import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
 import com.ntankard.testUtil.DataAccessUntil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Execution(ExecutionMode.CONCURRENT)
 class PeriodTest {
+
+    /**
+     * The database instance to use
+     */
+    private static TrackingDatabase trackingDatabase;
 
     /**
      * Load the database
      */
     @BeforeEach
     void setUp() {
-        DataAccessUntil.loadDatabase();
+        trackingDatabase = DataAccessUntil.getDataBase();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -29,7 +38,7 @@ class PeriodTest {
 
         // Generate test data
         List<Period> periods = new ArrayList<>();
-        ExistingPeriod period = ExistingPeriod.make(-1, 1, 1);
+        ExistingPeriod period = ExistingPeriod.make(trackingDatabase,-1, 1, 1);
         for (int i = 0; i < testSize; i++) {
             period = period.generateNext();
             periods.add(period);

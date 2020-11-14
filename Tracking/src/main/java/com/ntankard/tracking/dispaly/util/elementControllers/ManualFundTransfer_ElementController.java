@@ -19,7 +19,7 @@ public class ManualFundTransfer_ElementController extends TrackingDatabase_Eleme
      * Constructor
      */
     public ManualFundTransfer_ElementController(Period period, Updatable master) {
-        super(master);
+        super(period.getTrackingDatabase(), master);
         this.period = period;
     }
 
@@ -28,7 +28,7 @@ public class ManualFundTransfer_ElementController extends TrackingDatabase_Eleme
      */
     @Override
     public ManualFundTransfer newElement() {
-        return ManualFundTransfer.make(TrackingDatabase.get().getNextId(), "",
-                period, TrackingDatabase.get().getDefault(FundEvent.class), 0.0, TrackingDatabase.get().getDefault(Currency.class));
+        return ManualFundTransfer.make(getTrackingDatabase().getNextId(), "",
+                period, getTrackingDatabase().getDefault(FundEvent.class), 0.0, getTrackingDatabase().getDefault(Currency.class));
     }
 }

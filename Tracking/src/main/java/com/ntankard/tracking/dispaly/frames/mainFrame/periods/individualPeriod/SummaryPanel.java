@@ -25,6 +25,9 @@ public class SummaryPanel extends UpdatableJPanel {
     private JTextField nonSave_txt;
     private JLabel isValid_lbl;
 
+    // Core database
+    private final TrackingDatabase trackingDatabase;
+
     /**
      * Constructor
      *
@@ -33,6 +36,7 @@ public class SummaryPanel extends UpdatableJPanel {
     protected SummaryPanel(Period core, Updatable master) {
         super(master);
         this.core = core;
+        this.trackingDatabase = core.getTrackingDatabase();
         createUIComponents();
     }
 
@@ -63,14 +67,14 @@ public class SummaryPanel extends UpdatableJPanel {
      */
     @Override
     public void update() {
-        NumberFormat formatter = TrackingDatabase.get().getDefault(Currency.class).getNumberFormat();
-        Currency YEN = TrackingDatabase.get().getDefault(Currency.class);
+        NumberFormat formatter = trackingDatabase.getDefault(Currency.class).getNumberFormat();
+        Currency YEN = trackingDatabase.getDefault(Currency.class);
 
         double savingMin = Double.MAX_VALUE;
         double savingMax = Double.MIN_VALUE;
         double netMin = Double.MAX_VALUE;
         double netMax = Double.MIN_VALUE;
-        for (Period period : TrackingDatabase.get().get(Period.class)) {
+        for (Period period : trackingDatabase.get(Period.class)) {
             double profit = new Single_OneParent_Children_Set<>(Period_Summary.class, period).getItem().getBankDelta();
             if (profit > netMax) {
                 netMax = profit;

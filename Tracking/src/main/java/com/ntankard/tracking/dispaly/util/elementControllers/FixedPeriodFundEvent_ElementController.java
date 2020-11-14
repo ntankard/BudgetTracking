@@ -12,8 +12,8 @@ public class FixedPeriodFundEvent_ElementController extends TrackingDatabase_Ele
     /**
      * Constructor
      */
-    public FixedPeriodFundEvent_ElementController(Updatable master) {
-        super(master);
+    public FixedPeriodFundEvent_ElementController(TrackingDatabase trackingDatabase, Updatable master) {
+        super(trackingDatabase, master);
     }
 
     /**
@@ -21,10 +21,10 @@ public class FixedPeriodFundEvent_ElementController extends TrackingDatabase_Ele
      */
     @Override
     public FixedPeriodFundEvent newElement() {
-        return FixedPeriodFundEvent.make(TrackingDatabase.get().getNextId(),
+        return FixedPeriodFundEvent.make(getTrackingDatabase().getNextId(),
                 "",
-                TrackingDatabase.get().getDefault(SolidCategory.class),
-                TrackingDatabase.get().getDefault(ExistingPeriod.class),
+                getTrackingDatabase().getDefault(SolidCategory.class),
+                getTrackingDatabase().getDefault(ExistingPeriod.class),
                 1);
     }
 }

@@ -1,5 +1,7 @@
 package com.ntankard.tracking.dataBase.core.pool.fundEvent;
 
+import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.database.TrackingDatabase_Schema;
 import com.ntankard.tracking.dataBase.core.pool.category.SolidCategory;
 import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
 
@@ -28,7 +30,9 @@ public class NoneFundEvent extends FundEvent {
      * Create a new SavingsFundEvent object
      */
     public static NoneFundEvent make(Integer id, String name, SolidCategory solidCategory) {
-        return assembleDataObject(NoneFundEvent.getFieldContainer(), new NoneFundEvent()
+        TrackingDatabase trackingDatabase = solidCategory.getTrackingDatabase();
+        TrackingDatabase_Schema trackingDatabase_schema = trackingDatabase.getSchema();
+        return assembleDataObject(trackingDatabase, trackingDatabase_schema.getClassSchema(NoneFundEvent.class), new NoneFundEvent()
                 , DataObject_Id, id
                 , NamedDataObject_Name, name
                 , FundEvent_Category, solidCategory

@@ -5,17 +5,25 @@ import com.ntankard.testUtil.DataObjectTestUtil;
 import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Execution(ExecutionMode.CONCURRENT)
 class CurrencyTest {
 
     /**
-     * Load the data
+     * The database instance to use
+     */
+    private static TrackingDatabase trackingDatabase;
+
+    /**
+     * Load the database
      */
     @BeforeEach
     void setUp() {
-        DataAccessUntil.loadDatabase(); // TODO make this not needed by building the test objects directly for Unit Tests
+        trackingDatabase = DataAccessUntil.getDataBase();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -31,7 +39,7 @@ class CurrencyTest {
      */
     @Test
     void getNumberFormat() {
-        for (Currency currency : TrackingDatabase.get().get(Currency.class)) {
+        for (Currency currency : trackingDatabase.get(Currency.class)) {
             assertNotNull(currency.getNumberFormat());
         }
     }
@@ -41,7 +49,7 @@ class CurrencyTest {
      */
     @Test
     void isDefault() {
-        for (Currency currency : TrackingDatabase.get().get(Currency.class)) {
+        for (Currency currency : trackingDatabase.get(Currency.class)) {
             assertNotNull(currency.isDefault());
         }
     }
@@ -51,7 +59,7 @@ class CurrencyTest {
      */
     @Test
     void getToPrimary() {
-        for (Currency currency : TrackingDatabase.get().get(Currency.class)) {
+        for (Currency currency : trackingDatabase.get(Currency.class)) {
             assertNotNull(currency.getToPrimary());
         }
     }
@@ -61,7 +69,7 @@ class CurrencyTest {
      */
     @Test
     void getLanguage() {
-        for (Currency currency : TrackingDatabase.get().get(Currency.class)) {
+        for (Currency currency : trackingDatabase.get(Currency.class)) {
             assertNotNull(currency.getLanguage());
         }
     }
@@ -71,7 +79,7 @@ class CurrencyTest {
      */
     @Test
     void getCountry() {
-        for (Currency currency : TrackingDatabase.get().get(Currency.class)) {
+        for (Currency currency : trackingDatabase.get(Currency.class)) {
             assertNotNull(currency.getCountry());
         }
     }
@@ -81,7 +89,7 @@ class CurrencyTest {
      */
     @Test
     void getParents() {
-        DataObjectTestUtil.testStandardParents(Currency.class);
+        DataObjectTestUtil.testStandardParents(trackingDatabase, Currency.class);
     }
 
     /**
@@ -89,6 +97,6 @@ class CurrencyTest {
      */
     @Test
     void getDataObject() {
-        DataObjectTestUtil.checkDataObjectNotNull(Currency.class);
+        DataObjectTestUtil.checkDataObjectNotNull(trackingDatabase, Currency.class);
     }
 }

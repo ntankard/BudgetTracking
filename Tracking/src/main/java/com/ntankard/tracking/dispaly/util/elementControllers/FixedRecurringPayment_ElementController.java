@@ -13,8 +13,8 @@ public class FixedRecurringPayment_ElementController extends TrackingDatabase_El
     /**
      * Constructor
      */
-    public FixedRecurringPayment_ElementController(Updatable master) {
-        super(master);
+    public FixedRecurringPayment_ElementController(TrackingDatabase trackingDatabase, Updatable master) {
+        super(trackingDatabase, master);
     }
 
     /**
@@ -22,12 +22,12 @@ public class FixedRecurringPayment_ElementController extends TrackingDatabase_El
      */
     @Override
     public FixedRecurringPayment newElement() {
-        return FixedRecurringPayment.make(TrackingDatabase.get().getNextId(),
+        return FixedRecurringPayment.make(getTrackingDatabase().getNextId(),
                 "",
                 0.0,
-                TrackingDatabase.get().getDefault(ExistingPeriod.class),
-                TrackingDatabase.get().getDefault(Bank.class),
-                TrackingDatabase.get().getDefault(SolidCategory.class),
+                getTrackingDatabase().getDefault(ExistingPeriod.class),
+                getTrackingDatabase().getDefault(Bank.class),
+                getTrackingDatabase().getDefault(SolidCategory.class),
                 null);
     }
 }

@@ -6,18 +6,26 @@ import com.ntankard.tracking.dataBase.core.transfer.bank.BankTransfer;
 import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import static com.ntankard.testUtil.DataAccessUntil.getObject;
 import static org.junit.jupiter.api.Assertions.*;
 
+@Execution(ExecutionMode.CONCURRENT)
 class ReceiptTest {
 
     /**
-     * Load the data
+     * The database instance to use
+     */
+    private static TrackingDatabase trackingDatabase;
+
+    /**
+     * Load the database
      */
     @BeforeEach
     void setUp() {
-        DataAccessUntil.loadDatabase(); // TODO make this not needed by building the test objects directly for Unit Tests
+        trackingDatabase = DataAccessUntil.getDataBase();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -29,11 +37,11 @@ class ReceiptTest {
      */
     @Test
     void constructor() {
-        BankTransfer bankCategoryTransfer = getObject(BankTransfer.class, 0);
+        BankTransfer bankCategoryTransfer = getObject(trackingDatabase, BankTransfer.class, 0);
 
         assertDoesNotThrow(() -> Receipt.make(0, "", bankCategoryTransfer));
         assertThrows(IllegalArgumentException.class, () -> Receipt.make(0, null, bankCategoryTransfer));
-        assertThrows(IllegalArgumentException.class, () -> Receipt.make(0, "", null));
+        assertThrows(NullPointerException.class, () -> Receipt.make(0, "", null));
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -45,7 +53,7 @@ class ReceiptTest {
      */
     @Test
     void getFileName() {
-        for (Receipt receipt : TrackingDatabase.get().get(Receipt.class)) {
+        for (Receipt receipt : trackingDatabase.get(Receipt.class)) {
             assertNotNull(receipt.getFileName());
         }
     }
@@ -55,7 +63,7 @@ class ReceiptTest {
      */
     @Test
     void getBankCategoryTransfer() {
-        for (Receipt receipt : TrackingDatabase.get().get(Receipt.class)) {
+        for (Receipt receipt : trackingDatabase.get(Receipt.class)) {
             assertNotNull(receipt.getBankTransfer());
         }
     }
@@ -65,7 +73,7 @@ class ReceiptTest {
      */
     @Test
     void getParents() {
-        DataObjectTestUtil.testStandardParents(Receipt.class);
+        DataObjectTestUtil.testStandardParents(trackingDatabase, Receipt.class);
     }
 
     /**
@@ -73,6 +81,6 @@ class ReceiptTest {
      */
     @Test
     void getDataObject() {
-        DataObjectTestUtil.checkDataObjectNotNull(Receipt.class);
+        DataObjectTestUtil.checkDataObjectNotNull(trackingDatabase, Receipt.class);
     }
 }

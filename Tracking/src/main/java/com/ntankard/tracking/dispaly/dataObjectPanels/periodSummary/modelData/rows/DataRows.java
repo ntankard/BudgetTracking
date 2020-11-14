@@ -22,6 +22,9 @@ public abstract class DataRows<P extends Pool> {
     // Row data
     protected int maxRows = 0;
 
+    // Core database
+    private final TrackingDatabase trackingDatabase;
+
     /**
      * Constructor
      *
@@ -32,6 +35,7 @@ public abstract class DataRows<P extends Pool> {
         this.core = core;
         this.columns = columns;
         this.typeParameterClass = typeParameterClass;
+        this.trackingDatabase = core.getTrackingDatabase();
     }
 
     /**
@@ -41,7 +45,7 @@ public abstract class DataRows<P extends Pool> {
      * @return The formatted total
      */
     public Object getTotal(P pool) {
-        return TrackingDatabase.get().getDefault(Currency.class).getNumberFormat().format(getTotal_impl(pool));
+        return trackingDatabase.getDefault(Currency.class).getNumberFormat().format(getTotal_impl(pool));
     }
 
     /**
@@ -97,6 +101,6 @@ public abstract class DataRows<P extends Pool> {
      * @return The set
      */
     protected PeriodPool_SumSet getSumSet(P pool) {
-        return new PeriodPool_SumSet(new TwoParent_Children_Set<>(HalfTransfer.class, core, pool, new TransferType_HalfTransfer_Filter(typeParameterClass, new TransferDestination_HalfTransfer_Filter(pool.getClass()))));
+        return new PeriodPool_SumSet(pool.getTrackingDatabase(), new TwoParent_Children_Set<>(HalfTransfer.class, core, pool, new TransferType_HalfTransfer_Filter(typeParameterClass, new TransferDestination_HalfTransfer_Filter(pool.getClass()))));
     }
 }

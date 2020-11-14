@@ -1,5 +1,7 @@
 package com.ntankard.tracking.dataBase.core.pool.fundEvent;
 
+import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.database.TrackingDatabase_Schema;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.period.ExistingPeriod;
 import com.ntankard.tracking.dataBase.core.pool.category.SolidCategory;
@@ -66,7 +68,7 @@ public class FixedPeriodFundEvent extends FundEvent {
                 new Children_ListDataCore.Children_ListDataCore_Factory<HalfTransfer>(
                         HalfTransfer.class,
                         new NotTransferType_HalfTransfer_Filter(RePayFundTransfer.class),
-                        new Children_ListDataCore.ParentAccess.ParentAccess_Factory< HalfTransfer>(FixedPeriodFundEvent_Self)));
+                        new Children_ListDataCore.ParentAccess.ParentAccess_Factory<HalfTransfer>(FixedPeriodFundEvent_Self)));
         // NonRepaySum =================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(FixedPeriodFundEvent_NonRepaySum, Double.class));
         dataObjectSchema.<Double>get(FixedPeriodFundEvent_NonRepaySum).setDataCore_factory(
@@ -101,7 +103,9 @@ public class FixedPeriodFundEvent extends FundEvent {
      * Create a new FixedPeriodFundEvent object
      */
     public static FixedPeriodFundEvent make(Integer id, String name, SolidCategory solidCategory, ExistingPeriod start, Integer duration) {
-        return assembleDataObject(FixedPeriodFundEvent.getFieldContainer(), new FixedPeriodFundEvent()
+        TrackingDatabase trackingDatabase = solidCategory.getTrackingDatabase();
+        TrackingDatabase_Schema trackingDatabase_schema = trackingDatabase.getSchema();
+        return assembleDataObject(trackingDatabase, trackingDatabase_schema.getClassSchema(FixedPeriodFundEvent.class), new FixedPeriodFundEvent()
                 , DataObject_Id, id
                 , NamedDataObject_Name, name
                 , FundEvent_Category, solidCategory

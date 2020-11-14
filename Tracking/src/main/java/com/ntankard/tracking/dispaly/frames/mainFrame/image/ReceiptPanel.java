@@ -2,6 +2,7 @@ package com.ntankard.tracking.dispaly.frames.mainFrame.image;
 
 import com.ntankard.dynamicGUI.gui.util.update.Updatable;
 import com.ntankard.dynamicGUI.gui.util.update.UpdatableJPanel;
+import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,13 +13,17 @@ public class ReceiptPanel extends UpdatableJPanel {
     private NewReceiptPanel newReceiptPanel;
     private ExistingReceiptPanel existingReceiptPanel;
 
+    // Core database
+    private final TrackingDatabase trackingDatabase;
+
     /**
      * Constructor
      *
      * @param master The parent of this object to be notified if data changes
      */
-    public ReceiptPanel(Updatable master) {
+    public ReceiptPanel(TrackingDatabase trackingDatabase, Updatable master) {
         super(master);
+        this.trackingDatabase = trackingDatabase;
         createUIComponents();
     }
 
@@ -29,8 +34,8 @@ public class ReceiptPanel extends UpdatableJPanel {
         this.removeAll();
         this.setLayout(new BorderLayout());
 
-        newReceiptPanel = new NewReceiptPanel(this);
-        existingReceiptPanel = new ExistingReceiptPanel(this);
+        newReceiptPanel = new NewReceiptPanel(trackingDatabase, this);
+        existingReceiptPanel = new ExistingReceiptPanel(trackingDatabase, this);
 
         JTabbedPane master_tPanel = new JTabbedPane();
         master_tPanel.addTab("New", newReceiptPanel);

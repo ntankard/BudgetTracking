@@ -40,7 +40,7 @@ public class IndividualFundPanel extends UpdatableJPanel {
 
         JTabbedPane master_tPanel = new JTabbedPane();
 
-        fundEventSummary_panel = new Object_DisplayList<>(FundEvent_Summary.class, new OneParent_Children_Set<>(FundEvent_Summary.class, core), false, this);
+        fundEventSummary_panel = new Object_DisplayList<>(core.getTrackingDatabase().getSchema(), FundEvent_Summary.class, new OneParent_Children_Set<>(FundEvent_Summary.class, core), false, this);
         fundEventSummary_panel.setVerbosity(INFO_DISPLAY);
         master_tPanel.addTab("Summary", fundEventSummary_panel);
 

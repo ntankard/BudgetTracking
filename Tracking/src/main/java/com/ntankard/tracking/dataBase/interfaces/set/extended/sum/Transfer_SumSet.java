@@ -16,9 +16,15 @@ public class Transfer_SumSet<S extends ObjectSet<HalfTransfer>> {
     protected S coreSet;
 
     /**
+     * Core database
+     */
+    private final TrackingDatabase trackingDatabase;
+
+    /**
      * Constructor
      */
-    public Transfer_SumSet(S coreSet) {
+    public Transfer_SumSet(TrackingDatabase trackingDatabase, S coreSet) {
+        this.trackingDatabase = trackingDatabase;
         this.coreSet = coreSet;
     }
 
@@ -81,7 +87,7 @@ public class Transfer_SumSet<S extends ObjectSet<HalfTransfer>> {
      */
     public List<Currency> getCurrencies() {
         List<Currency> toReturn = new ArrayList<>();
-        for (Currency currency : TrackingDatabase.get().get(Currency.class)) {
+        for (Currency currency : trackingDatabase.get(Currency.class)) {
             if (get(currency).size() != 0) {
                 toReturn.add(currency);
             }

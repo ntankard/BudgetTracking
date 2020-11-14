@@ -1,19 +1,28 @@
 package com.ntankard.tracking.dataBase.core.pool;
 
+import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
 import com.ntankard.testUtil.DataAccessUntil;
 import com.ntankard.testUtil.DataObjectTestUtil;
 import com.ntankard.tracking.dataBase.core.pool.category.SolidCategory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
+@Execution(ExecutionMode.CONCURRENT)
 class SolidCategoryTest {
+
+    /**
+     * The database instance to use
+     */
+    private static TrackingDatabase trackingDatabase;
 
     /**
      * Load the database
      */
     @BeforeEach
     void setUp() {
-        DataAccessUntil.loadDatabase();
+        trackingDatabase = DataAccessUntil.getDataBase();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -25,7 +34,7 @@ class SolidCategoryTest {
      */
     @Test
     void getParents() {
-        DataObjectTestUtil.testStandardParents(SolidCategory.class);
+        DataObjectTestUtil.testStandardParents(trackingDatabase, SolidCategory.class);
     }
 
     /**
@@ -33,7 +42,7 @@ class SolidCategoryTest {
      */
     @Test
     void getDataObject() {
-        DataObjectTestUtil.checkDataObjectNotNull(SolidCategory.class);
+        DataObjectTestUtil.checkDataObjectNotNull(trackingDatabase, SolidCategory.class);
     }
 
     //------------------------------------------------------------------------------------------------------------------

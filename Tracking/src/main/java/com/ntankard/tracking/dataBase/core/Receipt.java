@@ -3,6 +3,8 @@ package com.ntankard.tracking.dataBase.core;
 import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.coreObject.DataObject;
 import com.ntankard.javaObjectDatabase.coreObject.field.DataField_Schema;
+import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.database.TrackingDatabase_Schema;
 import com.ntankard.tracking.dataBase.core.transfer.bank.BankTransfer;
 
 public class Receipt extends DataObject {
@@ -37,7 +39,9 @@ public class Receipt extends DataObject {
      * Create a new Receipt object
      */
     public static Receipt make(Integer id, String fileName, BankTransfer bankTransfer) {
-        return assembleDataObject(Receipt.getFieldContainer(), new Receipt()
+        TrackingDatabase trackingDatabase = bankTransfer.getTrackingDatabase();
+        TrackingDatabase_Schema trackingDatabase_schema = trackingDatabase.getSchema();
+        return assembleDataObject(trackingDatabase, trackingDatabase_schema.getClassSchema(Receipt.class), new Receipt()
                 , DataObject_Id, id
                 , Receipt_FileName, fileName
                 , Receipt_BankTransfer, bankTransfer

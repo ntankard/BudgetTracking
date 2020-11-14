@@ -1,5 +1,6 @@
 package com.ntankard.tracking.dataBase.core.transfer.fund.rePay;
 
+import com.ntankard.javaObjectDatabase.database.TrackingDatabase_Schema;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.period.ExistingPeriod;
 import com.ntankard.tracking.dataBase.core.period.Period;
@@ -27,10 +28,10 @@ public class FixedPeriodRePayFundTransfer extends RePayFundTransfer {
             ExistingPeriod.class,
             Transfer_Period, FixedPeriodFundEvent.class,
             Transfer_Source, (generator, secondaryGenerator) -> FixedPeriodRePayFundTransfer.make(
-            TrackingDatabase.get().getNextId(),
+            generator.getTrackingDatabase().getNextId(),
             generator,
             secondaryGenerator,
-            TrackingDatabase.get().getDefault(Currency.class))
+            generator.getTrackingDatabase().getDefault(Currency.class))
     );
 
     /**
@@ -77,7 +78,9 @@ public class FixedPeriodRePayFundTransfer extends RePayFundTransfer {
      * Create a new RePayFundTransfer object
      */
     public static FixedPeriodRePayFundTransfer make(Integer id, Period period, FundEvent source, Currency currency) {
-        return assembleDataObject(FixedPeriodRePayFundTransfer.getFieldContainer(), new FixedPeriodRePayFundTransfer()
+        TrackingDatabase trackingDatabase = period.getTrackingDatabase();
+        TrackingDatabase_Schema trackingDatabase_schema = trackingDatabase.getSchema();
+        return assembleDataObject(trackingDatabase, trackingDatabase_schema.getClassSchema(FixedPeriodRePayFundTransfer.class), new FixedPeriodRePayFundTransfer()
                 , DataObject_Id, id
                 , Transfer_Period, period
                 , Transfer_Source, source

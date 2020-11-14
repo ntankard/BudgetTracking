@@ -6,17 +6,25 @@ import com.ntankard.tracking.dataBase.core.pool.category.SolidCategory;
 import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Execution(ExecutionMode.CONCURRENT)
 class NoneFundEventTest {
+
+    /**
+     * The database instance to use
+     */
+    private static TrackingDatabase trackingDatabase;
 
     /**
      * Load the database
      */
     @BeforeEach
     void setUp() {
-        DataAccessUntil.loadDatabase(); //TODO make this not needed by building the test objects directly for Unit Tests
+        trackingDatabase = DataAccessUntil.getDataBase();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -25,11 +33,11 @@ class NoneFundEventTest {
 
     @Test
     void constructor() {
-        assertNotEquals(0, TrackingDatabase.get().get(SolidCategory.class).size());
+        assertNotEquals(0, trackingDatabase.get(SolidCategory.class).size());
 
-        SolidCategory solidCategory = TrackingDatabase.get().get(SolidCategory.class).get(0);
+        SolidCategory solidCategory = trackingDatabase.get(SolidCategory.class).get(0);
 
-        assertThrows(IllegalArgumentException.class, () -> NoneFundEvent.make(-1, "", null));
+        assertThrows(NullPointerException.class, () -> NoneFundEvent.make(-1, "", null));
         assertDoesNotThrow(() -> NoneFundEvent.make(-1, "", solidCategory));
     }
 
@@ -42,7 +50,7 @@ class NoneFundEventTest {
      */
     @Test
     void getParents() {
-        DataObjectTestUtil.testStandardParents(NoneFundEvent.class);
+        DataObjectTestUtil.testStandardParents(trackingDatabase, NoneFundEvent.class);
     }
 
     /**
@@ -50,6 +58,6 @@ class NoneFundEventTest {
      */
     @Test
     void getDataObject() {
-        DataObjectTestUtil.checkDataObjectNotNull(NoneFundEvent.class);
+        DataObjectTestUtil.checkDataObjectNotNull(trackingDatabase, NoneFundEvent.class);
     }
 }

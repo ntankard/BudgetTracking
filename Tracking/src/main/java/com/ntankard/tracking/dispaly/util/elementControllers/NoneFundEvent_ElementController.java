@@ -11,8 +11,8 @@ public class NoneFundEvent_ElementController extends TrackingDatabase_ElementCon
     /**
      * Constructor
      */
-    public NoneFundEvent_ElementController(Updatable master) {
-        super(master);
+    public NoneFundEvent_ElementController(TrackingDatabase trackingDatabase, Updatable master) {
+        super(trackingDatabase, master);
     }
 
     /**
@@ -20,8 +20,8 @@ public class NoneFundEvent_ElementController extends TrackingDatabase_ElementCon
      */
     @Override
     public NoneFundEvent newElement() {
-        return NoneFundEvent.make(TrackingDatabase.get().getNextId(),
+        return NoneFundEvent.make(getTrackingDatabase().getNextId(),
                 "",
-                TrackingDatabase.get().getDefault(SolidCategory.class));
+                getTrackingDatabase().getDefault(SolidCategory.class));
     }
 }
