@@ -2,7 +2,7 @@ package com.ntankard.tracking.dataBase.core.period;
 
 import com.ntankard.testUtil.DataAccessUntil;
 import com.ntankard.testUtil.DataObjectTestUtil;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.database.Database;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -19,14 +19,14 @@ class ExistingPeriodTest {
     /**
      * The database instance to use
      */
-    private static TrackingDatabase trackingDatabase;
+    private static Database database;
 
     /**
      * Load the database
      */
     @BeforeEach
     void setUp() {
-        trackingDatabase = DataAccessUntil.getDataBase();
+        database = DataAccessUntil.getDataBase();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -46,7 +46,7 @@ class ExistingPeriodTest {
         exclude.add("Last");
         exclude.add("Next");
         exclude.add("First");
-        DataObjectTestUtil.testStandardParents(trackingDatabase, ExistingPeriod.class, exclude);
+        DataObjectTestUtil.testStandardParents(database, ExistingPeriod.class, exclude);
     }
 
     /**
@@ -57,7 +57,7 @@ class ExistingPeriodTest {
         List<String> exclude = new ArrayList<>();
         exclude.add("Last");
         exclude.add("Next");
-        DataObjectTestUtil.checkDataObjectNotNull(trackingDatabase, ExistingPeriod.class, exclude);
+        DataObjectTestUtil.checkDataObjectNotNull(database, ExistingPeriod.class, exclude);
     }
 
     /**
@@ -65,8 +65,8 @@ class ExistingPeriodTest {
      */
     @Test
     void getMonth() {
-        assertNotEquals(0, trackingDatabase.get(ExistingPeriod.class).size());
-        for (ExistingPeriod period : trackingDatabase.get(ExistingPeriod.class)) {
+        assertNotEquals(0, database.get(ExistingPeriod.class).size());
+        for (ExistingPeriod period : database.get(ExistingPeriod.class)) {
             assertTrue(period.getMonth() > 0);
             assertTrue(period.getMonth() <= 12);
         }
