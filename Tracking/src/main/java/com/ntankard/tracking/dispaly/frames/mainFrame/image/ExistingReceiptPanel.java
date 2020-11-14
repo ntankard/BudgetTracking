@@ -8,7 +8,7 @@ import com.ntankard.tracking.dataBase.core.period.Period;
 import com.ntankard.tracking.dataBase.core.pool.Bank;
 import com.ntankard.tracking.dataBase.core.Receipt;
 import com.ntankard.tracking.dataBase.core.transfer.bank.BankTransfer;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.javaObjectDatabase.util.set.TwoParent_Children_Set;
 import com.ntankard.tracking.util.swing.ImageJPanel;
 
@@ -42,16 +42,16 @@ public class ExistingReceiptPanel extends UpdatableJPanel {
     private JButton associate_btn = new JButton("Associate");
 
     // Core database
-    private final TrackingDatabase trackingDatabase;
+    private final Database database;
 
     /**
      * Constructor
      *
      * @param master The parent of this object to be notified if data changes
      */
-    public ExistingReceiptPanel(TrackingDatabase trackingDatabase, Updatable master) {
+    public ExistingReceiptPanel(Database database, Updatable master) {
         super(master);
-        this.trackingDatabase = trackingDatabase;
+        this.database = database;
         createUIComponents();
     }
 
@@ -93,15 +93,15 @@ public class ExistingReceiptPanel extends UpdatableJPanel {
         JPanel period_panel = new JPanel();
         period_panel.setBorder(BorderFactory.createTitledBorder("Period"));
         period_panel.add(period_combo);
-        for (ExistingPeriod period : trackingDatabase.get(ExistingPeriod.class))
+        for (ExistingPeriod period : database.get(ExistingPeriod.class))
             period_combo.addItem(period);
-        period_combo.setSelectedItem(trackingDatabase.get(ExistingPeriod.class).get(trackingDatabase.get(ExistingPeriod.class).size() - 1));
+        period_combo.setSelectedItem(database.get(ExistingPeriod.class).get(database.get(ExistingPeriod.class).size() - 1));
 
         // Create Currency combo box panel
         JPanel currency_panel = new JPanel();
         currency_panel.setBorder(BorderFactory.createTitledBorder("Currency"));
         currency_panel.add(currency_combo);
-        for (Currency currency : trackingDatabase.get(Currency.class))
+        for (Currency currency : database.get(Currency.class))
             currency_combo.addItem(currency);
 
         // Create Bank combo box panel
@@ -157,7 +157,7 @@ public class ExistingReceiptPanel extends UpdatableJPanel {
             bank_combo.addItem(bank);
         }
 
-        Bank defaultBank = trackingDatabase.getDefault(Bank.class);
+        Bank defaultBank = database.getDefault(Bank.class);
         if (defaultBank.getCurrency().equals(currency)) {
             bank_combo.setSelectedItem(defaultBank);
         }
@@ -205,7 +205,7 @@ public class ExistingReceiptPanel extends UpdatableJPanel {
             // Update the image
             selectedReceipt = receiptDisplayedData.get(receipt_table.getSelectionModel().getMaxSelectionIndex());
             ImageIcon baseImage;
-            baseImage = new ImageIcon(trackingDatabase.getImagePath() + selectedReceipt.getFileName());
+            baseImage = new ImageIcon(database.getImagePath() + selectedReceipt.getFileName());
             imageJPanel.setBaseImage(baseImage);
 
             // Update the selection panel
@@ -224,7 +224,7 @@ public class ExistingReceiptPanel extends UpdatableJPanel {
      */
     @Override
     public void update() {
-        receiptDisplayedData = trackingDatabase.get(Receipt.class);
+        receiptDisplayedData = database.get(Receipt.class);
         receipt_table_model.fireTableDataChanged();
         transfer_table_model.fireTableDataChanged();
     }

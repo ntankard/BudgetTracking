@@ -1,6 +1,6 @@
 package com.ntankard.tracking.dataBase.interfaces.summary;
 
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase_Schema;
+import com.ntankard.javaObjectDatabase.database.Database_Schema;
 import com.ntankard.tracking.dataBase.core.baseObject.interfaces.CurrencyBound;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.period.ExistingPeriod;
@@ -27,7 +27,7 @@ import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.source.
 import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.coreObject.interfaces.Ordered;
 import com.ntankard.javaObjectDatabase.database.ParameterMap;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.javaObjectDatabase.util.set.OneParent_Children_Set;
 import com.ntankard.javaObjectDatabase.util.set.TwoParent_Children_Set;
 
@@ -426,9 +426,9 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
         if (!period.getChildren(Period_Summary.class).isEmpty()) {
             throw new IllegalStateException("Making a second period summary");
         }
-        TrackingDatabase trackingDatabase = period.getTrackingDatabase();
-        TrackingDatabase_Schema trackingDatabase_schema = trackingDatabase.getSchema();
-        return assembleDataObject(trackingDatabase, trackingDatabase_schema.getClassSchema(Period_Summary.class), new Period_Summary()
+        Database database = period.getTrackingDatabase();
+        Database_Schema database_schema = database.getSchema();
+        return assembleDataObject(database, database_schema.getClassSchema(Period_Summary.class), new Period_Summary()
                 , DataObject_Id, period.getTrackingDatabase().getNextId()
                 , Period_Summary_Period, period
         );

@@ -1,13 +1,9 @@
 package com.ntankard.testUtil;
 
 import com.ntankard.javaObjectDatabase.coreObject.DataObject;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase_Schema;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase_Reader;
+import com.ntankard.javaObjectDatabase.database.Database_Schema;
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.Main;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -21,9 +17,9 @@ public class DataAccessUntil {
      * @param <T>   ToGet
      * @return An object from the database
      */
-    public static <T extends DataObject> T getObject(TrackingDatabase trackingDatabase, Class<T> toGet, int index) {
-        assertTrue(trackingDatabase.get(toGet).size() > index);
-        return trackingDatabase.get(toGet).get(index);
+    public static <T extends DataObject> T getObject(Database database, Class<T> toGet, int index) {
+        assertTrue(database.get(toGet).size() > index);
+        return database.get(toGet).get(index);
     }
 
     /**
@@ -31,7 +27,7 @@ public class DataAccessUntil {
      *
      * @return The user database
      */
-    public static TrackingDatabase getDataBase() {
+    public static Database getDataBase() {
         return Main.createDataBase();
     }
 
@@ -40,7 +36,7 @@ public class DataAccessUntil {
      *
      * @return The tracking schema
      */
-    public static TrackingDatabase_Schema getSchema() {
-        return TrackingDatabase_Schema.getSchemaFromPackage(Main.databasePath);
+    public static Database_Schema getSchema() {
+        return Database_Schema.getSchemaFromPackage(Main.databasePath);
     }
 }

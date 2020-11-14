@@ -8,8 +8,8 @@ import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.coreObject.DataObject;
 import com.ntankard.javaObjectDatabase.coreObject.interfaces.Ordered;
 import com.ntankard.javaObjectDatabase.coreObject.field.DataField_Schema;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase_Schema;
+import com.ntankard.javaObjectDatabase.database.Database;
+import com.ntankard.javaObjectDatabase.database.Database_Schema;
 import com.ntankard.tracking.dataBase.core.CategorySet;
 import com.ntankard.tracking.dataBase.core.pool.category.SolidCategory;
 
@@ -70,9 +70,9 @@ public class CategoryToCategorySet extends DataObject implements Ordered {
      * Create a new RePayFundTransfer object
      */
     public static CategoryToCategorySet make(Integer id, CategorySet categorySet, SolidCategory solidCategory, Integer orderImpl) {
-        TrackingDatabase trackingDatabase = categorySet.getTrackingDatabase();
-        TrackingDatabase_Schema trackingDatabase_schema = trackingDatabase.getSchema();
-        return assembleDataObject(trackingDatabase, trackingDatabase_schema.getClassSchema(CategoryToCategorySet.class), new CategoryToCategorySet()
+        Database database = categorySet.getTrackingDatabase();
+        Database_Schema database_schema = database.getSchema();
+        return assembleDataObject(database, database_schema.getClassSchema(CategoryToCategorySet.class), new CategoryToCategorySet()
                 , DataObject_Id, id
                 , CategoryToCategorySet_CategorySet, categorySet
                 , CategoryToCategorySet_SolidCategory, solidCategory

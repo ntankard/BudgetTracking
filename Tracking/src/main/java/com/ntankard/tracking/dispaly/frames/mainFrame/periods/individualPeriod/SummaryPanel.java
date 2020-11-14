@@ -7,7 +7,7 @@ import com.ntankard.dynamicGUI.gui.util.update.Updatable;
 import com.ntankard.dynamicGUI.gui.util.update.UpdatableJPanel;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.period.Period;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dataBase.interfaces.summary.Period_Summary;
 
 import javax.swing.*;
@@ -26,7 +26,7 @@ public class SummaryPanel extends UpdatableJPanel {
     private JLabel isValid_lbl;
 
     // Core database
-    private final TrackingDatabase trackingDatabase;
+    private final Database database;
 
     /**
      * Constructor
@@ -36,7 +36,7 @@ public class SummaryPanel extends UpdatableJPanel {
     protected SummaryPanel(Period core, Updatable master) {
         super(master);
         this.core = core;
-        this.trackingDatabase = core.getTrackingDatabase();
+        this.database = core.getTrackingDatabase();
         createUIComponents();
     }
 
@@ -67,14 +67,14 @@ public class SummaryPanel extends UpdatableJPanel {
      */
     @Override
     public void update() {
-        NumberFormat formatter = trackingDatabase.getDefault(Currency.class).getNumberFormat();
-        Currency YEN = trackingDatabase.getDefault(Currency.class);
+        NumberFormat formatter = database.getDefault(Currency.class).getNumberFormat();
+        Currency YEN = database.getDefault(Currency.class);
 
         double savingMin = Double.MAX_VALUE;
         double savingMax = Double.MIN_VALUE;
         double netMin = Double.MAX_VALUE;
         double netMax = Double.MIN_VALUE;
-        for (Period period : trackingDatabase.get(Period.class)) {
+        for (Period period : database.get(Period.class)) {
             double profit = new Single_OneParent_Children_Set<>(Period_Summary.class, period).getItem().getBankDelta();
             if (profit > netMax) {
                 netMax = profit;

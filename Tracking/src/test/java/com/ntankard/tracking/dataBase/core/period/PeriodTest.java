@@ -1,6 +1,6 @@
 package com.ntankard.tracking.dataBase.core.period;
 
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.testUtil.DataAccessUntil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,14 +18,14 @@ class PeriodTest {
     /**
      * The database instance to use
      */
-    private static TrackingDatabase trackingDatabase;
+    private static Database database;
 
     /**
      * Load the database
      */
     @BeforeEach
     void setUp() {
-        trackingDatabase = DataAccessUntil.getDataBase();
+        database = DataAccessUntil.getDataBase();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -38,7 +38,7 @@ class PeriodTest {
 
         // Generate test data
         List<Period> periods = new ArrayList<>();
-        ExistingPeriod period = ExistingPeriod.make(trackingDatabase,-1, 1, 1);
+        ExistingPeriod period = ExistingPeriod.make(database,-1, 1, 1);
         for (int i = 0; i < testSize; i++) {
             period = period.generateNext();
             periods.add(period);

@@ -1,6 +1,6 @@
 package com.ntankard.tracking.dataBase.core.transfer.bank;
 
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase_Schema;
+import com.ntankard.javaObjectDatabase.database.Database_Schema;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.period.ExistingPeriod;
 import com.ntankard.javaObjectDatabase.coreObject.factory.DoubleParentFactory;
@@ -12,7 +12,7 @@ import com.ntankard.tracking.dataBase.core.recurringPayment.FixedRecurringPaymen
 import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.Derived_DataCore;
 import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.source.DirectExternalSource;
 import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.database.Database;
 
 import static com.ntankard.tracking.dataBase.core.pool.fundEvent.FixedPeriodFundEvent.NamedDataObject_Name;
 import static com.ntankard.javaObjectDatabase.coreObject.factory.ObjectFactory.GeneratorMode.MULTIPLE_NO_ADD;
@@ -109,9 +109,9 @@ public class RecurringBankTransfer extends BankTransfer {
                                              Period period, Bank source, Double value,
                                              Period destinationPeriod, Pool destination,
                                              FixedRecurringPayment parentPayment) {
-        TrackingDatabase trackingDatabase = period.getTrackingDatabase();
-        TrackingDatabase_Schema trackingDatabase_schema = trackingDatabase.getSchema();
-        return assembleDataObject(trackingDatabase, trackingDatabase_schema.getClassSchema(RecurringBankTransfer.class), new RecurringBankTransfer()
+        Database database = period.getTrackingDatabase();
+        Database_Schema database_schema = database.getSchema();
+        return assembleDataObject(database, database_schema.getClassSchema(RecurringBankTransfer.class), new RecurringBankTransfer()
                 , DataObject_Id, id
                 , Transfer_Period, period
                 , Transfer_Source, source

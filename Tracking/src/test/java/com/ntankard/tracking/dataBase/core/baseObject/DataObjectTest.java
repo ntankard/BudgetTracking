@@ -7,8 +7,7 @@ import com.ntankard.javaObjectDatabase.coreObject.field.DataField_Schema;
 import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
 import com.ntankard.testUtil.ClassInspectionUtil;
 import com.ntankard.testUtil.DataAccessUntil;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase_Schema;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.database.Database;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -27,14 +26,14 @@ class DataObjectTest {
     /**
      * The database instance to use
      */
-    private static TrackingDatabase trackingDatabase;
+    private static Database database;
 
     /**
      * Load the database
      */
     @BeforeEach
     void setUp() {
-        trackingDatabase = DataAccessUntil.getDataBase();
+        database = DataAccessUntil.getDataBase();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -56,18 +55,18 @@ class DataObjectTest {
     @SuppressWarnings("unchecked")
     @Test
     void set() {
-        assertNotEquals(0, trackingDatabase.getAll().size());
+        assertNotEquals(0, database.getAll().size());
 
-        for (DataObject dataObject1 : trackingDatabase.getAll()) {
+        for (DataObject dataObject1 : database.getAll()) {
             dataObject1.validateParents();
             dataObject1.validateChildren();
         }
 
-        for (Class<? extends DataObject> testClass : trackingDatabase.getDataObjectTypes()) {
+        for (Class<? extends DataObject> testClass : database.getDataObjectTypes()) {
             if (!Modifier.isAbstract(testClass.getModifiers())) {
-                for (DataObject dataObject : trackingDatabase.get(testClass)) {
+                for (DataObject dataObject : database.get(testClass)) {
                     Class<? extends DataObject> aClass = dataObject.getClass();
-                    List<DataField_Schema<?>> members = trackingDatabase.getSchema().getClassSchema(aClass).getVerbosityDataFields(Integer.MAX_VALUE);
+                    List<DataField_Schema<?>> members = database.getSchema().getClassSchema(aClass).getVerbosityDataFields(Integer.MAX_VALUE);
 
                     // Find the setters
                     for (DataField_Schema member : members) {
@@ -75,7 +74,7 @@ class DataObjectTest {
                             // Get the data
                             AtomicReference<List<DataObject>> expectedOptions = new AtomicReference<>();
                             assertDoesNotThrow(() -> expectedOptions.set((List) member.getSource().invoke(dataObject, member.getType(), member.getDisplayName())));
-                            List<DataObject> fullOptions = new ArrayList(trackingDatabase.get(member.getType()));
+                            List<DataObject> fullOptions = new ArrayList(database.get(member.getType()));
 
                             // Check valid values
                             for (DataObject valid : expectedOptions.get()) {
@@ -125,8 +124,8 @@ class DataObjectTest {
      */
     @Test
     void checkNonPrimitive() {
-        for (Class<? extends DataObject> toTest : trackingDatabase.getSchema().getSolidClasses()) {
-            List<DataField_Schema<?>> members = trackingDatabase.getSchema().getClassSchema(toTest).getVerbosityDataFields(Integer.MAX_VALUE);
+        for (Class<? extends DataObject> toTest : database.getSchema().getSolidClasses()) {
+            List<DataField_Schema<?>> members = database.getSchema().getClassSchema(toTest).getVerbosityDataFields(Integer.MAX_VALUE);
 
             // Find the setters
             for (DataField_Schema member : members) {
@@ -144,7 +143,7 @@ class DataObjectTest {
      */
     @Test
     void getId() {
-        for (DataObject dataObject : trackingDatabase.get(DataObject.class)) {
+        for (DataObject dataObject : database.get(DataObject.class)) {
             assertNotNull(dataObject.getId());
         }
     }
@@ -158,8 +157,8 @@ class DataObjectTest {
      */
     @Test
     void validateId() {
-        for (DataObject dataObject : trackingDatabase.getAll()) {
-            for (DataObject toTest : trackingDatabase.getAll()) {
+        for (DataObject dataObject : database.getAll()) {
+            for (DataObject toTest : database.getAll()) {
                 if (!dataObject.equals(toTest)) {
                     assertNotEquals(dataObject.getId(), toTest.getId(), "Core Database error. Duplicate ID found");
                 }
@@ -174,7 +173,7 @@ class DataObjectTest {
     void validateParent() {
         // TODO things are missing here. If the field type is not set to data object it wont be registerd as a parent and nothing will catch it, you have to go through each indevidual field and check
 
-        for (DataObject dataObject : trackingDatabase.getAll()) {
+        for (DataObject dataObject : database.getAll()) {
             dataObject.validateParents();
             for (DataObject parent : dataObject.getParents()) {
                 if (!(parent instanceof Currency)) {
@@ -190,7 +189,7 @@ class DataObjectTest {
      */
     @Test
     void validateChild() {
-        for (DataObject dataObject : trackingDatabase.getAll()) {
+        for (DataObject dataObject : database.getAll()) {
             for (DataObject child : dataObject.getChildren()) {
                 assertNotNull(child, "Core Database error. Null child detected");
                 assertTrue(child.getParents().contains(dataObject), "Core Database error. Object registers as a child that dose not list this object as a parent");
@@ -210,7 +209,7 @@ class DataObjectTest {
         }
 
         public static DataObject_Inst make(Integer id) {
-            return assembleDataObject(trackingDatabase, DataObject_Inst.getFieldContainer(), new DataObject_Inst()
+            return assembleDataObject(database, DataObject_Inst.getFieldContainer(), new DataObject_Inst()
                     , DataObject_Id, id
             );
         }

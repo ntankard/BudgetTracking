@@ -1,6 +1,6 @@
 package com.ntankard.tracking.dispaly.util.panels;
 
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase_Schema;
+import com.ntankard.javaObjectDatabase.database.Database_Schema;
 import com.ntankard.tracking.dataBase.core.baseObject.interfaces.CurrencyBound;
 import com.ntankard.tracking.dataBase.core.transfer.HalfTransfer;
 import com.ntankard.tracking.dataBase.core.transfer.Transfer;
@@ -28,7 +28,7 @@ public class Object_DisplayList<T extends DataObject> extends DynamicGUI_Display
      * @param objectSet The source of data to display
      * @param master    The parent to notify if data changes
      */
-    public Object_DisplayList(TrackingDatabase_Schema schema, Class<T> tClass, ObjectSet<T> objectSet, Updatable master) {
+    public Object_DisplayList(Database_Schema schema, Class<T> tClass, ObjectSet<T> objectSet, Updatable master) {
         this(schema, tClass, objectSet, true, master);
     }
 
@@ -40,7 +40,7 @@ public class Object_DisplayList<T extends DataObject> extends DynamicGUI_Display
      * @param filter    Should a filter be added
      * @param master    The parent to notify if data changes
      */
-    public Object_DisplayList(TrackingDatabase_Schema schema, Class<T> tClass, ObjectSet<T> objectSet, boolean filter, Updatable master) {
+    public Object_DisplayList(Database_Schema schema, Class<T> tClass, ObjectSet<T> objectSet, boolean filter, Updatable master) {
         super(schema, new ArrayList<>(), tClass, master);
         this.objectSet = objectSet;
         if (Transfer.class.isAssignableFrom(tClass)) {

@@ -1,6 +1,6 @@
 package com.ntankard.tracking.dataBase.core.transfer.fund.rePay;
 
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase_Schema;
+import com.ntankard.javaObjectDatabase.database.Database_Schema;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.period.ExistingPeriod;
 import com.ntankard.tracking.dataBase.core.period.Period;
@@ -16,7 +16,7 @@ import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.Derived
 import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.source.ListSource;
 import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.ParameterMap;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.javaObjectDatabase.util.set.SetFilter;
 
 import java.util.List;
@@ -108,9 +108,9 @@ public class SavingsRePayFundTransfer extends RePayFundTransfer {
      * Create a new RePayFundTransfer object
      */
     public static SavingsRePayFundTransfer make(Integer id, Period period, FundEvent source, Currency currency) {
-        TrackingDatabase trackingDatabase = period.getTrackingDatabase();
-        TrackingDatabase_Schema trackingDatabase_schema = trackingDatabase.getSchema();
-        return assembleDataObject(trackingDatabase, trackingDatabase_schema.getClassSchema(SavingsRePayFundTransfer.class), new SavingsRePayFundTransfer()
+        Database database = period.getTrackingDatabase();
+        Database_Schema database_schema = database.getSchema();
+        return assembleDataObject(database, database_schema.getClassSchema(SavingsRePayFundTransfer.class), new SavingsRePayFundTransfer()
                 , DataObject_Id, id
                 , Transfer_Period, period
                 , Transfer_Source, source

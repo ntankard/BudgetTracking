@@ -6,7 +6,7 @@ import com.ntankard.dynamicGUI.gui.util.update.Updatable;
 import com.ntankard.dynamicGUI.gui.util.update.UpdatableJPanel;
 import com.ntankard.javaObjectDatabase.coreObject.DataObject;
 import com.ntankard.tracking.dataBase.core.baseObject.NamedDataObject;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dispaly.util.panels.DataObject_VerbosityDisplayList;
 import com.ntankard.javaObjectDatabase.database.subContainers.TreeNode;
 
@@ -34,16 +34,16 @@ public class DatabasePanel extends UpdatableJPanel {
     private int objectTypeSize = 0;
 
     // Core database
-    private final TrackingDatabase trackingDatabase;
+    private final Database database;
 
     /**
      * Constructor
      *
      * @param master The parent of this object to be notified if data changes
      */
-    protected DatabasePanel(TrackingDatabase trackingDatabase, Updatable master) {
+    protected DatabasePanel(Database database, Updatable master) {
         super(master);
-        this.trackingDatabase = trackingDatabase;
+        this.database = database;
         createUIComponents();
         update();
     }
@@ -71,7 +71,7 @@ public class DatabasePanel extends UpdatableJPanel {
 
             // Build the bottom of the tree, the actual object
             if (!PoolSummary.class.isAssignableFrom(rootNode.data) && !Period_Summary.class.isAssignableFrom(rootNode.data)) {
-                DataObject_VerbosityDisplayList<?> list = new DataObject_VerbosityDisplayList<>(trackingDatabase, rootNode.data, this);
+                DataObject_VerbosityDisplayList<?> list = new DataObject_VerbosityDisplayList<>(database, rootNode.data, this);
                 parent.add(rootNode.data.getSimpleName(), list);
                 updatableList.add(list);
             }
@@ -91,7 +91,7 @@ public class DatabasePanel extends UpdatableJPanel {
                 // If this is a solid object display it as well
                 if (!Modifier.isAbstract(rootNode.data.getModifiers())) {
                     if (!PoolSummary.class.isAssignableFrom(rootNode.data) && !Period_Summary.class.isAssignableFrom(rootNode.data)) {
-                        DataObject_VerbosityDisplayList<?> list = new DataObject_VerbosityDisplayList<>(trackingDatabase, rootNode.data, this);
+                        DataObject_VerbosityDisplayList<?> list = new DataObject_VerbosityDisplayList<>(database, rootNode.data, this);
                         container.add(rootNode.data.getSimpleName(), list);
                         updatableList.add(list);
                     }
@@ -109,11 +109,11 @@ public class DatabasePanel extends UpdatableJPanel {
      */
     @Override
     public void update() {
-        if (trackingDatabase.getClassTreeRoot().size() != objectTypeSize) {
+        if (database.getClassTreeRoot().size() != objectTypeSize) {
             rootTabbedPane.removeAll();
             updatableList.clear();
-            createBach(rootTabbedPane, trackingDatabase.getClassTreeRoot());
-            objectTypeSize = trackingDatabase.getClassTreeRoot().size();
+            createBach(rootTabbedPane, database.getClassTreeRoot());
+            objectTypeSize = database.getClassTreeRoot().size();
         }
         updatableList.forEach(DataObject_VerbosityDisplayList::update);
     }

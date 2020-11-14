@@ -2,7 +2,7 @@ package com.ntankard.tracking.dispaly.frames.mainFrame;
 
 import com.ntankard.dynamicGUI.gui.util.update.Updatable;
 import com.ntankard.dynamicGUI.gui.util.update.UpdatableJPanel;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dataBase.core.recurringPayment.FixedRecurringPayment;
 import com.ntankard.tracking.dataBase.core.transfer.bank.RecurringBankTransfer;
 import com.ntankard.tracking.dispaly.util.elementControllers.FixedRecurringPayment_ElementController;
@@ -21,14 +21,14 @@ public class RecurringPaymentPanel extends UpdatableJPanel {
     private OneParent_Children_Set<RecurringBankTransfer, FixedRecurringPayment> fixedRecurringTransfer_set;
 
     // Core database
-    private final TrackingDatabase trackingDatabase;
+    private final Database database;
 
     /**
      * Constructor
      */
-    public RecurringPaymentPanel(TrackingDatabase trackingDatabase, Updatable master) {
+    public RecurringPaymentPanel(Database database, Updatable master) {
         super(master);
-        this.trackingDatabase = trackingDatabase;
+        this.database = database;
         createUIComponents();
     }
 
@@ -39,12 +39,12 @@ public class RecurringPaymentPanel extends UpdatableJPanel {
         this.removeAll();
         this.setLayout(new GridBagLayout());
 
-        fixedRecurringPayment_panel = new DataObject_DisplayList<>(trackingDatabase.getSchema(), FixedRecurringPayment.class, new Full_Set<>(trackingDatabase, FixedRecurringPayment.class), false, this);
-        fixedRecurringPayment_panel.addControlButtons(new FixedRecurringPayment_ElementController(trackingDatabase, this));
+        fixedRecurringPayment_panel = new DataObject_DisplayList<>(database.getSchema(), FixedRecurringPayment.class, new Full_Set<>(database, FixedRecurringPayment.class), false, this);
+        fixedRecurringPayment_panel.addControlButtons(new FixedRecurringPayment_ElementController(database, this));
         fixedRecurringPayment_panel.getMainPanel().getListSelectionModel().addListSelectionListener(e -> selectPayment());
 
         fixedRecurringTransfer_set = new OneParent_Children_Set<>(RecurringBankTransfer.class, null);
-        FixedRecurringTransfer_panel = new DataObject_DisplayList<>(trackingDatabase.getSchema(), RecurringBankTransfer.class, fixedRecurringTransfer_set, false, this);
+        FixedRecurringTransfer_panel = new DataObject_DisplayList<>(database.getSchema(), RecurringBankTransfer.class, fixedRecurringTransfer_set, false, this);
 
         GridBagConstraints summaryContainer_C = new GridBagConstraints();
         summaryContainer_C.fill = GridBagConstraints.BOTH;

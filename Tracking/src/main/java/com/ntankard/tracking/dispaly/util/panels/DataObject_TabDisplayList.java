@@ -3,7 +3,7 @@ package com.ntankard.tracking.dispaly.util.panels;
 import com.ntankard.dynamicGUI.gui.util.update.UpdatableJPanel;
 import com.ntankard.dynamicGUI.gui.util.update.Updatable;
 import com.ntankard.javaObjectDatabase.coreObject.DataObject;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.database.Database;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,14 +17,14 @@ public class DataObject_TabDisplayList extends UpdatableJPanel {
     private JTabbedPane master_tPanel;
 
     // Core database
-    private final TrackingDatabase trackingDatabase;
+    private final Database database;
 
     /**
      * Constructor
      */
-    public DataObject_TabDisplayList(TrackingDatabase trackingDatabase, Updatable master) {
+    public DataObject_TabDisplayList(Database database, Updatable master) {
         super(master);
-        this.trackingDatabase = trackingDatabase;
+        this.database = database;
         createUIComponents();
     }
 
@@ -46,7 +46,7 @@ public class DataObject_TabDisplayList extends UpdatableJPanel {
      * @param <T>    tClass
      */
     public <T extends DataObject> void add(String name, Class<T> tClass) {
-        DataObject_DisplayList list = new DataObject_DisplayList<>(trackingDatabase, tClass, this);
+        DataObject_DisplayList list = new DataObject_DisplayList<>(database, tClass, this);
 
         tabs.add(list);
         master_tPanel.addTab(name, list);

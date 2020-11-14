@@ -3,7 +3,7 @@ package com.ntankard.tracking.dispaly.frames.mainFrame.image;
 import com.ntankard.dynamicGUI.gui.util.update.Updatable;
 import com.ntankard.dynamicGUI.gui.util.update.UpdatableJPanel;
 import com.ntankard.tracking.dataBase.core.Receipt;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.javaObjectDatabase.util.FileUtil;
 
 import javax.swing.*;
@@ -19,16 +19,16 @@ public class NewReceiptPanel extends UpdatableJPanel {
     private List<ImageToTransferPanel> imageToTransferPanels = new ArrayList<>();
 
     // Core database
-    private final TrackingDatabase trackingDatabase;
+    private final Database database;
 
     /**
      * Constructor
      *
      * @param master The parent of this object to be notified if data changes
      */
-    public NewReceiptPanel(TrackingDatabase trackingDatabase, Updatable master) {
+    public NewReceiptPanel(Database database, Updatable master) {
         super(master);
-        this.trackingDatabase = trackingDatabase;
+        this.database = database;
         createUIComponents();
         update();
     }
@@ -40,8 +40,8 @@ public class NewReceiptPanel extends UpdatableJPanel {
         this.removeAll();
         this.setLayout(new BorderLayout());
 
-        List<String> possibleImages = FileUtil.findFilesInDirectory(trackingDatabase.getImagePath());
-        for (Receipt receipt : trackingDatabase.get(Receipt.class)) {
+        List<String> possibleImages = FileUtil.findFilesInDirectory(database.getImagePath());
+        for (Receipt receipt : database.get(Receipt.class)) {
             boolean shouldRemove = false;
             for (String name : possibleImages) {
                 if (receipt.getFileName().equals(name)) {
@@ -58,7 +58,7 @@ public class NewReceiptPanel extends UpdatableJPanel {
             JTabbedPane master_tPanel = new JTabbedPane();
             int i = 0;
             for (String image : possibleImages) {
-                ImageToTransferPanel toAdd = new ImageToTransferPanel(trackingDatabase, image, this);
+                ImageToTransferPanel toAdd = new ImageToTransferPanel(database, image, this);
                 imageToTransferPanels.add(toAdd);
                 master_tPanel.addTab(i++ + "", toAdd);
             }

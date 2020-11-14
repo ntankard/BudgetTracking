@@ -3,7 +3,7 @@ package com.ntankard.tracking.dispaly.frames.mainFrame.funds;
 import com.ntankard.dynamicGUI.gui.util.update.Updatable;
 import com.ntankard.dynamicGUI.gui.util.update.UpdatableJPanel;
 import com.ntankard.tracking.dataBase.core.pool.fundEvent.FundEvent;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dispaly.frames.mainFrame.funds.individualFund.IndividualFundPanel;
 
 import javax.swing.*;
@@ -21,14 +21,14 @@ public class FundTabPanel extends UpdatableJPanel {
     private List<IndividualFundPanel> fundPanels = new ArrayList<>();
 
     // Core database
-    private final TrackingDatabase trackingDatabase;
+    private final Database database;
 
     /**
      * Constructor
      */
-    public FundTabPanel(TrackingDatabase trackingDatabase, Updatable master) {
+    public FundTabPanel(Database database, Updatable master) {
         super(master);
-        this.trackingDatabase = trackingDatabase;
+        this.database = database;
         createUIComponents();
     }
 
@@ -62,12 +62,12 @@ public class FundTabPanel extends UpdatableJPanel {
      * @return True if there is new or removed period what warrant a complete panel regeneration
      */
     private boolean hasFundsChanged() {
-        if (trackingDatabase.get(FundEvent.class).size() != fundEvents.size()) {
+        if (database.get(FundEvent.class).size() != fundEvents.size()) {
             return true;
         }
 
         for (int i = 0; i < fundEvents.size(); i++) {
-            if (!fundEvents.get(i).equals(trackingDatabase.get(FundEvent.class).get(i))) {
+            if (!fundEvents.get(i).equals(database.get(FundEvent.class).get(i))) {
                 return true;
             }
         }
@@ -85,7 +85,7 @@ public class FundTabPanel extends UpdatableJPanel {
 
             master_tPanel.removeAll();
 
-            fundEvents.addAll(trackingDatabase.get(FundEvent.class));
+            fundEvents.addAll(database.get(FundEvent.class));
             for (FundEvent fundEvent : fundEvents) {
                 IndividualFundPanel panel = new IndividualFundPanel(fundEvent, this);
                 fundPanels.add(panel);

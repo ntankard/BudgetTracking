@@ -1,6 +1,6 @@
 package com.ntankard.tracking.dataBase.core.period;
 
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase_Schema;
+import com.ntankard.javaObjectDatabase.database.Database_Schema;
 import com.ntankard.tracking.dataBase.core.StatementEnd;
 import com.ntankard.tracking.dataBase.core.transfer.bank.RecurringBankTransfer;
 import com.ntankard.tracking.dataBase.core.transfer.fund.rePay.FixedPeriodRePayFundTransfer;
@@ -11,7 +11,7 @@ import com.ntankard.javaObjectDatabase.coreObject.field.DataField_Schema;
 import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.Derived_DataCore;
 import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.source.LocalSource;
 import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.database.Database;
 
 import static com.ntankard.javaObjectDatabase.coreObject.field.properties.Display_Properties.INFO_DISPLAY;
 
@@ -62,9 +62,9 @@ public class ExistingPeriod extends Period {
     /**
      * Create a new ExistingPeriod object
      */
-    public static ExistingPeriod make(TrackingDatabase trackingDatabase, Integer id, Integer month, Integer year) {
-        TrackingDatabase_Schema trackingDatabase_schema = trackingDatabase.getSchema();
-        return assembleDataObject(trackingDatabase, trackingDatabase_schema.getClassSchema(ExistingPeriod.class), new ExistingPeriod()
+    public static ExistingPeriod make(Database database, Integer id, Integer month, Integer year) {
+        Database_Schema database_schema = database.getSchema();
+        return assembleDataObject(database, database_schema.getClassSchema(ExistingPeriod.class), new ExistingPeriod()
                 , DataObject_Id, id
                 , ExistingPeriod_Month, month
                 , ExistingPeriod_Year, year

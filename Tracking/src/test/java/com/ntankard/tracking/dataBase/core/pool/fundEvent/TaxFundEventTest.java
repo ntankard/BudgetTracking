@@ -1,6 +1,6 @@
 package com.ntankard.tracking.dataBase.core.pool.fundEvent;
 
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.testUtil.DataAccessUntil;
 import com.ntankard.testUtil.DataObjectTestUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,14 +14,14 @@ class TaxFundEventTest {
     /**
      * The database instance to use
      */
-    private static TrackingDatabase trackingDatabase;
+    private static Database database;
 
     /**
      * Load the database
      */
     @BeforeEach
     void setUp() {
-        trackingDatabase = DataAccessUntil.getDataBase();
+        database = DataAccessUntil.getDataBase();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -37,7 +37,7 @@ class TaxFundEventTest {
      */
     @Test
     void getParents() {
-        DataObjectTestUtil.testStandardParents(trackingDatabase, TaxFundEvent.class);
+        DataObjectTestUtil.testStandardParents(database, TaxFundEvent.class);
     }
 
     /**
@@ -45,6 +45,6 @@ class TaxFundEventTest {
      */
     @Test
     void getDataObject() {
-        DataObjectTestUtil.checkDataObjectNotNull(trackingDatabase, TaxFundEvent.class);
+        DataObjectTestUtil.checkDataObjectNotNull(database, TaxFundEvent.class);
     }
 }

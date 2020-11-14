@@ -1,7 +1,7 @@
 package com.ntankard.tracking.dataBase.core.recurringPayment;
 
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase_Schema;
+import com.ntankard.javaObjectDatabase.database.Database;
+import com.ntankard.javaObjectDatabase.database.Database_Schema;
 import com.ntankard.tracking.dataBase.core.period.ExistingPeriod;
 import com.ntankard.tracking.dataBase.core.pool.Bank;
 import com.ntankard.tracking.dataBase.core.pool.category.SolidCategory;
@@ -41,9 +41,9 @@ public class FixedRecurringPayment extends RecurringPayment {
      * Create a new FixedRecurringPayment object
      */
     public static FixedRecurringPayment make(Integer id, String name, Double value, ExistingPeriod start, Bank bank, SolidCategory solidCategory, Integer duration) {
-        TrackingDatabase trackingDatabase = solidCategory.getTrackingDatabase();
-        TrackingDatabase_Schema trackingDatabase_schema = trackingDatabase.getSchema();
-        return assembleDataObject(trackingDatabase, trackingDatabase_schema.getClassSchema(FixedRecurringPayment.class), new FixedRecurringPayment()
+        Database database = solidCategory.getTrackingDatabase();
+        Database_Schema database_schema = database.getSchema();
+        return assembleDataObject(database, database_schema.getClassSchema(FixedRecurringPayment.class), new FixedRecurringPayment()
                 , DataObject_Id, id
                 , NamedDataObject_Name, name
                 , RecurringPayment_Value, value

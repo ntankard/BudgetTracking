@@ -1,6 +1,6 @@
 package com.ntankard.tracking.dataBase.core;
 
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase_Schema;
+import com.ntankard.javaObjectDatabase.database.Database_Schema;
 import com.ntankard.tracking.dataBase.core.baseObject.NamedDataObject;
 import com.ntankard.tracking.dataBase.core.links.CategoryToCategorySet;
 import com.ntankard.tracking.dataBase.core.links.CategoryToVirtualCategory;
@@ -13,7 +13,7 @@ import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.source.
 import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.coreObject.interfaces.HasDefault;
 import com.ntankard.javaObjectDatabase.coreObject.interfaces.Ordered;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.database.Database;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,9 +82,9 @@ public class CategorySet extends NamedDataObject implements HasDefault, Ordered 
     /**
      * Create a new RePayFundTransfer object
      */
-    public static CategorySet make(TrackingDatabase trackingDatabase, Integer id, String name, Boolean isDefault, Integer order) {
-        TrackingDatabase_Schema trackingDatabase_schema = trackingDatabase.getSchema();
-        return assembleDataObject(trackingDatabase, trackingDatabase_schema.getClassSchema(CategorySet.class), new CategorySet()
+    public static CategorySet make(Database database, Integer id, String name, Boolean isDefault, Integer order) {
+        Database_Schema database_schema = database.getSchema();
+        return assembleDataObject(database, database_schema.getClassSchema(CategorySet.class), new CategorySet()
                 , DataObject_Id, id
                 , NamedDataObject_Name, name
                 , CategorySet_Default, isDefault

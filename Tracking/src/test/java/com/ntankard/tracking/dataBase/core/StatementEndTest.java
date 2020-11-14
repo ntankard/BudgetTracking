@@ -4,7 +4,7 @@ import com.ntankard.testUtil.DataAccessUntil;
 import com.ntankard.testUtil.DataObjectTestUtil;
 import com.ntankard.tracking.dataBase.core.period.ExistingPeriod;
 import com.ntankard.tracking.dataBase.core.pool.Bank;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.database.Database;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -19,14 +19,14 @@ class StatementEndTest {
     /**
      * The database instance to use
      */
-    private static TrackingDatabase trackingDatabase;
+    private static Database database;
 
     /**
      * Load the database
      */
     @BeforeEach
     void setUp() {
-        trackingDatabase = DataAccessUntil.getDataBase();
+        database = DataAccessUntil.getDataBase();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -35,8 +35,8 @@ class StatementEndTest {
 
     @Test
     void constructor() {
-        ExistingPeriod period = DataAccessUntil.getObject(trackingDatabase, ExistingPeriod.class, 0);
-        Bank bank = DataAccessUntil.getObject(trackingDatabase, Bank.class, 0);
+        ExistingPeriod period = DataAccessUntil.getObject(database, ExistingPeriod.class, 0);
+        Bank bank = DataAccessUntil.getObject(database, Bank.class, 0);
 
         assertDoesNotThrow(() -> StatementEnd.make(-1, period, bank, 0.0));
         assertThrows(NullPointerException.class, () -> StatementEnd.make(-2, null, bank, 0.0));
@@ -46,7 +46,7 @@ class StatementEndTest {
 
     @Test
     void setEnd() {
-        StatementEnd statementEnd = DataAccessUntil.getObject(trackingDatabase, StatementEnd.class, 0);
+        StatementEnd statementEnd = DataAccessUntil.getObject(database, StatementEnd.class, 0);
 
         assertDoesNotThrow(() -> statementEnd.set(StatementEnd_End, 0.0));
         assertThrows(IllegalArgumentException.class, () -> statementEnd.set(StatementEnd_End, null));
@@ -58,21 +58,21 @@ class StatementEndTest {
 
     @Test
     void getPeriod() {
-        for (StatementEnd statementEnd : trackingDatabase.get(StatementEnd.class)) {
+        for (StatementEnd statementEnd : database.get(StatementEnd.class)) {
             assertNotNull(statementEnd.getPeriod());
         }
     }
 
     @Test
     void getBank() {
-        for (StatementEnd statementEnd : trackingDatabase.get(StatementEnd.class)) {
+        for (StatementEnd statementEnd : database.get(StatementEnd.class)) {
             assertNotNull(statementEnd.getBank());
         }
     }
 
     @Test
     void getEnd() {
-        for (StatementEnd statementEnd : trackingDatabase.get(StatementEnd.class)) {
+        for (StatementEnd statementEnd : database.get(StatementEnd.class)) {
             assertNotNull(statementEnd.getEnd());
         }
     }
@@ -82,7 +82,7 @@ class StatementEndTest {
      */
     @Test
     void getParents() {
-        DataObjectTestUtil.testStandardParents(trackingDatabase, StatementEnd.class);
+        DataObjectTestUtil.testStandardParents(database, StatementEnd.class);
     }
 
     /**
@@ -90,7 +90,7 @@ class StatementEndTest {
      */
     @Test
     void getDataObject() {
-        DataObjectTestUtil.checkDataObjectNotNull(trackingDatabase, StatementEnd.class);
+        DataObjectTestUtil.checkDataObjectNotNull(database, StatementEnd.class);
     }
 
     //------------------------------------------------------------------------------------------------------------------

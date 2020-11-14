@@ -5,7 +5,7 @@ import com.ntankard.dynamicGUI.gui.util.update.Updatable;
 import com.ntankard.dynamicGUI.gui.util.update.UpdatableJPanel;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.period.ExistingPeriod;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dataBase.interfaces.summary.Period_Summary;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -23,16 +23,16 @@ import java.awt.*;
 public class SavingsGraph extends UpdatableJPanel {
 
     // Core database
-    private final TrackingDatabase trackingDatabase;
+    private final Database database;
 
     /**
      * Constructor
      *
      * @param master The parent of this object to be notified if data changes
      */
-    public SavingsGraph(TrackingDatabase trackingDatabase, Updatable master) {
+    public SavingsGraph(Database database, Updatable master) {
         super(master);
-        this.trackingDatabase = trackingDatabase;
+        this.database = database;
         createUIComponents();
     }
 
@@ -60,9 +60,9 @@ public class SavingsGraph extends UpdatableJPanel {
         renderer.setSeriesPaint(2, Color.RED);
         plot.setRenderer(renderer);
 
-        String[] axisLabel = new String[trackingDatabase.get(ExistingPeriod.class).size()];
+        String[] axisLabel = new String[database.get(ExistingPeriod.class).size()];
         int i = 0;
-        for (ExistingPeriod period : trackingDatabase.get(ExistingPeriod.class)) {
+        for (ExistingPeriod period : database.get(ExistingPeriod.class)) {
             axisLabel[i++] = period.toString();
         }
 
@@ -80,10 +80,10 @@ public class SavingsGraph extends UpdatableJPanel {
     private XYDataset createDataset() {
         final XYSeriesCollection dataset = new XYSeriesCollection();
 
-        for (Currency currency : trackingDatabase.get(Currency.class)) {
+        for (Currency currency : database.get(Currency.class)) {
             final XYSeries cur = new XYSeries(currency.getName());
             int i = 0;
-            for (ExistingPeriod period : trackingDatabase.get(ExistingPeriod.class)) {
+            for (ExistingPeriod period : database.get(ExistingPeriod.class)) {
                 cur.add(i++, new Single_OneParent_Children_Set<>(Period_Summary.class, period).getItem().getBankEnd(currency));
             }
             dataset.addSeries(cur);
@@ -91,7 +91,7 @@ public class SavingsGraph extends UpdatableJPanel {
 
         final XYSeries total = new XYSeries("Total");
         int i = 0;
-        for (ExistingPeriod period : trackingDatabase.get(ExistingPeriod.class)) {
+        for (ExistingPeriod period : database.get(ExistingPeriod.class)) {
             total.add(i++, new Single_OneParent_Children_Set<>(Period_Summary.class, period).getItem().getBankEnd());
         }
         dataset.addSeries(total);

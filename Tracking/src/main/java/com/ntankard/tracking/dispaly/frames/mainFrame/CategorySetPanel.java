@@ -2,7 +2,7 @@ package com.ntankard.tracking.dispaly.frames.mainFrame;
 
 import com.ntankard.dynamicGUI.gui.util.update.Updatable;
 import com.ntankard.dynamicGUI.gui.util.update.UpdatableJPanel;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dataBase.core.CategorySet;
 import com.ntankard.tracking.dataBase.core.links.CategoryToCategorySet;
 import com.ntankard.tracking.dataBase.core.links.CategoryToVirtualCategory;
@@ -43,16 +43,16 @@ public class CategorySetPanel extends UpdatableJPanel {
     private VirtualCategory selectedVirtualCategory = null;
 
     // Core database
-    private final TrackingDatabase trackingDatabase;
+    private final Database database;
 
     /**
      * Constructor
      *
      * @param master The parent of this object to be notified if data changes
      */
-    public CategorySetPanel(TrackingDatabase trackingDatabase, Updatable master) {
+    public CategorySetPanel(Database database, Updatable master) {
         super(master);
-        this.trackingDatabase = trackingDatabase;
+        this.database = database;
         createUIComponents();
     }
 
@@ -65,24 +65,24 @@ public class CategorySetPanel extends UpdatableJPanel {
 
         selectionListener = e -> update();
 
-        categorySet_panel = new DataObject_DisplayList<>(trackingDatabase.getSchema(), CategorySet.class, new Full_Set<>(trackingDatabase, CategorySet.class), false, this);
-        categorySet_panel.addControlButtons(new CategorySet_ElementController(trackingDatabase, this));
+        categorySet_panel = new DataObject_DisplayList<>(database.getSchema(), CategorySet.class, new Full_Set<>(database, CategorySet.class), false, this);
+        categorySet_panel.addControlButtons(new CategorySet_ElementController(database, this));
         categorySet_panel.getMainPanel().getListSelectionModel().addListSelectionListener(selectionListener);
 
         virtualCategory_set = new OneParent_Children_Set<>(VirtualCategory.class, null);
-        virtualCategory_elementController = new VirtualCategory_ElementController(trackingDatabase, this);
-        virtualCategory_panel = new DataObject_DisplayList<>(trackingDatabase.getSchema(), VirtualCategory.class, virtualCategory_set, false, this);
+        virtualCategory_elementController = new VirtualCategory_ElementController(database, this);
+        virtualCategory_panel = new DataObject_DisplayList<>(database.getSchema(), VirtualCategory.class, virtualCategory_set, false, this);
         virtualCategory_panel.addControlButtons(virtualCategory_elementController);
         virtualCategory_panel.getMainPanel().getListSelectionModel().addListSelectionListener(selectionListener);
 
         categoryToCategorySet_set = new OneParent_Children_Set<>(CategoryToCategorySet.class, null);
-        categoryToCategorySet_elementController = new CategoryToCategorySet_ElementController(trackingDatabase, this);
-        categoryToCategorySet_panel = new DataObject_DisplayList<>(trackingDatabase.getSchema(), CategoryToCategorySet.class, categoryToCategorySet_set, false, this);
+        categoryToCategorySet_elementController = new CategoryToCategorySet_ElementController(database, this);
+        categoryToCategorySet_panel = new DataObject_DisplayList<>(database.getSchema(), CategoryToCategorySet.class, categoryToCategorySet_set, false, this);
         categoryToCategorySet_panel.addControlButtons(categoryToCategorySet_elementController);
 
         categoryToVirtualCategory_set = new OneParent_Children_Set<>(CategoryToVirtualCategory.class, null);
-        categoryToVirtualCategory_elementController = new CategoryToVirtualCategory_ElementController(trackingDatabase, this);
-        categoryToVirtualCategory_panel = new DataObject_DisplayList<>(trackingDatabase.getSchema(), CategoryToVirtualCategory.class, categoryToVirtualCategory_set, false, this);
+        categoryToVirtualCategory_elementController = new CategoryToVirtualCategory_ElementController(database, this);
+        categoryToVirtualCategory_panel = new DataObject_DisplayList<>(database.getSchema(), CategoryToVirtualCategory.class, categoryToVirtualCategory_set, false, this);
         categoryToVirtualCategory_panel.addControlButtons(categoryToVirtualCategory_elementController);
 
         GridBagConstraints gridBagConstraints = new GridBagConstraints();

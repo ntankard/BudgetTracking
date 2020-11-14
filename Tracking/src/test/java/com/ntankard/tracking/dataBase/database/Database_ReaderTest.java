@@ -2,47 +2,36 @@ package com.ntankard.tracking.dataBase.database;
 
 import com.ntankard.testUtil.DataAccessUntil;
 import com.ntankard.tracking.Main;
-import com.ntankard.tracking.dataBase.core.links.CategoryToCategorySet;
-import com.ntankard.tracking.dataBase.core.links.CategoryToVirtualCategory;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject;
-import com.ntankard.javaObjectDatabase.coreObject.field.DataField_Schema;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase_Reader;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase_Reader_Util;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase_Schema;
+import com.ntankard.javaObjectDatabase.database.Database;
+import com.ntankard.javaObjectDatabase.database.Database_IO_Util;
 import com.ntankard.javaObjectDatabase.util.FileUtil;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import java.io.File;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import static com.ntankard.javaObjectDatabase.database.TrackingDatabase_Reader.*;
-import static com.ntankard.javaObjectDatabase.database.TrackingDatabase_Reader_Save.dataObjectToString;
-import static com.ntankard.javaObjectDatabase.database.TrackingDatabase_Reader_Util.*;
+import static com.ntankard.javaObjectDatabase.database.Database_IO.*;
+import static com.ntankard.javaObjectDatabase.database.Database_IO_Util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Execution(ExecutionMode.CONCURRENT)
-class TrackingDatabase_ReaderTest {
+class Database_ReaderTest {
 
     /**
      * The database instance to use
      */
-    private static TrackingDatabase trackingDatabase;
+    private static Database database;
 
     /**
      * Load the database
      */
     @BeforeEach
     void setUp() {
-        trackingDatabase = DataAccessUntil.getDataBase();
+        database = DataAccessUntil.getDataBase();
     }
 
     @Test
@@ -83,12 +72,12 @@ class TrackingDatabase_ReaderTest {
         new File(testPath + ROOT_DATA_PATH).mkdir();
         new File(testPath + ROOT_FILE_PATH).mkdir();
         new File(testPath + ROOT_IMAGE_PATH).mkdir();
-        save(trackingDatabase, testPath);
+        save(database, testPath);
 
-        String saveDir = TrackingDatabase_Reader_Util.getLatestSaveDirectory(Main.savePath + ROOT_DATA_PATH);
+        String saveDir = Database_IO_Util.getLatestSaveDirectory(Main.savePath + ROOT_DATA_PATH);
         List<String> saveFiles = FileUtil.findFilesInDirectory(saveDir + INSTANCE_CLASSES_PATH);
 
-        String testDir = TrackingDatabase_Reader_Util.getLatestSaveDirectory(testPath + ROOT_DATA_PATH);
+        String testDir = Database_IO_Util.getLatestSaveDirectory(testPath + ROOT_DATA_PATH);
         List<String> testFiles = FileUtil.findFilesInDirectory(testDir + INSTANCE_CLASSES_PATH);
 
         assertEquals(saveFiles.size(), testFiles.size());

@@ -1,6 +1,6 @@
 package com.ntankard.tracking.dataBase.interfaces.summary.pool;
 
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase_Schema;
+import com.ntankard.javaObjectDatabase.database.Database_Schema;
 import com.ntankard.tracking.dataBase.core.pool.category.Category;
 import com.ntankard.javaObjectDatabase.coreObject.factory.DoubleParentFactory;
 import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.Derived_DataCore;
@@ -14,7 +14,7 @@ import com.ntankard.tracking.dataBase.core.period.Period;
 import com.ntankard.tracking.dataBase.core.pool.category.SolidCategory;
 import com.ntankard.tracking.dataBase.core.pool.Pool;
 import com.ntankard.javaObjectDatabase.database.ParameterMap;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.database.Database;
 
 import java.util.List;
 
@@ -81,9 +81,9 @@ public class Category_Summary extends PoolSummary<SolidCategory> implements Orde
      * Create a new StatementEnd object
      */
     public static Category_Summary make(Integer id, Period period, Pool pool) {
-        TrackingDatabase trackingDatabase = period.getTrackingDatabase();
-        TrackingDatabase_Schema trackingDatabase_schema = trackingDatabase.getSchema();
-        return assembleDataObject(trackingDatabase, trackingDatabase_schema.getClassSchema(Category_Summary.class), new Category_Summary()
+        Database database = period.getTrackingDatabase();
+        Database_Schema database_schema = database.getSchema();
+        return assembleDataObject(database, database_schema.getClassSchema(Category_Summary.class), new Category_Summary()
                 , DataObject_Id, id
                 , PoolSummary_Period, period
                 , PoolSummary_Pool, pool

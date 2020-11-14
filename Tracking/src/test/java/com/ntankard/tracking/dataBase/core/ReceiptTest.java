@@ -3,7 +3,7 @@ package com.ntankard.tracking.dataBase.core;
 import com.ntankard.testUtil.DataAccessUntil;
 import com.ntankard.testUtil.DataObjectTestUtil;
 import com.ntankard.tracking.dataBase.core.transfer.bank.BankTransfer;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.database.Database;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -18,14 +18,14 @@ class ReceiptTest {
     /**
      * The database instance to use
      */
-    private static TrackingDatabase trackingDatabase;
+    private static Database database;
 
     /**
      * Load the database
      */
     @BeforeEach
     void setUp() {
-        trackingDatabase = DataAccessUntil.getDataBase();
+        database = DataAccessUntil.getDataBase();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -37,7 +37,7 @@ class ReceiptTest {
      */
     @Test
     void constructor() {
-        BankTransfer bankCategoryTransfer = getObject(trackingDatabase, BankTransfer.class, 0);
+        BankTransfer bankCategoryTransfer = getObject(database, BankTransfer.class, 0);
 
         assertDoesNotThrow(() -> Receipt.make(0, "", bankCategoryTransfer));
         assertThrows(IllegalArgumentException.class, () -> Receipt.make(0, null, bankCategoryTransfer));
@@ -53,7 +53,7 @@ class ReceiptTest {
      */
     @Test
     void getFileName() {
-        for (Receipt receipt : trackingDatabase.get(Receipt.class)) {
+        for (Receipt receipt : database.get(Receipt.class)) {
             assertNotNull(receipt.getFileName());
         }
     }
@@ -63,7 +63,7 @@ class ReceiptTest {
      */
     @Test
     void getBankCategoryTransfer() {
-        for (Receipt receipt : trackingDatabase.get(Receipt.class)) {
+        for (Receipt receipt : database.get(Receipt.class)) {
             assertNotNull(receipt.getBankTransfer());
         }
     }
@@ -73,7 +73,7 @@ class ReceiptTest {
      */
     @Test
     void getParents() {
-        DataObjectTestUtil.testStandardParents(trackingDatabase, Receipt.class);
+        DataObjectTestUtil.testStandardParents(database, Receipt.class);
     }
 
     /**
@@ -81,6 +81,6 @@ class ReceiptTest {
      */
     @Test
     void getDataObject() {
-        DataObjectTestUtil.checkDataObjectNotNull(trackingDatabase, Receipt.class);
+        DataObjectTestUtil.checkDataObjectNotNull(database, Receipt.class);
     }
 }

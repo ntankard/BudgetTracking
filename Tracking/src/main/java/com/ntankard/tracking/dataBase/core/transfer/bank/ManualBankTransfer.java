@@ -1,14 +1,12 @@
 package com.ntankard.tracking.dataBase.core.transfer.bank;
 
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase_Schema;
+import com.ntankard.javaObjectDatabase.database.Database;
+import com.ntankard.javaObjectDatabase.database.Database_Schema;
 import com.ntankard.tracking.dataBase.core.Currency;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject;
 import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
 import com.ntankard.tracking.dataBase.core.period.Period;
 import com.ntankard.tracking.dataBase.core.pool.Bank;
 import com.ntankard.tracking.dataBase.core.pool.Pool;
-import com.ntankard.javaObjectDatabase.coreObject.field.filter.FieldFilter;
 import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.Derived_DataCore.Calculator;
 
 public class ManualBankTransfer extends BankTransfer {
@@ -65,9 +63,9 @@ public class ManualBankTransfer extends BankTransfer {
     public static ManualBankTransfer make(Integer id, String description,
                                           Period period, Bank source, Double value,
                                           Period destinationPeriod, Pool destination) {
-        TrackingDatabase trackingDatabase = period.getTrackingDatabase();
-        TrackingDatabase_Schema trackingDatabase_schema = trackingDatabase.getSchema();
-        return assembleDataObject(trackingDatabase, trackingDatabase_schema.getClassSchema(ManualBankTransfer.class), new ManualBankTransfer()
+        Database database = period.getTrackingDatabase();
+        Database_Schema database_schema = database.getSchema();
+        return assembleDataObject(database, database_schema.getClassSchema(ManualBankTransfer.class), new ManualBankTransfer()
                 , DataObject_Id, id
                 , Transfer_Description, description
                 , Transfer_Period, period

@@ -4,7 +4,7 @@ import com.ntankard.javaObjectDatabase.util.set.Single_OneParent_Children_Set;
 import com.ntankard.dynamicGUI.gui.util.update.Updatable;
 import com.ntankard.dynamicGUI.gui.util.update.UpdatableJPanel;
 import com.ntankard.tracking.dataBase.core.period.Period;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dataBase.interfaces.summary.Period_Summary;
 import com.ntankard.tracking.dispaly.frames.mainFrame.periods.individualPeriod.IndividualPeriodPanel;
 
@@ -23,14 +23,14 @@ public class PeriodTabPanel extends UpdatableJPanel {
     private JTabbedPane master_tPanel = new JTabbedPane();
 
     // Core database
-    private final TrackingDatabase trackingDatabase;
+    private final Database database;
 
     /**
      * Constructor
      */
-    public PeriodTabPanel(TrackingDatabase trackingDatabase, Updatable master) {
+    public PeriodTabPanel(Database database, Updatable master) {
         super(master);
-        this.trackingDatabase = trackingDatabase;
+        this.database = database;
         createUIComponents();
     }
 
@@ -73,12 +73,12 @@ public class PeriodTabPanel extends UpdatableJPanel {
      * @return True if there is new or removed period what warrant a complete panel regeneration
      */
     private boolean hasPeriodsChanged() {
-        if (trackingDatabase.get(Period.class).size() != periods.size()) {
+        if (database.get(Period.class).size() != periods.size()) {
             return true;
         }
 
         for (int i = 0; i < periods.size(); i++) {
-            if (!periods.get(i).equals(trackingDatabase.get(Period.class).get(i))) {
+            if (!periods.get(i).equals(database.get(Period.class).get(i))) {
                 return true;
             }
         }
@@ -97,7 +97,7 @@ public class PeriodTabPanel extends UpdatableJPanel {
 
             master_tPanel.removeAll();
 
-            periods.addAll(trackingDatabase.get(Period.class));
+            periods.addAll(database.get(Period.class));
             for (Period period : periods) {
                 IndividualPeriodPanel panel = new IndividualPeriodPanel(period, this);
                 periodsPanels.add(panel);

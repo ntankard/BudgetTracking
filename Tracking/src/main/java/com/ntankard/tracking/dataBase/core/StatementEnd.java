@@ -7,13 +7,13 @@ import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.source.
 import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.source.ExternalSource;
 import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.coreObject.DataObject;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase_Schema;
+import com.ntankard.javaObjectDatabase.database.Database_Schema;
 import com.ntankard.tracking.dataBase.core.baseObject.interfaces.CurrencyBound;
 import com.ntankard.javaObjectDatabase.coreObject.interfaces.Ordered;
 import com.ntankard.javaObjectDatabase.coreObject.field.DataField_Schema;
 import com.ntankard.tracking.dataBase.core.period.ExistingPeriod;
 import com.ntankard.tracking.dataBase.core.pool.Bank;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.database.Database;
 
 import java.util.List;
 
@@ -89,9 +89,9 @@ public class StatementEnd extends DataObject implements CurrencyBound, Ordered {
      * Create a new StatementEnd object
      */
     public static StatementEnd make(Integer id, ExistingPeriod period, Bank bank, Double end) {
-        TrackingDatabase trackingDatabase = period.getTrackingDatabase();
-        TrackingDatabase_Schema trackingDatabase_schema = trackingDatabase.getSchema();
-        return assembleDataObject(trackingDatabase, trackingDatabase_schema.getClassSchema(StatementEnd.class), new StatementEnd()
+        Database database = period.getTrackingDatabase();
+        Database_Schema database_schema = database.getSchema();
+        return assembleDataObject(database, database_schema.getClassSchema(StatementEnd.class), new StatementEnd()
                 , DataObject_Id, id
                 , StatementEnd_Period, period
                 , StatementEnd_Bank, bank

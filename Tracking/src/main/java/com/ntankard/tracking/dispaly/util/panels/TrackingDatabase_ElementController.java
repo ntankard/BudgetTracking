@@ -3,14 +3,14 @@ package com.ntankard.tracking.dispaly.util.panels;
 import com.ntankard.dynamicGUI.gui.containers.DynamicGUI_DisplayList.ElementController;
 import com.ntankard.dynamicGUI.gui.util.update.Updatable;
 import com.ntankard.javaObjectDatabase.coreObject.DataObject;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.database.Database;
 
 public abstract class TrackingDatabase_ElementController<T extends DataObject> implements ElementController<T> {
 
     /**
      * The core database that the element will be entered in
      */
-    private final TrackingDatabase trackingDatabase;
+    private final Database database;
 
     /**
      * The parent to notify when data changes
@@ -20,8 +20,8 @@ public abstract class TrackingDatabase_ElementController<T extends DataObject> i
     /**
      * Constructor
      */
-    public TrackingDatabase_ElementController(TrackingDatabase trackingDatabase, Updatable master) {
-        this.trackingDatabase = trackingDatabase;
+    public TrackingDatabase_ElementController(Database database, Updatable master) {
+        this.database = database;
         this.master = master;
     }
 
@@ -30,8 +30,8 @@ public abstract class TrackingDatabase_ElementController<T extends DataObject> i
      *
      * @return The core database that the element will be entered in
      */
-    protected TrackingDatabase getTrackingDatabase() {
-        return trackingDatabase;
+    protected Database getTrackingDatabase() {
+        return database;
     }
 
     /**

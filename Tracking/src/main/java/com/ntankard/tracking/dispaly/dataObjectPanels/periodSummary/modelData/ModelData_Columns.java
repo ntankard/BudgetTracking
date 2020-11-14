@@ -4,7 +4,7 @@ import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.period.Period;
 import com.ntankard.tracking.dataBase.core.pool.Pool;
 import com.ntankard.tracking.dataBase.core.transfer.HalfTransfer;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dataBase.interfaces.set.extended.sum.PeriodPool_SumSet;
 import com.ntankard.tracking.dataBase.interfaces.set.filter.TransferDestination_HalfTransfer_Filter;
 import com.ntankard.javaObjectDatabase.util.set.TwoParent_Children_Set;
@@ -23,7 +23,7 @@ public class ModelData_Columns<P extends Pool> {
     private final List<Column> columns = new ArrayList<>();
 
     // Core database
-    private final TrackingDatabase trackingDatabase;
+    private final Database database;
 
     /**
      * Constructor
@@ -33,7 +33,7 @@ public class ModelData_Columns<P extends Pool> {
     public ModelData_Columns(Period core, Class<P> columnClass) {
         this.core = core;
         this.columnClass = columnClass;
-        this.trackingDatabase = core.getTrackingDatabase();
+        this.database = core.getTrackingDatabase();
         update();
     }
 
@@ -45,7 +45,7 @@ public class ModelData_Columns<P extends Pool> {
         columns.clear();
 
         // Find all categories
-        pools.addAll(trackingDatabase.get(columnClass));
+        pools.addAll(database.get(columnClass));
 
         for (P pool : pools) {
 

@@ -3,7 +3,7 @@ package com.ntankard.tracking.dispaly.util.elementControllers;
 import com.ntankard.dynamicGUI.gui.util.update.Updatable;
 import com.ntankard.tracking.dataBase.core.CategorySet;
 import com.ntankard.tracking.dataBase.core.pool.category.VirtualCategory;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dispaly.util.panels.TrackingDatabase_ElementController;
 
 public class VirtualCategory_ElementController extends TrackingDatabase_ElementController<VirtualCategory> {
@@ -16,8 +16,8 @@ public class VirtualCategory_ElementController extends TrackingDatabase_ElementC
     /**
      * Constructor
      */
-    public VirtualCategory_ElementController(TrackingDatabase trackingDatabase, Updatable master) {
-        super(trackingDatabase, master);
+    public VirtualCategory_ElementController(Database database, Updatable master) {
+        super(database, master);
     }
 
     /**

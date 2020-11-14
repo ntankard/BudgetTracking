@@ -3,8 +3,8 @@ package com.ntankard.tracking.dataBase.core.transfer;
 import com.ntankard.javaObjectDatabase.coreObject.factory.SingleParentFactory;
 import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.ParameterMap;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase_Schema;
+import com.ntankard.javaObjectDatabase.database.Database;
+import com.ntankard.javaObjectDatabase.database.Database_Schema;
 
 @ParameterMap(shouldSave = false)
 public class Destination_HalfTransfer extends HalfTransfer {
@@ -30,9 +30,9 @@ public class Destination_HalfTransfer extends HalfTransfer {
      * Create a new Destination_HalfTransfer object
      */
     public static Destination_HalfTransfer make(Integer id, Transfer transfer) {
-        TrackingDatabase trackingDatabase = transfer.getTrackingDatabase();
-        TrackingDatabase_Schema trackingDatabase_schema = trackingDatabase.getSchema();
-        return assembleDataObject(trackingDatabase, trackingDatabase_schema.getClassSchema(Destination_HalfTransfer.class), new Destination_HalfTransfer()
+        Database database = transfer.getTrackingDatabase();
+        Database_Schema database_schema = database.getSchema();
+        return assembleDataObject(database, database_schema.getClassSchema(Destination_HalfTransfer.class), new Destination_HalfTransfer()
                 , DataObject_Id, id
                 , HalfTransfer_Source, false
                 , HalfTransfer_Transfer, transfer

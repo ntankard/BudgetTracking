@@ -5,7 +5,7 @@ import com.ntankard.tracking.dataBase.core.period.Period;
 import com.ntankard.tracking.dataBase.core.pool.Pool;
 import com.ntankard.tracking.dataBase.core.transfer.HalfTransfer;
 import com.ntankard.tracking.dataBase.core.transfer.Transfer;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dataBase.interfaces.set.extended.sum.PeriodPool_SumSet;
 import com.ntankard.tracking.dataBase.interfaces.set.filter.TransferDestination_HalfTransfer_Filter;
 import com.ntankard.tracking.dataBase.interfaces.set.filter.TransferType_HalfTransfer_Filter;
@@ -23,7 +23,7 @@ public abstract class DataRows<P extends Pool> {
     protected int maxRows = 0;
 
     // Core database
-    private final TrackingDatabase trackingDatabase;
+    private final Database database;
 
     /**
      * Constructor
@@ -35,7 +35,7 @@ public abstract class DataRows<P extends Pool> {
         this.core = core;
         this.columns = columns;
         this.typeParameterClass = typeParameterClass;
-        this.trackingDatabase = core.getTrackingDatabase();
+        this.database = core.getTrackingDatabase();
     }
 
     /**
@@ -45,7 +45,7 @@ public abstract class DataRows<P extends Pool> {
      * @return The formatted total
      */
     public Object getTotal(P pool) {
-        return trackingDatabase.getDefault(Currency.class).getNumberFormat().format(getTotal_impl(pool));
+        return database.getDefault(Currency.class).getNumberFormat().format(getTotal_impl(pool));
     }
 
     /**

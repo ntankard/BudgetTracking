@@ -2,7 +2,7 @@ package com.ntankard.tracking.dispaly.frames.mainFrame.funds;
 
 import com.ntankard.dynamicGUI.gui.util.update.Updatable;
 import com.ntankard.dynamicGUI.gui.util.update.UpdatableJPanel;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dataBase.core.pool.fundEvent.FixedPeriodFundEvent;
 import com.ntankard.tracking.dataBase.core.pool.fundEvent.NoneFundEvent;
 import com.ntankard.tracking.dispaly.util.elementControllers.FixedPeriodFundEvent_ElementController;
@@ -18,16 +18,16 @@ public class FundEventsPanel extends UpdatableJPanel {
     private DataObject_DisplayList<NoneFundEvent> noneFundEvent_panel;
 
     // Core database
-    private final TrackingDatabase trackingDatabase;
+    private final Database database;
 
     /**
      * Constructor
      *
      * @param master The parent of this object to be notified if data changes
      */
-    public FundEventsPanel(TrackingDatabase trackingDatabase, Updatable master) {
+    public FundEventsPanel(Database database, Updatable master) {
         super(master);
-        this.trackingDatabase = trackingDatabase;
+        this.database = database;
         createUIComponents();
         update();
     }
@@ -41,12 +41,12 @@ public class FundEventsPanel extends UpdatableJPanel {
 
         JTabbedPane rootTabbedPane = new JTabbedPane();
 
-        fixedPeriod_panel = new DataObject_DisplayList<>(trackingDatabase, FixedPeriodFundEvent.class, this);
-        fixedPeriod_panel.addControlButtons(new FixedPeriodFundEvent_ElementController(trackingDatabase, this));
+        fixedPeriod_panel = new DataObject_DisplayList<>(database, FixedPeriodFundEvent.class, this);
+        fixedPeriod_panel.addControlButtons(new FixedPeriodFundEvent_ElementController(database, this));
         rootTabbedPane.addTab("Fixed", fixedPeriod_panel);
 
-        noneFundEvent_panel = new DataObject_DisplayList<>(trackingDatabase, NoneFundEvent.class, this);
-        noneFundEvent_panel.addControlButtons(new NoneFundEvent_ElementController(trackingDatabase, this));
+        noneFundEvent_panel = new DataObject_DisplayList<>(database, NoneFundEvent.class, this);
+        noneFundEvent_panel.addControlButtons(new NoneFundEvent_ElementController(database, this));
         rootTabbedPane.addTab("None", noneFundEvent_panel);
 
         this.add(rootTabbedPane, BorderLayout.CENTER);

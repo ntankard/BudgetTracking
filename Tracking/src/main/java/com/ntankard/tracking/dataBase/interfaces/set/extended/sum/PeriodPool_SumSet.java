@@ -1,6 +1,6 @@
 package com.ntankard.tracking.dataBase.interfaces.set.extended.sum;
 
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dataBase.core.period.Period;
 import com.ntankard.tracking.dataBase.core.pool.Pool;
 import com.ntankard.tracking.dataBase.core.transfer.HalfTransfer;
@@ -28,7 +28,7 @@ public class PeriodPool_SumSet extends Transfer_SumSet<TwoParent_Children_Set<Ha
     /**
      * Constructor
      */
-    public PeriodPool_SumSet(TrackingDatabase trackingDatabase, TwoParent_Children_Set<HalfTransfer, Period, Pool> set) {
-        super(trackingDatabase, set);
+    public PeriodPool_SumSet(Database database, TwoParent_Children_Set<HalfTransfer, Period, Pool> set) {
+        super(database, set);
     }
 }

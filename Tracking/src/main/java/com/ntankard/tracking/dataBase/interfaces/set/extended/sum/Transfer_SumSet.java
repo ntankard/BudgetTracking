@@ -2,7 +2,7 @@ package com.ntankard.tracking.dataBase.interfaces.set.extended.sum;
 
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.transfer.HalfTransfer;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.javaObjectDatabase.util.set.ObjectSet;
 
 import java.util.ArrayList;
@@ -18,13 +18,13 @@ public class Transfer_SumSet<S extends ObjectSet<HalfTransfer>> {
     /**
      * Core database
      */
-    private final TrackingDatabase trackingDatabase;
+    private final Database database;
 
     /**
      * Constructor
      */
-    public Transfer_SumSet(TrackingDatabase trackingDatabase, S coreSet) {
-        this.trackingDatabase = trackingDatabase;
+    public Transfer_SumSet(Database database, S coreSet) {
+        this.database = database;
         this.coreSet = coreSet;
     }
 
@@ -87,7 +87,7 @@ public class Transfer_SumSet<S extends ObjectSet<HalfTransfer>> {
      */
     public List<Currency> getCurrencies() {
         List<Currency> toReturn = new ArrayList<>();
-        for (Currency currency : trackingDatabase.get(Currency.class)) {
+        for (Currency currency : database.get(Currency.class)) {
             if (get(currency).size() != 0) {
                 toReturn.add(currency);
             }

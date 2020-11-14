@@ -1,7 +1,7 @@
 package com.ntankard.tracking.dataBase.core.pool.fundEvent;
 
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase_Schema;
+import com.ntankard.javaObjectDatabase.database.Database;
+import com.ntankard.javaObjectDatabase.database.Database_Schema;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.period.ExistingPeriod;
 import com.ntankard.tracking.dataBase.core.pool.category.SolidCategory;
@@ -103,9 +103,9 @@ public class FixedPeriodFundEvent extends FundEvent {
      * Create a new FixedPeriodFundEvent object
      */
     public static FixedPeriodFundEvent make(Integer id, String name, SolidCategory solidCategory, ExistingPeriod start, Integer duration) {
-        TrackingDatabase trackingDatabase = solidCategory.getTrackingDatabase();
-        TrackingDatabase_Schema trackingDatabase_schema = trackingDatabase.getSchema();
-        return assembleDataObject(trackingDatabase, trackingDatabase_schema.getClassSchema(FixedPeriodFundEvent.class), new FixedPeriodFundEvent()
+        Database database = solidCategory.getTrackingDatabase();
+        Database_Schema database_schema = database.getSchema();
+        return assembleDataObject(database, database_schema.getClassSchema(FixedPeriodFundEvent.class), new FixedPeriodFundEvent()
                 , DataObject_Id, id
                 , NamedDataObject_Name, name
                 , FundEvent_Category, solidCategory

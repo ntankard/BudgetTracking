@@ -4,7 +4,7 @@ import com.ntankard.dynamicGUI.gui.util.update.Updatable;
 import com.ntankard.dynamicGUI.gui.util.update.UpdatableJPanel;
 import com.ntankard.tracking.dataBase.core.period.ExistingPeriod;
 import com.ntankard.tracking.dataBase.core.pool.category.SolidCategory;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dataBase.interfaces.set.extended.sum.PeriodPool_SumSet;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -27,16 +27,16 @@ import java.util.Map;
 public class SetCategoryGraph extends UpdatableJPanel {
 
     // Core database
-    private final TrackingDatabase trackingDatabase;
+    private final Database database;
 
     /**
      * Constructor
      *
      * @param master The parent of this object to be notified if data changes
      */
-    public SetCategoryGraph(TrackingDatabase trackingDatabase, Updatable master) {
+    public SetCategoryGraph(Database database, Updatable master) {
         super(master);
-        this.trackingDatabase = trackingDatabase;
+        this.database = database;
         createUIComponents();
     }
 
@@ -61,9 +61,9 @@ public class SetCategoryGraph extends UpdatableJPanel {
         XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
         plot.setRenderer(renderer);
 
-        String[] axisLabel = new String[trackingDatabase.get(ExistingPeriod.class).size()];
+        String[] axisLabel = new String[database.get(ExistingPeriod.class).size()];
         int i = 0;
-        for (ExistingPeriod period : trackingDatabase.get(ExistingPeriod.class)) {
+        for (ExistingPeriod period : database.get(ExistingPeriod.class)) {
             axisLabel[i] = period.toString();
             i++;
         }
@@ -83,7 +83,7 @@ public class SetCategoryGraph extends UpdatableJPanel {
         Map<Integer, XYSeries> categories = new HashMap<>();
         Map<Integer, List<SolidCategory>> setCategories = new HashMap<>();
 
-        for (SolidCategory solidCategory : trackingDatabase.get(SolidCategory.class)) {
+        for (SolidCategory solidCategory : database.get(SolidCategory.class)) {
             if (!setCategories.containsKey(solidCategory.getSet())) {
                 setCategories.put(solidCategory.getSet(), new ArrayList<>());
                 categories.put(solidCategory.getSet(), new XYSeries(solidCategory.getSetName()));
@@ -92,7 +92,7 @@ public class SetCategoryGraph extends UpdatableJPanel {
         }
 
         int i = 0;
-        for (ExistingPeriod period : trackingDatabase.get(ExistingPeriod.class)) {
+        for (ExistingPeriod period : database.get(ExistingPeriod.class)) {
             for (Integer set : setCategories.keySet()) {
                 XYSeries series = categories.get(set);
                 List<SolidCategory> toSumCategories = setCategories.get(set);

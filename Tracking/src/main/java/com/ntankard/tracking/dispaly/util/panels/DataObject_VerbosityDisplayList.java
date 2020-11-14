@@ -3,7 +3,7 @@ package com.ntankard.tracking.dispaly.util.panels;
 import com.ntankard.dynamicGUI.gui.util.update.Updatable;
 import com.ntankard.dynamicGUI.gui.util.update.UpdatableJPanel;
 import com.ntankard.javaObjectDatabase.coreObject.DataObject;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.javaObjectDatabase.util.set.ObjectSet;
 
 import javax.swing.*;
@@ -32,14 +32,14 @@ public class DataObject_VerbosityDisplayList<T extends DataObject> extends Updat
     private final List<DataObject_DisplayList<T>> tabs = new ArrayList<>();
 
     // Core database
-    private final TrackingDatabase trackingDatabase;
+    private final Database database;
 
     /**
      * Constructor
      */
-    public DataObject_VerbosityDisplayList(TrackingDatabase trackingDatabase, Class<T> tClass, Updatable master) {
+    public DataObject_VerbosityDisplayList(Database database, Class<T> tClass, Updatable master) {
         super(master);
-        this.trackingDatabase = trackingDatabase;
+        this.database = database;
         this.tClass = tClass;
         createUIComponents();
     }
@@ -47,9 +47,9 @@ public class DataObject_VerbosityDisplayList<T extends DataObject> extends Updat
     /**
      * Constructor
      */
-    public DataObject_VerbosityDisplayList(TrackingDatabase trackingDatabase, Class<T> tClass, ObjectSet<T> objectSet, Updatable master) {
+    public DataObject_VerbosityDisplayList(Database database, Class<T> tClass, ObjectSet<T> objectSet, Updatable master) {
         super(master);
-        this.trackingDatabase = trackingDatabase;
+        this.database = database;
         this.tClass = tClass;
         this.objectSet = objectSet;
         createUIComponents();
@@ -78,18 +78,18 @@ public class DataObject_VerbosityDisplayList<T extends DataObject> extends Updat
         for (int i = 0; i < NAMES.length; i++) {
             DataObject_DisplayList<T> single;
             if (objectSet == null) {
-                single = new DataObject_DisplayList<>(trackingDatabase, tClass, false, this);
+                single = new DataObject_DisplayList<>(database, tClass, false, this);
             } else {
-                single = new DataObject_DisplayList<>(trackingDatabase.getSchema(), tClass, objectSet, false, this);
+                single = new DataObject_DisplayList<>(database.getSchema(), tClass, objectSet, false, this);
             }
             single.setVerbosity(i);
             master_tPanel.addTab(NAMES[i], single);
 
             DataObject_DisplayList<T> all;
             if (objectSet == null) {
-                all = new DataObject_DisplayList<>(trackingDatabase, tClass, false, this);
+                all = new DataObject_DisplayList<>(database, tClass, false, this);
             } else {
-                all = new DataObject_DisplayList<>(trackingDatabase.getSchema(), tClass, objectSet, false, this);
+                all = new DataObject_DisplayList<>(database.getSchema(), tClass, objectSet, false, this);
             }
 
             all.setVerbosity(i);

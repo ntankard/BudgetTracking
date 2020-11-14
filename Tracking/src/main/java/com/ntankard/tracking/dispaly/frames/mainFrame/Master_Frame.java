@@ -4,8 +4,8 @@ import com.ntankard.dynamicGUI.gui.util.containers.ButtonPanel;
 import com.ntankard.dynamicGUI.gui.util.update.Updatable;
 import com.ntankard.tracking.dataBase.core.period.ExistingPeriod;
 import com.ntankard.tracking.dataBase.core.period.Period;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase;
-import com.ntankard.javaObjectDatabase.database.TrackingDatabase_Reader;
+import com.ntankard.javaObjectDatabase.database.Database;
+import com.ntankard.javaObjectDatabase.database.Database_IO;
 import com.ntankard.tracking.dispaly.frames.mainFrame.funds.FundPanel;
 import com.ntankard.tracking.dispaly.frames.mainFrame.image.ReceiptPanel;
 import com.ntankard.tracking.dispaly.frames.mainFrame.periods.PeriodTabPanel;
@@ -29,15 +29,15 @@ public class Master_Frame extends JPanel implements Updatable {
     private String savePath;
 
     // Core database
-    private final TrackingDatabase trackingDatabase;
+    private final Database database;
 
     /**
      * Create and open the tracking frame
      */
-    public static void open(TrackingDatabase trackingDatabase, String savePath) {
+    public static void open(Database database, String savePath) {
         SwingUtilities.invokeLater(() -> {
             JFrame _frame = new JFrame("Budget");
-            _frame.setContentPane(new Master_Frame(trackingDatabase, savePath));
+            _frame.setContentPane(new Master_Frame(database, savePath));
             _frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
             _frame.pack();
             _frame.setVisible(true);
@@ -49,8 +49,8 @@ public class Master_Frame extends JPanel implements Updatable {
     /**
      * Constructor
      */
-    private Master_Frame(TrackingDatabase trackingDatabase, String savePath) {
-        this.trackingDatabase = trackingDatabase;
+    private Master_Frame(Database database, String savePath) {
+        this.database = database;
         this.savePath = savePath;
         createUIComponents();
         update();
@@ -66,7 +66,7 @@ public class Master_Frame extends JPanel implements Updatable {
 
         JButton save_btn = new JButton("Save");
         save_btn.addActionListener(e -> {
-            TrackingDatabase_Reader.save(trackingDatabase, savePath);
+            Database_IO.save(database, savePath);
         });
 
         JButton update_btn = new JButton("Update");
@@ -74,7 +74,7 @@ public class Master_Frame extends JPanel implements Updatable {
 
         JButton addPeriod_btn = new JButton("Add Period");
         addPeriod_btn.addActionListener(e -> {
-            ExistingPeriod last = trackingDatabase.get(ExistingPeriod.class).get(trackingDatabase.get(ExistingPeriod.class).size() - 1);
+            ExistingPeriod last = database.get(ExistingPeriod.class).get(database.get(ExistingPeriod.class).size() - 1);
             Period period = last.generateNext();
             period.add();
             notifyUpdate();
@@ -87,14 +87,14 @@ public class Master_Frame extends JPanel implements Updatable {
 
         this.add(btnPanel, BorderLayout.NORTH);
 
-        periodPanel = new PeriodTabPanel(trackingDatabase, this);
-        fundPanel = new FundPanel(trackingDatabase, this);
-        databasePanel = new DatabasePanel(trackingDatabase, this);
-        summaryGraphPanel = new SummaryGraphPanel(trackingDatabase, this);
-        summaryPanel = new SummaryPanel(trackingDatabase, this);
-        receiptPanel = new ReceiptPanel(trackingDatabase, this);
-        recurringPaymentPanel = new RecurringPaymentPanel(trackingDatabase, this);
-        categorySetPanel = new CategorySetPanel(trackingDatabase, this);
+        periodPanel = new PeriodTabPanel(database, this);
+        fundPanel = new FundPanel(database, this);
+        databasePanel = new DatabasePanel(database, this);
+        summaryGraphPanel = new SummaryGraphPanel(database, this);
+        summaryPanel = new SummaryPanel(database, this);
+        receiptPanel = new ReceiptPanel(database, this);
+        recurringPaymentPanel = new RecurringPaymentPanel(database, this);
+        categorySetPanel = new CategorySetPanel(database, this);
 
         JTabbedPane master_tPanel = new JTabbedPane();
         master_tPanel.addTab("Periods", periodPanel);
