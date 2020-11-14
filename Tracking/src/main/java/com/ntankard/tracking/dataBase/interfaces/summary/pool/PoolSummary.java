@@ -19,6 +19,7 @@ import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 
 import java.util.List;
 
+import static com.ntankard.javaObjectDatabase.dataField.properties.Display_Properties.*;
 import static com.ntankard.tracking.dataBase.core.transfer.HalfTransfer.HalfTransfer_Currency;
 import static com.ntankard.tracking.dataBase.core.transfer.HalfTransfer.HalfTransfer_Value;
 import static com.ntankard.javaObjectDatabase.dataField.properties.Display_Properties.DataContext.ZERO_TARGET;

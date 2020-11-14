@@ -108,7 +108,7 @@ public class Bank_Summary extends PoolSummary<Bank> implements CurrencyBound, Or
                         new Children_ListDataCore.ParentAccess.ParentAccess_Factory<>((PoolSummary_Period)),
                         new Children_ListDataCore.ParentAccess.ParentAccess_Factory<>((PoolSummary_Pool))));
         // StatementEnd ================================================================================================`
-        dataObjectSchema.add(new DataField_Schema<>(Bank_Summary_StatementEnd, StatementEnd.class));
+        dataObjectSchema.add(new DataField_Schema<>(Bank_Summary_StatementEnd, StatementEnd.class, true));
         dataObjectSchema.<StatementEnd>get(Bank_Summary_StatementEnd).setDataCore_factory(
                 new Derived_DataCore.Derived_DataCore_Factory<StatementEnd, Bank_Summary>(
                         container -> {
@@ -140,7 +140,12 @@ public class Bank_Summary extends PoolSummary<Bank> implements CurrencyBound, Or
         // End =========================================================================================================
         dataObjectSchema.<Double>get(PoolSummary_End).setDataCore_factory(
                 new Derived_DataCore.Derived_DataCore_Factory<Double, Bank_Summary>(
-                        container -> container.getStatementEnd().getEnd()
+                        container -> {
+                            if (container.getStatementEnd() == null) { // TODO this is needed because you allow statement end to be null. If you don't it fails the initial check. Look at fixing this
+                                return -1.0;
+                            }
+                            return container.getStatementEnd().getEnd();
+                        }
                         , new External_Source.ExternalSource_Factory<>((Bank_Summary_StatementEnd), StatementEnd_End)));
         dataObjectSchema.<Double>get(PoolSummary_End).setSetterFunction((toSet, container) -> {
             ((Bank_Summary) container).getStatementEnd().setEnd(toSet);

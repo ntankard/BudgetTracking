@@ -46,7 +46,7 @@ public abstract class TrackingDatabase_ElementController<T extends DataObject> i
     /**
      * {@inheritDoc
      */
-    @Override
+    @Override // TODO this needs to be reviewed, is it possible to make an object without adding it
     public void addElement(T newObj) {
         newObj.add();
         master.notifyUpdate();
