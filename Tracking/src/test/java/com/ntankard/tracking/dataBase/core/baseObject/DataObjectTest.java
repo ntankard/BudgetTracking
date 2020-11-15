@@ -40,14 +40,14 @@ class DataObjectTest {
     //################################### Unit Tests (any instance of an object) #######################################
     //------------------------------------------------------------------------------------------------------------------
 
-    /**
-     * Test constructor parameters
-     */
-    @Test
-    void constructor() {
-        assertDoesNotThrow(() -> DataObject_Inst.make(0));
-        assertThrows(IllegalArgumentException.class, () -> DataObject_Inst.make(null));
-    }
+//    /**
+//     * Test constructor parameters
+//     */
+//    @Test
+//    void constructor() {
+//        assertDoesNotThrow(() -> DataObject_Inst(0));
+//        assertThrows(IllegalArgumentException.class, () -> DataObject_Inst(null));
+//    }
 
     /**
      * Test the setters validate there inputs properly
@@ -203,14 +203,17 @@ class DataObjectTest {
 
     private static class DataObject_Inst extends DataObject {
 
-        public static DataObject_Schema getFieldContainer() {
-            DataObject_Schema dataObjectSchema = DataObject.getFieldContainer();
+        public static DataObject_Schema getDataObjectSchema() {
+            DataObject_Schema dataObjectSchema = DataObject.getDataObjectSchema();
             return dataObjectSchema.finaliseContainer(DataObject_Inst.class);
         }
 
-        public static DataObject_Inst make(Integer id) {
-            return assembleDataObject(database, DataObject_Inst.getFieldContainer(), new DataObject_Inst()
-                    , DataObject_Id, id
+        /**
+         * Constructor
+         */
+        public DataObject_Inst(Database database) {
+            super(database);
+            setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
             );
         }
     }

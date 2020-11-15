@@ -38,8 +38,7 @@ public class RecurringBankTransfer extends BankTransfer {
                         value = secondaryGenerator.getValue();
                     }
                 }
-                return RecurringBankTransfer.make(
-                        generator.getTrackingDatabase().getNextId(),
+                return new RecurringBankTransfer(
                         generator,
                         secondaryGenerator.getBank(),
                         value,
@@ -53,8 +52,8 @@ public class RecurringBankTransfer extends BankTransfer {
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = BankTransfer.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = BankTransfer.getDataObjectSchema();
 
         // Class behavior
         dataObjectSchema.setMyFactory(Factory);
@@ -104,16 +103,20 @@ public class RecurringBankTransfer extends BankTransfer {
     }
 
     /**
-     * Create a new RePayFundTransfer object
+     * Constructor
      */
-    public static RecurringBankTransfer make(Integer id,
-                                             Period period, Bank source, Double value,
-                                             Period destinationPeriod, Pool destination,
-                                             FixedRecurringPayment parentPayment) {
-        Database database = period.getTrackingDatabase();
-        Database_Schema database_schema = database.getSchema();
-        return assembleDataObject(database, database_schema.getClassSchema(RecurringBankTransfer.class), new RecurringBankTransfer()
-                , DataObject_Id, id
+    public RecurringBankTransfer(Database database) {
+        super(database);
+    }
+
+    /**
+     * Constructor
+     */
+    public RecurringBankTransfer(Period period, Bank source, Double value,
+                                 Period destinationPeriod, Pool destination,
+                                 FixedRecurringPayment parentPayment) {
+        this(period.getTrackingDatabase());
+        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
                 , Transfer_Period, period
                 , Transfer_Source, source
                 , Transfer_Value, value

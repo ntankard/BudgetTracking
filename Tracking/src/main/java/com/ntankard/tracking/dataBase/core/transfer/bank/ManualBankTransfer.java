@@ -1,5 +1,6 @@
 package com.ntankard.tracking.dataBase.core.transfer.bank;
 
+import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.javaObjectDatabase.database.Database_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore;
@@ -20,8 +21,8 @@ public class ManualBankTransfer extends BankTransfer {
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = BankTransfer.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = BankTransfer.getDataObjectSchema();
 
         // ID
         // Description
@@ -60,15 +61,13 @@ public class ManualBankTransfer extends BankTransfer {
     }
 
     /**
-     * Create a new RePayFundTransfer object
+     * Constructor
      */
-    public static ManualBankTransfer make(Integer id, String description,
-                                          Period period, Bank source, Double value,
-                                          Period destinationPeriod, Pool destination) {
-        Database database = period.getTrackingDatabase();
-        Database_Schema database_schema = database.getSchema();
-        return assembleDataObject(database, database_schema.getClassSchema(ManualBankTransfer.class), new ManualBankTransfer()
-                , DataObject_Id, id
+    public ManualBankTransfer(String description,
+                              Period period, Bank source, Double value,
+                              Period destinationPeriod, Pool destination) {
+        this(period.getTrackingDatabase());
+        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
                 , Transfer_Description, description
                 , Transfer_Period, period
                 , Transfer_Source, source
@@ -76,6 +75,13 @@ public class ManualBankTransfer extends BankTransfer {
                 , BankTransfer_DestinationPeriod, destinationPeriod
                 , Transfer_Destination, destination
         );
+    }
+
+    /**
+     * Constructor
+     */
+    public ManualBankTransfer(Database database) {
+        super(database);
     }
 
     //------------------------------------------------------------------------------------------------------------------

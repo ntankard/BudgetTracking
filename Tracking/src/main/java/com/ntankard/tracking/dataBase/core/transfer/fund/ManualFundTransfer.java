@@ -21,8 +21,8 @@ public class ManualFundTransfer extends FundTransfer {
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = FundTransfer.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = FundTransfer.getDataObjectSchema();
 
         // ID
         // Description
@@ -46,13 +46,18 @@ public class ManualFundTransfer extends FundTransfer {
     }
 
     /**
-     * Create a new RePayFundTransfer object
+     * Constructor
      */
-    public static ManualFundTransfer make(Integer id, String description, Period period, FundEvent source, Double value, Currency currency) {
-        Database database = period.getTrackingDatabase();
-        Database_Schema database_schema = database.getSchema();
-        return assembleDataObject(database, database_schema.getClassSchema(ManualFundTransfer.class), new ManualFundTransfer()
-                , DataObject_Id, id
+    public ManualFundTransfer(Database database) {
+        super(database);
+    }
+
+    /**
+     * Constructor
+     */
+    public ManualFundTransfer(String description, Period period, FundEvent source, Double value, Currency currency) {
+        this(period.getTrackingDatabase());
+        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
                 , Transfer_Description, description
                 , Transfer_Period, period
                 , Transfer_Source, source

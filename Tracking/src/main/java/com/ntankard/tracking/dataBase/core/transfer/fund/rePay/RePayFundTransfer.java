@@ -1,5 +1,6 @@
 package com.ntankard.tracking.dataBase.core.transfer.fund.rePay;
 
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dataBase.core.transfer.fund.FundTransfer;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.DirectExternal_Source;
 import com.ntankard.javaObjectDatabase.database.ParameterMap;
@@ -19,8 +20,8 @@ public abstract class RePayFundTransfer extends FundTransfer {
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = FundTransfer.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = FundTransfer.getDataObjectSchema();
 
         // ID
         // Description =================================================================================================
@@ -45,5 +46,12 @@ public abstract class RePayFundTransfer extends FundTransfer {
         // Children
 
         return dataObjectSchema.endLayer(RePayFundTransfer.class);
+    }
+
+    /**
+     * Constructor
+     */
+    public RePayFundTransfer(Database database) {
+        super(database);
     }
 }

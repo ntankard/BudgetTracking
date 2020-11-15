@@ -37,8 +37,7 @@ public class SavingsRePayFundTransfer extends RePayFundTransfer {
             SavingsRePayFundTransfer.class,
             ExistingPeriod.class,
             Transfer_Period, SavingsFundEvent.class,
-            Transfer_Source, (generator, secondaryGenerator) -> SavingsRePayFundTransfer.make(
-            generator.getTrackingDatabase().getNextId(),
+            Transfer_Source, (generator, secondaryGenerator) -> new SavingsRePayFundTransfer(
             generator,
             secondaryGenerator,
             generator.getTrackingDatabase().getDefault(Currency.class))
@@ -47,8 +46,8 @@ public class SavingsRePayFundTransfer extends RePayFundTransfer {
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = RePayFundTransfer.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = RePayFundTransfer.getDataObjectSchema();
 
         // Class behavior
         dataObjectSchema.setMyFactory(Factory);
@@ -105,13 +104,18 @@ public class SavingsRePayFundTransfer extends RePayFundTransfer {
     }
 
     /**
-     * Create a new RePayFundTransfer object
+     * Constructor
      */
-    public static SavingsRePayFundTransfer make(Integer id, Period period, FundEvent source, Currency currency) {
-        Database database = period.getTrackingDatabase();
-        Database_Schema database_schema = database.getSchema();
-        return assembleDataObject(database, database_schema.getClassSchema(SavingsRePayFundTransfer.class), new SavingsRePayFundTransfer()
-                , DataObject_Id, id
+    public SavingsRePayFundTransfer(Database database) {
+        super(database);
+    }
+
+    /**
+     * Constructor
+     */
+    public SavingsRePayFundTransfer(Period period, FundEvent source, Currency currency) {
+        this(period.getTrackingDatabase());
+        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
                 , Transfer_Period, period
                 , Transfer_Source, source
                 , Transfer_Currency, currency

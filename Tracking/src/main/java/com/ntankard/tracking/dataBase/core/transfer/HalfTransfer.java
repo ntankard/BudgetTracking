@@ -1,5 +1,6 @@
 package com.ntankard.tracking.dataBase.core.transfer;
 
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dataBase.core.baseObject.interfaces.CurrencyBound;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.period.Period;
@@ -41,8 +42,8 @@ public abstract class HalfTransfer extends DataObject implements CurrencyBound {
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = DataObject.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = DataObject.getDataObjectSchema();
 
         // ID
         // Transfer ====================================================================================================
@@ -112,6 +113,13 @@ public abstract class HalfTransfer extends DataObject implements CurrencyBound {
         // Children
 
         return dataObjectSchema.endLayer(HalfTransfer.class);
+    }
+
+    /**
+     * Constructor
+     */
+    public HalfTransfer(Database database) {
+        super(database);
     }
 
     /**

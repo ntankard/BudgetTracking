@@ -62,14 +62,14 @@ public class Bank_Summary extends PoolSummary<Bank> implements CurrencyBound, Or
             Bank_Summary.class,
             Bank.class,
             PoolSummary_Pool, ExistingPeriod.class,
-            PoolSummary_Period, (generator, secondaryGenerator) -> Bank_Summary.make(generator.getTrackingDatabase().getNextId(), secondaryGenerator, generator)
+            PoolSummary_Period, (generator, secondaryGenerator) -> new Bank_Summary(secondaryGenerator, generator)
     );
 
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = PoolSummary.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = PoolSummary.getDataObjectSchema();
 
         // Class behavior
         dataObjectSchema.setMyFactory(Factory);
@@ -251,13 +251,18 @@ public class Bank_Summary extends PoolSummary<Bank> implements CurrencyBound, Or
     }
 
     /**
-     * Create a new StatementEnd object
+     * Constructor
      */
-    public static Bank_Summary make(Integer id, Period period, Pool pool) {
-        Database database = period.getTrackingDatabase();
-        Database_Schema database_schema = database.getSchema();
-        return assembleDataObject(database, database_schema.getClassSchema(Bank_Summary.class), new Bank_Summary()
-                , DataObject_Id, id
+    public Bank_Summary(Database database) {
+        super(database);
+    }
+
+    /**
+     * Constructor
+     */
+    public Bank_Summary(Period period, Pool pool) {
+        this(period.getTrackingDatabase());
+        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
                 , PoolSummary_Period, period
                 , PoolSummary_Pool, pool
         );

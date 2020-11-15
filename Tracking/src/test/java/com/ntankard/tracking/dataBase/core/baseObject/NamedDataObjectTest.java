@@ -36,8 +36,8 @@ class NamedDataObjectTest {
      */
     @Test
     void constructor() {
-        assertDoesNotThrow(() -> NamedDataObject_Inst.make(database,0, "Test"));
-        assertThrows(IllegalArgumentException.class, () -> NamedDataObject_Inst.make(database,0, null));
+        assertDoesNotThrow(() -> new NamedDataObject_Inst(database, "Test"));
+        assertThrows(IllegalArgumentException.class, () -> new NamedDataObject_Inst(database, null));
     }
 
     /**
@@ -45,7 +45,7 @@ class NamedDataObjectTest {
      */
     @Test
     void setName() {
-        NamedDataObject_Inst namedDataObject_inst = NamedDataObject_Inst.make(database,0, "Test");
+        NamedDataObject_Inst namedDataObject_inst = new NamedDataObject_Inst(database, "Test");
         namedDataObject_inst.add();
         assertDoesNotThrow(() -> namedDataObject_inst.set(NamedDataObject_Name, ""));
         assertThrows(IllegalArgumentException.class, () -> namedDataObject_inst.set(NamedDataObject_Name, null));
@@ -71,14 +71,24 @@ class NamedDataObjectTest {
 
     public static class NamedDataObject_Inst extends NamedDataObject {
 
-        public static DataObject_Schema getFieldContainer() {
-            DataObject_Schema dataObjectSchema = NamedDataObject.getFieldContainer();
+        public static DataObject_Schema getDataObjectSchema() {
+            DataObject_Schema dataObjectSchema = NamedDataObject.getDataObjectSchema();
             return dataObjectSchema.finaliseContainer(NamedDataObject_Inst.class);
         }
 
-        public static NamedDataObject_Inst make(Database database, Integer id, String name) {
-            return assembleDataObject(database, NamedDataObject_Inst.getFieldContainer(), new NamedDataObject_Inst()
-                    , DataObject_Id, id
+        /**
+         * Constructor
+         */
+        public NamedDataObject_Inst(Database database) {
+            super(database);
+        }
+
+        /**
+         * Constructor
+         */
+        public NamedDataObject_Inst(Database database, String name) {
+            this(database);
+            setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
                     , NamedDataObject_Name, name
             );
         }

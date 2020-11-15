@@ -1,5 +1,6 @@
 package com.ntankard.tracking.dataBase.interfaces.summary.pool;
 
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dataBase.core.baseObject.interfaces.CurrencyBound;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.period.Period;
@@ -45,8 +46,8 @@ public abstract class PoolSummary<PoolType extends Pool> extends DataObject impl
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = DataObject.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = DataObject.getDataObjectSchema();
 
         // ID
         // Period ======================================================================================================
@@ -114,6 +115,13 @@ public abstract class PoolSummary<PoolType extends Pool> extends DataObject impl
         // Children
 
         return dataObjectSchema.endLayer(PoolSummary.class);
+    }
+
+    /**
+     * Constructor
+     */
+    public PoolSummary(Database database) {
+        super(database);
     }
 
     //------------------------------------------------------------------------------------------------------------------

@@ -29,8 +29,8 @@ public class CategoryToVirtualCategory extends DataObject {
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = DataObject.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = DataObject.getDataObjectSchema();
 
         // ID
         // VirtualCategory =============================================================================================
@@ -58,13 +58,18 @@ public class CategoryToVirtualCategory extends DataObject {
     }
 
     /**
-     * Create a new RePayFundTransfer object
+     * Constructor
      */
-    public static CategoryToVirtualCategory make(Integer id, VirtualCategory virtualCategory, SolidCategory solidCategory) {
-        Database database = virtualCategory.getTrackingDatabase();
-        Database_Schema database_schema = database.getSchema();
-        return assembleDataObject(database, database_schema.getClassSchema(CategoryToVirtualCategory.class), new CategoryToVirtualCategory()
-                , DataObject_Id, id
+    public CategoryToVirtualCategory(Database database) {
+        super(database);
+    }
+
+    /**
+     * Constructor
+     */
+    public CategoryToVirtualCategory(VirtualCategory virtualCategory, SolidCategory solidCategory) {
+        this(virtualCategory.getTrackingDatabase());
+        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
                 , CategoryToVirtualCategory_VirtualCategory, virtualCategory
                 , CategoryToVirtualCategory_SolidCategory, solidCategory
         );

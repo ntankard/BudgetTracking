@@ -43,14 +43,14 @@ public class StatementEnd extends DataObject implements CurrencyBound, Ordered {
             StatementEnd.class,
             Bank.class,
             StatementEnd_Bank, ExistingPeriod.class,
-            StatementEnd_Period, (generator, secondaryGenerator) -> StatementEnd.make(generator.getTrackingDatabase().getNextId(), secondaryGenerator, generator, 0.0),
+            StatementEnd_Period, (generator, secondaryGenerator) -> new StatementEnd(secondaryGenerator, generator, 0.0),
             ObjectFactory.GeneratorMode.SINGLE);
 
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = DataObject.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = DataObject.getDataObjectSchema();
 
         // Class behavior
         dataObjectSchema.setMyFactory(Factory);
@@ -86,13 +86,18 @@ public class StatementEnd extends DataObject implements CurrencyBound, Ordered {
     }
 
     /**
-     * Create a new StatementEnd object
+     * Constructor
      */
-    public static StatementEnd make(Integer id, ExistingPeriod period, Bank bank, Double end) {
-        Database database = period.getTrackingDatabase();
-        Database_Schema database_schema = database.getSchema();
-        return assembleDataObject(database, database_schema.getClassSchema(StatementEnd.class), new StatementEnd()
-                , DataObject_Id, id
+    public StatementEnd(Database database) {
+        super(database);
+    }
+
+    /**
+     * Constructor
+     */
+    public StatementEnd(ExistingPeriod period, Bank bank, Double end) {
+        this(period.getTrackingDatabase());
+        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
                 , StatementEnd_Period, period
                 , StatementEnd_Bank, bank
                 , StatementEnd_End, end

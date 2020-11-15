@@ -22,7 +22,7 @@ public class FixedRecurringPayment_ElementController extends TrackingDatabase_El
      */
     @Override
     public FixedRecurringPayment newElement() {
-        return FixedRecurringPayment.make(getTrackingDatabase().getNextId(),
+        return new FixedRecurringPayment(
                 "",
                 0.0,
                 getTrackingDatabase().getDefault(ExistingPeriod.class),

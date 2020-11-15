@@ -40,8 +40,8 @@ public class FixedPeriodFundEvent extends FundEvent {
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = FundEvent.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = FundEvent.getDataObjectSchema();
 
         // Class behavior
         dataObjectSchema.addObjectFactory(FixedPeriodRePayFundTransfer.Factory);
@@ -100,13 +100,18 @@ public class FixedPeriodFundEvent extends FundEvent {
     }
 
     /**
-     * Create a new FixedPeriodFundEvent object
+     * Constructor
      */
-    public static FixedPeriodFundEvent make(Integer id, String name, SolidCategory solidCategory, ExistingPeriod start, Integer duration) {
-        Database database = solidCategory.getTrackingDatabase();
-        Database_Schema database_schema = database.getSchema();
-        return assembleDataObject(database, database_schema.getClassSchema(FixedPeriodFundEvent.class), new FixedPeriodFundEvent()
-                , DataObject_Id, id
+    public FixedPeriodFundEvent(Database database) {
+        super(database);
+    }
+
+    /**
+     * Constructor
+     */
+    public FixedPeriodFundEvent(String name, SolidCategory solidCategory, ExistingPeriod start, Integer duration) {
+        this(solidCategory.getTrackingDatabase());
+        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
                 , NamedDataObject_Name, name
                 , FundEvent_Category, solidCategory
                 , FixedPeriodFundEvent_Start, start

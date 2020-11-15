@@ -72,13 +72,13 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
     public static final String Period_Summary_Valid = "isValid";
     public static final String Period_Summary_Order = "getOrder";
 
-    public static SingleParentFactory<?, ?> Factory = new SingleParentFactory<>(Period_Summary.class, Period.class, Period_Summary::make);
+    public static SingleParentFactory<?, ?> Factory = new SingleParentFactory<>(Period_Summary.class, Period.class, Period_Summary::new);
 
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = DataObject.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = DataObject.getDataObjectSchema();
 
         // Class behavior
         dataObjectSchema.setMyFactory(Factory);
@@ -420,20 +420,24 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
     }
 
     /**
-     * Create a new StatementEnd object
+     * Constructor
      */
-    public static Period_Summary make(Period period) {
+    public Period_Summary(Database database) {
+        super(database);
+    }
+
+    /**
+     * Constructor
+     */
+    public Period_Summary(Period period) {
+        super(period.getTrackingDatabase());
         if (!period.getChildren(Period_Summary.class).isEmpty()) {
             throw new IllegalStateException("Making a second period summary");
         }
-        Database database = period.getTrackingDatabase();
-        Database_Schema database_schema = database.getSchema();
-        return assembleDataObject(database, database_schema.getClassSchema(Period_Summary.class), new Period_Summary()
-                , DataObject_Id, period.getTrackingDatabase().getNextId()
+        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
                 , Period_Summary_Period, period
         );
     }
-
 
     //------------------------------------------------------------------------------------------------------------------
     //############################################## Special Calculations ##############################################

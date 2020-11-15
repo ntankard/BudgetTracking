@@ -32,14 +32,14 @@ public class FundEvent_Summary extends PoolSummary<FundEvent> {
             FundEvent_Summary.class,
             Period.class,
             PoolSummary_Period, FundEvent.class,
-            PoolSummary_Pool, (generator, secondaryGenerator) -> FundEvent_Summary.make(generator.getTrackingDatabase().getNextId(), generator, secondaryGenerator)
+            PoolSummary_Pool, FundEvent_Summary::new
     );
 
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = PoolSummary.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = PoolSummary.getDataObjectSchema();
 
         // Class behavior
         dataObjectSchema.setMyFactory(Factory);
@@ -103,13 +103,18 @@ public class FundEvent_Summary extends PoolSummary<FundEvent> {
     }
 
     /**
-     * Create a new StatementEnd object
+     * Constructor
      */
-    public static FundEvent_Summary make(Integer id, Period period, Pool pool) {
-        Database database = period.getTrackingDatabase();
-        Database_Schema database_schema = database.getSchema();
-        return assembleDataObject(database, database_schema.getClassSchema(FundEvent_Summary.class), new FundEvent_Summary()
-                , DataObject_Id, id
+    public FundEvent_Summary(Database database) {
+        super(database);
+    }
+
+    /**
+     * Constructor
+     */
+    public FundEvent_Summary(Period period, Pool pool) {
+        this(period.getTrackingDatabase());
+        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
                 , PoolSummary_Period, period
                 , PoolSummary_Pool, pool
         );

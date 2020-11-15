@@ -1,5 +1,6 @@
 package com.ntankard.tracking.dataBase.core.transfer.fund;
 
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.period.Period;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore;
@@ -25,8 +26,8 @@ public abstract class FundTransfer extends Transfer {
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = Transfer.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = Transfer.getDataObjectSchema();
 
         // ID
         // Description
@@ -53,6 +54,13 @@ public abstract class FundTransfer extends Transfer {
         // Children
 
         return dataObjectSchema.endLayer(FundTransfer.class);
+    }
+
+    /**
+     * Constructor
+     */
+    public FundTransfer(Database database) {
+        super(database);
     }
 
     /**

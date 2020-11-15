@@ -33,8 +33,8 @@ public class CategoryToCategorySet extends DataObject implements Ordered {
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = DataObject.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = DataObject.getDataObjectSchema();
 
         // ID
         // CategorySet ========================================================================================================
@@ -67,13 +67,18 @@ public class CategoryToCategorySet extends DataObject implements Ordered {
     }
 
     /**
-     * Create a new RePayFundTransfer object
+     * Constructor
      */
-    public static CategoryToCategorySet make(Integer id, CategorySet categorySet, SolidCategory solidCategory, Integer orderImpl) {
-        Database database = categorySet.getTrackingDatabase();
-        Database_Schema database_schema = database.getSchema();
-        return assembleDataObject(database, database_schema.getClassSchema(CategoryToCategorySet.class), new CategoryToCategorySet()
-                , DataObject_Id, id
+    public CategoryToCategorySet(Database database) {
+        super(database);
+    }
+
+    /**
+     * Constructor
+     */
+    public CategoryToCategorySet(CategorySet categorySet, SolidCategory solidCategory, Integer orderImpl) {
+        this(categorySet.getTrackingDatabase());
+        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
                 , CategoryToCategorySet_CategorySet, categorySet
                 , CategoryToCategorySet_SolidCategory, solidCategory
                 , CategoryToCategorySet_OrderImpl, orderImpl

@@ -28,7 +28,7 @@ public class CategoryToVirtualCategory_ElementController extends TrackingDatabas
         if (virtualCategory == null) {
             throw new RuntimeException("Creating an object without a VirtualCategory being provided");
         }
-        return CategoryToVirtualCategory.make(getTrackingDatabase().getNextId(),
+        return new CategoryToVirtualCategory(
                 virtualCategory,
                 virtualCategory.getCategorySet().getAvailableCategories().get(0));
     }

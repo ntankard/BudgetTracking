@@ -12,13 +12,13 @@ public class Source_HalfTransfer extends HalfTransfer {
     public static SingleParentFactory<?, ?> Factory = new SingleParentFactory<>(
             Source_HalfTransfer.class,
             Transfer.class,
-            generator -> Source_HalfTransfer.make(generator.getTrackingDatabase().getNextId(), generator));
+            Source_HalfTransfer::new);
 
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = HalfTransfer.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = HalfTransfer.getDataObjectSchema();
 
         // Class behavior
         dataObjectSchema.setMyFactory(Factory);
@@ -27,13 +27,18 @@ public class Source_HalfTransfer extends HalfTransfer {
     }
 
     /**
-     * Create a new Source_HalfTransfer object
+     * Constructor
      */
-    public static Source_HalfTransfer make(Integer id, Transfer transfer) {
-        Database database = transfer.getTrackingDatabase();
-        Database_Schema database_schema = database.getSchema();
-        return assembleDataObject(database, database_schema.getClassSchema(Source_HalfTransfer.class), new Source_HalfTransfer()
-                , DataObject_Id, id
+    public Source_HalfTransfer(Database database) {
+        super(database);
+    }
+
+    /**
+     * Constructor
+     */
+    public Source_HalfTransfer(Transfer transfer) {
+        this(transfer.getTrackingDatabase());
+        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
                 , HalfTransfer_Source, true
                 , HalfTransfer_Transfer, transfer
         );

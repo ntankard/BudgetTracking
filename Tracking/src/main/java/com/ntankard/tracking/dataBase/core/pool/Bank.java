@@ -1,5 +1,6 @@
 package com.ntankard.tracking.dataBase.core.pool;
 
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dataBase.core.baseObject.interfaces.CurrencyBound;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.StatementEnd;
@@ -25,8 +26,8 @@ public class Bank extends Pool implements CurrencyBound, Ordered, HasDefault {
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = Pool.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = Pool.getDataObjectSchema();
 
         // Class behavior
         dataObjectSchema.addObjectFactory(StatementEnd.Factory);
@@ -50,6 +51,13 @@ public class Bank extends Pool implements CurrencyBound, Ordered, HasDefault {
         // Children
 
         return dataObjectSchema.finaliseContainer(Bank.class);
+    }
+
+    /**
+     * Constructor
+     */
+    public Bank(Database database) {
+        super(database);
     }
 
     //------------------------------------------------------------------------------------------------------------------

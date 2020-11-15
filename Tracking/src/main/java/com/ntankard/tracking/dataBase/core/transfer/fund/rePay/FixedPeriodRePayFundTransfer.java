@@ -27,8 +27,7 @@ public class FixedPeriodRePayFundTransfer extends RePayFundTransfer {
             FixedPeriodRePayFundTransfer.class,
             ExistingPeriod.class,
             Transfer_Period, FixedPeriodFundEvent.class,
-            Transfer_Source, (generator, secondaryGenerator) -> FixedPeriodRePayFundTransfer.make(
-            generator.getTrackingDatabase().getNextId(),
+            Transfer_Source, (generator, secondaryGenerator) -> new FixedPeriodRePayFundTransfer(
             generator,
             secondaryGenerator,
             generator.getTrackingDatabase().getDefault(Currency.class))
@@ -37,8 +36,8 @@ public class FixedPeriodRePayFundTransfer extends RePayFundTransfer {
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = RePayFundTransfer.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = RePayFundTransfer.getDataObjectSchema();
 
         // Class behavior
         dataObjectSchema.setMyFactory(Factory);
@@ -75,13 +74,18 @@ public class FixedPeriodRePayFundTransfer extends RePayFundTransfer {
     }
 
     /**
-     * Create a new RePayFundTransfer object
+     * Constructor
      */
-    public static FixedPeriodRePayFundTransfer make(Integer id, Period period, FundEvent source, Currency currency) {
-        Database database = period.getTrackingDatabase();
-        Database_Schema database_schema = database.getSchema();
-        return assembleDataObject(database, database_schema.getClassSchema(FixedPeriodRePayFundTransfer.class), new FixedPeriodRePayFundTransfer()
-                , DataObject_Id, id
+    public FixedPeriodRePayFundTransfer(Database database) {
+        super(database);
+    }
+
+    /**
+     * Constructor
+     */
+    public FixedPeriodRePayFundTransfer(Period period, FundEvent source, Currency currency) {
+        this(period.getTrackingDatabase());
+        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
                 , Transfer_Period, period
                 , Transfer_Source, source
                 , Transfer_Currency, currency

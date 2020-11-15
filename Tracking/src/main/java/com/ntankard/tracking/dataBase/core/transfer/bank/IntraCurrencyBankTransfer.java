@@ -26,8 +26,8 @@ public class IntraCurrencyBankTransfer extends BankTransfer {
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = BankTransfer.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = BankTransfer.getDataObjectSchema();
 
         // ID
         // Description
@@ -77,15 +77,20 @@ public class IntraCurrencyBankTransfer extends BankTransfer {
     }
 
     /**
-     * Create a new RePayFundTransfer object
+     * Constructor
      */
-    public static IntraCurrencyBankTransfer make(Integer id, String description,
-                                                 Period period, Bank source, Double value,
-                                                 Period destinationPeriod, Pool destination, Double destinationValue) {
-        Database database = period.getTrackingDatabase();
-        Database_Schema database_schema = database.getSchema();
-        return assembleDataObject(database, database_schema.getClassSchema(IntraCurrencyBankTransfer.class), new IntraCurrencyBankTransfer()
-                , DataObject_Id, id
+    public IntraCurrencyBankTransfer(Database database) {
+        super(database);
+    }
+
+    /**
+     * Constructor
+     */
+    public IntraCurrencyBankTransfer(String description,
+                                     Period period, Bank source, Double value,
+                                     Period destinationPeriod, Pool destination, Double destinationValue) {
+        this(period.getTrackingDatabase());
+        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
                 , Transfer_Description, description
                 , Transfer_Period, period
                 , Transfer_Source, source

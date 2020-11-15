@@ -28,7 +28,7 @@ public class VirtualCategory_ElementController extends TrackingDatabase_ElementC
         if (categorySet == null) {
             throw new RuntimeException("Creating an object without a CategorySet being provided");
         }
-        return VirtualCategory.make(getTrackingDatabase().getNextId(),
+        return new VirtualCategory(
                 "",
                 categorySet,
                 0);

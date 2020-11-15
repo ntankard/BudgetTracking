@@ -14,8 +14,8 @@ public class NoneFundEvent extends FundEvent {
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = FundEvent.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = FundEvent.getDataObjectSchema();
 
         // ID
         // Name
@@ -27,13 +27,18 @@ public class NoneFundEvent extends FundEvent {
     }
 
     /**
-     * Create a new SavingsFundEvent object
+     * Constructor
      */
-    public static NoneFundEvent make(Integer id, String name, SolidCategory solidCategory) {
-        Database database = solidCategory.getTrackingDatabase();
-        Database_Schema database_schema = database.getSchema();
-        return assembleDataObject(database, database_schema.getClassSchema(NoneFundEvent.class), new NoneFundEvent()
-                , DataObject_Id, id
+    public NoneFundEvent(Database database) {
+        super(database);
+    }
+
+    /**
+     * Constructor
+     */
+    public NoneFundEvent(String name, SolidCategory solidCategory) {
+        this(solidCategory.getTrackingDatabase());
+        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
                 , NamedDataObject_Name, name
                 , FundEvent_Category, solidCategory
         );

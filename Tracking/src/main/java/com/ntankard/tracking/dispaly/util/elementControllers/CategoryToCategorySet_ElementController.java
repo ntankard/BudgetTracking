@@ -28,7 +28,7 @@ public class CategoryToCategorySet_ElementController extends TrackingDatabase_El
         if (categorySet == null) {
             throw new RuntimeException("Creating an object without a VirtualCategory being provided");
         }
-        return CategoryToCategorySet.make(getTrackingDatabase().getNextId(),
+        return new CategoryToCategorySet(
                 categorySet,
                 categorySet.getAvailableCategories().get(0),
                 0);

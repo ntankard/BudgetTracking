@@ -21,7 +21,7 @@ public class FixedPeriodFundEvent_ElementController extends TrackingDatabase_Ele
      */
     @Override
     public FixedPeriodFundEvent newElement() {
-        return FixedPeriodFundEvent.make(getTrackingDatabase().getNextId(),
+        return new FixedPeriodFundEvent(
                 "",
                 getTrackingDatabase().getDefault(SolidCategory.class),
                 getTrackingDatabase().getDefault(ExistingPeriod.class),

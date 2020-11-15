@@ -28,8 +28,8 @@ public class ExistingPeriod extends Period {
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = Period.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = Period.getDataObjectSchema();
 
         // Class behavior
         dataObjectSchema.addObjectFactory(StatementEnd.Factory);
@@ -60,12 +60,18 @@ public class ExistingPeriod extends Period {
     }
 
     /**
-     * Create a new ExistingPeriod object
+     * Constructor
      */
-    public static ExistingPeriod make(Database database, Integer id, Integer month, Integer year) {
-        Database_Schema database_schema = database.getSchema();
-        return assembleDataObject(database, database_schema.getClassSchema(ExistingPeriod.class), new ExistingPeriod()
-                , DataObject_Id, id
+    public ExistingPeriod(Database database) {
+        super(database);
+    }
+
+    /**
+     * Constructor
+     */
+    public ExistingPeriod(Database database, Integer id, Integer month, Integer year) {
+        this(database);
+        setAllValues(DataObject_Id, id
                 , ExistingPeriod_Month, month
                 , ExistingPeriod_Year, year
         );
@@ -89,7 +95,7 @@ public class ExistingPeriod extends Period {
             nextYear++;
         }
 
-        return ExistingPeriod.make(getTrackingDatabase(), getTrackingDatabase().getNextId(), nextMonth, nextYear);
+        return new ExistingPeriod(getTrackingDatabase(), getTrackingDatabase().getNextId(), nextMonth, nextYear);
     }
 
     /**

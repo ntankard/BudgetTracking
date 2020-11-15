@@ -41,11 +41,11 @@ class FixedPeriodFundEventTest {
         ExistingPeriod period = database.get(ExistingPeriod.class).get(0);
         SolidCategory solidCategory = database.get(SolidCategory.class).get(0);
 
-        assertThrows(NullPointerException.class, () -> FixedPeriodFundEvent.make(-1, "", null, period, 1));
-        assertThrows(IllegalArgumentException.class, () -> FixedPeriodFundEvent.make(-2, "", solidCategory, null, 1));
-        assertThrows(IllegalArgumentException.class, () -> FixedPeriodFundEvent.make(-3, "", solidCategory, period, 0));
-        assertThrows(IllegalArgumentException.class, () -> FixedPeriodFundEvent.make(-4, "", solidCategory, period, -1));
-        assertDoesNotThrow(() -> FixedPeriodFundEvent.make(-1, "", solidCategory, period, 1));
+        assertThrows(NullPointerException.class, () -> new FixedPeriodFundEvent("", null, period, 1));
+        assertThrows(IllegalArgumentException.class, () -> new FixedPeriodFundEvent("", solidCategory, null, 1));
+        assertThrows(IllegalArgumentException.class, () -> new FixedPeriodFundEvent("", solidCategory, period, 0));
+        assertThrows(IllegalArgumentException.class, () -> new FixedPeriodFundEvent("", solidCategory, period, -1));
+        assertDoesNotThrow(() -> new FixedPeriodFundEvent("", solidCategory, period, 1));
     }
 
     @Test
@@ -58,7 +58,7 @@ class FixedPeriodFundEventTest {
         SolidCategory solidCategory1 = database.get(SolidCategory.class).get(0);
         SolidCategory solidCategory2 = database.get(SolidCategory.class).get(0);
 
-        FixedPeriodFundEvent fixedPeriodFundEvent = FixedPeriodFundEvent.make(-1, "", solidCategory1, (ExistingPeriod) period, 1);
+        FixedPeriodFundEvent fixedPeriodFundEvent = new FixedPeriodFundEvent("", solidCategory1, (ExistingPeriod) period, 1);
         fixedPeriodFundEvent.add();
 
         assertThrows(IllegalArgumentException.class, () -> fixedPeriodFundEvent.setCategory(null));
@@ -73,7 +73,7 @@ class FixedPeriodFundEventTest {
         Period period = database.get(Period.class).get(1);
         SolidCategory solidCategory = database.get(SolidCategory.class).get(0);
 
-        FixedPeriodFundEvent fixedPeriodFundEvent = FixedPeriodFundEvent.make(-1, "", solidCategory, (ExistingPeriod) period, 1);
+        FixedPeriodFundEvent fixedPeriodFundEvent = new FixedPeriodFundEvent("", solidCategory, (ExistingPeriod) period, 1);
         fixedPeriodFundEvent.add();
 
         assertThrows(IllegalArgumentException.class, () -> fixedPeriodFundEvent.setDuration(-1));
@@ -89,7 +89,7 @@ class FixedPeriodFundEventTest {
         Period period = database.get(Period.class).get(2);
         SolidCategory solidCategory = database.get(SolidCategory.class).get(0);
 
-        FixedPeriodFundEvent fixedPeriodFundEvent = FixedPeriodFundEvent.make(-1, "", solidCategory, (ExistingPeriod) period, 1);
+        FixedPeriodFundEvent fixedPeriodFundEvent = new FixedPeriodFundEvent("", solidCategory, (ExistingPeriod) period, 1);
         fixedPeriodFundEvent.add();
 
         assertThrows(IllegalArgumentException.class, () -> fixedPeriodFundEvent.setStart(null));

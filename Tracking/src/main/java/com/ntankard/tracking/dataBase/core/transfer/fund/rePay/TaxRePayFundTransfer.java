@@ -43,7 +43,7 @@ public class TaxRePayFundTransfer extends RePayFundTransfer {
             TaxRePayFundTransfer.class,
             ExistingPeriod.class,
             Transfer_Period, TaxFundEvent.class,
-            Transfer_Source, (generator, secondaryGenerator) -> TaxRePayFundTransfer.make(generator.getTrackingDatabase().getNextId(),
+            Transfer_Source, (generator, secondaryGenerator) -> new TaxRePayFundTransfer(
             generator,
             secondaryGenerator,
             generator.getTrackingDatabase().getDefault(Currency.class))
@@ -52,8 +52,8 @@ public class TaxRePayFundTransfer extends RePayFundTransfer {
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = RePayFundTransfer.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = RePayFundTransfer.getDataObjectSchema();
 
         // Class behavior
         dataObjectSchema.setMyFactory(Factory);
@@ -113,13 +113,18 @@ public class TaxRePayFundTransfer extends RePayFundTransfer {
     }
 
     /**
-     * Create a new RePayFundTransfer object
+     * Constructor
      */
-    public static TaxRePayFundTransfer make(Integer id, Period period, FundEvent source, Currency currency) {
-        Database database = period.getTrackingDatabase();
-        Database_Schema database_schema = database.getSchema();
-        return assembleDataObject(database, database_schema.getClassSchema(TaxRePayFundTransfer.class), new TaxRePayFundTransfer()
-                , DataObject_Id, id
+    public TaxRePayFundTransfer(Database database) {
+        super(database);
+    }
+
+    /**
+     * Constructor
+     */
+    public TaxRePayFundTransfer(Period period, FundEvent source, Currency currency) {
+        this(period.getTrackingDatabase());
+        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
                 , Transfer_Period, period
                 , Transfer_Source, source
                 , Transfer_Currency, currency

@@ -34,8 +34,8 @@ public class CategorySet extends NamedDataObject implements HasDefault, Ordered 
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = NamedDataObject.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = NamedDataObject.getDataObjectSchema();
 
         // ID
         // Name
@@ -80,12 +80,18 @@ public class CategorySet extends NamedDataObject implements HasDefault, Ordered 
     }
 
     /**
-     * Create a new RePayFundTransfer object
+     * Constructor
      */
-    public static CategorySet make(Database database, Integer id, String name, Boolean isDefault, Integer order) {
-        Database_Schema database_schema = database.getSchema();
-        return assembleDataObject(database, database_schema.getClassSchema(CategorySet.class), new CategorySet()
-                , DataObject_Id, id
+    public CategorySet(Database database) {
+        super(database);
+    }
+
+    /**
+     * Constructor
+     */
+    public CategorySet(Database database, String name, Boolean isDefault, Integer order) {
+        this(database);
+        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
                 , NamedDataObject_Name, name
                 , CategorySet_Default, isDefault
                 , CategorySet_Order, order

@@ -4,6 +4,7 @@ import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCo
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Local_Source;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.dataObject.interfaces.HasDefault;
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dataBase.core.baseObject.NamedDataObject;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 
@@ -38,8 +39,8 @@ public class Currency extends NamedDataObject implements HasDefault {
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = NamedDataObject.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = NamedDataObject.getDataObjectSchema();
 
         // ID
         // Name
@@ -66,6 +67,13 @@ public class Currency extends NamedDataObject implements HasDefault {
         // Children
 
         return dataObjectSchema.finaliseContainer(Currency.class);
+    }
+
+    /**
+     * Constructor
+     */
+    public Currency(Database database) {
+        super(database);
     }
 
     //------------------------------------------------------------------------------------------------------------------

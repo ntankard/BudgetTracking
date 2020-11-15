@@ -32,14 +32,14 @@ public class Category_Summary extends PoolSummary<SolidCategory> implements Orde
             Category_Summary.class,
             Period.class,
             PoolSummary_Period, SolidCategory.class,
-            PoolSummary_Pool, (generator, secondaryGenerator) -> Category_Summary.make(generator.getTrackingDatabase().getNextId(), generator, secondaryGenerator)
+            PoolSummary_Pool, Category_Summary::new
     );
 
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = PoolSummary.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = PoolSummary.getDataObjectSchema();
 
         // Class behavior
         dataObjectSchema.setMyFactory(Factory);
@@ -78,13 +78,18 @@ public class Category_Summary extends PoolSummary<SolidCategory> implements Orde
     }
 
     /**
-     * Create a new StatementEnd object
+     * Constructor
      */
-    public static Category_Summary make(Integer id, Period period, Pool pool) {
-        Database database = period.getTrackingDatabase();
-        Database_Schema database_schema = database.getSchema();
-        return assembleDataObject(database, database_schema.getClassSchema(Category_Summary.class), new Category_Summary()
-                , DataObject_Id, id
+    public Category_Summary(Database database) {
+        super(database);
+    }
+
+    /**
+     * Constructor
+     */
+    public Category_Summary(Period period, Pool pool) {
+        this(period.getTrackingDatabase());
+        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
                 , PoolSummary_Period, period
                 , PoolSummary_Pool, pool
         );

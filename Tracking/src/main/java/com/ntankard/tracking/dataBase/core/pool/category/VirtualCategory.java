@@ -26,8 +26,8 @@ public class VirtualCategory extends Category implements Ordered {
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = Category.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = Category.getDataObjectSchema();
 
         // ID
         // Name
@@ -52,13 +52,18 @@ public class VirtualCategory extends Category implements Ordered {
     }
 
     /**
-     * Create a new VirtualCategory object
+     * Constructor
      */
-    public static VirtualCategory make(Integer id, String name, CategorySet categorySet, Integer orderImpl) {
-        Database database = categorySet.getTrackingDatabase();
-        Database_Schema database_schema = database.getSchema();
-        return assembleDataObject(database, database_schema.getClassSchema(VirtualCategory.class), new VirtualCategory()
-                , DataObject_Id, id
+    public VirtualCategory(Database database) {
+        super(database);
+    }
+
+    /**
+     * Constructor
+     */
+    public VirtualCategory(String name, CategorySet categorySet, Integer orderImpl) {
+        this(categorySet.getTrackingDatabase());
+        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
                 , NamedDataObject_Name, name
                 , VirtualCategory_CategorySet, categorySet
                 , VirtualCategory_OrderImpl, orderImpl

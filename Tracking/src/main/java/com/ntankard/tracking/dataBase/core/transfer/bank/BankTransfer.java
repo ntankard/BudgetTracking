@@ -1,6 +1,7 @@
 package com.ntankard.tracking.dataBase.core.transfer.bank;
 
 import com.ntankard.javaObjectDatabase.dataField.filter.Shared_FieldFilter;
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.period.Period;
 import com.ntankard.tracking.dataBase.core.pool.Bank;
@@ -38,8 +39,8 @@ public abstract class BankTransfer extends Transfer {
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = Transfer.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = Transfer.getDataObjectSchema();
 
         Shared_FieldFilter<Period, Period, BankTransfer> period_sharedFilter = new Shared_FieldFilter<>(Transfer_Period, BankTransfer_DestinationPeriod,
                 (firstNewValue, firstPastValue, secondNewValue, secondPastValue, container) -> {
@@ -126,6 +127,13 @@ public abstract class BankTransfer extends Transfer {
         // Children
 
         return dataObjectSchema.endLayer(BankTransfer.class);
+    }
+
+    /**
+     * Constructor
+     */
+    public BankTransfer(Database database) {
+        super(database);
     }
 
     /**

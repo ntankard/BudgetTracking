@@ -1,5 +1,6 @@
 package com.ntankard.tracking.dataBase.core.recurringPayment;
 
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dataBase.core.baseObject.interfaces.CurrencyBound;
 import com.ntankard.tracking.dataBase.core.baseObject.NamedDataObject;
 import com.ntankard.tracking.dataBase.core.Currency;
@@ -31,8 +32,8 @@ public abstract class RecurringPayment extends NamedDataObject implements Curren
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = NamedDataObject.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = NamedDataObject.getDataObjectSchema();
 
         // ID
         // Name
@@ -61,6 +62,13 @@ public abstract class RecurringPayment extends NamedDataObject implements Curren
         // Children
 
         return dataObjectSchema.endLayer(RecurringPayment.class);
+    }
+
+    /**
+     * Constructor
+     */
+    public RecurringPayment(Database database) {
+        super(database);
     }
 
     //------------------------------------------------------------------------------------------------------------------
