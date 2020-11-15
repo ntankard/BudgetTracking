@@ -1,15 +1,14 @@
 package com.ntankard.tracking.dataBase.core.links;
 
+import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore;
-import com.ntankard.javaObjectDatabase.dataField.filter.Dependant_FieldFilter;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.External_Source;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Local_Source;
-import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataField.filter.Shared_FieldFilter;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.dataObject.interfaces.Ordered;
-import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
-import com.ntankard.javaObjectDatabase.database.Database_Schema;
 import com.ntankard.tracking.dataBase.core.CategorySet;
 import com.ntankard.tracking.dataBase.core.pool.category.SolidCategory;
 
@@ -36,18 +35,18 @@ public class CategoryToCategorySet extends DataObject implements Ordered {
     public static DataObject_Schema getDataObjectSchema() {
         DataObject_Schema dataObjectSchema = DataObject.getDataObjectSchema();
 
+        Shared_FieldFilter<SolidCategory, CategorySet, CategoryToCategorySet> sharedFilter = new Shared_FieldFilter<>(CategoryToCategorySet_SolidCategory, CategoryToCategorySet_CategorySet,
+                (firstNewValue, firstPastValue, secondNewValue, secondPastValue, container) ->
+                        !secondNewValue.getUsedCategories().contains(firstNewValue) || firstNewValue.equals(container.getSolidCategory()));
+
         // ID
         // CategorySet ========================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(CategoryToCategorySet_CategorySet, CategorySet.class));
+        dataObjectSchema.<CategorySet>get(CategoryToCategorySet_CategorySet).addFilter(sharedFilter.getSecondFilter());
         // SolidCategory ========================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(CategoryToCategorySet_SolidCategory, SolidCategory.class));
         dataObjectSchema.get(CategoryToCategorySet_SolidCategory).setManualCanEdit(true);
-        dataObjectSchema.<SolidCategory>get(CategoryToCategorySet_SolidCategory).addFilter(new Dependant_FieldFilter<SolidCategory, CategoryToCategorySet>(CategoryToCategorySet_CategorySet) {
-            @Override
-            public boolean isValid(SolidCategory newValue, SolidCategory pastValue, CategoryToCategorySet categoryToCategorySet) {
-                return !categoryToCategorySet.getCategorySet().getUsedCategories().contains(newValue) || newValue.equals(categoryToCategorySet.getSolidCategory());
-            }
-        });
+        dataObjectSchema.<SolidCategory>get(CategoryToCategorySet_SolidCategory).addFilter(sharedFilter.getFirstFilter());
         // OrderImpl ========================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(CategoryToCategorySet_OrderImpl, Integer.class));
         dataObjectSchema.get(CategoryToCategorySet_OrderImpl).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
