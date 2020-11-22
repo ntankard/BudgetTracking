@@ -115,7 +115,7 @@ public class SetCategoryGraph extends UpdatableJPanel {
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     @Override
     public void update() {

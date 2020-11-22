@@ -54,7 +54,7 @@ public class Receipt extends DataObject {
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public void remove() {

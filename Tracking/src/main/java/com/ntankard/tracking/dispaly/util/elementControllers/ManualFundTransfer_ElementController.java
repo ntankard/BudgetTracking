@@ -23,7 +23,7 @@ public class ManualFundTransfer_ElementController extends TrackingDatabase_Eleme
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public ManualFundTransfer newElement() {

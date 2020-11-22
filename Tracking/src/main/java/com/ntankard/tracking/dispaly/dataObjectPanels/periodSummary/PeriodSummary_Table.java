@@ -70,7 +70,7 @@ public class PeriodSummary_Table<P extends Pool> extends UpdatableJPanel {
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public void update() {

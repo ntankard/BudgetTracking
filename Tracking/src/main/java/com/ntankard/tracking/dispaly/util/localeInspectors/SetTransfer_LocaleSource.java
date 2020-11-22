@@ -8,7 +8,7 @@ import java.text.NumberFormat;
 public class SetTransfer_LocaleSource implements CurrencyDecoder_NumberFormatSource {
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public NumberFormat getNumberFormat(Object rowObject, String contextName) {

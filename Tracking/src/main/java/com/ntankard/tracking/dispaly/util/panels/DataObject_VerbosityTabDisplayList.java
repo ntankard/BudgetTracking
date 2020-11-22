@@ -53,7 +53,7 @@ public class DataObject_VerbosityTabDisplayList extends UpdatableJPanel {
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public void update() {

@@ -21,7 +21,7 @@ public class CategoryToCategorySet_ElementController extends TrackingDatabase_El
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public CategoryToCategorySet newElement() {
@@ -44,7 +44,7 @@ public class CategoryToCategorySet_ElementController extends TrackingDatabase_El
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public boolean canCreate() {

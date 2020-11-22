@@ -54,7 +54,7 @@ public class VirtualPeriod extends Period {
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public String toString() {

@@ -17,7 +17,7 @@ public class FixedPeriodFundEvent_ElementController extends TrackingDatabase_Ele
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public FixedPeriodFundEvent newElement() {

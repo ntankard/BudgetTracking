@@ -14,7 +14,7 @@ public class DividerRow<P extends Pool> extends DataRows<P> {
     private String name;
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     public DividerRow(String name, Period core, ModelData_Columns<P> columns) {
         super(core, columns, Transfer.class);
@@ -22,7 +22,7 @@ public class DividerRow<P extends Pool> extends DataRows<P> {
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public int getRowCount() {
@@ -30,7 +30,7 @@ public class DividerRow<P extends Pool> extends DataRows<P> {
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public Object getTotal(Pool pool) {
@@ -38,7 +38,7 @@ public class DividerRow<P extends Pool> extends DataRows<P> {
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public double getTotal_impl(Pool pool) {
@@ -46,7 +46,7 @@ public class DividerRow<P extends Pool> extends DataRows<P> {
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public Object getValue(Pool pool, Currency currency, int rowIndex) {

@@ -104,7 +104,7 @@ public class DataObject_VerbosityDisplayList<T extends DataObject> extends Updat
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public void update() {

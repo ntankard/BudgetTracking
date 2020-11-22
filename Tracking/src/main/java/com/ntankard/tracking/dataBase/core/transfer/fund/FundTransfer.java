@@ -64,7 +64,7 @@ public abstract class FundTransfer extends Transfer {
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @SuppressWarnings("unchecked")
     @Override

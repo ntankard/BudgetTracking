@@ -75,7 +75,7 @@ public class CategoryToVirtualCategory extends DataObject {
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -89,7 +89,7 @@ public class CategoryToVirtualCategory extends DataObject {
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public void remove() {

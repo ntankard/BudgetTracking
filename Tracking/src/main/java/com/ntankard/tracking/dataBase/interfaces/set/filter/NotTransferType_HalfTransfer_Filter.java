@@ -27,7 +27,7 @@ public class NotTransferType_HalfTransfer_Filter extends SetFilter<HalfTransfer>
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     protected boolean shouldAdd_Impl(HalfTransfer halfTransfer) {

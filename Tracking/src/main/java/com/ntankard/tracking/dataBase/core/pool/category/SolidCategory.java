@@ -76,7 +76,7 @@ public class SolidCategory extends Category implements HasDefault, SpecialValues
     //------------------------------------------------------------------------------------------------------------------
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public Boolean isValue(Integer key) {
@@ -90,7 +90,7 @@ public class SolidCategory extends Category implements HasDefault, SpecialValues
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public List<Integer> toChangeGetKeys() {

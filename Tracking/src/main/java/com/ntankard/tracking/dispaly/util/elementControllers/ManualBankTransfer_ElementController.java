@@ -34,7 +34,7 @@ public class ManualBankTransfer_ElementController extends TrackingDatabase_Eleme
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public BankTransfer newElement() {

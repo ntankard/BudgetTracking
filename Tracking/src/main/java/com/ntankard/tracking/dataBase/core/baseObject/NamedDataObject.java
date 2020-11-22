@@ -42,7 +42,7 @@ public abstract class NamedDataObject extends DataObject {
     //------------------------------------------------------------------------------------------------------------------
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public String toString() {

@@ -53,7 +53,7 @@ public class DataObject_TabDisplayList extends UpdatableJPanel {
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public void update() {

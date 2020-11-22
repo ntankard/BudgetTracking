@@ -48,7 +48,7 @@ public class SummaryGraphPanel extends UpdatableJPanel {
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     @Override
     public void update() {

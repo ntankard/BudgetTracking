@@ -110,7 +110,7 @@ public class Master_Frame extends JPanel implements Updatable {
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public void notifyUpdate() {
@@ -118,7 +118,7 @@ public class Master_Frame extends JPanel implements Updatable {
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public void update() {

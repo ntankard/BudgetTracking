@@ -67,7 +67,7 @@ public class NewReceiptPanel extends UpdatableJPanel {
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public void update() {
@@ -76,7 +76,7 @@ public class NewReceiptPanel extends UpdatableJPanel {
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public void notifyUpdate() {

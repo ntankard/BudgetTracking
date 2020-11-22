@@ -105,7 +105,7 @@ public class DatabasePanel extends UpdatableJPanel {
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public void update() {

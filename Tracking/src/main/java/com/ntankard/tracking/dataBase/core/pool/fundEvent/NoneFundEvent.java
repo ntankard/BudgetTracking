@@ -45,7 +45,7 @@ public class NoneFundEvent extends FundEvent {
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public void remove() {

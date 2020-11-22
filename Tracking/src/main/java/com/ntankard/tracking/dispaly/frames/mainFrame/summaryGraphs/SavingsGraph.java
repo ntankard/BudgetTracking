@@ -100,7 +100,7 @@ public class SavingsGraph extends UpdatableJPanel {
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     @Override
     public void update() {

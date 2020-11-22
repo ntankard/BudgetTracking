@@ -98,7 +98,7 @@ public abstract class Transfer extends DataObject implements CurrencyBound {
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     @SuppressWarnings("SuspiciousMethodCalls")

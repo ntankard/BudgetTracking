@@ -137,7 +137,7 @@ public abstract class BankTransfer extends Transfer {
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
     @Override
@@ -146,7 +146,7 @@ public abstract class BankTransfer extends Transfer {
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     @SuppressWarnings({"SuspiciousMethodCalls", "unchecked"})

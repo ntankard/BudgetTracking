@@ -18,7 +18,7 @@ public class FixedRecurringPayment_ElementController extends TrackingDatabase_El
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public FixedRecurringPayment newElement() {

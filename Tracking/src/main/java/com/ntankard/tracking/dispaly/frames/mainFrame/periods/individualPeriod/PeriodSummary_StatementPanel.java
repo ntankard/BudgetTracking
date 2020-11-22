@@ -281,7 +281,7 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public void update() {

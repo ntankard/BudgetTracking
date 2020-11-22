@@ -28,7 +28,7 @@ public class TransferDestination_HalfTransfer_Filter extends SetFilter<HalfTrans
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     protected boolean shouldAdd_Impl(HalfTransfer halfTransfer) {

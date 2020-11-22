@@ -71,7 +71,7 @@ public class VirtualCategory extends Category implements Ordered {
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public void remove() {

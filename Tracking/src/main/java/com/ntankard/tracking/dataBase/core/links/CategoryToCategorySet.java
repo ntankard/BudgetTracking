@@ -85,7 +85,7 @@ public class CategoryToCategorySet extends DataObject implements Ordered {
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -99,7 +99,7 @@ public class CategoryToCategorySet extends DataObject implements Ordered {
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public void remove() {

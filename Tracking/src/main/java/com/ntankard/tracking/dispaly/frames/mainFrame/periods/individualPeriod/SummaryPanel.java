@@ -63,7 +63,7 @@ public class SummaryPanel extends UpdatableJPanel {
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public void update() {

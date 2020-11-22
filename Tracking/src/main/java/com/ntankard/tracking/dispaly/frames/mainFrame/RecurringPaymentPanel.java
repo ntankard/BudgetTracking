@@ -59,7 +59,7 @@ public class RecurringPaymentPanel extends UpdatableJPanel {
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public void update() {

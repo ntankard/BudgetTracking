@@ -88,7 +88,7 @@ public class SumGraph extends UpdatableJPanel {
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     @Override
     public void update() {

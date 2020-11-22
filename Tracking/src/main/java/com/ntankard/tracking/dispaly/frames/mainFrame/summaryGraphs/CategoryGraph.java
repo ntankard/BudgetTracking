@@ -104,7 +104,7 @@ public class CategoryGraph extends UpdatableJPanel {
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     @Override
     public void update() {

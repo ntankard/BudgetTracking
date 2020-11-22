@@ -30,7 +30,7 @@ public class PeriodSummary_Renderer extends DefaultTableCellRenderer {
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {

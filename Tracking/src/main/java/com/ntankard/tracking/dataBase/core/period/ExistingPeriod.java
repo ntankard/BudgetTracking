@@ -99,7 +99,7 @@ public class ExistingPeriod extends Period {
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public String toString() {

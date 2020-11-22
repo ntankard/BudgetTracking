@@ -44,7 +44,7 @@ public class IndividualPeriodPanel extends UpdatableJPanel {
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public void update() {

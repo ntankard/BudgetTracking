@@ -16,7 +16,7 @@ public class NoneFundEvent_ElementController extends TrackingDatabase_ElementCon
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public NoneFundEvent newElement() {

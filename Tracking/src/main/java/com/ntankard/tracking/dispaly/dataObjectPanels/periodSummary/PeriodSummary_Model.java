@@ -66,7 +66,7 @@ public class PeriodSummary_Model<P extends Pool> extends AbstractTableModel impl
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public int getRowCount() {
@@ -74,7 +74,7 @@ public class PeriodSummary_Model<P extends Pool> extends AbstractTableModel impl
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public int getColumnCount() {
@@ -82,7 +82,7 @@ public class PeriodSummary_Model<P extends Pool> extends AbstractTableModel impl
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public String getColumnName(int column) {
@@ -90,7 +90,7 @@ public class PeriodSummary_Model<P extends Pool> extends AbstractTableModel impl
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
@@ -179,7 +179,7 @@ public class PeriodSummary_Model<P extends Pool> extends AbstractTableModel impl
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public void update() {
@@ -196,7 +196,7 @@ public class PeriodSummary_Model<P extends Pool> extends AbstractTableModel impl
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public void notifyUpdate() {

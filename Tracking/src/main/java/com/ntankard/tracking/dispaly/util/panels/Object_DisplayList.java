@@ -56,7 +56,7 @@ public class Object_DisplayList<T extends DataObject> extends DynamicGUI_Display
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public void update() {

@@ -220,7 +220,7 @@ public class ExistingReceiptPanel extends UpdatableJPanel {
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public void update() {
@@ -239,7 +239,7 @@ public class ExistingReceiptPanel extends UpdatableJPanel {
     private class ReceiptTableModel extends AbstractTableModel {
 
         /**
-         * {@inheritDoc
+         * @inheritDoc
          */
         @Override
         public int getRowCount() {
@@ -247,7 +247,7 @@ public class ExistingReceiptPanel extends UpdatableJPanel {
         }
 
         /**
-         * {@inheritDoc
+         * @inheritDoc
          */
         @Override
         public int getColumnCount() {
@@ -255,7 +255,7 @@ public class ExistingReceiptPanel extends UpdatableJPanel {
         }
 
         /**
-         * {@inheritDoc
+         * @inheritDoc
          */
         @Override
         public String getColumnName(int column) {
@@ -271,7 +271,7 @@ public class ExistingReceiptPanel extends UpdatableJPanel {
         }
 
         /**
-         * {@inheritDoc
+         * @inheritDoc
          */
         @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
@@ -293,7 +293,7 @@ public class ExistingReceiptPanel extends UpdatableJPanel {
     private class TransferTableModel extends AbstractTableModel {
 
         /**
-         * {@inheritDoc
+         * @inheritDoc
          */
         @Override
         public int getRowCount() {
@@ -301,7 +301,7 @@ public class ExistingReceiptPanel extends UpdatableJPanel {
         }
 
         /**
-         * {@inheritDoc
+         * @inheritDoc
          */
         @Override
         public int getColumnCount() {
@@ -309,7 +309,7 @@ public class ExistingReceiptPanel extends UpdatableJPanel {
         }
 
         /**
-         * {@inheritDoc
+         * @inheritDoc
          */
         @Override
         public String getColumnName(int column) {
@@ -325,7 +325,7 @@ public class ExistingReceiptPanel extends UpdatableJPanel {
         }
 
         /**
-         * {@inheritDoc
+         * @inheritDoc
          */
         @Override
         public Object getValueAt(int rowIndex, int columnIndex) {

@@ -9,14 +9,14 @@ import com.ntankard.tracking.dispaly.dataObjectPanels.periodSummary.modelData.Mo
 public class SummaryRows<P extends Pool> extends DataRows<P> {
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     public SummaryRows(Period core, ModelData_Columns<P> columns) {
         super(core, columns, Transfer.class);
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public int getRowCount() {
@@ -24,7 +24,7 @@ public class SummaryRows<P extends Pool> extends DataRows<P> {
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public Object getValue(P pool, Currency currency, int rowIndex) {

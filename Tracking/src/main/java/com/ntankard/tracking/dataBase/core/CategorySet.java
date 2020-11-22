@@ -99,7 +99,7 @@ public class CategorySet extends NamedDataObject implements HasDefault, Ordered 
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public void remove() {

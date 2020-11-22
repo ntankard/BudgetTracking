@@ -252,7 +252,7 @@ public class ImageToTransferPanel extends UpdatableJPanel implements ListSelecti
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public void valueChanged(ListSelectionEvent e) {
@@ -262,7 +262,7 @@ public class ImageToTransferPanel extends UpdatableJPanel implements ListSelecti
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public void update() {
@@ -286,7 +286,7 @@ public class ImageToTransferPanel extends UpdatableJPanel implements ListSelecti
     private class TransferTableModel extends AbstractTableModel {
 
         /**
-         * {@inheritDoc
+         * @inheritDoc
          */
         @Override
         public int getRowCount() {
@@ -294,7 +294,7 @@ public class ImageToTransferPanel extends UpdatableJPanel implements ListSelecti
         }
 
         /**
-         * {@inheritDoc
+         * @inheritDoc
          */
         @Override
         public int getColumnCount() {
@@ -302,7 +302,7 @@ public class ImageToTransferPanel extends UpdatableJPanel implements ListSelecti
         }
 
         /**
-         * {@inheritDoc
+         * @inheritDoc
          */
         @Override
         public String getColumnName(int column) {
@@ -318,7 +318,7 @@ public class ImageToTransferPanel extends UpdatableJPanel implements ListSelecti
         }
 
         /**
-         * {@inheritDoc
+         * @inheritDoc
          */
         @Override
         public Object getValueAt(int rowIndex, int columnIndex) {

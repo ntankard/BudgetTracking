@@ -90,7 +90,7 @@ public class TransferRow<P extends Pool> extends DataRows<P> {
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     public String getDescription(Transfer rowData) {
         return rowData.getDescription();
@@ -144,7 +144,7 @@ public class TransferRow<P extends Pool> extends DataRows<P> {
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     private Currency getValueCurrency(HalfTransfer rowData, P pool) {
         return rowData.getCurrency();

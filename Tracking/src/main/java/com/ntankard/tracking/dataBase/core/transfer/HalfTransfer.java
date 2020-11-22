@@ -123,7 +123,7 @@ public abstract class HalfTransfer extends DataObject implements CurrencyBound {
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public void remove() {
@@ -131,7 +131,7 @@ public abstract class HalfTransfer extends DataObject implements CurrencyBound {
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public String toString() {

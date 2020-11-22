@@ -15,7 +15,7 @@ public class CategorySet_ElementController extends TrackingDatabase_ElementContr
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public CategorySet newElement() {

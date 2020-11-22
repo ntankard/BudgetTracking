@@ -21,7 +21,7 @@ public class VirtualCategory_ElementController extends TrackingDatabase_ElementC
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public VirtualCategory newElement() {
@@ -44,7 +44,7 @@ public class VirtualCategory_ElementController extends TrackingDatabase_ElementC
     }
 
     /**
-     * {@inheritDoc
+     * @inheritDoc
      */
     @Override
     public boolean canCreate() {
