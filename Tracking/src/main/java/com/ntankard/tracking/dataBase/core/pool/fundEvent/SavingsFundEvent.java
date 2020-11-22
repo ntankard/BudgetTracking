@@ -4,8 +4,8 @@ import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.javaObjectDatabase.database.Database_Schema;
 import com.ntankard.tracking.dataBase.core.pool.category.SolidCategory;
 import com.ntankard.tracking.dataBase.core.transfer.fund.rePay.SavingsRePayFundTransfer;
-import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.Static_DataCore;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.Static_DataCore;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 
 public class SavingsFundEvent extends FundEvent {
 
@@ -16,8 +16,8 @@ public class SavingsFundEvent extends FundEvent {
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = FundEvent.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = FundEvent.getDataObjectSchema();
 
         // Class behavior
         dataObjectSchema.addObjectFactory(SavingsRePayFundTransfer.Factory);
@@ -35,13 +35,18 @@ public class SavingsFundEvent extends FundEvent {
     }
 
     /**
-     * Create a new SavingsFundEvent object
+     * Constructor
      */
-    public static SavingsFundEvent make(Integer id, SolidCategory solidCategory) {
-        Database database = solidCategory.getTrackingDatabase();
-        Database_Schema database_schema = database.getSchema();
-        return assembleDataObject(database, database_schema.getClassSchema(SavingsFundEvent.class), new SavingsFundEvent()
-                , DataObject_Id, id
+    public SavingsFundEvent(Database database) {
+        super(database);
+    }
+
+    /**
+     * Constructor
+     */
+    public SavingsFundEvent(SolidCategory solidCategory) {
+        this(solidCategory.getTrackingDatabase());
+        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
                 , FundEvent_Category, solidCategory
         );
     }

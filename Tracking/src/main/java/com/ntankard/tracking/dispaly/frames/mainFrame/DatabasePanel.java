@@ -4,7 +4,7 @@ import com.ntankard.tracking.dataBase.interfaces.summary.Period_Summary;
 import com.ntankard.tracking.dataBase.interfaces.summary.pool.PoolSummary;
 import com.ntankard.dynamicGUI.gui.util.update.Updatable;
 import com.ntankard.dynamicGUI.gui.util.update.UpdatableJPanel;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.tracking.dataBase.core.baseObject.NamedDataObject;
 import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dispaly.util.panels.DataObject_VerbosityDisplayList;

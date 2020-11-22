@@ -6,7 +6,7 @@ import com.ntankard.tracking.dataBase.core.period.ExistingPeriod;
 import com.ntankard.tracking.dataBase.core.pool.Bank;
 import com.ntankard.tracking.dataBase.core.pool.category.SolidCategory;
 import com.ntankard.tracking.dataBase.core.transfer.bank.RecurringBankTransfer;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 
 public class FixedRecurringPayment extends RecurringPayment {
 
@@ -17,8 +17,8 @@ public class FixedRecurringPayment extends RecurringPayment {
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = RecurringPayment.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = RecurringPayment.getDataObjectSchema();
 
         // Class behavior
         dataObjectSchema.addObjectFactory(RecurringBankTransfer.Factory);
@@ -38,13 +38,18 @@ public class FixedRecurringPayment extends RecurringPayment {
     }
 
     /**
-     * Create a new FixedRecurringPayment object
+     * Constructor
      */
-    public static FixedRecurringPayment make(Integer id, String name, Double value, ExistingPeriod start, Bank bank, SolidCategory solidCategory, Integer duration) {
-        Database database = solidCategory.getTrackingDatabase();
-        Database_Schema database_schema = database.getSchema();
-        return assembleDataObject(database, database_schema.getClassSchema(FixedRecurringPayment.class), new FixedRecurringPayment()
-                , DataObject_Id, id
+    public FixedRecurringPayment(Database database) {
+        super(database);
+    }
+
+    /**
+     * Constructor
+     */
+    public FixedRecurringPayment(String name, Double value, ExistingPeriod start, Bank bank, SolidCategory solidCategory, Integer duration) {
+        this(solidCategory.getTrackingDatabase());
+        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
                 , NamedDataObject_Name, name
                 , RecurringPayment_Value, value
                 , RecurringPayment_Start, start

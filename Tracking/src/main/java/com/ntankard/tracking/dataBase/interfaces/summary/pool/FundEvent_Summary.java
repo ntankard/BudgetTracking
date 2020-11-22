@@ -4,20 +4,20 @@ import com.ntankard.javaObjectDatabase.database.Database_Schema;
 import com.ntankard.tracking.dataBase.core.period.Period;
 import com.ntankard.tracking.dataBase.core.pool.fundEvent.FundEvent;
 import com.ntankard.tracking.dataBase.core.pool.Pool;
-import com.ntankard.javaObjectDatabase.coreObject.factory.DoubleParentFactory;
-import com.ntankard.javaObjectDatabase.coreObject.field.DataField_Schema;
-import com.ntankard.javaObjectDatabase.coreObject.field.ListDataField_Schema;
-import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.Children_ListDataCore;
-import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.Derived_DataCore;
-import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.source.ExternalSource;
-import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.source.LocalSource;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.factory.DoubleParentFactory;
+import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataField.ListDataField_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.Children_ListDataCore;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.External_Source;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Local_Source;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.ParameterMap;
 import com.ntankard.javaObjectDatabase.database.Database;
 
 import java.util.List;
 
-import static com.ntankard.javaObjectDatabase.coreObject.field.properties.Display_Properties.TRACE_DISPLAY;
+import static com.ntankard.javaObjectDatabase.dataField.properties.Display_Properties.TRACE_DISPLAY;
 
 @ParameterMap(shouldSave = false)
 public class FundEvent_Summary extends PoolSummary<FundEvent> {
@@ -32,14 +32,14 @@ public class FundEvent_Summary extends PoolSummary<FundEvent> {
             FundEvent_Summary.class,
             Period.class,
             PoolSummary_Period, FundEvent.class,
-            PoolSummary_Pool, (generator, secondaryGenerator) -> FundEvent_Summary.make(generator.getTrackingDatabase().getNextId(), generator, secondaryGenerator)
+            PoolSummary_Pool, FundEvent_Summary::new
     );
 
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = PoolSummary.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = PoolSummary.getDataObjectSchema();
 
         // Class behavior
         dataObjectSchema.setMyFactory(Factory);
@@ -68,33 +68,33 @@ public class FundEvent_Summary extends PoolSummary<FundEvent> {
                             }
                             return null;
                         }
-                        , new LocalSource.LocalSource_Factory<>(FundEvent_Summary_FundEventSummarySet)));
+                        , new Local_Source.LocalSource_Factory<>(FundEvent_Summary_FundEventSummarySet)));
         // Start =======================================================================================================
         dataObjectSchema.<Double>get(PoolSummary_Start).setDataCore_factory(
                 new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Double, FundEvent_Summary>) container ->
                                 container.getPreviousFundEventSummary() == null ? 0.0 : container.getPreviousFundEventSummary().getEnd()
-                        , new ExternalSource.ExternalSource_Factory<>(FundEvent_Summary_PreviousFundEventSummary, PoolSummary_End)));
+                        , new External_Source.ExternalSource_Factory<>(FundEvent_Summary_PreviousFundEventSummary, PoolSummary_End)));
         // End =========================================================================================================
         dataObjectSchema.<Double>get(PoolSummary_End).setDataCore_factory(
                 new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Double, FundEvent_Summary>) container -> container.getStart() + container.getTransferSum()
-                        , new LocalSource.LocalSource_Factory<>(PoolSummary_Start)
-                        , new LocalSource.LocalSource_Factory<>(PoolSummary_TransferSum)));
+                        , new Local_Source.LocalSource_Factory<>(PoolSummary_Start)
+                        , new Local_Source.LocalSource_Factory<>(PoolSummary_TransferSum)));
         //==============================================================================================================
         // Net
         // TransferSum =================================================================================================
         dataObjectSchema.<Double>get(PoolSummary_TransferSum).setDataCore_factory(
                 new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Double, PoolSummary<FundEvent>>) PoolSummary::getTransferSetSum
-                        , new LocalSource.LocalSource_Factory<>(PoolSummary_TransferSetSum)));
+                        , new Local_Source.LocalSource_Factory<>(PoolSummary_TransferSetSum)));
         //==============================================================================================================
         // Missing
         // Valid =======================================================================================================
         dataObjectSchema.<Boolean>get(PoolSummary_Valid).setDataCore_factory(
                 new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Boolean, PoolSummary<FundEvent>>) container -> container.getMissing().equals(0.00)
-                        , new LocalSource.LocalSource_Factory<>(PoolSummary_Missing)));
+                        , new Local_Source.LocalSource_Factory<>(PoolSummary_Missing)));
         //==============================================================================================================
         // Parents
         // Children
@@ -103,13 +103,18 @@ public class FundEvent_Summary extends PoolSummary<FundEvent> {
     }
 
     /**
-     * Create a new StatementEnd object
+     * Constructor
      */
-    public static FundEvent_Summary make(Integer id, Period period, Pool pool) {
-        Database database = period.getTrackingDatabase();
-        Database_Schema database_schema = database.getSchema();
-        return assembleDataObject(database, database_schema.getClassSchema(FundEvent_Summary.class), new FundEvent_Summary()
-                , DataObject_Id, id
+    public FundEvent_Summary(Database database) {
+        super(database);
+    }
+
+    /**
+     * Constructor
+     */
+    public FundEvent_Summary(Period period, Pool pool) {
+        this(period.getTrackingDatabase());
+        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
                 , PoolSummary_Period, period
                 , PoolSummary_Pool, pool
         );

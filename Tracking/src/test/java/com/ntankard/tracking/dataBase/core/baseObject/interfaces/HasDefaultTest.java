@@ -1,8 +1,8 @@
 package com.ntankard.tracking.dataBase.core.baseObject.interfaces;
 
 import com.ntankard.testUtil.DataAccessUntil;
-import com.ntankard.javaObjectDatabase.coreObject.interfaces.HasDefault;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject;
+import com.ntankard.javaObjectDatabase.dataObject.interfaces.HasDefault;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.database.Database;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

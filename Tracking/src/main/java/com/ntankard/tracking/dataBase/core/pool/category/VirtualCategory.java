@@ -1,16 +1,16 @@
 package com.ntankard.tracking.dataBase.core.pool.category;
 
-import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.Derived_DataCore;
-import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.source.ExternalSource;
-import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.source.LocalSource;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
-import com.ntankard.javaObjectDatabase.coreObject.interfaces.Ordered;
-import com.ntankard.javaObjectDatabase.coreObject.field.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.External_Source;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Local_Source;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.interfaces.Ordered;
+import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.javaObjectDatabase.database.Database_Schema;
 import com.ntankard.tracking.dataBase.core.CategorySet;
 
-import static com.ntankard.javaObjectDatabase.coreObject.field.properties.Display_Properties.DEBUG_DISPLAY;
+import static com.ntankard.javaObjectDatabase.dataField.properties.Display_Properties.DEBUG_DISPLAY;
 import static com.ntankard.tracking.dataBase.core.CategorySet.CategorySet_Order;
 
 public class VirtualCategory extends Category implements Ordered {
@@ -26,8 +26,8 @@ public class VirtualCategory extends Category implements Ordered {
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = Category.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = Category.getDataObjectSchema();
 
         // ID
         // Name
@@ -42,8 +42,8 @@ public class VirtualCategory extends Category implements Ordered {
         dataObjectSchema.get(VirtualCategory_Order).setDataCore_factory(
                 new Derived_DataCore.Derived_DataCore_Factory<>
                         (container -> ((VirtualCategory) container).getCategorySet().getOrder() * 1000 + ((VirtualCategory) container).getOrderImpl()
-                                , new LocalSource.LocalSource_Factory<>(VirtualCategory_OrderImpl)
-                                , new ExternalSource.ExternalSource_Factory<>(VirtualCategory_CategorySet, CategorySet_Order)));
+                                , new Local_Source.LocalSource_Factory<>(VirtualCategory_OrderImpl)
+                                , new External_Source.ExternalSource_Factory<>(VirtualCategory_CategorySet, CategorySet_Order)));
         //==============================================================================================================
         // Parents
         // Children
@@ -52,13 +52,18 @@ public class VirtualCategory extends Category implements Ordered {
     }
 
     /**
-     * Create a new VirtualCategory object
+     * Constructor
      */
-    public static VirtualCategory make(Integer id, String name, CategorySet categorySet, Integer orderImpl) {
-        Database database = categorySet.getTrackingDatabase();
-        Database_Schema database_schema = database.getSchema();
-        return assembleDataObject(database, database_schema.getClassSchema(VirtualCategory.class), new VirtualCategory()
-                , DataObject_Id, id
+    public VirtualCategory(Database database) {
+        super(database);
+    }
+
+    /**
+     * Constructor
+     */
+    public VirtualCategory(String name, CategorySet categorySet, Integer orderImpl) {
+        this(categorySet.getTrackingDatabase());
+        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
                 , NamedDataObject_Name, name
                 , VirtualCategory_CategorySet, categorySet
                 , VirtualCategory_OrderImpl, orderImpl

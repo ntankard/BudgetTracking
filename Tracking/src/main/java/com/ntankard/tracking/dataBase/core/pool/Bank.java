@@ -1,15 +1,16 @@
 package com.ntankard.tracking.dataBase.core.pool;
 
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dataBase.core.baseObject.interfaces.CurrencyBound;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.StatementEnd;
 import com.ntankard.tracking.dataBase.interfaces.summary.pool.Bank_Summary;
-import com.ntankard.javaObjectDatabase.coreObject.field.DataField_Schema;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
-import com.ntankard.javaObjectDatabase.coreObject.interfaces.HasDefault;
-import com.ntankard.javaObjectDatabase.coreObject.interfaces.Ordered;
+import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.interfaces.HasDefault;
+import com.ntankard.javaObjectDatabase.dataObject.interfaces.Ordered;
 
-import static com.ntankard.javaObjectDatabase.coreObject.field.properties.Display_Properties.INFO_DISPLAY;
+import static com.ntankard.javaObjectDatabase.dataField.properties.Display_Properties.INFO_DISPLAY;
 
 public class Bank extends Pool implements CurrencyBound, Ordered, HasDefault {
 
@@ -25,8 +26,8 @@ public class Bank extends Pool implements CurrencyBound, Ordered, HasDefault {
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = Pool.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = Pool.getDataObjectSchema();
 
         // Class behavior
         dataObjectSchema.addObjectFactory(StatementEnd.Factory);
@@ -50,6 +51,13 @@ public class Bank extends Pool implements CurrencyBound, Ordered, HasDefault {
         // Children
 
         return dataObjectSchema.finaliseContainer(Bank.class);
+    }
+
+    /**
+     * Constructor
+     */
+    public Bank(Database database) {
+        super(database);
     }
 
     //------------------------------------------------------------------------------------------------------------------

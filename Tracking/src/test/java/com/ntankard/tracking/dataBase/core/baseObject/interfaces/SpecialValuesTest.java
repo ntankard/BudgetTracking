@@ -2,8 +2,8 @@ package com.ntankard.tracking.dataBase.core.baseObject.interfaces;
 
 import com.ntankard.testUtil.ClassInspectionUtil;
 import com.ntankard.testUtil.DataAccessUntil;
-import com.ntankard.javaObjectDatabase.coreObject.interfaces.SpecialValues;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject;
+import com.ntankard.javaObjectDatabase.dataObject.interfaces.SpecialValues;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.Main;
 import org.junit.jupiter.api.BeforeEach;

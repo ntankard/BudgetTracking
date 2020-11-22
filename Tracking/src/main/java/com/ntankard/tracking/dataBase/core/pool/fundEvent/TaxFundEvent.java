@@ -1,8 +1,9 @@
 package com.ntankard.tracking.dataBase.core.pool.fundEvent;
 
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dataBase.core.transfer.fund.rePay.TaxRePayFundTransfer;
-import com.ntankard.javaObjectDatabase.coreObject.field.DataField_Schema;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 
 public class TaxFundEvent extends FundEvent {
 
@@ -15,8 +16,8 @@ public class TaxFundEvent extends FundEvent {
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = FundEvent.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = FundEvent.getDataObjectSchema();
 
         // Class behavior
         dataObjectSchema.addObjectFactory(TaxRePayFundTransfer.Factory);
@@ -31,6 +32,13 @@ public class TaxFundEvent extends FundEvent {
         // Children
 
         return dataObjectSchema.finaliseContainer(TaxFundEvent.class);
+    }
+
+    /**
+     * Constructor
+     */
+    public TaxFundEvent(Database database) {
+        super(database);
     }
 
     //------------------------------------------------------------------------------------------------------------------

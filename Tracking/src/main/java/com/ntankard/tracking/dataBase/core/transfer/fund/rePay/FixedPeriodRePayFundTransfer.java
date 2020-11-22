@@ -6,12 +6,12 @@ import com.ntankard.tracking.dataBase.core.period.ExistingPeriod;
 import com.ntankard.tracking.dataBase.core.period.Period;
 import com.ntankard.tracking.dataBase.core.pool.fundEvent.FixedPeriodFundEvent;
 import com.ntankard.tracking.dataBase.core.pool.fundEvent.FundEvent;
-import com.ntankard.javaObjectDatabase.coreObject.factory.DoubleParentFactory;
-import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.source.ExternalSource;
-import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.source.LocalSource;
+import com.ntankard.javaObjectDatabase.dataObject.factory.DoubleParentFactory;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.External_Source;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Local_Source;
 import com.ntankard.javaObjectDatabase.database.ParameterMap;
-import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.Derived_DataCore;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
 
 import static com.ntankard.tracking.dataBase.core.pool.fundEvent.FixedPeriodFundEvent.*;
@@ -27,8 +27,7 @@ public class FixedPeriodRePayFundTransfer extends RePayFundTransfer {
             FixedPeriodRePayFundTransfer.class,
             ExistingPeriod.class,
             Transfer_Period, FixedPeriodFundEvent.class,
-            Transfer_Source, (generator, secondaryGenerator) -> FixedPeriodRePayFundTransfer.make(
-            generator.getTrackingDatabase().getNextId(),
+            Transfer_Source, (generator, secondaryGenerator) -> new FixedPeriodRePayFundTransfer(
             generator,
             secondaryGenerator,
             generator.getTrackingDatabase().getDefault(Currency.class))
@@ -37,8 +36,8 @@ public class FixedPeriodRePayFundTransfer extends RePayFundTransfer {
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = RePayFundTransfer.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = RePayFundTransfer.getDataObjectSchema();
 
         // Class behavior
         dataObjectSchema.setMyFactory(Factory);
@@ -57,10 +56,10 @@ public class FixedPeriodRePayFundTransfer extends RePayFundTransfer {
                             }
                             return fixedPeriodFundEvent.getRepayAmount();
                         }
-                        , new LocalSource.LocalSource_Factory<>((Transfer_Period))
-                        , new ExternalSource.ExternalSource_Factory<>((Transfer_Source), FixedPeriodFundEvent_Start)
-                        , new ExternalSource.ExternalSource_Factory<>((Transfer_Source), FixedPeriodFundEvent_Duration)
-                        , new ExternalSource.ExternalSource_Factory<>((Transfer_Source), FixedPeriodFundEvent_RepayAmount)));
+                        , new Local_Source.LocalSource_Factory<>((Transfer_Period))
+                        , new External_Source.ExternalSource_Factory<>((Transfer_Source), FixedPeriodFundEvent_Start)
+                        , new External_Source.ExternalSource_Factory<>((Transfer_Source), FixedPeriodFundEvent_Duration)
+                        , new External_Source.ExternalSource_Factory<>((Transfer_Source), FixedPeriodFundEvent_RepayAmount)));
         // =============================================================================================================
         // Currency
         // Destination
@@ -75,13 +74,18 @@ public class FixedPeriodRePayFundTransfer extends RePayFundTransfer {
     }
 
     /**
-     * Create a new RePayFundTransfer object
+     * Constructor
      */
-    public static FixedPeriodRePayFundTransfer make(Integer id, Period period, FundEvent source, Currency currency) {
-        Database database = period.getTrackingDatabase();
-        Database_Schema database_schema = database.getSchema();
-        return assembleDataObject(database, database_schema.getClassSchema(FixedPeriodRePayFundTransfer.class), new FixedPeriodRePayFundTransfer()
-                , DataObject_Id, id
+    public FixedPeriodRePayFundTransfer(Database database) {
+        super(database);
+    }
+
+    /**
+     * Constructor
+     */
+    public FixedPeriodRePayFundTransfer(Period period, FundEvent source, Currency currency) {
+        this(period.getTrackingDatabase());
+        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
                 , Transfer_Period, period
                 , Transfer_Source, source
                 , Transfer_Currency, currency

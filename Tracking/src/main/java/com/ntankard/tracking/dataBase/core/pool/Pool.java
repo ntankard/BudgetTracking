@@ -1,6 +1,7 @@
 package com.ntankard.tracking.dataBase.core.pool;
 
-import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dataBase.core.baseObject.NamedDataObject;
 
 public abstract class Pool extends NamedDataObject {
@@ -12,8 +13,8 @@ public abstract class Pool extends NamedDataObject {
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = NamedDataObject.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = NamedDataObject.getDataObjectSchema();
 
         // ID
         // Name
@@ -21,5 +22,12 @@ public abstract class Pool extends NamedDataObject {
         // Children
 
         return dataObjectSchema.endLayer(Pool.class);
+    }
+
+    /**
+     * Constructor
+     */
+    public Pool(Database database) {
+        super(database);
     }
 }

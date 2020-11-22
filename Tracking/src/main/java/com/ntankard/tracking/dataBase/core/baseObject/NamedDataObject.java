@@ -1,8 +1,9 @@
 package com.ntankard.tracking.dataBase.core.baseObject;
 
-import com.ntankard.javaObjectDatabase.coreObject.DataObject;
-import com.ntankard.javaObjectDatabase.coreObject.field.DataField_Schema;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject;
+import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.database.Database;
 
 public abstract class NamedDataObject extends DataObject {
 
@@ -15,8 +16,8 @@ public abstract class NamedDataObject extends DataObject {
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = DataObject.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = DataObject.getDataObjectSchema();
 
         // ID
         // Name ========================================================================================================
@@ -27,6 +28,13 @@ public abstract class NamedDataObject extends DataObject {
         // Children
 
         return dataObjectSchema.endLayer(NamedDataObject.class);
+    }
+
+    /**
+     * Constructor
+     */
+    public NamedDataObject(Database database) {
+        super(database);
     }
 
     //------------------------------------------------------------------------------------------------------------------

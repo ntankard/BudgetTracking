@@ -1,6 +1,6 @@
 package com.ntankard.testUtil;
 
-import com.ntankard.javaObjectDatabase.coreObject.DataObject;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.database.Database_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.Main;

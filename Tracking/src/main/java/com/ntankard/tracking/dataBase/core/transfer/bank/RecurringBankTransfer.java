@@ -1,21 +1,22 @@
 package com.ntankard.tracking.dataBase.core.transfer.bank;
 
 import com.ntankard.javaObjectDatabase.database.Database_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Local_Source;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.period.ExistingPeriod;
-import com.ntankard.javaObjectDatabase.coreObject.factory.DoubleParentFactory;
-import com.ntankard.javaObjectDatabase.coreObject.field.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.factory.DoubleParentFactory;
+import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.tracking.dataBase.core.period.Period;
 import com.ntankard.tracking.dataBase.core.pool.Bank;
 import com.ntankard.tracking.dataBase.core.pool.Pool;
 import com.ntankard.tracking.dataBase.core.recurringPayment.FixedRecurringPayment;
-import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.Derived_DataCore;
-import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.source.DirectExternalSource;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.DirectExternal_Source;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
 
 import static com.ntankard.tracking.dataBase.core.pool.fundEvent.FixedPeriodFundEvent.NamedDataObject_Name;
-import static com.ntankard.javaObjectDatabase.coreObject.factory.ObjectFactory.GeneratorMode.MULTIPLE_NO_ADD;
+import static com.ntankard.javaObjectDatabase.dataObject.factory.ObjectFactory.GeneratorMode.MULTIPLE_NO_ADD;
 
 public class RecurringBankTransfer extends BankTransfer {
 
@@ -37,8 +38,7 @@ public class RecurringBankTransfer extends BankTransfer {
                         value = secondaryGenerator.getValue();
                     }
                 }
-                return RecurringBankTransfer.make(
-                        generator.getTrackingDatabase().getNextId(),
+                return new RecurringBankTransfer(
                         generator,
                         secondaryGenerator.getBank(),
                         value,
@@ -52,8 +52,8 @@ public class RecurringBankTransfer extends BankTransfer {
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = BankTransfer.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = BankTransfer.getDataObjectSchema();
 
         // Class behavior
         dataObjectSchema.setMyFactory(Factory);
@@ -78,14 +78,14 @@ public class RecurringBankTransfer extends BankTransfer {
                 new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Currency, BankTransfer>)
                                 container -> container.getCurrency()
-                        , new com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.source.LocalSource.LocalSource_Factory<>(Transfer_Currency)));
+                        , new Local_Source.LocalSource_Factory<>(Transfer_Currency)));
         // SourcePeriodGet
         // DestinationPeriodGet ========================================================================================
         dataObjectSchema.<Period>get(Transfer_DestinationPeriodGet).setDataCore_factory(
                 new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Period, BankTransfer>) container ->
                                 container.getPeriod()
-                        , new com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.source.LocalSource.LocalSource_Factory<>(Transfer_Period)));
+                        , new Local_Source.LocalSource_Factory<>(Transfer_Period)));
         // ParentPayment ===============================================================================================
         dataObjectSchema.add(new DataField_Schema<>(RecurringBankTransfer_ParentPayment, FixedRecurringPayment.class));
         //==============================================================================================================
@@ -96,23 +96,27 @@ public class RecurringBankTransfer extends BankTransfer {
         dataObjectSchema.<String>get(Transfer_Description).setManualCanEdit(false);
         dataObjectSchema.<String>get(Transfer_Description).setDataCore_factory(
                 new Derived_DataCore.Derived_DataCore_Factory<>(
-                        new DirectExternalSource.DirectExternalSource_Factory<>((RecurringBankTransfer_ParentPayment), NamedDataObject_Name)));
+                        new DirectExternal_Source.DirectExternalSource_Factory<>((RecurringBankTransfer_ParentPayment), NamedDataObject_Name)));
         //==============================================================================================================
 
         return dataObjectSchema.finaliseContainer(RecurringBankTransfer.class);
     }
 
     /**
-     * Create a new RePayFundTransfer object
+     * Constructor
      */
-    public static RecurringBankTransfer make(Integer id,
-                                             Period period, Bank source, Double value,
-                                             Period destinationPeriod, Pool destination,
-                                             FixedRecurringPayment parentPayment) {
-        Database database = period.getTrackingDatabase();
-        Database_Schema database_schema = database.getSchema();
-        return assembleDataObject(database, database_schema.getClassSchema(RecurringBankTransfer.class), new RecurringBankTransfer()
-                , DataObject_Id, id
+    public RecurringBankTransfer(Database database) {
+        super(database);
+    }
+
+    /**
+     * Constructor
+     */
+    public RecurringBankTransfer(Period period, Bank source, Double value,
+                                 Period destinationPeriod, Pool destination,
+                                 FixedRecurringPayment parentPayment) {
+        this(period.getTrackingDatabase());
+        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
                 , Transfer_Period, period
                 , Transfer_Source, source
                 , Transfer_Value, value

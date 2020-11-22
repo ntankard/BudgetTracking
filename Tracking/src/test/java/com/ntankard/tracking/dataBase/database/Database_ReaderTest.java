@@ -3,7 +3,7 @@ package com.ntankard.tracking.dataBase.database;
 import com.ntankard.testUtil.DataAccessUntil;
 import com.ntankard.tracking.Main;
 import com.ntankard.javaObjectDatabase.database.Database;
-import com.ntankard.javaObjectDatabase.database.Database_IO_Util;
+import com.ntankard.javaObjectDatabase.database.io.Database_IO_Util;
 import com.ntankard.javaObjectDatabase.util.FileUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,8 +14,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ntankard.javaObjectDatabase.database.Database_IO.*;
-import static com.ntankard.javaObjectDatabase.database.Database_IO_Util.*;
+import static com.ntankard.javaObjectDatabase.database.io.Database_IO.*;
+import static com.ntankard.javaObjectDatabase.database.io.Database_IO_Util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Execution(ExecutionMode.CONCURRENT)

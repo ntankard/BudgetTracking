@@ -1,7 +1,7 @@
 package com.ntankard.tracking.dataBase.core.transfer;
 
-import com.ntankard.javaObjectDatabase.coreObject.factory.SingleParentFactory;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.factory.SingleParentFactory;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.ParameterMap;
 import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.javaObjectDatabase.database.Database_Schema;
@@ -12,13 +12,13 @@ public class Destination_HalfTransfer extends HalfTransfer {
     public static SingleParentFactory<?, ?> Factory = new SingleParentFactory<>(
             Destination_HalfTransfer.class,
             Transfer.class,
-            generator -> Destination_HalfTransfer.make(generator.getTrackingDatabase().getNextId(), generator));
+            Destination_HalfTransfer::new);
 
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = HalfTransfer.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = HalfTransfer.getDataObjectSchema();
 
         // Class behavior
         dataObjectSchema.setMyFactory(Factory);
@@ -27,13 +27,18 @@ public class Destination_HalfTransfer extends HalfTransfer {
     }
 
     /**
-     * Create a new Destination_HalfTransfer object
+     * Constructor
      */
-    public static Destination_HalfTransfer make(Integer id, Transfer transfer) {
-        Database database = transfer.getTrackingDatabase();
-        Database_Schema database_schema = database.getSchema();
-        return assembleDataObject(database, database_schema.getClassSchema(Destination_HalfTransfer.class), new Destination_HalfTransfer()
-                , DataObject_Id, id
+    public Destination_HalfTransfer(Database database) {
+        super(database);
+    }
+
+    /**
+     * Constructor
+     */
+    public Destination_HalfTransfer(Transfer transfer) {
+        this(transfer.getTrackingDatabase());
+        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
                 , HalfTransfer_Source, false
                 , HalfTransfer_Transfer, transfer
         );

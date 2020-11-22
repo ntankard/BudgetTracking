@@ -1,8 +1,9 @@
 package com.ntankard.dynamicGUI.coreObject;
 
-import com.ntankard.javaObjectDatabase.coreObject.DataObject;
-import com.ntankard.javaObjectDatabase.coreObject.field.DataField_Schema;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject;
+import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.javaObjectDatabase.database.Database_Schema;
 import com.ntankard.testUtil.DataAccessUntil;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,7 +34,7 @@ class DataObjectSchemaTest {
 
     @Test
     void add() {
-        DataObject_Schema dataObjectSchema = Valid_Abstract_DataObjectC.getFieldContainer();
+        DataObject_Schema dataObjectSchema = Valid_Abstract_DataObjectC.getDataObjectSchema();
         DataField_Schema<?> toAdd = new Test_DataField("Test1");
 
         // Check valid add
@@ -138,7 +139,7 @@ class DataObjectSchemaTest {
     @Test
     void get() {
         // Check test objects
-        DataObject_Schema dataObjectSchema = Valid_DataObjectD.getFieldContainer();
+        DataObject_Schema dataObjectSchema = Valid_DataObjectD.getDataObjectSchema();
         for (DataField_Schema<?> field : dataObjectSchema.getList()) {
             assertEquals(field, dataObjectSchema.get(field.getIdentifierName()));
         }
@@ -155,7 +156,7 @@ class DataObjectSchemaTest {
     @Test
     void getList() {
         // Check test objects
-        DataObject_Schema dataObjectSchema = Valid_DataObjectD.getFieldContainer();
+        DataObject_Schema dataObjectSchema = Valid_DataObjectD.getDataObjectSchema();
         assertEquals(dataObjectSchema.masterMap.size(), dataObjectSchema.getList().size());
         for (DataField_Schema<?> field : dataObjectSchema.getList()) {
             assertEquals(field, dataObjectSchema.masterMap.get(field.getIdentifierName()));
@@ -233,34 +234,69 @@ class DataObjectSchemaTest {
     //------------------------------------------------------------------------------------------------------------------
 
     abstract static class Valid_Abstract_DataObjectA extends DataObject {
-        public static DataObject_Schema getFieldContainer() {
-            DataObject_Schema dataObjectSchema = DataObject.getFieldContainer();
+        public static DataObject_Schema getDataObjectSchema() {
+            DataObject_Schema dataObjectSchema = DataObject.getDataObjectSchema();
             return dataObjectSchema.endLayer(Valid_Abstract_DataObjectA.class);
+        }
+
+        /**
+         * Constructor
+         */
+        public Valid_Abstract_DataObjectA(Database database) {
+            super(database);
         }
     }
 
     abstract static class Valid_Abstract_DataObjectB extends Valid_Abstract_DataObjectA {
-        public static DataObject_Schema getFieldContainer() {
-            DataObject_Schema dataObjectSchema = Valid_Abstract_DataObjectA.getFieldContainer();
+        public static DataObject_Schema getDataObjectSchema() {
+            DataObject_Schema dataObjectSchema = Valid_Abstract_DataObjectA.getDataObjectSchema();
             return dataObjectSchema.endLayer(Valid_Abstract_DataObjectB.class);
+        }
+
+        /**
+         * Constructor
+         */
+        public Valid_Abstract_DataObjectB(Database database) {
+            super(database);
         }
     }
 
     abstract static class Valid_Abstract_DataObjectC extends Valid_Abstract_DataObjectB {
-        public static DataObject_Schema getFieldContainer() {
-            DataObject_Schema dataObjectSchema = Valid_Abstract_DataObjectB.getFieldContainer();
+        public static DataObject_Schema getDataObjectSchema() {
+            DataObject_Schema dataObjectSchema = Valid_Abstract_DataObjectB.getDataObjectSchema();
             return dataObjectSchema.endLayer(Valid_Abstract_DataObjectC.class);
+        }
+
+        /**
+         * Constructor
+         */
+        public Valid_Abstract_DataObjectC(Database database) {
+            super(database);
         }
     }
 
     static class Valid_DataObjectD extends Valid_Abstract_DataObjectC {
-        public static DataObject_Schema getFieldContainer() {
-            DataObject_Schema dataObjectSchema = Valid_Abstract_DataObjectC.getFieldContainer();
+        public static DataObject_Schema getDataObjectSchema() {
+            DataObject_Schema dataObjectSchema = Valid_Abstract_DataObjectC.getDataObjectSchema();
             return dataObjectSchema.finaliseContainer(Valid_DataObjectD.class);
+        }
+
+        /**
+         * Constructor
+         */
+        public Valid_DataObjectD(Database database) {
+            super(database);
         }
     }
 
     abstract static class Valid_Abstract_DataObjectE extends Valid_Abstract_DataObjectC {
+
+        /**
+         * Constructor
+         */
+        public Valid_Abstract_DataObjectE(Database database) {
+            super(database);
+        }
     }
 
     static class Test_DataField extends DataField_Schema<Object> {

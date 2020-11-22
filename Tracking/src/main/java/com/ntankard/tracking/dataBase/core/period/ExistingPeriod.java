@@ -7,13 +7,13 @@ import com.ntankard.tracking.dataBase.core.transfer.fund.rePay.FixedPeriodRePayF
 import com.ntankard.tracking.dataBase.core.transfer.fund.rePay.SavingsRePayFundTransfer;
 import com.ntankard.tracking.dataBase.core.transfer.fund.rePay.TaxRePayFundTransfer;
 import com.ntankard.tracking.dataBase.interfaces.summary.pool.Bank_Summary;
-import com.ntankard.javaObjectDatabase.coreObject.field.DataField_Schema;
-import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.Derived_DataCore;
-import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.source.LocalSource;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Local_Source;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
 
-import static com.ntankard.javaObjectDatabase.coreObject.field.properties.Display_Properties.INFO_DISPLAY;
+import static com.ntankard.javaObjectDatabase.dataField.properties.Display_Properties.INFO_DISPLAY;
 
 public class ExistingPeriod extends Period {
 
@@ -28,8 +28,8 @@ public class ExistingPeriod extends Period {
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = Period.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = Period.getDataObjectSchema();
 
         // Class behavior
         dataObjectSchema.addObjectFactory(StatementEnd.Factory);
@@ -50,8 +50,8 @@ public class ExistingPeriod extends Period {
         dataObjectSchema.get(ExistingPeriod_Order).setDataCore_factory(
                 new Derived_DataCore.Derived_DataCore_Factory<>
                         (container -> ((ExistingPeriod) container).getYear() * 12 + ((ExistingPeriod) container).getMonth()
-                                , new LocalSource.LocalSource_Factory<>(ExistingPeriod_Month)
-                                , new LocalSource.LocalSource_Factory<>(ExistingPeriod_Year)));
+                                , new Local_Source.LocalSource_Factory<>(ExistingPeriod_Month)
+                                , new Local_Source.LocalSource_Factory<>(ExistingPeriod_Year)));
         //==============================================================================================================
         // Parents
         // Children
@@ -60,12 +60,18 @@ public class ExistingPeriod extends Period {
     }
 
     /**
-     * Create a new ExistingPeriod object
+     * Constructor
      */
-    public static ExistingPeriod make(Database database, Integer id, Integer month, Integer year) {
-        Database_Schema database_schema = database.getSchema();
-        return assembleDataObject(database, database_schema.getClassSchema(ExistingPeriod.class), new ExistingPeriod()
-                , DataObject_Id, id
+    public ExistingPeriod(Database database) {
+        super(database);
+    }
+
+    /**
+     * Constructor
+     */
+    public ExistingPeriod(Database database, Integer id, Integer month, Integer year) {
+        this(database);
+        setAllValues(DataObject_Id, id
                 , ExistingPeriod_Month, month
                 , ExistingPeriod_Year, year
         );
@@ -89,7 +95,7 @@ public class ExistingPeriod extends Period {
             nextYear++;
         }
 
-        return ExistingPeriod.make(getTrackingDatabase(), getTrackingDatabase().getNextId(), nextMonth, nextYear);
+        return new ExistingPeriod(getTrackingDatabase(), getTrackingDatabase().getNextId(), nextMonth, nextYear);
     }
 
     /**

@@ -1,11 +1,11 @@
 package com.ntankard.tracking.dataBase.core.period;
 
-import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
-import com.ntankard.javaObjectDatabase.coreObject.field.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.javaObjectDatabase.database.Database_Schema;
 
-import static com.ntankard.javaObjectDatabase.coreObject.field.properties.Display_Properties.INFO_DISPLAY;
+import static com.ntankard.javaObjectDatabase.dataField.properties.Display_Properties.INFO_DISPLAY;
 
 public class VirtualPeriod extends Period {
 
@@ -19,8 +19,8 @@ public class VirtualPeriod extends Period {
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = Period.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = Period.getDataObjectSchema();
 
         // ID
         // Name ========================================================================================================
@@ -36,12 +36,18 @@ public class VirtualPeriod extends Period {
     }
 
     /**
-     * Create a new VirtualPeriod object
+     * Constructor
      */
-    public static VirtualPeriod make(Database database, Integer id, String name, Integer order) {
-        Database_Schema database_schema = database.getSchema();
-        return assembleDataObject(database, database_schema.getClassSchema(VirtualPeriod.class), new VirtualPeriod()
-                , DataObject_Id, id
+    public VirtualPeriod(Database database) {
+        super(database);
+    }
+
+    /**
+     * Constructor
+     */
+    public VirtualPeriod(Database database, Integer id, String name, Integer order) {
+        super(database);
+        setAllValues(DataObject_Id, id
                 , VirtualPeriod_Name, name
                 , VirtualPeriod_Order, order
         );

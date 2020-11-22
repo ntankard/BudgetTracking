@@ -1,8 +1,8 @@
 package com.ntankard.tracking.dataBase.core;
 
-import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject;
-import com.ntankard.javaObjectDatabase.coreObject.field.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject;
+import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.javaObjectDatabase.database.Database_Schema;
 import com.ntankard.tracking.dataBase.core.transfer.bank.BankTransfer;
@@ -19,8 +19,8 @@ public class Receipt extends DataObject {
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = DataObject.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = DataObject.getDataObjectSchema();
 
         // ID
         // FileName ======================================================================================================
@@ -36,13 +36,18 @@ public class Receipt extends DataObject {
     }
 
     /**
-     * Create a new Receipt object
+     * Constructor
      */
-    public static Receipt make(Integer id, String fileName, BankTransfer bankTransfer) {
-        Database database = bankTransfer.getTrackingDatabase();
-        Database_Schema database_schema = database.getSchema();
-        return assembleDataObject(database, database_schema.getClassSchema(Receipt.class), new Receipt()
-                , DataObject_Id, id
+    public Receipt(Database database) {
+        super(database);
+    }
+
+    /**
+     * Constructor
+     */
+    public Receipt(String fileName, BankTransfer bankTransfer) {
+        this(bankTransfer.getTrackingDatabase());
+        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
                 , Receipt_FileName, fileName
                 , Receipt_BankTransfer, bankTransfer
         );

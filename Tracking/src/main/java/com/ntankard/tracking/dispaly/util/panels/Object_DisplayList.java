@@ -10,7 +10,7 @@ import com.ntankard.tracking.dispaly.util.localeInspectors.HalfTransfer_LocaleSo
 import com.ntankard.tracking.dispaly.util.localeInspectors.SetTransfer_LocaleSource;
 import com.ntankard.dynamicGUI.gui.containers.DynamicGUI_DisplayList;
 import com.ntankard.dynamicGUI.gui.util.update.Updatable;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 
 import java.util.ArrayList;
 

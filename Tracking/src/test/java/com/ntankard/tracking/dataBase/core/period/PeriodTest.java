@@ -38,7 +38,7 @@ class PeriodTest {
 
         // Generate test data
         List<Period> periods = new ArrayList<>();
-        ExistingPeriod period = ExistingPeriod.make(database,-1, 1, 1);
+        ExistingPeriod period = new ExistingPeriod(database, -1, 1, 1);
         for (int i = 0; i < testSize; i++) {
             period = period.generateNext();
             periods.add(period);

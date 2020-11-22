@@ -1,11 +1,12 @@
 package com.ntankard.tracking.dataBase.core.period;
 
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dataBase.interfaces.summary.Period_Summary;
 import com.ntankard.tracking.dataBase.interfaces.summary.pool.Category_Summary;
 import com.ntankard.tracking.dataBase.interfaces.summary.pool.FundEvent_Summary;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
-import com.ntankard.javaObjectDatabase.coreObject.interfaces.Ordered;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.interfaces.Ordered;
 
 public abstract class Period extends DataObject implements Ordered {
 
@@ -16,8 +17,8 @@ public abstract class Period extends DataObject implements Ordered {
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = DataObject.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = DataObject.getDataObjectSchema();
 
         // Class behavior
         dataObjectSchema.addObjectFactory(Period_Summary.Factory);
@@ -29,6 +30,13 @@ public abstract class Period extends DataObject implements Ordered {
         // Children
 
         return dataObjectSchema.endLayer(Period.class);
+    }
+
+    /**
+     * Constructor
+     */
+    public Period(Database database) {
+        super(database);
     }
 
     //------------------------------------------------------------------------------------------------------------------

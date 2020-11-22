@@ -1,7 +1,7 @@
 package com.ntankard.tracking.dispaly.dataObjectPanels.periodSummary;
 
 import com.ntankard.dynamicGUI.gui.util.update.Updatable;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.period.Period;
 import com.ntankard.tracking.dataBase.core.pool.Pool;

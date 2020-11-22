@@ -1,21 +1,20 @@
 package com.ntankard.tracking.dataBase.core.links;
 
-import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.Derived_DataCore;
-import com.ntankard.javaObjectDatabase.coreObject.field.filter.Dependant_FieldFilter;
-import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.source.ExternalSource;
-import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.source.LocalSource;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject;
-import com.ntankard.javaObjectDatabase.coreObject.interfaces.Ordered;
-import com.ntankard.javaObjectDatabase.coreObject.field.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.External_Source;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Local_Source;
+import com.ntankard.javaObjectDatabase.dataField.filter.Shared_FieldFilter;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.interfaces.Ordered;
 import com.ntankard.javaObjectDatabase.database.Database;
-import com.ntankard.javaObjectDatabase.database.Database_Schema;
 import com.ntankard.tracking.dataBase.core.CategorySet;
 import com.ntankard.tracking.dataBase.core.pool.category.SolidCategory;
 
 import java.util.List;
 
-import static com.ntankard.javaObjectDatabase.coreObject.field.properties.Display_Properties.DEBUG_DISPLAY;
+import static com.ntankard.javaObjectDatabase.dataField.properties.Display_Properties.DEBUG_DISPLAY;
 import static com.ntankard.tracking.dataBase.core.CategorySet.CategorySet_Order;
 
 public class CategoryToCategorySet extends DataObject implements Ordered {
@@ -33,21 +32,21 @@ public class CategoryToCategorySet extends DataObject implements Ordered {
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = DataObject.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = DataObject.getDataObjectSchema();
+
+        Shared_FieldFilter<SolidCategory, CategorySet, CategoryToCategorySet> sharedFilter = new Shared_FieldFilter<>(CategoryToCategorySet_SolidCategory, CategoryToCategorySet_CategorySet,
+                (firstNewValue, firstPastValue, secondNewValue, secondPastValue, container) ->
+                        !secondNewValue.getUsedCategories().contains(firstNewValue) || firstNewValue.equals(container.getSolidCategory()));
 
         // ID
         // CategorySet ========================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(CategoryToCategorySet_CategorySet, CategorySet.class));
+        dataObjectSchema.<CategorySet>get(CategoryToCategorySet_CategorySet).addFilter(sharedFilter.getSecondFilter());
         // SolidCategory ========================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(CategoryToCategorySet_SolidCategory, SolidCategory.class));
         dataObjectSchema.get(CategoryToCategorySet_SolidCategory).setManualCanEdit(true);
-        dataObjectSchema.<SolidCategory>get(CategoryToCategorySet_SolidCategory).addFilter(new Dependant_FieldFilter<SolidCategory, CategoryToCategorySet>(CategoryToCategorySet_CategorySet) {
-            @Override
-            public boolean isValid(SolidCategory newValue, SolidCategory pastValue, CategoryToCategorySet categoryToCategorySet) {
-                return !categoryToCategorySet.getCategorySet().getUsedCategories().contains(newValue) || newValue.equals(categoryToCategorySet.getSolidCategory());
-            }
-        });
+        dataObjectSchema.<SolidCategory>get(CategoryToCategorySet_SolidCategory).addFilter(sharedFilter.getFirstFilter());
         // OrderImpl ========================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(CategoryToCategorySet_OrderImpl, Integer.class));
         dataObjectSchema.get(CategoryToCategorySet_OrderImpl).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
@@ -57,8 +56,8 @@ public class CategoryToCategorySet extends DataObject implements Ordered {
         dataObjectSchema.get(CategoryToCategorySet_Order).setDataCore_factory(
                 new Derived_DataCore.Derived_DataCore_Factory<>
                         (container -> ((CategoryToCategorySet) container).getCategorySet().getOrder() * 1000 + ((CategoryToCategorySet) container).getOrderImpl()
-                                , new LocalSource.LocalSource_Factory<>((CategoryToCategorySet_OrderImpl))
-                                , new ExternalSource.ExternalSource_Factory<>((CategoryToCategorySet_CategorySet), CategorySet_Order)));
+                                , new Local_Source.LocalSource_Factory<>((CategoryToCategorySet_OrderImpl))
+                                , new External_Source.ExternalSource_Factory<>((CategoryToCategorySet_CategorySet), CategorySet_Order)));
         //==============================================================================================================
         // Parents
         // Children
@@ -67,13 +66,18 @@ public class CategoryToCategorySet extends DataObject implements Ordered {
     }
 
     /**
-     * Create a new RePayFundTransfer object
+     * Constructor
      */
-    public static CategoryToCategorySet make(Integer id, CategorySet categorySet, SolidCategory solidCategory, Integer orderImpl) {
-        Database database = categorySet.getTrackingDatabase();
-        Database_Schema database_schema = database.getSchema();
-        return assembleDataObject(database, database_schema.getClassSchema(CategoryToCategorySet.class), new CategoryToCategorySet()
-                , DataObject_Id, id
+    public CategoryToCategorySet(Database database) {
+        super(database);
+    }
+
+    /**
+     * Constructor
+     */
+    public CategoryToCategorySet(CategorySet categorySet, SolidCategory solidCategory, Integer orderImpl) {
+        this(categorySet.getTrackingDatabase());
+        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
                 , CategoryToCategorySet_CategorySet, categorySet
                 , CategoryToCategorySet_SolidCategory, solidCategory
                 , CategoryToCategorySet_OrderImpl, orderImpl

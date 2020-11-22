@@ -19,7 +19,7 @@ public class CategorySet_ElementController extends TrackingDatabase_ElementContr
      */
     @Override
     public CategorySet newElement() {
-        return CategorySet.make(getTrackingDatabase(), getTrackingDatabase().getNextId(),
+        return new CategorySet(getTrackingDatabase(),
                 "",
                 false,
                 0);

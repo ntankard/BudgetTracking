@@ -1,14 +1,13 @@
 package com.ntankard.tracking.dataBase.core.links;
 
+import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.DirectExternal_Source;
+import com.ntankard.javaObjectDatabase.dataField.filter.Shared_FieldFilter;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
-import com.ntankard.javaObjectDatabase.database.Database_Schema;
 import com.ntankard.tracking.dataBase.core.CategorySet;
-import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.Derived_DataCore;
-import com.ntankard.javaObjectDatabase.coreObject.field.filter.Dependant_FieldFilter;
-import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.source.DirectExternalSource;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject;
-import com.ntankard.javaObjectDatabase.coreObject.field.DataField_Schema;
 import com.ntankard.tracking.dataBase.core.pool.category.SolidCategory;
 import com.ntankard.tracking.dataBase.core.pool.category.VirtualCategory;
 
@@ -29,26 +28,26 @@ public class CategoryToVirtualCategory extends DataObject {
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = DataObject.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = DataObject.getDataObjectSchema();
+
+        Shared_FieldFilter<SolidCategory, VirtualCategory, CategoryToVirtualCategory> sharedFilter = new Shared_FieldFilter<>(CategoryToVirtualCategory_SolidCategory, CategoryToVirtualCategory_VirtualCategory,
+                (firstNewValue, firstPastValue, secondNewValue, secondPastValue, container) ->
+                        !secondNewValue.getCategorySet().getUsedCategories().contains(firstNewValue) || firstNewValue.equals(container.getSolidCategory()));
 
         // ID
         // VirtualCategory =============================================================================================
         dataObjectSchema.add(new DataField_Schema<>(CategoryToVirtualCategory_VirtualCategory, VirtualCategory.class));
+        dataObjectSchema.<VirtualCategory>get(CategoryToVirtualCategory_VirtualCategory).addFilter(sharedFilter.getSecondFilter());
         // SolidCategory ===============================================================================================
         dataObjectSchema.add(new DataField_Schema<>(CategoryToVirtualCategory_SolidCategory, SolidCategory.class));
         dataObjectSchema.get(CategoryToVirtualCategory_SolidCategory).setManualCanEdit(true);
-        dataObjectSchema.<SolidCategory>get(CategoryToVirtualCategory_SolidCategory).addFilter(new Dependant_FieldFilter<SolidCategory, CategoryToVirtualCategory>(CategoryToVirtualCategory_VirtualCategory) {
-            @Override
-            public boolean isValid(SolidCategory newValue, SolidCategory pastValue, CategoryToVirtualCategory categoryToVirtualCategory) {
-                return !categoryToVirtualCategory.getVirtualCategory().getCategorySet().getUsedCategories().contains(newValue) || newValue.equals(categoryToVirtualCategory.getSolidCategory());
-            }
-        });
+        dataObjectSchema.<SolidCategory>get(CategoryToVirtualCategory_SolidCategory).addFilter(sharedFilter.getFirstFilter());
         // CategorySet =================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(CategoryToVirtualCategory_CategorySet, CategorySet.class));
         dataObjectSchema.get(CategoryToVirtualCategory_CategorySet).setDataCore_factory(
                 new Derived_DataCore.Derived_DataCore_Factory<>(
-                        new DirectExternalSource.DirectExternalSource_Factory<>(
+                        new DirectExternal_Source.DirectExternalSource_Factory<>(
                                 (CategoryToVirtualCategory_VirtualCategory), VirtualCategory_CategorySet)));
         //==============================================================================================================
         // Parents
@@ -58,13 +57,18 @@ public class CategoryToVirtualCategory extends DataObject {
     }
 
     /**
-     * Create a new RePayFundTransfer object
+     * Constructor
      */
-    public static CategoryToVirtualCategory make(Integer id, VirtualCategory virtualCategory, SolidCategory solidCategory) {
-        Database database = virtualCategory.getTrackingDatabase();
-        Database_Schema database_schema = database.getSchema();
-        return assembleDataObject(database, database_schema.getClassSchema(CategoryToVirtualCategory.class), new CategoryToVirtualCategory()
-                , DataObject_Id, id
+    public CategoryToVirtualCategory(Database database) {
+        super(database);
+    }
+
+    /**
+     * Constructor
+     */
+    public CategoryToVirtualCategory(VirtualCategory virtualCategory, SolidCategory solidCategory) {
+        this(virtualCategory.getTrackingDatabase());
+        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
                 , CategoryToVirtualCategory_VirtualCategory, virtualCategory
                 , CategoryToVirtualCategory_SolidCategory, solidCategory
         );

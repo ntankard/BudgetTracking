@@ -1,5 +1,6 @@
 package com.ntankard.tracking.dataBase.interfaces.summary.pool;
 
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dataBase.core.baseObject.interfaces.CurrencyBound;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.period.Period;
@@ -8,22 +9,22 @@ import com.ntankard.tracking.dataBase.core.transfer.HalfTransfer;
 import com.ntankard.tracking.dataBase.core.transfer.Transfer;
 import com.ntankard.tracking.dataBase.interfaces.set.filter.TransferDestination_HalfTransfer_Filter;
 import com.ntankard.tracking.dataBase.interfaces.set.filter.TransferType_HalfTransfer_Filter;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject;
-import com.ntankard.javaObjectDatabase.coreObject.field.DataField_Schema;
-import com.ntankard.javaObjectDatabase.coreObject.field.ListDataField_Schema;
-import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.Children_ListDataCore;
-import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.Derived_DataCore;
-import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.source.ListSource;
-import com.ntankard.javaObjectDatabase.coreObject.field.dataCore.derived.source.LocalSource;
-import com.ntankard.javaObjectDatabase.coreObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject;
+import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataField.ListDataField_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.Children_ListDataCore;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.List_Source;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Local_Source;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 
 import java.util.List;
 
+import static com.ntankard.javaObjectDatabase.dataField.properties.Display_Properties.*;
 import static com.ntankard.tracking.dataBase.core.transfer.HalfTransfer.HalfTransfer_Currency;
 import static com.ntankard.tracking.dataBase.core.transfer.HalfTransfer.HalfTransfer_Value;
-import static com.ntankard.javaObjectDatabase.coreObject.field.properties.Display_Properties.*;
-import static com.ntankard.javaObjectDatabase.coreObject.field.properties.Display_Properties.DataContext.ZERO_TARGET;
-import static com.ntankard.javaObjectDatabase.coreObject.field.properties.Display_Properties.DataType.CURRENCY;
+import static com.ntankard.javaObjectDatabase.dataField.properties.Display_Properties.DataContext.ZERO_TARGET;
+import static com.ntankard.javaObjectDatabase.dataField.properties.Display_Properties.DataType.CURRENCY;
 
 public abstract class PoolSummary<PoolType extends Pool> extends DataObject implements CurrencyBound {
 
@@ -45,8 +46,8 @@ public abstract class PoolSummary<PoolType extends Pool> extends DataObject impl
     /**
      * Get all the fields for this object
      */
-    public static DataObject_Schema getFieldContainer() {
-        DataObject_Schema dataObjectSchema = DataObject.getFieldContainer();
+    public static DataObject_Schema getDataObjectSchema() {
+        DataObject_Schema dataObjectSchema = DataObject.getDataObjectSchema();
 
         // ID
         // Period ======================================================================================================
@@ -67,8 +68,8 @@ public abstract class PoolSummary<PoolType extends Pool> extends DataObject impl
                 new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Double, PoolSummary<?>>) container ->
                                 container.getEnd() - container.getStart()
-                        , new LocalSource.LocalSource_Factory<Double, PoolSummary<?>>(PoolSummary_Start)
-                        , new LocalSource.LocalSource_Factory<Double, PoolSummary<?>>(PoolSummary_End)));
+                        , new Local_Source.LocalSource_Factory<Double, PoolSummary<?>>(PoolSummary_Start)
+                        , new Local_Source.LocalSource_Factory<Double, PoolSummary<?>>(PoolSummary_End)));
         // NetSet ======================================================================================================
         dataObjectSchema.add(new ListDataField_Schema<>(PoolSummary_TransferSet, HalfTransfer.HalfTransferList.class));
         dataObjectSchema.get(PoolSummary_TransferSet).getDisplayProperties().setVerbosityLevel(TRACE_DISPLAY);
@@ -90,7 +91,7 @@ public abstract class PoolSummary<PoolType extends Pool> extends DataObject impl
                             }
                             return Currency.round(sum);
                         }
-                        , new ListSource.ListSource_Factory<Double, PoolSummary<?>>(
+                        , new List_Source.ListSource_Factory<Double, PoolSummary<?>>(
                         PoolSummary_TransferSet,
                         HalfTransfer_Value,
                         HalfTransfer_Currency)));
@@ -105,8 +106,8 @@ public abstract class PoolSummary<PoolType extends Pool> extends DataObject impl
                 new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Double, PoolSummary<?>>) container ->
                                 Currency.round(container.getTransferSum() - container.getNet())
-                        , new LocalSource.LocalSource_Factory<>(PoolSummary_TransferSum)
-                        , new LocalSource.LocalSource_Factory<>(PoolSummary_Net)));
+                        , new Local_Source.LocalSource_Factory<>(PoolSummary_TransferSum)
+                        , new Local_Source.LocalSource_Factory<>(PoolSummary_Net)));
         // Valid =======================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(PoolSummary_Valid, Boolean.class));
         dataObjectSchema.get(PoolSummary_Valid).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
@@ -114,6 +115,13 @@ public abstract class PoolSummary<PoolType extends Pool> extends DataObject impl
         // Children
 
         return dataObjectSchema.endLayer(PoolSummary.class);
+    }
+
+    /**
+     * Constructor
+     */
+    public PoolSummary(Database database) {
+        super(database);
     }
 
     //------------------------------------------------------------------------------------------------------------------
