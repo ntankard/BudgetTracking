@@ -1,7 +1,6 @@
 package com.ntankard.tracking.dataBase.core.pool.fundEvent;
 
 import com.ntankard.javaObjectDatabase.database.Database;
-import com.ntankard.javaObjectDatabase.database.Database_Schema;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.period.ExistingPeriod;
 import com.ntankard.tracking.dataBase.core.pool.category.SolidCategory;
@@ -10,7 +9,7 @@ import com.ntankard.tracking.dataBase.core.transfer.fund.rePay.RePayFundTransfer
 import com.ntankard.tracking.dataBase.core.transfer.HalfTransfer;
 import com.ntankard.tracking.dataBase.interfaces.set.filter.NotTransferType_HalfTransfer_Filter;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
-import com.ntankard.javaObjectDatabase.dataField.filter.IntegerRange_FieldFilter;
+import com.ntankard.javaObjectDatabase.dataField.validator.NumberRange_FieldValidator;
 import com.ntankard.javaObjectDatabase.dataField.ListDataField_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.Children_ListDataCore;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.Static_DataCore;
@@ -55,7 +54,7 @@ public class FixedPeriodFundEvent extends FundEvent {
         dataObjectSchema.get(FixedPeriodFundEvent_Start).setManualCanEdit(true);
         // Duration ====================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(FixedPeriodFundEvent_Duration, Integer.class));
-        dataObjectSchema.<Integer>get(FixedPeriodFundEvent_Duration).addFilter(new IntegerRange_FieldFilter<>(1, null));
+        dataObjectSchema.<Integer>get(FixedPeriodFundEvent_Duration).addValidator(new NumberRange_FieldValidator<>(1, null));
         dataObjectSchema.get(FixedPeriodFundEvent_Duration).setManualCanEdit(true);
         // Self ========================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(FixedPeriodFundEvent_Self, FixedPeriodFundEvent.class));

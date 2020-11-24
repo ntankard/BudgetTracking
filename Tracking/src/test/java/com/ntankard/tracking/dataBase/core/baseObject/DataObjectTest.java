@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static com.ntankard.dynamicGUI.javaObjectDatabase.Util.getVerbosityDataFields;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Execution(ExecutionMode.CONCURRENT)
@@ -66,7 +67,7 @@ class DataObjectTest {
             if (!Modifier.isAbstract(testClass.getModifiers())) {
                 for (DataObject dataObject : database.get(testClass)) {
                     Class<? extends DataObject> aClass = dataObject.getClass();
-                    List<DataField_Schema<?>> members = database.getSchema().getClassSchema(aClass).getVerbosityDataFields(Integer.MAX_VALUE);
+                    List<DataField_Schema<?>> members = getVerbosityDataFields(database.getSchema().getClassSchema(aClass), Integer.MAX_VALUE);
 
                     // Find the setters
                     for (DataField_Schema member : members) {
@@ -125,7 +126,7 @@ class DataObjectTest {
     @Test
     void checkNonPrimitive() {
         for (Class<? extends DataObject> toTest : database.getSchema().getSolidClasses()) {
-            List<DataField_Schema<?>> members = database.getSchema().getClassSchema(toTest).getVerbosityDataFields(Integer.MAX_VALUE);
+            List<DataField_Schema<?>> members = getVerbosityDataFields(database.getSchema().getClassSchema(toTest), Integer.MAX_VALUE);
 
             // Find the setters
             for (DataField_Schema member : members) {

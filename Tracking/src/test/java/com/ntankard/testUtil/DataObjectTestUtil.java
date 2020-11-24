@@ -7,6 +7,7 @@ import com.ntankard.javaObjectDatabase.database.Database;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.ntankard.dynamicGUI.javaObjectDatabase.Util.getVerbosityDataFields;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DataObjectTestUtil {
@@ -24,7 +25,7 @@ public class DataObjectTestUtil {
     public static void testStandardParents(Database database, Class<? extends DataObject> aClass, List<String> exclude) {
         assertNotEquals(0, database.get(aClass).size());
         for (DataObject toTest : database.get(aClass)) {
-            List<DataField_Schema<?>> members = database.getSchema().getClassSchema(toTest.getClass()).getVerbosityDataFields(Integer.MAX_VALUE);
+            List<DataField_Schema<?>> members = getVerbosityDataFields(database.getSchema().getClassSchema(toTest.getClass()), Integer.MAX_VALUE);
 
             // Find the getters
             List<DataField_Schema<?>> expectedMember = new ArrayList<>();
@@ -70,7 +71,7 @@ public class DataObjectTestUtil {
     public static void checkDataObjectNotNull(Database database, Class<? extends DataObject> aClass, List<String> exclude) {
         assertNotEquals(0, database.getAll().size());
         for (DataObject toTest : database.get(aClass)) {
-            List<DataField_Schema<?>> members = database.getSchema().getClassSchema(toTest.getClass()).getVerbosityDataFields(Integer.MAX_VALUE);
+            List<DataField_Schema<?>> members = getVerbosityDataFields(database.getSchema().getClassSchema(toTest.getClass()), Integer.MAX_VALUE);
 
             // Find the getters
             List<DataField_Schema<?>> expectedMember = new ArrayList<>();
