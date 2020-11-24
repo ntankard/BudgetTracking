@@ -1,5 +1,7 @@
 package com.ntankard.tracking.dataBase.core.transfer;
 
+import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
+import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
 import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dataBase.core.baseObject.interfaces.CurrencyBound;
 import com.ntankard.tracking.dataBase.core.Currency;
@@ -15,9 +17,9 @@ import com.ntankard.javaObjectDatabase.database.ParameterMap;
 import java.util.List;
 
 import static com.ntankard.tracking.dataBase.core.transfer.Transfer.*;
-import static com.ntankard.javaObjectDatabase.dataField.properties.Display_Properties.DataType.CURRENCY;
-import static com.ntankard.javaObjectDatabase.dataField.properties.Display_Properties.INFO_DISPLAY;
-import static com.ntankard.javaObjectDatabase.dataField.properties.Display_Properties.TRACE_DISPLAY;
+import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.DataType.CURRENCY;
+import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.INFO_DISPLAY;
+import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.TRACE_DISPLAY;
 
 /**
  * One half of the transaction
@@ -43,12 +45,12 @@ public abstract class HalfTransfer extends DataObject implements CurrencyBound {
      * Get all the fields for this object
      */
     public static DataObject_Schema getDataObjectSchema() {
-        DataObject_Schema dataObjectSchema = DataObject.getDataObjectSchema();
+        DataObject_Schema dataObjectSchema = Displayable_DataObject.getDataObjectSchema();
 
         // ID
         // Transfer ====================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(HalfTransfer_Transfer, Transfer.class));
-        dataObjectSchema.get(HalfTransfer_Transfer).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
+        dataObjectSchema.get(HalfTransfer_Transfer).getProperty(Display_Properties.class).setVerbosityLevel(INFO_DISPLAY);
         // Period ======================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(HalfTransfer_Period, Period.class));
         dataObjectSchema.<Period>get(HalfTransfer_Period).setDataCore_factory(
@@ -62,7 +64,7 @@ public abstract class HalfTransfer extends DataObject implements CurrencyBound {
                         }
                         , new External_Source.ExternalSource_Factory<>(HalfTransfer_Transfer, Transfer_SourcePeriodGet)
                         , new External_Source.ExternalSource_Factory<>(HalfTransfer_Transfer, Transfer_DestinationPeriodGet)));
-        dataObjectSchema.<Pool>get(HalfTransfer_Period).getDisplayProperties().setDisplaySet(false);
+        dataObjectSchema.<Pool>get(HalfTransfer_Period).getProperty(Display_Properties.class).setDisplaySet(false);
         // Pool ========================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(HalfTransfer_Pool, Pool.class));
         dataObjectSchema.<Pool>get(HalfTransfer_Pool).setDataCore_factory(
@@ -76,10 +78,10 @@ public abstract class HalfTransfer extends DataObject implements CurrencyBound {
                         }
                         , new External_Source.ExternalSource_Factory<>(HalfTransfer_Transfer, Transfer_Source)
                         , new External_Source.ExternalSource_Factory<>(HalfTransfer_Transfer, Transfer_Destination)));
-        dataObjectSchema.<Pool>get(HalfTransfer_Pool).getDisplayProperties().setDisplaySet(false);
+        dataObjectSchema.<Pool>get(HalfTransfer_Pool).getProperty(Display_Properties.class).setDisplaySet(false);
         // Value =======================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(HalfTransfer_Value, Double.class));
-        dataObjectSchema.get(HalfTransfer_Value).getDisplayProperties().setDataType(CURRENCY);
+        dataObjectSchema.get(HalfTransfer_Value).getProperty(Display_Properties.class).setDataType(CURRENCY);
         dataObjectSchema.<Double>get(HalfTransfer_Value).setDataCore_factory(
                 new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Double, HalfTransfer>) container -> {
@@ -92,7 +94,7 @@ public abstract class HalfTransfer extends DataObject implements CurrencyBound {
                         , new External_Source.ExternalSource_Factory<>(HalfTransfer_Transfer, Transfer_Value)));
         // Currency ====================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(HalfTransfer_Currency, Currency.class));
-        dataObjectSchema.get(HalfTransfer_Currency).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
+        dataObjectSchema.get(HalfTransfer_Currency).getProperty(Display_Properties.class).setVerbosityLevel(INFO_DISPLAY);
         dataObjectSchema.<Currency>get(HalfTransfer_Currency).setDataCore_factory(
                 new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Currency, HalfTransfer>) container -> {
@@ -104,10 +106,10 @@ public abstract class HalfTransfer extends DataObject implements CurrencyBound {
                         }
                         , new External_Source.ExternalSource_Factory<>(HalfTransfer_Transfer, Transfer_SourceCurrencyGet)
                         , new External_Source.ExternalSource_Factory<>(HalfTransfer_Transfer, Transfer_DestinationCurrencyGet)));
-        dataObjectSchema.<Pool>get(HalfTransfer_Currency).getDisplayProperties().setDisplaySet(false);
+        dataObjectSchema.<Pool>get(HalfTransfer_Currency).getProperty(Display_Properties.class).setDisplaySet(false);
         // Source ======================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(HalfTransfer_Source, Boolean.class));
-        dataObjectSchema.<Pool>get(HalfTransfer_Source).getDisplayProperties().setVerbosityLevel(TRACE_DISPLAY);
+        dataObjectSchema.<Pool>get(HalfTransfer_Source).getProperty(Display_Properties.class).setVerbosityLevel(TRACE_DISPLAY);
         //==============================================================================================================
         // Parents
         // Children

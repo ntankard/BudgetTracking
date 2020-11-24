@@ -1,5 +1,6 @@
 package com.ntankard.tracking.dataBase.core.links;
 
+import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.DirectExternal_Source;
@@ -29,7 +30,7 @@ public class CategoryToVirtualCategory extends DataObject {
      * Get all the fields for this object
      */
     public static DataObject_Schema getDataObjectSchema() {
-        DataObject_Schema dataObjectSchema = DataObject.getDataObjectSchema();
+        DataObject_Schema dataObjectSchema = Displayable_DataObject.getDataObjectSchema();
 
         Shared_FieldValidator<SolidCategory, VirtualCategory, CategoryToVirtualCategory> sharedFilter = new Shared_FieldValidator<>(CategoryToVirtualCategory_SolidCategory, CategoryToVirtualCategory_VirtualCategory,
                 (firstNewValue, secondNewValue, container) ->

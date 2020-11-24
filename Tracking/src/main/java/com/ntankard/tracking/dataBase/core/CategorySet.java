@@ -1,6 +1,6 @@
 package com.ntankard.tracking.dataBase.core;
 
-import com.ntankard.javaObjectDatabase.database.Database_Schema;
+import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
 import com.ntankard.tracking.dataBase.core.baseObject.NamedDataObject;
 import com.ntankard.tracking.dataBase.core.links.CategoryToCategorySet;
 import com.ntankard.tracking.dataBase.core.links.CategoryToVirtualCategory;
@@ -18,7 +18,7 @@ import com.ntankard.javaObjectDatabase.database.Database;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ntankard.javaObjectDatabase.dataField.properties.Display_Properties.DEBUG_DISPLAY;
+import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.DEBUG_DISPLAY;
 
 public class CategorySet extends NamedDataObject implements HasDefault, Ordered {
 
@@ -41,13 +41,13 @@ public class CategorySet extends NamedDataObject implements HasDefault, Ordered 
         // Name
         // Default ======================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(CategorySet_Default, Boolean.class));
-        dataObjectSchema.get(CategorySet_Default).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
+        dataObjectSchema.get(CategorySet_Default).getProperty(Display_Properties.class).setVerbosityLevel(DEBUG_DISPLAY);
         // Order =======================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(CategorySet_Order, Integer.class));
         dataObjectSchema.get(CategorySet_Order).setManualCanEdit(true);
         // UsedCategories ==============================================================================================
         dataObjectSchema.add(new DataField_Schema<>(CategorySet_UsedCategories, List.class)); // TODO this should be a list field
-        dataObjectSchema.get(CategorySet_UsedCategories).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
+        dataObjectSchema.get(CategorySet_UsedCategories).getProperty(Display_Properties.class).setVerbosityLevel(DEBUG_DISPLAY);
         dataObjectSchema.<List<SolidCategory>>get(CategorySet_UsedCategories).setDataCore_factory(
                 new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<List<SolidCategory>, CategorySet>) container -> {

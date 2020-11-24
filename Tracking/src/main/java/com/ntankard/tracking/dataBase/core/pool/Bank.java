@@ -1,5 +1,6 @@
 package com.ntankard.tracking.dataBase.core.pool;
 
+import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
 import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dataBase.core.baseObject.interfaces.CurrencyBound;
 import com.ntankard.tracking.dataBase.core.Currency;
@@ -10,7 +11,7 @@ import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.dataObject.interfaces.HasDefault;
 import com.ntankard.javaObjectDatabase.dataObject.interfaces.Ordered;
 
-import static com.ntankard.javaObjectDatabase.dataField.properties.Display_Properties.INFO_DISPLAY;
+import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.INFO_DISPLAY;
 
 public class Bank extends Pool implements CurrencyBound, Ordered, HasDefault {
 
@@ -39,13 +40,13 @@ public class Bank extends Pool implements CurrencyBound, Ordered, HasDefault {
         dataObjectSchema.add(new DataField_Schema<>(Bank_Currency, Currency.class));
         // Start ========================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Bank_Start, Double.class));
-        dataObjectSchema.get(Bank_Start).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
+        dataObjectSchema.get(Bank_Start).getProperty(Display_Properties.class).setVerbosityLevel(INFO_DISPLAY);
         // Default ========================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Bank_Default, Boolean.class));
-        dataObjectSchema.get(Bank_Default).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
+        dataObjectSchema.get(Bank_Default).getProperty(Display_Properties.class).setVerbosityLevel(INFO_DISPLAY);
         // Order ========================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Bank_Order, Integer.class));
-        dataObjectSchema.get(Bank_Order).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
+        dataObjectSchema.get(Bank_Order).getProperty(Display_Properties.class).setVerbosityLevel(INFO_DISPLAY);
         //==============================================================================================================
         // Parents
         // Children

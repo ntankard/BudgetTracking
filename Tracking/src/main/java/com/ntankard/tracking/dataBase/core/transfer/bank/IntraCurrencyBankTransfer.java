@@ -1,7 +1,7 @@
 package com.ntankard.tracking.dataBase.core.transfer.bank;
 
+import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
 import com.ntankard.javaObjectDatabase.database.Database;
-import com.ntankard.javaObjectDatabase.database.Database_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Local_Source;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.period.Period;
@@ -12,7 +12,7 @@ import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore.Calculator;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore.Derived_DataCore_Factory;
 
-import static com.ntankard.javaObjectDatabase.dataField.properties.Display_Properties.DataType.CURRENCY;
+import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.DataType.CURRENCY;
 
 public class IntraCurrencyBankTransfer extends BankTransfer {
 
@@ -42,7 +42,7 @@ public class IntraCurrencyBankTransfer extends BankTransfer {
         // Destination
         // DestinationValue ============================================================================================
         dataObjectSchema.add(Transfer_Destination, new DataField_Schema<>(BankTransfer_DestinationValue, Double.class));
-        dataObjectSchema.get(BankTransfer_DestinationValue).getDisplayProperties().setDataType(CURRENCY);
+        dataObjectSchema.get(BankTransfer_DestinationValue).getProperty(Display_Properties.class).setDataType(CURRENCY);
         dataObjectSchema.get(BankTransfer_DestinationValue).setManualCanEdit(true);
         // DestinationCurrency =========================================================================================
         dataObjectSchema.add(new DataField_Schema<>(BankTransfer_DestinationCurrency, Currency.class, false));

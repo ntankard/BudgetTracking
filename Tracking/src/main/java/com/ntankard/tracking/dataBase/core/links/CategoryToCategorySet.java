@@ -1,9 +1,11 @@
 package com.ntankard.tracking.dataBase.core.links;
 
+import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.External_Source;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Local_Source;
+import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
 import com.ntankard.javaObjectDatabase.dataField.validator.Shared_FieldValidator;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
@@ -14,7 +16,7 @@ import com.ntankard.tracking.dataBase.core.pool.category.SolidCategory;
 
 import java.util.List;
 
-import static com.ntankard.javaObjectDatabase.dataField.properties.Display_Properties.DEBUG_DISPLAY;
+import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.DEBUG_DISPLAY;
 import static com.ntankard.tracking.dataBase.core.CategorySet.CategorySet_Order;
 
 public class CategoryToCategorySet extends DataObject implements Ordered {
@@ -33,7 +35,7 @@ public class CategoryToCategorySet extends DataObject implements Ordered {
      * Get all the fields for this object
      */
     public static DataObject_Schema getDataObjectSchema() {
-        DataObject_Schema dataObjectSchema = DataObject.getDataObjectSchema();
+        DataObject_Schema dataObjectSchema = Displayable_DataObject.getDataObjectSchema();
 
         Shared_FieldValidator<SolidCategory, CategorySet, CategoryToCategorySet> sharedFilter = new Shared_FieldValidator<>(CategoryToCategorySet_SolidCategory, CategoryToCategorySet_CategorySet,
                 (firstNewValue, secondNewValue, container) ->
@@ -49,7 +51,7 @@ public class CategoryToCategorySet extends DataObject implements Ordered {
         dataObjectSchema.<SolidCategory>get(CategoryToCategorySet_SolidCategory).addValidator(sharedFilter.getFirstFilter());
         // OrderImpl ========================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(CategoryToCategorySet_OrderImpl, Integer.class));
-        dataObjectSchema.get(CategoryToCategorySet_OrderImpl).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
+        dataObjectSchema.get(CategoryToCategorySet_OrderImpl).getProperty(Display_Properties.class).setVerbosityLevel(DEBUG_DISPLAY);
         dataObjectSchema.get(CategoryToCategorySet_OrderImpl).setManualCanEdit(true);
         // Order ========================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(CategoryToCategorySet_Order, Integer.class));

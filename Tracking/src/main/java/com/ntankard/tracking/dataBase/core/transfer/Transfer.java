@@ -1,5 +1,7 @@
 package com.ntankard.tracking.dataBase.core.transfer;
 
+import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
+import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
 import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dataBase.core.baseObject.interfaces.CurrencyBound;
 import com.ntankard.tracking.dataBase.core.Currency;
@@ -15,8 +17,8 @@ import com.ntankard.javaObjectDatabase.util.set.Single_OneParent_Children_Set;
 
 import java.util.List;
 
-import static com.ntankard.javaObjectDatabase.dataField.properties.Display_Properties.DataType.CURRENCY;
-import static com.ntankard.javaObjectDatabase.dataField.properties.Display_Properties.INFO_DISPLAY;
+import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.DataType.CURRENCY;
+import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.INFO_DISPLAY;
 
 public abstract class Transfer extends DataObject implements CurrencyBound {
 
@@ -41,7 +43,7 @@ public abstract class Transfer extends DataObject implements CurrencyBound {
      * Get all the fields for this object
      */
     public static DataObject_Schema getDataObjectSchema() {
-        DataObject_Schema dataObjectSchema = DataObject.getDataObjectSchema();
+        DataObject_Schema dataObjectSchema = Displayable_DataObject.getDataObjectSchema();
 
         // Class behavior
         dataObjectSchema.addObjectFactory(Source_HalfTransfer.Factory);
@@ -57,10 +59,10 @@ public abstract class Transfer extends DataObject implements CurrencyBound {
         // Source
         // Value =======================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Transfer_Value, Double.class));
-        dataObjectSchema.get(Transfer_Value).getDisplayProperties().setDataType(CURRENCY);
+        dataObjectSchema.get(Transfer_Value).getProperty(Display_Properties.class).setDataType(CURRENCY);
         // Currency ====================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Transfer_Currency, Currency.class));
-        dataObjectSchema.get(Transfer_Currency).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
+        dataObjectSchema.get(Transfer_Currency).getProperty(Display_Properties.class).setVerbosityLevel(INFO_DISPLAY);
         // Destination =================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Transfer_Destination, Pool.class));
         // SourceCurrencyGet ===========================================================================================

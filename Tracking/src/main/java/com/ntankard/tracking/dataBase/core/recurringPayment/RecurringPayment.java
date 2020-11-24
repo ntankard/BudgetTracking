@@ -1,5 +1,6 @@
 package com.ntankard.tracking.dataBase.core.recurringPayment;
 
+import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
 import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dataBase.core.baseObject.interfaces.CurrencyBound;
 import com.ntankard.tracking.dataBase.core.baseObject.NamedDataObject;
@@ -13,8 +14,8 @@ import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.DirectE
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 
 import static com.ntankard.tracking.dataBase.core.pool.Bank.Bank_Currency;
-import static com.ntankard.javaObjectDatabase.dataField.properties.Display_Properties.DEBUG_DISPLAY;
-import static com.ntankard.javaObjectDatabase.dataField.properties.Display_Properties.DataType.CURRENCY;
+import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.DEBUG_DISPLAY;
+import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.DataType.CURRENCY;
 
 public abstract class RecurringPayment extends NamedDataObject implements CurrencyBound {
 
@@ -49,11 +50,11 @@ public abstract class RecurringPayment extends NamedDataObject implements Curren
         // Value =======================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(RecurringPayment_Value, Double.class));
         dataObjectSchema.get(RecurringPayment_Value).setManualCanEdit(true);
-        dataObjectSchema.get(RecurringPayment_Value).getDisplayProperties().setDataType(CURRENCY);
+        dataObjectSchema.get(RecurringPayment_Value).getProperty(Display_Properties.class).setDataType(CURRENCY);
         // Currency ====================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(RecurringPayment_Currency, Currency.class));
         dataObjectSchema.<Currency>get(RecurringPayment_Currency).setDataCore_factory(new Derived_DataCore.Derived_DataCore_Factory<>(new DirectExternal_Source.DirectExternalSource_Factory<>((RecurringPayment_Bank), Bank_Currency)));
-        dataObjectSchema.get(RecurringPayment_Currency).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
+        dataObjectSchema.get(RecurringPayment_Currency).getProperty(Display_Properties.class).setVerbosityLevel(DEBUG_DISPLAY);
         // Duration =========================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(RecurringPayment_Duration, Integer.class, true));
         dataObjectSchema.get(RecurringPayment_Duration).setManualCanEdit(true);

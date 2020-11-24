@@ -1,6 +1,7 @@
 package com.ntankard.tracking.dataBase.interfaces.summary;
 
-import com.ntankard.javaObjectDatabase.database.Database_Schema;
+import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
+import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
 import com.ntankard.tracking.dataBase.core.baseObject.interfaces.CurrencyBound;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.period.ExistingPeriod;
@@ -33,14 +34,14 @@ import com.ntankard.javaObjectDatabase.util.set.TwoParent_Children_Set;
 
 import java.util.List;
 
-import static com.ntankard.javaObjectDatabase.dataField.properties.Display_Properties.DataContext.*;
+import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.DataContext.*;
 import static com.ntankard.tracking.dataBase.core.period.ExistingPeriod.ExistingPeriod_Order;
 import static com.ntankard.tracking.dataBase.core.transfer.Transfer.*;
 import static com.ntankard.tracking.dataBase.interfaces.summary.pool.Bank_Summary.Bank_Summary_Currency;
 import static com.ntankard.tracking.dataBase.interfaces.summary.pool.PoolSummary.*;
-import static com.ntankard.javaObjectDatabase.dataField.properties.Display_Properties.DEBUG_DISPLAY;
-import static com.ntankard.javaObjectDatabase.dataField.properties.Display_Properties.DataType.CURRENCY;
-import static com.ntankard.javaObjectDatabase.dataField.properties.Display_Properties.TRACE_DISPLAY;
+import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.DEBUG_DISPLAY;
+import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.DataType.CURRENCY;
+import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.TRACE_DISPLAY;
 
 @ParameterMap(shouldSave = false)
 public class Period_Summary extends DataObject implements CurrencyBound, Ordered {
@@ -78,7 +79,7 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
      * Get all the fields for this object
      */
     public static DataObject_Schema getDataObjectSchema() {
-        DataObject_Schema dataObjectSchema = DataObject.getDataObjectSchema();
+        DataObject_Schema dataObjectSchema = Displayable_DataObject.getDataObjectSchema();
 
         // Class behavior
         dataObjectSchema.setMyFactory(Factory);
@@ -88,29 +89,29 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
         dataObjectSchema.add(new DataField_Schema<>(Period_Summary_Period, Period.class));
         // BankSummarySet ==============================================================================================
         dataObjectSchema.add(new ListDataField_Schema<>(Period_Summary_BankSummarySet, Bank_SummaryList.class));
-        dataObjectSchema.get(Period_Summary_BankSummarySet).getDisplayProperties().setVerbosityLevel(TRACE_DISPLAY);
+        dataObjectSchema.get(Period_Summary_BankSummarySet).getProperty(Display_Properties.class).setVerbosityLevel(TRACE_DISPLAY);
         dataObjectSchema.<List<Bank_Summary>>get(Period_Summary_BankSummarySet).setDataCore_factory(
                 new Children_ListDataCore.Children_ListDataCore_Factory<Bank_Summary>(
                         Bank_Summary.class,
                         new Children_ListDataCore.ParentAccess.ParentAccess_Factory<Bank_Summary>((Period_Summary_Period))));
         // FundEventSummarySet =========================================================================================
         dataObjectSchema.add(new ListDataField_Schema<>(Period_Summary_FundEventSummarySet, FundEvent_SummaryList.class));
-        dataObjectSchema.get(Period_Summary_FundEventSummarySet).getDisplayProperties().setVerbosityLevel(TRACE_DISPLAY);
+        dataObjectSchema.get(Period_Summary_FundEventSummarySet).getProperty(Display_Properties.class).setVerbosityLevel(TRACE_DISPLAY);
         dataObjectSchema.<List<FundEvent_Summary>>get(Period_Summary_FundEventSummarySet).setDataCore_factory(
                 new Children_ListDataCore.Children_ListDataCore_Factory<>(
                         FundEvent_Summary.class,
                         new Children_ListDataCore.ParentAccess.ParentAccess_Factory<>((Period_Summary_Period))));
         // CategorySummarySet ==========================================================================================
         dataObjectSchema.add(new ListDataField_Schema<>(Period_Summary_CategorySummarySet, Category_SummaryList.class));
-        dataObjectSchema.get(Period_Summary_CategorySummarySet).getDisplayProperties().setVerbosityLevel(TRACE_DISPLAY);
+        dataObjectSchema.get(Period_Summary_CategorySummarySet).getProperty(Display_Properties.class).setVerbosityLevel(TRACE_DISPLAY);
         dataObjectSchema.<List<Category_Summary>>get(Period_Summary_CategorySummarySet).setDataCore_factory(
                 new Children_ListDataCore.Children_ListDataCore_Factory<>(
                         Category_Summary.class,
                         new Children_ListDataCore.ParentAccess.ParentAccess_Factory<>((Period_Summary_Period))));
         // BankStart ===================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Period_Summary_BankStart, Double.class, true));
-        dataObjectSchema.get(Period_Summary_BankStart).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
-        dataObjectSchema.get(Period_Summary_BankStart).getDisplayProperties().setDataType(CURRENCY);
+        dataObjectSchema.get(Period_Summary_BankStart).getProperty(Display_Properties.class).setVerbosityLevel(DEBUG_DISPLAY);
+        dataObjectSchema.get(Period_Summary_BankStart).getProperty(Display_Properties.class).setDataType(CURRENCY);
         dataObjectSchema.<Double>get(Period_Summary_BankStart).setDataCore_factory(
                 new Derived_DataCore.Derived_DataCore_Factory<Double, Period_Summary>(
                         container -> {
@@ -127,7 +128,7 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
                 )));
         // BankEnd =====================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Period_Summary_BankEnd, Double.class, true));
-        dataObjectSchema.get(Period_Summary_BankEnd).getDisplayProperties().setDataType(CURRENCY);
+        dataObjectSchema.get(Period_Summary_BankEnd).getProperty(Display_Properties.class).setDataType(CURRENCY);
         dataObjectSchema.<Double>get(Period_Summary_BankEnd).setDataCore_factory(
                 new Derived_DataCore.Derived_DataCore_Factory<Double, Period_Summary>(
                         container -> {
@@ -144,8 +145,8 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
                 )));
         // BankDelta ===================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Period_Summary_BankDelta, Double.class));
-        dataObjectSchema.get(Period_Summary_BankDelta).getDisplayProperties().setDataType(CURRENCY);
-        dataObjectSchema.get(Period_Summary_BankDelta).getDisplayProperties().setDataContext(ZERO_SCALE);
+        dataObjectSchema.get(Period_Summary_BankDelta).getProperty(Display_Properties.class).setDataType(CURRENCY);
+        dataObjectSchema.get(Period_Summary_BankDelta).getProperty(Display_Properties.class).setDataContext(ZERO_SCALE);
         dataObjectSchema.<Double>get(Period_Summary_BankDelta).setDataCore_factory(
                 new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Double, Period_Summary>) container -> {
@@ -159,9 +160,9 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
                         , new Local_Source.LocalSource_Factory<>((Period_Summary_Period))));
         // CategoryDelta ===============================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Period_Summary_CategoryDelta, Double.class));
-        dataObjectSchema.get(Period_Summary_CategoryDelta).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
-        dataObjectSchema.get(Period_Summary_CategoryDelta).getDisplayProperties().setDataType(CURRENCY);
-        dataObjectSchema.get(Period_Summary_CategoryDelta).getDisplayProperties().setDataContext(ZERO_TARGET);
+        dataObjectSchema.get(Period_Summary_CategoryDelta).getProperty(Display_Properties.class).setVerbosityLevel(DEBUG_DISPLAY);
+        dataObjectSchema.get(Period_Summary_CategoryDelta).getProperty(Display_Properties.class).setDataType(CURRENCY);
+        dataObjectSchema.get(Period_Summary_CategoryDelta).getProperty(Display_Properties.class).setDataContext(ZERO_TARGET);
         dataObjectSchema.<Double>get(Period_Summary_CategoryDelta).setDataCore_factory(
                 new Derived_DataCore.Derived_DataCore_Factory<Double, Period_Summary>(
                         container -> {
@@ -180,8 +181,8 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
                 )));
         // FundEventStart ==============================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Period_Summary_FundEventStart, Double.class));
-        dataObjectSchema.get(Period_Summary_FundEventStart).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
-        dataObjectSchema.get(Period_Summary_FundEventStart).getDisplayProperties().setDataType(CURRENCY);
+        dataObjectSchema.get(Period_Summary_FundEventStart).getProperty(Display_Properties.class).setVerbosityLevel(DEBUG_DISPLAY);
+        dataObjectSchema.get(Period_Summary_FundEventStart).getProperty(Display_Properties.class).setDataType(CURRENCY);
         dataObjectSchema.<Double>get(Period_Summary_FundEventStart).setDataCore_factory(
                 new Derived_DataCore.Derived_DataCore_Factory<Double, Period_Summary>(
                         container -> {
@@ -197,8 +198,8 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
                 )));
         // FundEventEnd ================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Period_Summary_FundEventEnd, Double.class));
-        dataObjectSchema.get(Period_Summary_FundEventEnd).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
-        dataObjectSchema.get(Period_Summary_FundEventEnd).getDisplayProperties().setDataType(CURRENCY);
+        dataObjectSchema.get(Period_Summary_FundEventEnd).getProperty(Display_Properties.class).setVerbosityLevel(DEBUG_DISPLAY);
+        dataObjectSchema.get(Period_Summary_FundEventEnd).getProperty(Display_Properties.class).setDataType(CURRENCY);
         dataObjectSchema.<Double>get(Period_Summary_FundEventEnd).setDataCore_factory(
                 new Derived_DataCore.Derived_DataCore_Factory<Double, Period_Summary>(
                         container -> {
@@ -214,8 +215,8 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
                 )));
         // FundEventDelta ==============================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Period_Summary_FundEventDelta, Double.class));
-        dataObjectSchema.get(Period_Summary_FundEventDelta).getDisplayProperties().setDataType(CURRENCY);
-        dataObjectSchema.get(Period_Summary_FundEventDelta).getDisplayProperties().setDataContext(ZERO_SCALE);
+        dataObjectSchema.get(Period_Summary_FundEventDelta).getProperty(Display_Properties.class).setDataType(CURRENCY);
+        dataObjectSchema.get(Period_Summary_FundEventDelta).getProperty(Display_Properties.class).setDataContext(ZERO_SCALE);
         dataObjectSchema.<Double>get(Period_Summary_FundEventDelta).setDataCore_factory(
                 new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Double, Period_Summary>) container ->
@@ -272,8 +273,8 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
                 )));
         // AllSummaryValid =============================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Period_Summary_AllSummaryValid, Boolean.class));
-        dataObjectSchema.get(Period_Summary_AllSummaryValid).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
-        dataObjectSchema.get(Period_Summary_AllSummaryValid).getDisplayProperties().setDataContext(NOT_FALSE);
+        dataObjectSchema.get(Period_Summary_AllSummaryValid).getProperty(Display_Properties.class).setVerbosityLevel(DEBUG_DISPLAY);
+        dataObjectSchema.get(Period_Summary_AllSummaryValid).getProperty(Display_Properties.class).setDataContext(NOT_FALSE);
         dataObjectSchema.<Boolean>get(Period_Summary_AllSummaryValid).setDataCore_factory(
                 new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Boolean, Period_Summary>) container ->
@@ -283,8 +284,8 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
                         , new Local_Source.LocalSource_Factory<>((Period_Summary_CategorySummaryValid))));
         // CategoryClear ===============================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Period_Summary_CategoryClear, Boolean.class));
-        dataObjectSchema.get(Period_Summary_CategoryClear).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
-        dataObjectSchema.get(Period_Summary_CategoryClear).getDisplayProperties().setDataContext(NOT_FALSE);
+        dataObjectSchema.get(Period_Summary_CategoryClear).getProperty(Display_Properties.class).setVerbosityLevel(DEBUG_DISPLAY);
+        dataObjectSchema.get(Period_Summary_CategoryClear).getProperty(Display_Properties.class).setDataContext(NOT_FALSE);
         dataObjectSchema.<Boolean>get(Period_Summary_CategoryClear).setDataCore_factory(
                 new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Boolean, Period_Summary>) container ->
@@ -292,15 +293,15 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
                         , new Local_Source.LocalSource_Factory<>((Period_Summary_CategoryDelta))));
         // BankTransferSet =============================================================================================
         dataObjectSchema.add(new ListDataField_Schema<>(Period_Summary_BankTransferSet, BankTransfer.BankTransferList.class));
-        dataObjectSchema.get(Period_Summary_BankTransferSet).getDisplayProperties().setVerbosityLevel(TRACE_DISPLAY);
+        dataObjectSchema.get(Period_Summary_BankTransferSet).getProperty(Display_Properties.class).setVerbosityLevel(TRACE_DISPLAY);
         dataObjectSchema.<List<BankTransfer>>get(Period_Summary_BankTransferSet).setDataCore_factory(
                 new Children_ListDataCore.Children_ListDataCore_Factory<>(
                         BankTransfer.class,
                         new Children_ListDataCore.ParentAccess.ParentAccess_Factory<>((Period_Summary_Period))));
         // CurrencyValueLoss ===========================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Period_Summary_CurrencyValueLoss, Double.class));
-        dataObjectSchema.get(Period_Summary_CurrencyValueLoss).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
-        dataObjectSchema.get(Period_Summary_CurrencyValueLoss).getDisplayProperties().setDataType(CURRENCY);
+        dataObjectSchema.get(Period_Summary_CurrencyValueLoss).getProperty(Display_Properties.class).setVerbosityLevel(DEBUG_DISPLAY);
+        dataObjectSchema.get(Period_Summary_CurrencyValueLoss).getProperty(Display_Properties.class).setDataType(CURRENCY);
         dataObjectSchema.<Double>get(Period_Summary_CurrencyValueLoss).setDataCore_factory(
                 new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Double, Period_Summary>) container -> {
@@ -398,7 +399,7 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
                         , new Local_Source.LocalSource_Factory<>((Period_Summary_ExchangeRate))));
         // Valid =======================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Period_Summary_Valid, Boolean.class));
-        dataObjectSchema.get(Period_Summary_Valid).getDisplayProperties().setDataContext(NOT_FALSE);
+        dataObjectSchema.get(Period_Summary_Valid).getProperty(Display_Properties.class).setDataContext(NOT_FALSE);
         dataObjectSchema.<Boolean>get(Period_Summary_Valid).setDataCore_factory(
                 new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<Boolean, Period_Summary>) container ->

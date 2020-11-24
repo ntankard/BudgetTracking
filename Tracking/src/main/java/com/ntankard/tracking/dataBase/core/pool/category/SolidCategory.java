@@ -3,7 +3,7 @@ package com.ntankard.tracking.dataBase.core.pool.category;
 import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dataBase.interfaces.summary.pool.Category_Summary;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
-import com.ntankard.javaObjectDatabase.dataField.properties.Display_Properties;
+import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.dataObject.interfaces.HasDefault;
 import com.ntankard.javaObjectDatabase.dataObject.interfaces.Ordered;
@@ -41,22 +41,22 @@ public class SolidCategory extends Category implements HasDefault, SpecialValues
         // Name
         // Default =====================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(SolidCategory_Default, Boolean.class));
-        dataObjectSchema.get(SolidCategory_Default).getDisplayProperties().setVerbosityLevel(Display_Properties.DEBUG_DISPLAY);
+        dataObjectSchema.get(SolidCategory_Default).getProperty(Display_Properties.class).setVerbosityLevel(Display_Properties.DEBUG_DISPLAY);
         // Savings =====================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(SolidCategory_Savings, Boolean.class));
-        dataObjectSchema.get(SolidCategory_Savings).getDisplayProperties().setVerbosityLevel(Display_Properties.DEBUG_DISPLAY);
+        dataObjectSchema.get(SolidCategory_Savings).getProperty(Display_Properties.class).setVerbosityLevel(Display_Properties.DEBUG_DISPLAY);
         // Taxable =====================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(SolidCategory_Taxable, Boolean.class));
-        dataObjectSchema.get(SolidCategory_Taxable).getDisplayProperties().setVerbosityLevel(Display_Properties.DEBUG_DISPLAY);
+        dataObjectSchema.get(SolidCategory_Taxable).getProperty(Display_Properties.class).setVerbosityLevel(Display_Properties.DEBUG_DISPLAY);
         // Set =========================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(SolidCategory_Set, Integer.class));
-        dataObjectSchema.get(SolidCategory_Set).getDisplayProperties().setVerbosityLevel(Display_Properties.INFO_DISPLAY);
+        dataObjectSchema.get(SolidCategory_Set).getProperty(Display_Properties.class).setVerbosityLevel(Display_Properties.INFO_DISPLAY);
         // SetName =====================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(SolidCategory_SetName, String.class));
-        dataObjectSchema.get(SolidCategory_SetName).getDisplayProperties().setVerbosityLevel(Display_Properties.INFO_DISPLAY);
+        dataObjectSchema.get(SolidCategory_SetName).getProperty(Display_Properties.class).setVerbosityLevel(Display_Properties.INFO_DISPLAY);
         // Order =======================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(SolidCategory_Order, Integer.class));
-        dataObjectSchema.get(SolidCategory_Order).getDisplayProperties().setVerbosityLevel(Display_Properties.INFO_DISPLAY);
+        dataObjectSchema.get(SolidCategory_Order).getProperty(Display_Properties.class).setVerbosityLevel(Display_Properties.INFO_DISPLAY);
         //==============================================================================================================
         // Parents
         // Children

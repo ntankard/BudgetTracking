@@ -1,5 +1,7 @@
 package com.ntankard.tracking.dataBase.core;
 
+import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
+import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
 import com.ntankard.javaObjectDatabase.dataObject.factory.DoubleParentFactory;
 import com.ntankard.javaObjectDatabase.dataObject.factory.ObjectFactory;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore;
@@ -7,7 +9,6 @@ import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.DirectE
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.External_Source;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject;
-import com.ntankard.javaObjectDatabase.database.Database_Schema;
 import com.ntankard.tracking.dataBase.core.baseObject.interfaces.CurrencyBound;
 import com.ntankard.javaObjectDatabase.dataObject.interfaces.Ordered;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
@@ -19,9 +20,9 @@ import java.util.List;
 
 import static com.ntankard.tracking.dataBase.core.period.ExistingPeriod.ExistingPeriod_Order;
 import static com.ntankard.tracking.dataBase.core.pool.Bank.Bank_Order;
-import static com.ntankard.javaObjectDatabase.dataField.properties.Display_Properties.DataType.CURRENCY;
-import static com.ntankard.javaObjectDatabase.dataField.properties.Display_Properties.INFO_DISPLAY;
-import static com.ntankard.javaObjectDatabase.dataField.properties.Display_Properties.TRACE_DISPLAY;
+import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.DataType.CURRENCY;
+import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.INFO_DISPLAY;
+import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.TRACE_DISPLAY;
 import static com.ntankard.tracking.dataBase.core.pool.Bank.Bank_Currency;
 
 public class StatementEnd extends DataObject implements CurrencyBound, Ordered {
@@ -50,7 +51,7 @@ public class StatementEnd extends DataObject implements CurrencyBound, Ordered {
      * Get all the fields for this object
      */
     public static DataObject_Schema getDataObjectSchema() {
-        DataObject_Schema dataObjectSchema = DataObject.getDataObjectSchema();
+        DataObject_Schema dataObjectSchema = Displayable_DataObject.getDataObjectSchema();
 
         // Class behavior
         dataObjectSchema.setMyFactory(Factory);
@@ -58,12 +59,12 @@ public class StatementEnd extends DataObject implements CurrencyBound, Ordered {
         // ID
         // Period ======================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(StatementEnd_Period, ExistingPeriod.class));
-        dataObjectSchema.get(StatementEnd_Period).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
+        dataObjectSchema.get(StatementEnd_Period).getProperty(Display_Properties.class).setVerbosityLevel(INFO_DISPLAY);
         // Bank ============================================================0============================================
         dataObjectSchema.add(new DataField_Schema<>(StatementEnd_Bank, Bank.class));
         // End =========================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(StatementEnd_End, Double.class));
-        dataObjectSchema.get(StatementEnd_End).getDisplayProperties().setDataType(CURRENCY);
+        dataObjectSchema.get(StatementEnd_End).getProperty(Display_Properties.class).setDataType(CURRENCY);
         dataObjectSchema.get(StatementEnd_End).setManualCanEdit(true);
         // Currency ====================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(StatementEnd_Currency, Currency.class));
@@ -72,7 +73,7 @@ public class StatementEnd extends DataObject implements CurrencyBound, Ordered {
                         new DirectExternal_Source.DirectExternalSource_Factory<>((StatementEnd_Bank), Bank_Currency)));
         // Order =======================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(StatementEnd_Order, Integer.class));
-        dataObjectSchema.get(StatementEnd_Order).getDisplayProperties().setVerbosityLevel(TRACE_DISPLAY);
+        dataObjectSchema.get(StatementEnd_Order).getProperty(Display_Properties.class).setVerbosityLevel(TRACE_DISPLAY);
         dataObjectSchema.<Integer>get(StatementEnd_Order).setDataCore_factory(
                 new Derived_DataCore.Derived_DataCore_Factory<Integer, StatementEnd>
                         (dataObject -> dataObject.getBank().getOrder() + dataObject.getPeriod().getOrder() * 1000

@@ -1,11 +1,11 @@
 package com.ntankard.tracking.dataBase.core.period;
 
+import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
-import com.ntankard.javaObjectDatabase.database.Database_Schema;
 
-import static com.ntankard.javaObjectDatabase.dataField.properties.Display_Properties.INFO_DISPLAY;
+import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.INFO_DISPLAY;
 
 public class VirtualPeriod extends Period {
 
@@ -27,7 +27,7 @@ public class VirtualPeriod extends Period {
         dataObjectSchema.add(new DataField_Schema<>(VirtualPeriod_Name, String.class));
         // Order =======================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(VirtualPeriod_Order, Integer.class));
-        dataObjectSchema.get(VirtualPeriod_Order).getDisplayProperties().setVerbosityLevel(INFO_DISPLAY);
+        dataObjectSchema.get(VirtualPeriod_Order).getProperty(Display_Properties.class).setVerbosityLevel(INFO_DISPLAY);
         //==============================================================================================================
         // Parents
         // Children

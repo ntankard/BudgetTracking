@@ -1,5 +1,7 @@
 package com.ntankard.tracking.dataBase.core.baseObject;
 
+import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
+import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
 import com.ntankard.tracking.Main;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject;
@@ -71,7 +73,7 @@ class DataObjectTest {
 
                     // Find the setters
                     for (DataField_Schema member : members) {
-                        if (member.getCanEdit() && member.getDisplayProperties().getDisplaySet() && DataObject.class.isAssignableFrom(member.getType())) {
+                        if (member.getCanEdit() && ((Display_Properties)member.<Display_Properties>getProperty(Display_Properties.class)).getDisplaySet() && DataObject.class.isAssignableFrom(member.getType())) {
                             // Get the data
                             AtomicReference<List<DataObject>> expectedOptions = new AtomicReference<>();
                             assertDoesNotThrow(() -> expectedOptions.set((List) member.getSource().invoke(dataObject, member.getType(), member.getDisplayName())));
@@ -205,7 +207,7 @@ class DataObjectTest {
     private static class DataObject_Inst extends DataObject {
 
         public static DataObject_Schema getDataObjectSchema() {
-            DataObject_Schema dataObjectSchema = DataObject.getDataObjectSchema();
+            DataObject_Schema dataObjectSchema = Displayable_DataObject.getDataObjectSchema();
             return dataObjectSchema.finaliseContainer(DataObject_Inst.class);
         }
 

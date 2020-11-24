@@ -1,5 +1,6 @@
 package com.ntankard.tracking.dataBase.core.transfer.fund;
 
+import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
 import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.period.Period;
@@ -14,7 +15,7 @@ import com.ntankard.tracking.dataBase.core.transfer.Transfer;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ntankard.javaObjectDatabase.dataField.properties.Display_Properties.ALWAYS_DISPLAY;
+import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.ALWAYS_DISPLAY;
 
 public abstract class FundTransfer extends Transfer {
 
@@ -36,7 +37,7 @@ public abstract class FundTransfer extends Transfer {
         dataObjectSchema.add(Transfer_Period, new DataField_Schema<>(Transfer_Source, FundEvent.class));
         // Value
         // Currency ====================================================================================================
-        dataObjectSchema.get(Transfer_Currency).getDisplayProperties().setVerbosityLevel(ALWAYS_DISPLAY);
+        dataObjectSchema.get(Transfer_Currency).getProperty(Display_Properties.class).setVerbosityLevel(ALWAYS_DISPLAY);
         // Destination
         // SourceCurrencyGet
         // DestinationCurrencyGet ======================================================================================

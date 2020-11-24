@@ -1,6 +1,6 @@
 package com.ntankard.tracking.dataBase.interfaces.summary.pool;
 
-import com.ntankard.javaObjectDatabase.database.Database_Schema;
+import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
 import com.ntankard.tracking.dataBase.core.period.Period;
 import com.ntankard.tracking.dataBase.core.pool.fundEvent.FundEvent;
 import com.ntankard.tracking.dataBase.core.pool.Pool;
@@ -17,7 +17,7 @@ import com.ntankard.javaObjectDatabase.database.Database;
 
 import java.util.List;
 
-import static com.ntankard.javaObjectDatabase.dataField.properties.Display_Properties.TRACE_DISPLAY;
+import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.TRACE_DISPLAY;
 
 @ParameterMap(shouldSave = false)
 public class FundEvent_Summary extends PoolSummary<FundEvent> {
@@ -50,14 +50,14 @@ public class FundEvent_Summary extends PoolSummary<FundEvent> {
         // Currency
         // BankSummarySet ==============================================================================================
         dataObjectSchema.add(new ListDataField_Schema<>(FundEvent_Summary_FundEventSummarySet, FundEvent_SummaryList.class));
-        dataObjectSchema.get(FundEvent_Summary_FundEventSummarySet).getDisplayProperties().setVerbosityLevel(TRACE_DISPLAY);
+        dataObjectSchema.get(FundEvent_Summary_FundEventSummarySet).getProperty(Display_Properties.class).setVerbosityLevel(TRACE_DISPLAY);
         dataObjectSchema.<List<FundEvent_Summary>>get(FundEvent_Summary_FundEventSummarySet).setDataCore_factory(
                 new Children_ListDataCore.Children_ListDataCore_Factory<>(
                         FundEvent_Summary.class,
                         new Children_ListDataCore.ParentAccess.ParentAccess_Factory<>(PoolSummary_Pool)));
         // PreviousBankSummary =========================================================================================
         dataObjectSchema.add(new DataField_Schema<>(FundEvent_Summary_PreviousFundEventSummary, FundEvent_Summary.class, true));
-        dataObjectSchema.get(FundEvent_Summary_PreviousFundEventSummary).getDisplayProperties().setVerbosityLevel(TRACE_DISPLAY);
+        dataObjectSchema.get(FundEvent_Summary_PreviousFundEventSummary).getProperty(Display_Properties.class).setVerbosityLevel(TRACE_DISPLAY);
         dataObjectSchema.<FundEvent_Summary>get(FundEvent_Summary_PreviousFundEventSummary).setDataCore_factory(
                 new Derived_DataCore.Derived_DataCore_Factory<>(
                         (Derived_DataCore.Calculator<FundEvent_Summary, FundEvent_Summary>) container -> {

@@ -1,5 +1,6 @@
 package com.ntankard.tracking.dataBase.core.period;
 
+import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
 import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dataBase.interfaces.summary.Period_Summary;
 import com.ntankard.tracking.dataBase.interfaces.summary.pool.Category_Summary;
@@ -18,7 +19,7 @@ public abstract class Period extends DataObject implements Ordered {
      * Get all the fields for this object
      */
     public static DataObject_Schema getDataObjectSchema() {
-        DataObject_Schema dataObjectSchema = DataObject.getDataObjectSchema();
+        DataObject_Schema dataObjectSchema = Displayable_DataObject.getDataObjectSchema();
 
         // Class behavior
         dataObjectSchema.addObjectFactory(Period_Summary.Factory);

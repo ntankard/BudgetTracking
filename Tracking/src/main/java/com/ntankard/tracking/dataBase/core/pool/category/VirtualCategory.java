@@ -3,14 +3,14 @@ package com.ntankard.tracking.dataBase.core.pool.category;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.External_Source;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Local_Source;
+import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.dataObject.interfaces.Ordered;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
-import com.ntankard.javaObjectDatabase.database.Database_Schema;
 import com.ntankard.tracking.dataBase.core.CategorySet;
 
-import static com.ntankard.javaObjectDatabase.dataField.properties.Display_Properties.DEBUG_DISPLAY;
+import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.DEBUG_DISPLAY;
 import static com.ntankard.tracking.dataBase.core.CategorySet.CategorySet_Order;
 
 public class VirtualCategory extends Category implements Ordered {
@@ -36,7 +36,7 @@ public class VirtualCategory extends Category implements Ordered {
         // OrderImpl ===================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(VirtualCategory_OrderImpl, Integer.class));
         dataObjectSchema.get(VirtualCategory_OrderImpl).setManualCanEdit(true);
-        dataObjectSchema.get(VirtualCategory_OrderImpl).getDisplayProperties().setVerbosityLevel(DEBUG_DISPLAY);
+        dataObjectSchema.get(VirtualCategory_OrderImpl).getProperty(Display_Properties.class).setVerbosityLevel(DEBUG_DISPLAY);
         // Order =======================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(VirtualCategory_Order, Integer.class));
         dataObjectSchema.get(VirtualCategory_Order).setDataCore_factory(
