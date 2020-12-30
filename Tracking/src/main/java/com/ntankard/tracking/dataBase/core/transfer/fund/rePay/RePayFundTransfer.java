@@ -1,8 +1,10 @@
 package com.ntankard.tracking.dataBase.core.transfer.fund.rePay;
 
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
 import com.ntankard.javaObjectDatabase.database.Database;
+import com.ntankard.tracking.dataBase.core.pool.Pool;
+import com.ntankard.tracking.dataBase.core.pool.fundEvent.FundEvent;
 import com.ntankard.tracking.dataBase.core.transfer.fund.FundTransfer;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.DirectExternal_Source;
 import com.ntankard.javaObjectDatabase.database.ParameterMap;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
@@ -26,18 +28,19 @@ public abstract class RePayFundTransfer extends FundTransfer {
         // ID
         // Description =================================================================================================
         dataObjectSchema.get(Transfer_Description).setManualCanEdit(false);
-        dataObjectSchema.get(Transfer_Description).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Factory<>(
-                        new DirectExternal_Source.DirectExternalSource_Factory<>(Transfer_Source, NamedDataObject_Name,
-                                original -> "RP " + original)));
+        dataObjectSchema.<String>get(Transfer_Description).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Schema<String, RePayFundTransfer>
+                        (dataObject -> "RP " + dataObject.getSource().getName()
+                                , Source_Factory.makeSourceChain(Transfer_Source, NamedDataObject_Name)));
         // Period
         // Source
         // Value
         // Currency
         // Destination =================================================================================================
-        dataObjectSchema.get(Transfer_Destination).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Factory<>(
-                        new DirectExternal_Source.DirectExternalSource_Factory<>(Transfer_Source, FundEvent_Category)));
+        dataObjectSchema.<Pool>get(Transfer_Destination).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Schema<Pool, RePayFundTransfer>
+                        (dataObject -> ((FundEvent)dataObject.getSource()).getCategory()
+                                , Source_Factory.makeSourceChain(Transfer_Source, FundEvent_Category)));
         // SourceCurrencyGet
         // DestinationCurrencyGet
         // SourcePeriodGet

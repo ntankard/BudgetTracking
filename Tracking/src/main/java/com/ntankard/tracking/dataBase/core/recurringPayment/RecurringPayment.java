@@ -1,6 +1,7 @@
 package com.ntankard.tracking.dataBase.core.recurringPayment;
 
 import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
 import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dataBase.core.baseObject.interfaces.CurrencyBound;
 import com.ntankard.tracking.dataBase.core.baseObject.NamedDataObject;
@@ -10,7 +11,6 @@ import com.ntankard.tracking.dataBase.core.pool.Bank;
 import com.ntankard.tracking.dataBase.core.pool.category.SolidCategory;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.DirectExternal_Source;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 
 import static com.ntankard.tracking.dataBase.core.pool.Bank.Bank_Currency;
@@ -53,7 +53,10 @@ public abstract class RecurringPayment extends NamedDataObject implements Curren
         dataObjectSchema.get(RecurringPayment_Value).getProperty(Display_Properties.class).setDataType(CURRENCY);
         // Currency ====================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(RecurringPayment_Currency, Currency.class));
-        dataObjectSchema.<Currency>get(RecurringPayment_Currency).setDataCore_factory(new Derived_DataCore.Derived_DataCore_Factory<>(new DirectExternal_Source.DirectExternalSource_Factory<>((RecurringPayment_Bank), Bank_Currency)));
+        dataObjectSchema.<Currency>get(RecurringPayment_Currency).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Schema<Currency, RecurringPayment>
+                        (dataObject -> dataObject.getBank().getCurrency()
+                                , Source_Factory.makeSourceChain(RecurringPayment_Bank, Bank_Currency)));
         dataObjectSchema.get(RecurringPayment_Currency).getProperty(Display_Properties.class).setVerbosityLevel(DEBUG_DISPLAY);
         // Duration =========================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(RecurringPayment_Duration, Integer.class, true));

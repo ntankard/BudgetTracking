@@ -1,7 +1,7 @@
 package com.ntankard.tracking.dataBase.core.transfer.bank;
 
-import com.ntankard.javaObjectDatabase.database.Database_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Local_Source;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.EndSource_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.period.ExistingPeriod;
 import com.ntankard.javaObjectDatabase.dataObject.factory.DoubleParentFactory;
@@ -11,7 +11,6 @@ import com.ntankard.tracking.dataBase.core.pool.Bank;
 import com.ntankard.tracking.dataBase.core.pool.Pool;
 import com.ntankard.tracking.dataBase.core.recurringPayment.FixedRecurringPayment;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.DirectExternal_Source;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
 
@@ -75,17 +74,17 @@ public class RecurringBankTransfer extends BankTransfer {
         // SourceCurrencyGet
         // DestinationCurrencyGet ======================================================================================
         dataObjectSchema.<Currency>get(Transfer_DestinationCurrencyGet).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Factory<>(
+                new Derived_DataCore.Derived_DataCore_Schema<>(
                         (Derived_DataCore.Calculator<Currency, BankTransfer>)
                                 container -> container.getCurrency()
-                        , new Local_Source.LocalSource_Factory<>(Transfer_Currency)));
+                        , new EndSource_Schema<>(Transfer_Currency)));
         // SourcePeriodGet
         // DestinationPeriodGet ========================================================================================
         dataObjectSchema.<Period>get(Transfer_DestinationPeriodGet).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Factory<>(
+                new Derived_DataCore.Derived_DataCore_Schema<>(
                         (Derived_DataCore.Calculator<Period, BankTransfer>) container ->
                                 container.getPeriod()
-                        , new Local_Source.LocalSource_Factory<>(Transfer_Period)));
+                        , new EndSource_Schema<>(Transfer_Period)));
         // ParentPayment ===============================================================================================
         dataObjectSchema.add(new DataField_Schema<>(RecurringBankTransfer_ParentPayment, FixedRecurringPayment.class));
         //==============================================================================================================
@@ -95,8 +94,9 @@ public class RecurringBankTransfer extends BankTransfer {
         // Description =================================================================================================
         dataObjectSchema.<String>get(Transfer_Description).setManualCanEdit(false);
         dataObjectSchema.<String>get(Transfer_Description).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Factory<>(
-                        new DirectExternal_Source.DirectExternalSource_Factory<>((RecurringBankTransfer_ParentPayment), NamedDataObject_Name)));
+                new Derived_DataCore.Derived_DataCore_Schema<String, RecurringBankTransfer>
+                        (dataObject -> dataObject.getParentPayment().getName()
+                                , Source_Factory.makeSourceChain(RecurringBankTransfer_ParentPayment, NamedDataObject_Name)));
         //==============================================================================================================
 
         return dataObjectSchema.finaliseContainer(RecurringBankTransfer.class);

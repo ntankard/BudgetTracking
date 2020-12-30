@@ -3,9 +3,9 @@ package com.ntankard.tracking.dataBase.core.links;
 import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.External_Source;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Local_Source;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.EndSource_Schema;
 import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
 import com.ntankard.javaObjectDatabase.dataField.validator.Shared_FieldValidator;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
@@ -56,10 +56,10 @@ public class CategoryToCategorySet extends DataObject implements Ordered {
         // Order ========================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(CategoryToCategorySet_Order, Integer.class));
         dataObjectSchema.get(CategoryToCategorySet_Order).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Factory<>
+                new Derived_DataCore.Derived_DataCore_Schema<>
                         (container -> ((CategoryToCategorySet) container).getCategorySet().getOrder() * 1000 + ((CategoryToCategorySet) container).getOrderImpl()
-                                , new Local_Source.LocalSource_Factory<>((CategoryToCategorySet_OrderImpl))
-                                , new External_Source.ExternalSource_Factory<>((CategoryToCategorySet_CategorySet), CategorySet_Order)));
+                                , new EndSource_Schema<>((CategoryToCategorySet_OrderImpl))
+                                , Source_Factory.makeSourceChain((CategoryToCategorySet_CategorySet), CategorySet_Order)));
         //==============================================================================================================
         // Parents
         // Children

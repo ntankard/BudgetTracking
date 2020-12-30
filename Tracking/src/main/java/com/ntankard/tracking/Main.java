@@ -19,6 +19,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
+        ClassLoader.getSystemClassLoader().setDefaultAssertionStatus(true); // TODO remove
         Master_Frame.open(createDataBase(), savePath);
     }
 }
