@@ -47,7 +47,11 @@ public abstract class NamedDataObject extends DataObject {
      */
     @Override
     public String toString() {
-        return getName();
+        try {
+            return getName();
+        }catch (Exception e){
+            return "NO NAME";
+        }
     }
 
     //------------------------------------------------------------------------------------------------------------------

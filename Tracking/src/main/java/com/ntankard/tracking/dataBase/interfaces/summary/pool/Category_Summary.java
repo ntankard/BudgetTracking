@@ -1,12 +1,11 @@
 package com.ntankard.tracking.dataBase.interfaces.summary.pool;
 
-import com.ntankard.javaObjectDatabase.database.Database_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.EndSource_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
 import com.ntankard.tracking.dataBase.core.pool.category.Category;
 import com.ntankard.javaObjectDatabase.dataObject.factory.DoubleParentFactory;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.Static_DataCore;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.External_Source;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Local_Source;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.dataObject.interfaces.Ordered;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
@@ -56,9 +55,9 @@ public class Category_Summary extends PoolSummary<SolidCategory> implements Orde
         // Net
         // TransferSum =================================================================================================
         dataObjectSchema.<Double>get(PoolSummary_TransferSum).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Factory<>(
+                new Derived_DataCore.Derived_DataCore_Schema<>(
                         (Derived_DataCore.Calculator<Double, PoolSummary<Category>>) PoolSummary::getTransferSetSum
-                        , new Local_Source.LocalSource_Factory<>(PoolSummary_TransferSetSum)));
+                        , new EndSource_Schema<>(PoolSummary_TransferSetSum)));
         // =============================================================================================================
         // Missing
         // Valid =======================================================================================================
@@ -66,10 +65,10 @@ public class Category_Summary extends PoolSummary<SolidCategory> implements Orde
         // Order =======================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Category_Summary_Order, Integer.class));
         dataObjectSchema.<Integer>get(Category_Summary_Order).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Factory<>(
+                new Derived_DataCore.Derived_DataCore_Schema<>(
                         (Derived_DataCore.Calculator<Integer, Category_Summary>) container ->
                                 container.getPeriod().getOrder()
-                        , new External_Source.ExternalSource_Factory<>(PoolSummary_Pool, SolidCategory_Order)));
+                        , Source_Factory.makeSourceChain(PoolSummary_Pool, SolidCategory_Order)));
         //==============================================================================================================
         // Parents
         // Children

@@ -1,5 +1,7 @@
 package com.ntankard.tracking.dataBase.core.transfer.bank;
 
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.EndSource_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
 import com.ntankard.javaObjectDatabase.dataField.validator.Shared_FieldValidator;
 import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dataBase.core.Currency;
@@ -13,8 +15,6 @@ import com.ntankard.tracking.dataBase.core.transfer.Transfer;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.DirectExternal_Source;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Local_Source;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 
 import java.util.ArrayList;
@@ -69,7 +69,10 @@ public abstract class BankTransfer extends Transfer {
         // Value =======================================================================================================
         dataObjectSchema.get(Transfer_Value).setManualCanEdit(true);
         // Currency ====================================================================================================
-        dataObjectSchema.<Currency>get(Transfer_Currency).setDataCore_factory(new Derived_DataCore.Derived_DataCore_Factory<>(new DirectExternal_Source.DirectExternalSource_Factory<>((Transfer_Source), Bank_Currency)));
+        dataObjectSchema.<Currency>get(Transfer_Currency).setDataCore_factory(
+                new Derived_DataCore.Derived_DataCore_Schema<Currency, BankTransfer>
+                        (dataObject -> ((Bank)dataObject.getSource()).getCurrency()
+                                , Source_Factory.makeSourceChain(Transfer_Source, Bank_Currency)));
         // DestinationPeriod ===========================================================================================
         dataObjectSchema.add(Transfer_Currency, new DataField_Schema<>(BankTransfer_DestinationPeriod, Period.class, true));
         dataObjectSchema.get(BankTransfer_DestinationPeriod).setManualCanEdit(true);
@@ -81,12 +84,12 @@ public abstract class BankTransfer extends Transfer {
             ((BankTransfer) container).setDestination(toSet);
         });
         dataObjectSchema.<Category>get(BankTransfer_Category).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Factory<Category, BankTransfer>(container -> {
+                new Derived_DataCore.Derived_DataCore_Schema<Category, BankTransfer>(container -> {
                     if (container.getDestination() instanceof SolidCategory) {
                         return (SolidCategory) container.getDestination();
                     }
                     return null;
-                }, new Local_Source.LocalSource_Factory<>(Transfer_Destination)));
+                }, new EndSource_Schema<>(Transfer_Destination)));
         // Bank ========================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(BankTransfer_Bank, Bank.class, true));
         dataObjectSchema.get(BankTransfer_Bank).setTellParent(false);
@@ -94,12 +97,12 @@ public abstract class BankTransfer extends Transfer {
             ((BankTransfer) container).setDestination(toSet);
         });
         dataObjectSchema.<Bank>get(BankTransfer_Bank).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Factory<Bank, BankTransfer>(container -> {
+                new Derived_DataCore.Derived_DataCore_Schema<Bank, BankTransfer>(container -> {
                     if (container.getDestination() instanceof Bank) {
                         return (Bank) container.getDestination();
                     }
                     return null;
-                }, new Local_Source.LocalSource_Factory<>((Transfer_Destination))));
+                }, new EndSource_Schema<>((Transfer_Destination))));
         // FundEvent ===================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(BankTransfer_FundEvent, FundEvent.class, true));
         dataObjectSchema.get(BankTransfer_FundEvent).setTellParent(false);
@@ -107,12 +110,12 @@ public abstract class BankTransfer extends Transfer {
             ((BankTransfer) container).setDestination(toSet);
         });
         dataObjectSchema.<FundEvent>get(BankTransfer_FundEvent).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Factory<FundEvent, BankTransfer>(container -> {
+                new Derived_DataCore.Derived_DataCore_Schema<FundEvent, BankTransfer>(container -> {
                     if (container.getDestination() instanceof FundEvent) {
                         return (FundEvent) container.getDestination();
                     }
                     return null;
-                }, new Local_Source.LocalSource_Factory<>((Transfer_Destination))));
+                }, new EndSource_Schema<>((Transfer_Destination))));
         // Destination =================================================================================================
         dataObjectSchema.get(Transfer_Destination).setManualCanEdit(true);
         dataObjectSchema.<Pool>get(Transfer_Destination).addValidator(pool_sharedFilter.getSecondFilter());

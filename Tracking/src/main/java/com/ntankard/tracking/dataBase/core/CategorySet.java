@@ -1,6 +1,7 @@
 package com.ntankard.tracking.dataBase.core;
 
 import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.EndSource_Schema;
 import com.ntankard.tracking.dataBase.core.baseObject.NamedDataObject;
 import com.ntankard.tracking.dataBase.core.links.CategoryToCategorySet;
 import com.ntankard.tracking.dataBase.core.links.CategoryToVirtualCategory;
@@ -8,8 +9,6 @@ import com.ntankard.tracking.dataBase.core.pool.category.SolidCategory;
 import com.ntankard.tracking.dataBase.core.pool.category.VirtualCategory;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.SelfChild;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Local_Source;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.dataObject.interfaces.HasDefault;
 import com.ntankard.javaObjectDatabase.dataObject.interfaces.Ordered;
@@ -49,7 +48,7 @@ public class CategorySet extends NamedDataObject implements HasDefault, Ordered 
         dataObjectSchema.add(new DataField_Schema<>(CategorySet_UsedCategories, List.class)); // TODO this should be a list field
         dataObjectSchema.get(CategorySet_UsedCategories).getProperty(Display_Properties.class).setVerbosityLevel(DEBUG_DISPLAY);
         dataObjectSchema.<List<SolidCategory>>get(CategorySet_UsedCategories).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Factory<>(
+                new Derived_DataCore.Derived_DataCore_Schema<>(
                         (Derived_DataCore.Calculator<List<SolidCategory>, CategorySet>) container -> {
                             List<SolidCategory> toReturn = new ArrayList<>();
                             for (CategoryToCategorySet categoryToCategorySet : container.getChildren(CategoryToCategorySet.class)) {
@@ -61,17 +60,17 @@ public class CategorySet extends NamedDataObject implements HasDefault, Ordered 
                             }
                             return toReturn;
                         }
-                        , new SelfChild.SelfChildSource_Factory<>()));
+                        , new EndSource_Schema<>(DataObject_ChildrenField)));
         // AvailableCategories =========================================================================================
         dataObjectSchema.add(new DataField_Schema<>(CategorySet_AvailableCategories, List.class));
         dataObjectSchema.<List<SolidCategory>>get(CategorySet_AvailableCategories).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Factory<>(
+                new Derived_DataCore.Derived_DataCore_Schema<>(
                         (Derived_DataCore.Calculator<List<SolidCategory>, CategorySet>) container -> {
                             List<SolidCategory> toReturn = container.getTrackingDatabase().get(SolidCategory.class); // TODO this is broken, you need to get alerts about this being updated
                             toReturn.removeAll(container.getUsedCategories());
                             return toReturn;
                         }
-                        , new Local_Source.LocalSource_Factory<>(CategorySet_UsedCategories)));
+                        , new EndSource_Schema<>(CategorySet_UsedCategories)));
         //==============================================================================================================
         // Parents
         // Children

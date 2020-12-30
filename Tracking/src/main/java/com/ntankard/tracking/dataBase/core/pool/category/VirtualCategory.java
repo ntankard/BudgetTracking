@@ -1,9 +1,9 @@
 package com.ntankard.tracking.dataBase.core.pool.category;
 
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.External_Source;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Local_Source;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.EndSource_Schema;
 import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.dataObject.interfaces.Ordered;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
@@ -40,10 +40,10 @@ public class VirtualCategory extends Category implements Ordered {
         // Order =======================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(VirtualCategory_Order, Integer.class));
         dataObjectSchema.get(VirtualCategory_Order).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Factory<>
+                new Derived_DataCore.Derived_DataCore_Schema<>
                         (container -> ((VirtualCategory) container).getCategorySet().getOrder() * 1000 + ((VirtualCategory) container).getOrderImpl()
-                                , new Local_Source.LocalSource_Factory<>(VirtualCategory_OrderImpl)
-                                , new External_Source.ExternalSource_Factory<>(VirtualCategory_CategorySet, CategorySet_Order)));
+                                , new EndSource_Schema<>(VirtualCategory_OrderImpl)
+                                , Source_Factory.makeSourceChain(VirtualCategory_CategorySet, CategorySet_Order)));
         //==============================================================================================================
         // Parents
         // Children
