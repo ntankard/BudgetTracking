@@ -1,10 +1,9 @@
 package com.ntankard.tracking.dataBase.core.pool.fundEvent;
 
+import com.ntankard.javaObjectDatabase.dataField.dataCore.Static_DataCore_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
-import com.ntankard.javaObjectDatabase.database.Database_Schema;
 import com.ntankard.tracking.dataBase.core.pool.category.SolidCategory;
 import com.ntankard.tracking.dataBase.core.transfer.fund.rePay.SavingsRePayFundTransfer;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.Static_DataCore;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 
 public class SavingsFundEvent extends FundEvent {
@@ -25,7 +24,7 @@ public class SavingsFundEvent extends FundEvent {
         // ID
         // Name ========================================================================================================
         dataObjectSchema.get(NamedDataObject_Name).setManualCanEdit(false);
-        dataObjectSchema.get(NamedDataObject_Name).setDataCore_factory(new Static_DataCore.Static_DataCore_Factory<>("Savings"));
+        dataObjectSchema.get(NamedDataObject_Name).setDataCore_schema(new Static_DataCore_Schema<>("Savings"));
         // =============================================================================================================
         // Category
         // Parents

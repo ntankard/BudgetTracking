@@ -1,8 +1,10 @@
 package com.ntankard.tracking.dataBase.interfaces.summary.pool;
 
 import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema.Calculator;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.*;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.EndSource_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.End_Source_Schema;
 import com.ntankard.javaObjectDatabase.util.set.SetFilter;
 import com.ntankard.tracking.dataBase.core.baseObject.interfaces.CurrencyBound;
 import com.ntankard.tracking.dataBase.core.Currency;
@@ -20,7 +22,6 @@ import com.ntankard.tracking.dataBase.interfaces.set.filter.TransferType_HalfTra
 import com.ntankard.javaObjectDatabase.dataObject.factory.DoubleParentFactory;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.dataField.ListDataField_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.dataObject.interfaces.Ordered;
 import com.ntankard.javaObjectDatabase.database.ParameterMap;
@@ -28,7 +29,7 @@ import com.ntankard.javaObjectDatabase.database.Database;
 
 import java.util.List;
 
-import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.DerivedDataCore_Factory.createMultiParentList;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createMultiParentList;
 import static com.ntankard.tracking.dataBase.core.Currency.Currency_ToPrimary;
 import static com.ntankard.tracking.dataBase.core.period.ExistingPeriod.ExistingPeriod_Order;
 import static com.ntankard.tracking.dataBase.core.pool.Bank.*;
@@ -79,16 +80,16 @@ public class Bank_Summary extends PoolSummary<Bank> implements CurrencyBound, Or
         // BankSummarySet ==============================================================================================
         dataObjectSchema.add(new ListDataField_Schema<>(Bank_Summary_BankSummarySet, Bank_SummaryList.class));
         dataObjectSchema.get(Bank_Summary_BankSummarySet).getProperty(Display_Properties.class).setVerbosityLevel(TRACE_DISPLAY);
-        dataObjectSchema.<List<Bank_Summary>>get(Bank_Summary_BankSummarySet).setDataCore_factory(
+        dataObjectSchema.<List<Bank_Summary>>get(Bank_Summary_BankSummarySet).setDataCore_schema(
                 createMultiParentList(
                         Bank_Summary.class,
                         PoolSummary_Pool));
         // PreviousBankSummary =========================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Bank_Summary_PreviousBankSummary, Bank_Summary.class, true));
         dataObjectSchema.get(Bank_Summary_PreviousBankSummary).getProperty(Display_Properties.class).setVerbosityLevel(TRACE_DISPLAY);
-        dataObjectSchema.<Bank_Summary>get(Bank_Summary_PreviousBankSummary).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Schema<>(
-                        (Derived_DataCore.Calculator<Bank_Summary, Bank_Summary>) container -> {
+        dataObjectSchema.<Bank_Summary>get(Bank_Summary_PreviousBankSummary).setDataCore_schema(
+                new Derived_DataCore_Schema<>(
+                        (Calculator<Bank_Summary, Bank_Summary>) container -> {
                             List<Bank_Summary> bank_summaries = container.getBankSummarySet();
                             for (Bank_Summary bankSummary : bank_summaries) {
                                 if (bankSummary.getPeriod().getOrder() == container.getPeriod().getOrder() - 1) {
@@ -97,37 +98,37 @@ public class Bank_Summary extends PoolSummary<Bank> implements CurrencyBound, Or
                             }
                             return null;
                         }
-                        , new EndSource_Schema<>((Bank_Summary_BankSummarySet)))); // TODO you need to watch period
+                        , new End_Source_Schema<>((Bank_Summary_BankSummarySet)))); // TODO you need to watch period
         // StatementEndSet ================================================================================================
         dataObjectSchema.add(new ListDataField_Schema<>(Bank_Summary_StatementEndSet, StatementEndList.class));
         dataObjectSchema.get(Bank_Summary_StatementEndSet).getProperty(Display_Properties.class).setVerbosityLevel(TRACE_DISPLAY);
-        dataObjectSchema.<List<StatementEnd>>get(Bank_Summary_StatementEndSet).setDataCore_factory(
+        dataObjectSchema.<List<StatementEnd>>get(Bank_Summary_StatementEndSet).setDataCore_schema(
                 createMultiParentList(
                         StatementEnd.class,
                         PoolSummary_Period,
                         PoolSummary_Pool));
         // StatementEnd ================================================================================================`
         dataObjectSchema.add(new DataField_Schema<>(Bank_Summary_StatementEnd, StatementEnd.class, true));
-        dataObjectSchema.<StatementEnd>get(Bank_Summary_StatementEnd).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Schema<StatementEnd, Bank_Summary>(
+        dataObjectSchema.<StatementEnd>get(Bank_Summary_StatementEnd).setDataCore_schema(
+                new Derived_DataCore_Schema<StatementEnd, Bank_Summary>(
                         container -> {
                             if (container.getStatementEndSet().isEmpty()) {
                                 return null;
                             }
                             return container.getStatementEndSet().get(0);
                         },
-                        new EndSource_Schema<>((Bank_Summary_StatementEndSet))));
+                        new End_Source_Schema<>((Bank_Summary_StatementEndSet))));
         // Currency ====================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Bank_Summary_Currency, Currency.class, false));
         dataObjectSchema.get(Bank_Summary_Currency).getProperty(Display_Properties.class).setVerbosityLevel(INFO_DISPLAY);
-        dataObjectSchema.<Currency>get(Bank_Summary_Currency).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Schema<Currency, Bank_Summary>
+        dataObjectSchema.<Currency>get(Bank_Summary_Currency).setDataCore_schema(
+                new Derived_DataCore_Schema<Currency, Bank_Summary>
                         (dataObject -> dataObject.getPool().getCurrency()
                                 , Source_Factory.makeSourceChain(PoolSummary_Pool, Bank_Currency)));
         // Start =======================================================================================================
-        dataObjectSchema.<Double>get(PoolSummary_Start).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Schema<>(
-                        (Derived_DataCore.Calculator<Double, Bank_Summary>) container -> {
+        dataObjectSchema.<Double>get(PoolSummary_Start).setDataCore_schema(
+                new Derived_DataCore_Schema<>(
+                        (Calculator<Double, Bank_Summary>) container -> {
                             Bank_Summary previous = container.getPreviousBankSummary();
                             if (previous == null) {
                                 return container.getPool().getStart();
@@ -137,8 +138,8 @@ public class Bank_Summary extends PoolSummary<Bank> implements CurrencyBound, Or
                         , Source_Factory.makeSourceChain((Bank_Summary_PreviousBankSummary), Bank_Summary_StatementEnd)
                         , Source_Factory.makeSourceChain((PoolSummary_Pool), Bank_Start)));
         // End =========================================================================================================
-        dataObjectSchema.<Double>get(PoolSummary_End).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Schema<Double, Bank_Summary>(
+        dataObjectSchema.<Double>get(PoolSummary_End).setDataCore_schema(
+                new Derived_DataCore_Schema<Double, Bank_Summary>(
                         container -> {
                             if (container.getStatementEnd() == null) { // TODO this is needed because you allow statement end to be null. If you don't it fails the initial check. Look at fixing this
                                 return -1.0;
@@ -150,22 +151,22 @@ public class Bank_Summary extends PoolSummary<Bank> implements CurrencyBound, Or
             ((Bank_Summary) container).getStatementEnd().setEnd(toSet);
         });
         // TransferSum =================================================================================================
-        dataObjectSchema.<Double>get(PoolSummary_TransferSum).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Schema<>(
-                        (Derived_DataCore.Calculator<Double, PoolSummary<Bank>>) container ->
+        dataObjectSchema.<Double>get(PoolSummary_TransferSum).setDataCore_schema(
+                new Derived_DataCore_Schema<>(
+                        (Calculator<Double, PoolSummary<Bank>>) container ->
                                 container.getTransferSetSum() / container.getCurrency().getToPrimary()
-                        , new EndSource_Schema<>((PoolSummary_TransferSetSum))
+                        , new End_Source_Schema<>((PoolSummary_TransferSetSum))
                         , Source_Factory.makeSourceChain((Bank_Summary_Currency), Currency_ToPrimary)));
         // Missing
         // Valid =======================================================================================================
-        dataObjectSchema.<Boolean>get(PoolSummary_Valid).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Schema<>(
-                        (Derived_DataCore.Calculator<Boolean, PoolSummary<Bank>>) container -> container.getMissing().equals(0.00)
-                        , new EndSource_Schema<>((PoolSummary_Missing))));
+        dataObjectSchema.<Boolean>get(PoolSummary_Valid).setDataCore_schema(
+                new Derived_DataCore_Schema<>(
+                        (Calculator<Boolean, PoolSummary<Bank>>) container -> container.getMissing().equals(0.00)
+                        , new End_Source_Schema<>((PoolSummary_Missing))));
         // NetTransferSet ==============================================================================================
         dataObjectSchema.add(new ListDataField_Schema<>(Bank_Summary_NetTransferSet, HalfTransferList.class));
         dataObjectSchema.get(Bank_Summary_NetTransferSet).getProperty(Display_Properties.class).setVerbosityLevel(TRACE_DISPLAY);
-        dataObjectSchema.<List<HalfTransfer>>get(Bank_Summary_NetTransferSet).setDataCore_factory(
+        dataObjectSchema.<List<HalfTransfer>>get(Bank_Summary_NetTransferSet).setDataCore_schema(
                 createMultiParentList(
                         HalfTransfer.class,
                         new TransferType_HalfTransfer_Filter(BankTransfer.class,
@@ -175,8 +176,8 @@ public class Bank_Summary extends PoolSummary<Bank> implements CurrencyBound, Or
         // NetTransferSum ==============================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Bank_Summary_NetTransferSum, Double.class, true));
         dataObjectSchema.get(Bank_Summary_NetTransferSum).getProperty(Display_Properties.class).setVerbosityLevel(TRACE_DISPLAY);
-        dataObjectSchema.<Double>get(Bank_Summary_NetTransferSum).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Schema<>(
+        dataObjectSchema.<Double>get(Bank_Summary_NetTransferSum).setDataCore_schema(
+                new Derived_DataCore_Schema<>(
                         container -> {
                             double sum = 0.0;
                             for (HalfTransfer halfTransfer : container.<List<HalfTransfer>>get(Bank_Summary_NetTransferSet)) {
@@ -189,11 +190,11 @@ public class Bank_Summary extends PoolSummary<Bank> implements CurrencyBound, Or
         // NetTransfer =================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Bank_Summary_NetTransfer, Double.class));
         dataObjectSchema.get(Bank_Summary_NetTransfer).getProperty(Display_Properties.class).setDataType(CURRENCY);
-        dataObjectSchema.<Double>get(Bank_Summary_NetTransfer).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Schema<>(
-                        (Derived_DataCore.Calculator<Double, Bank_Summary>) container ->
+        dataObjectSchema.<Double>get(Bank_Summary_NetTransfer).setDataCore_schema(
+                new Derived_DataCore_Schema<>(
+                        (Calculator<Double, Bank_Summary>) container ->
                                 container.getNetTransferSum() / container.getCurrency().getToPrimary()
-                        , new EndSource_Schema<>((Bank_Summary_NetTransferSum))
+                        , new End_Source_Schema<>((Bank_Summary_NetTransferSum))
                         , Source_Factory.makeSourceChain((Bank_Summary_Currency), Currency_ToPrimary)));
         // SpendSet ====================================================================================================
         dataObjectSchema.add(new ListDataField_Schema<>(Bank_Summary_SpendSet, HalfTransferList.class));
@@ -201,12 +202,12 @@ public class Bank_Summary extends PoolSummary<Bank> implements CurrencyBound, Or
 
         SetFilter<HalfTransfer> setFilter = new TransferType_HalfTransfer_Filter(BankTransfer.class,
                 new TransferDestination_HalfTransfer_Filter(SolidCategory.class));
-        dataObjectSchema.<List<HalfTransfer>>get(Bank_Summary_SpendSet).setDataCore_factory(createMultiParentList(HalfTransfer.class, setFilter, PoolSummary_Period, PoolSummary_Pool));
+        dataObjectSchema.<List<HalfTransfer>>get(Bank_Summary_SpendSet).setDataCore_schema(createMultiParentList(HalfTransfer.class, setFilter, PoolSummary_Period, PoolSummary_Pool));
         // SpendSum ====================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Bank_Summary_SpendSum, Double.class, true));
         dataObjectSchema.get(Bank_Summary_SpendSum).getProperty(Display_Properties.class).setVerbosityLevel(TRACE_DISPLAY);
-        dataObjectSchema.<Double>get(Bank_Summary_SpendSum).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Schema<Double, Bank_Summary>(
+        dataObjectSchema.<Double>get(Bank_Summary_SpendSum).setDataCore_schema(
+                new Derived_DataCore_Schema<Double, Bank_Summary>(
                         container -> {
                             double sum = 0.0;
                             for (HalfTransfer halfTransfer : container.<List<HalfTransfer>>get(Bank_Summary_SpendSet)) {
@@ -221,18 +222,18 @@ public class Bank_Summary extends PoolSummary<Bank> implements CurrencyBound, Or
         // Spend =======================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Bank_Summary_Spend, Double.class));
         dataObjectSchema.get(Bank_Summary_Spend).getProperty(Display_Properties.class).setDataType(CURRENCY);
-        dataObjectSchema.<Double>get(Bank_Summary_Spend).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Schema<>(
-                        (Derived_DataCore.Calculator<Double, Bank_Summary>) container ->
+        dataObjectSchema.<Double>get(Bank_Summary_Spend).setDataCore_schema(
+                new Derived_DataCore_Schema<>(
+                        (Calculator<Double, Bank_Summary>) container ->
                                 container.getSpendSum() / container.getCurrency().getToPrimary()
-                        , new EndSource_Schema<>((Bank_Summary_SpendSum))
+                        , new End_Source_Schema<>((Bank_Summary_SpendSum))
                         , Source_Factory.makeSourceChain((Bank_Summary_Currency), Currency_ToPrimary)));
         // Order =======================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Bank_Summary_Order, Integer.class));
         dataObjectSchema.get(Bank_Summary_Order).getProperty(Display_Properties.class).setVerbosityLevel(TRACE_DISPLAY);
-        dataObjectSchema.<Integer>get(Bank_Summary_Order).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Schema<>(
-                        (Derived_DataCore.Calculator<Integer, Bank_Summary>) container ->
+        dataObjectSchema.<Integer>get(Bank_Summary_Order).setDataCore_schema(
+                new Derived_DataCore_Schema<>(
+                        (Calculator<Integer, Bank_Summary>) container ->
                                 container.getPeriod().getOrder() * 10000 + container.getPool().getOrder()
                         , Source_Factory.makeSourceChain((PoolSummary_Pool), Bank_Order)
                         , Source_Factory.makeSourceChain((PoolSummary_Period), ExistingPeriod_Order)));

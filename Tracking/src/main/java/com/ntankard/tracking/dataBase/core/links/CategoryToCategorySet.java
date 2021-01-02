@@ -2,8 +2,8 @@ package com.ntankard.tracking.dataBase.core.links;
 
 import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.EndSource_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.End_Source_Schema;
 import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
 import com.ntankard.javaObjectDatabase.dataField.validator.Shared_FieldValidator;
@@ -55,10 +55,10 @@ public class CategoryToCategorySet extends DataObject implements Ordered {
         dataObjectSchema.get(CategoryToCategorySet_OrderImpl).setManualCanEdit(true);
         // Order ========================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(CategoryToCategorySet_Order, Integer.class));
-        dataObjectSchema.get(CategoryToCategorySet_Order).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Schema<>
+        dataObjectSchema.get(CategoryToCategorySet_Order).setDataCore_schema(
+                new Derived_DataCore_Schema<>
                         (container -> ((CategoryToCategorySet) container).getCategorySet().getOrder() * 1000 + ((CategoryToCategorySet) container).getOrderImpl()
-                                , new EndSource_Schema<>((CategoryToCategorySet_OrderImpl))
+                                , new End_Source_Schema<>((CategoryToCategorySet_OrderImpl))
                                 , Source_Factory.makeSourceChain((CategoryToCategorySet_CategorySet), CategorySet_Order)));
         //==============================================================================================================
         // Parents

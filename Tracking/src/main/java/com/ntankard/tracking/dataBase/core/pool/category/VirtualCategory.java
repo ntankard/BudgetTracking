@@ -1,7 +1,7 @@
 package com.ntankard.tracking.dataBase.core.pool.category;
 
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.EndSource_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.End_Source_Schema;
 import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
@@ -39,10 +39,10 @@ public class VirtualCategory extends Category implements Ordered {
         dataObjectSchema.get(VirtualCategory_OrderImpl).getProperty(Display_Properties.class).setVerbosityLevel(DEBUG_DISPLAY);
         // Order =======================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(VirtualCategory_Order, Integer.class));
-        dataObjectSchema.get(VirtualCategory_Order).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Schema<>
+        dataObjectSchema.get(VirtualCategory_Order).setDataCore_schema(
+                new Derived_DataCore_Schema<>
                         (container -> ((VirtualCategory) container).getCategorySet().getOrder() * 1000 + ((VirtualCategory) container).getOrderImpl()
-                                , new EndSource_Schema<>(VirtualCategory_OrderImpl)
+                                , new End_Source_Schema<>(VirtualCategory_OrderImpl)
                                 , Source_Factory.makeSourceChain(VirtualCategory_CategorySet, CategorySet_Order)));
         //==============================================================================================================
         // Parents

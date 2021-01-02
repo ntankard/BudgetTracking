@@ -1,5 +1,6 @@
 package com.ntankard.tracking.dataBase.core.transfer.fund.rePay;
 
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.period.ExistingPeriod;
@@ -11,7 +12,6 @@ import com.ntankard.tracking.dataBase.core.transfer.HalfTransfer;
 import com.ntankard.tracking.dataBase.core.transfer.HalfTransfer.HalfTransferList;
 import com.ntankard.javaObjectDatabase.dataObject.factory.DoubleParentFactory;
 import com.ntankard.javaObjectDatabase.dataField.ListDataField_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.ParameterMap;
 import com.ntankard.javaObjectDatabase.database.Database;
@@ -19,7 +19,7 @@ import com.ntankard.javaObjectDatabase.util.set.SetFilter;
 
 import java.util.List;
 
-import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.DerivedDataCore_Factory.createMultiParentList;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createMultiParentList;
 import static com.ntankard.tracking.dataBase.core.transfer.HalfTransfer.HalfTransfer_Currency;
 import static com.ntankard.tracking.dataBase.core.transfer.HalfTransfer.HalfTransfer_Value;
 
@@ -57,7 +57,7 @@ public class SavingsRePayFundTransfer extends RePayFundTransfer {
         // Source
         // NonSavingsSet ===============================================================================================
         dataObjectSchema.add(new ListDataField_Schema<>(SavingsRePayFundTransfer_NonSavingsSet, HalfTransferList.class));
-        dataObjectSchema.<List<HalfTransfer>>get(SavingsRePayFundTransfer_NonSavingsSet).setDataCore_factory(
+        dataObjectSchema.<List<HalfTransfer>>get(SavingsRePayFundTransfer_NonSavingsSet).setDataCore_schema(
                 createMultiParentList(
                         HalfTransfer.class,
                         new SetFilter<HalfTransfer>(null) {
@@ -75,8 +75,8 @@ public class SavingsRePayFundTransfer extends RePayFundTransfer {
                         }, Transfer_Period
                 ));
         // Value =======================================================================================================
-        dataObjectSchema.<Double>get(Transfer_Value).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Schema<Double, SavingsRePayFundTransfer>(
+        dataObjectSchema.<Double>get(Transfer_Value).setDataCore_schema(
+                new Derived_DataCore_Schema<Double, SavingsRePayFundTransfer>(
                         container -> {
                             double sum = 0.0;
                             for (HalfTransfer halfTransfer : container.<List<HalfTransfer>>get(SavingsRePayFundTransfer_NonSavingsSet)) {

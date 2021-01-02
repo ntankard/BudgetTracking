@@ -1,11 +1,11 @@
 package com.ntankard.tracking.dataBase.core.transfer.fund;
 
 import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.EndSource_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.End_Source_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.period.Period;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
@@ -41,16 +41,16 @@ public abstract class FundTransfer extends Transfer {
         // Destination
         // SourceCurrencyGet
         // DestinationCurrencyGet ======================================================================================
-        dataObjectSchema.<Currency>get(Transfer_DestinationCurrencyGet).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Schema<>
+        dataObjectSchema.<Currency>get(Transfer_DestinationCurrencyGet).setDataCore_schema(
+                new Derived_DataCore_Schema<>
                         (container -> ((Transfer) container).getCurrency()
-                                , new EndSource_Schema<>(Transfer_Currency)));
+                                , new End_Source_Schema<>(Transfer_Currency)));
         // SourcePeriodGet
         // DestinationPeriodGet ========================================================================================
-        dataObjectSchema.<Period>get(Transfer_DestinationPeriodGet).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Schema<>
+        dataObjectSchema.<Period>get(Transfer_DestinationPeriodGet).setDataCore_schema(
+                new Derived_DataCore_Schema<>
                         (container -> ((Transfer) container).getPeriod()
-                                , new EndSource_Schema<>(Transfer_Period)));
+                                , new End_Source_Schema<>(Transfer_Period)));
         // Parents
         // Children
 

@@ -1,7 +1,8 @@
 package com.ntankard.tracking.dataBase.core.transfer.bank;
 
 import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.EndSource_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema.Calculator;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.End_Source_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.period.Period;
@@ -9,8 +10,7 @@ import com.ntankard.tracking.dataBase.core.pool.Bank;
 import com.ntankard.tracking.dataBase.core.pool.Pool;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore.Calculator;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore.Derived_DataCore_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
 
 import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.DataType.CURRENCY;
 
@@ -46,21 +46,21 @@ public class IntraCurrencyBankTransfer extends BankTransfer {
         dataObjectSchema.get(BankTransfer_DestinationValue).setManualCanEdit(true);
         // DestinationCurrency =========================================================================================
         dataObjectSchema.add(new DataField_Schema<>(BankTransfer_DestinationCurrency, Currency.class, false));
-        dataObjectSchema.<Currency>get(BankTransfer_DestinationCurrency).setDataCore_factory(
+        dataObjectSchema.<Currency>get(BankTransfer_DestinationCurrency).setDataCore_schema(
                 new Derived_DataCore_Schema<>(container -> {
                     BankTransfer bankTransfer = ((BankTransfer) container);
                     return ((Bank) bankTransfer.getDestination()).getCurrency();
                 }
-                        , new EndSource_Schema<>((Transfer_Destination))));
+                        , new End_Source_Schema<>((Transfer_Destination))));
         // SourceCurrencyGet
         // DestinationCurrencyGet ======================================================================================
-        dataObjectSchema.<Currency>get(Transfer_DestinationCurrencyGet).setDataCore_factory(
+        dataObjectSchema.<Currency>get(Transfer_DestinationCurrencyGet).setDataCore_schema(
                 new Derived_DataCore_Schema<>((Calculator<Currency, IntraCurrencyBankTransfer>) container ->
                         container.getDestinationCurrency()
-                        , new EndSource_Schema<>((BankTransfer_DestinationCurrency))));
+                        , new End_Source_Schema<>((BankTransfer_DestinationCurrency))));
         // SourcePeriodGet
         // DestinationPeriodGet ========================================================================================
-        dataObjectSchema.<Period>get(Transfer_DestinationPeriodGet).setDataCore_factory(
+        dataObjectSchema.<Period>get(Transfer_DestinationPeriodGet).setDataCore_schema(
                 new Derived_DataCore_Schema<>((Calculator<Period, BankTransfer>) container -> {
                     if (container.getDestinationPeriod() != null) {
                         return container.getDestinationPeriod();
@@ -68,8 +68,8 @@ public class IntraCurrencyBankTransfer extends BankTransfer {
                         return container.getPeriod();
                     }
                 }
-                        , new EndSource_Schema<>((Transfer_Period))
-                        , new EndSource_Schema<>((BankTransfer_DestinationPeriod))));
+                        , new End_Source_Schema<>((Transfer_Period))
+                        , new End_Source_Schema<>((BankTransfer_DestinationPeriod))));
         // Parents
         // Children
 

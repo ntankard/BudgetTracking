@@ -1,6 +1,8 @@
 package com.ntankard.tracking.dataBase.core.transfer.fund.rePay;
 
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.EndSource_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema.Calculator;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.End_Source_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.period.ExistingPeriod;
@@ -9,7 +11,6 @@ import com.ntankard.tracking.dataBase.core.pool.fundEvent.FixedPeriodFundEvent;
 import com.ntankard.tracking.dataBase.core.pool.fundEvent.FundEvent;
 import com.ntankard.javaObjectDatabase.dataObject.factory.DoubleParentFactory;
 import com.ntankard.javaObjectDatabase.database.ParameterMap;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
 
@@ -46,16 +47,16 @@ public class FixedPeriodRePayFundTransfer extends RePayFundTransfer {
         // Period
         // Source
         // Value =======================================================================================================
-        dataObjectSchema.<Double>get(Transfer_Value).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Schema<>(
-                        (Derived_DataCore.Calculator<Double, FixedPeriodRePayFundTransfer>) container -> {
+        dataObjectSchema.<Double>get(Transfer_Value).setDataCore_schema(
+                new Derived_DataCore_Schema<>(
+                        (Calculator<Double, FixedPeriodRePayFundTransfer>) container -> {
                             FixedPeriodFundEvent fixedPeriodFundEvent = (FixedPeriodFundEvent) container.getSource();
                             if (!container.getPeriod().isWithin(fixedPeriodFundEvent.getStart(), fixedPeriodFundEvent.getDuration())) {
                                 return -0.0;
                             }
                             return fixedPeriodFundEvent.getRepayAmount();
                         }
-                        , new EndSource_Schema<>((Transfer_Period))
+                        , new End_Source_Schema<>((Transfer_Period))
                         , Source_Factory.makeSourceChain((Transfer_Source), FixedPeriodFundEvent_Start)
                         , Source_Factory.makeSourceChain((Transfer_Source), FixedPeriodFundEvent_Duration)
                         , Source_Factory.makeSourceChain((Transfer_Source), FixedPeriodFundEvent_RepayAmount)));

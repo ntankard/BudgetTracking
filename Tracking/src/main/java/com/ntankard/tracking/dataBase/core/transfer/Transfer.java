@@ -2,7 +2,8 @@ package com.ntankard.tracking.dataBase.core.transfer;
 
 import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
 import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.EndSource_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.End_Source_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dataBase.core.baseObject.interfaces.CurrencyBound;
 import com.ntankard.tracking.dataBase.core.Currency;
@@ -11,7 +12,6 @@ import com.ntankard.tracking.dataBase.core.pool.Bank;
 import com.ntankard.tracking.dataBase.core.pool.Pool;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.util.set.Single_OneParent_Children_Set;
 
@@ -68,20 +68,20 @@ public abstract class Transfer extends DataObject implements CurrencyBound {
         // SourceCurrencyGet ===========================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Transfer_SourceCurrencyGet, Currency.class));
         dataObjectSchema.get(Transfer_SourceCurrencyGet).setTellParent(false);
-        dataObjectSchema.<Currency>get(Transfer_SourceCurrencyGet).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Schema<>
+        dataObjectSchema.<Currency>get(Transfer_SourceCurrencyGet).setDataCore_schema(
+                new Derived_DataCore_Schema<>
                         (container -> ((Transfer) container).getCurrency()
-                                , new EndSource_Schema<>(Transfer_Currency)));
+                                , new End_Source_Schema<>(Transfer_Currency)));
         // DestinationCurrencyGet  =====================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Transfer_DestinationCurrencyGet, Currency.class));
         dataObjectSchema.get(Transfer_DestinationCurrencyGet).setTellParent(false);
         // SourcePeriodGet =================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Transfer_SourcePeriodGet, Period.class));
         dataObjectSchema.get(Transfer_SourcePeriodGet).setTellParent(false);
-        dataObjectSchema.<Period>get(Transfer_SourcePeriodGet).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Schema<>
+        dataObjectSchema.<Period>get(Transfer_SourcePeriodGet).setDataCore_schema(
+                new Derived_DataCore_Schema<>
                         (container -> ((Transfer) container).getPeriod()
-                                , new EndSource_Schema<>(Transfer_Period)));
+                                , new End_Source_Schema<>(Transfer_Period)));
         // DestinationPeriodGet =================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Transfer_DestinationPeriodGet, Period.class));
         dataObjectSchema.get(Transfer_DestinationPeriodGet).setTellParent(false);

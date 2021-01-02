@@ -2,10 +2,10 @@ package com.ntankard.tracking.dataBase.core;
 
 import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
 import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
 import com.ntankard.javaObjectDatabase.dataObject.factory.DoubleParentFactory;
 import com.ntankard.javaObjectDatabase.dataObject.factory.ObjectFactory;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.tracking.dataBase.core.baseObject.interfaces.CurrencyBound;
@@ -67,15 +67,15 @@ public class StatementEnd extends DataObject implements CurrencyBound, Ordered {
         dataObjectSchema.get(StatementEnd_End).setManualCanEdit(true);
         // Currency ====================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(StatementEnd_Currency, Currency.class));
-        dataObjectSchema.<Currency>get(StatementEnd_Currency).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Schema<Currency, StatementEnd>
+        dataObjectSchema.<Currency>get(StatementEnd_Currency).setDataCore_schema(
+                new Derived_DataCore_Schema<Currency, StatementEnd>
                         (dataObject -> dataObject.getBank().getCurrency()
                                 , Source_Factory.makeSourceChain((StatementEnd_Bank), Bank_Currency)));
         // Order =======================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(StatementEnd_Order, Integer.class));
         dataObjectSchema.get(StatementEnd_Order).getProperty(Display_Properties.class).setVerbosityLevel(TRACE_DISPLAY);
-        dataObjectSchema.<Integer>get(StatementEnd_Order).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Schema<Integer, StatementEnd>
+        dataObjectSchema.<Integer>get(StatementEnd_Order).setDataCore_schema(
+                new Derived_DataCore_Schema<Integer, StatementEnd>
                         (dataObject -> dataObject.getBank().getOrder() + dataObject.getPeriod().getOrder() * 1000
                                 , Source_Factory.makeSourceChain((StatementEnd_Bank), Bank_Order)
                                 , Source_Factory.makeSourceChain((StatementEnd_Period), ExistingPeriod_Order)));

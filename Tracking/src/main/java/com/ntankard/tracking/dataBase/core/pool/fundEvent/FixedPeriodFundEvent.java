@@ -1,6 +1,8 @@
 package com.ntankard.tracking.dataBase.core.pool.fundEvent;
 
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.EndSource_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema.Calculator;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.End_Source_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
 import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dataBase.core.Currency;
@@ -13,12 +15,11 @@ import com.ntankard.tracking.dataBase.interfaces.set.filter.NotTransferType_Half
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.dataField.validator.NumberRange_FieldValidator;
 import com.ntankard.javaObjectDatabase.dataField.ListDataField_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 
 import java.util.List;
 
-import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.DerivedDataCore_Factory.createSelfParentList;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createSelfParentList;
 import static com.ntankard.tracking.dataBase.core.transfer.HalfTransfer.HalfTransfer_Currency;
 import static com.ntankard.tracking.dataBase.core.transfer.HalfTransfer.HalfTransfer_Value;
 
@@ -56,15 +57,15 @@ public class FixedPeriodFundEvent extends FundEvent {
         dataObjectSchema.get(FixedPeriodFundEvent_Duration).setManualCanEdit(true);
         // NonRepaySet =================================================================================================
         dataObjectSchema.add(new ListDataField_Schema<>(FixedPeriodFundEvent_NonRepaySet, HalfTransfer.HalfTransferList.class));
-        dataObjectSchema.<List<HalfTransfer>>get(FixedPeriodFundEvent_NonRepaySet).setDataCore_factory(
+        dataObjectSchema.<List<HalfTransfer>>get(FixedPeriodFundEvent_NonRepaySet).setDataCore_schema(
                 createSelfParentList(
                         HalfTransfer.class,
                         new NotTransferType_HalfTransfer_Filter(RePayFundTransfer.class)));
         // NonRepaySum =================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(FixedPeriodFundEvent_NonRepaySum, Double.class));
 
-        dataObjectSchema.<Double>get(FixedPeriodFundEvent_NonRepaySum).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Schema<Double, FixedPeriodFundEvent>(
+        dataObjectSchema.<Double>get(FixedPeriodFundEvent_NonRepaySum).setDataCore_schema(
+                new Derived_DataCore_Schema<Double, FixedPeriodFundEvent>(
                         container -> {
                             double sum = 0.0;
                             for (HalfTransfer halfTransfer : container.getNonRepaySet()) {
@@ -78,12 +79,12 @@ public class FixedPeriodFundEvent extends FundEvent {
                         HalfTransfer_Currency))); // TODO possible problem here, we have a 3 layer nested dependency. getToPrimary
         // RepayAmount =================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(FixedPeriodFundEvent_RepayAmount, Double.class));
-        dataObjectSchema.<Double>get(FixedPeriodFundEvent_RepayAmount).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Schema<>(
-                        (Derived_DataCore.Calculator<Double, FixedPeriodFundEvent>)
+        dataObjectSchema.<Double>get(FixedPeriodFundEvent_RepayAmount).setDataCore_schema(
+                new Derived_DataCore_Schema<>(
+                        (Calculator<Double, FixedPeriodFundEvent>)
                                 container -> container.getNonRepaySum() / container.getDuration()
-                        , new EndSource_Schema<>(FixedPeriodFundEvent_NonRepaySum)
-                        , new EndSource_Schema<>(FixedPeriodFundEvent_Duration)));
+                        , new End_Source_Schema<>(FixedPeriodFundEvent_NonRepaySum)
+                        , new End_Source_Schema<>(FixedPeriodFundEvent_Duration)));
         //==============================================================================================================
         // Parents
         // Children

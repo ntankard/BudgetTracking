@@ -1,7 +1,8 @@
 package com.ntankard.tracking.dataBase.core.period;
 
 import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.EndSource_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.End_Source_Schema;
 import com.ntankard.tracking.dataBase.core.StatementEnd;
 import com.ntankard.tracking.dataBase.core.transfer.bank.RecurringBankTransfer;
 import com.ntankard.tracking.dataBase.core.transfer.fund.rePay.FixedPeriodRePayFundTransfer;
@@ -9,7 +10,6 @@ import com.ntankard.tracking.dataBase.core.transfer.fund.rePay.SavingsRePayFundT
 import com.ntankard.tracking.dataBase.core.transfer.fund.rePay.TaxRePayFundTransfer;
 import com.ntankard.tracking.dataBase.interfaces.summary.pool.Bank_Summary;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
 
@@ -47,11 +47,11 @@ public class ExistingPeriod extends Period {
         // Order =======================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(ExistingPeriod_Order, Integer.class));
         dataObjectSchema.get(ExistingPeriod_Order).getProperty(Display_Properties.class).setVerbosityLevel(INFO_DISPLAY);
-        dataObjectSchema.get(ExistingPeriod_Order).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Schema<>
+        dataObjectSchema.get(ExistingPeriod_Order).setDataCore_schema(
+                new Derived_DataCore_Schema<>
                         (container -> ((ExistingPeriod) container).getYear() * 12 + ((ExistingPeriod) container).getMonth()
-                                , new EndSource_Schema<>(ExistingPeriod_Month)
-                                , new EndSource_Schema<>(ExistingPeriod_Year)));
+                                , new End_Source_Schema<>(ExistingPeriod_Month)
+                                , new End_Source_Schema<>(ExistingPeriod_Year)));
         //==============================================================================================================
         // Parents
         // Children

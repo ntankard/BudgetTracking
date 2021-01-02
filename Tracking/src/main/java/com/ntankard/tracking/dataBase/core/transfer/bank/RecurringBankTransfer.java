@@ -1,6 +1,8 @@
 package com.ntankard.tracking.dataBase.core.transfer.bank;
 
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.EndSource_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema.Calculator;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.End_Source_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.period.ExistingPeriod;
@@ -10,7 +12,6 @@ import com.ntankard.tracking.dataBase.core.period.Period;
 import com.ntankard.tracking.dataBase.core.pool.Bank;
 import com.ntankard.tracking.dataBase.core.pool.Pool;
 import com.ntankard.tracking.dataBase.core.recurringPayment.FixedRecurringPayment;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
 
@@ -73,18 +74,18 @@ public class RecurringBankTransfer extends BankTransfer {
         // DestinationValue
         // SourceCurrencyGet
         // DestinationCurrencyGet ======================================================================================
-        dataObjectSchema.<Currency>get(Transfer_DestinationCurrencyGet).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Schema<>(
-                        (Derived_DataCore.Calculator<Currency, BankTransfer>)
+        dataObjectSchema.<Currency>get(Transfer_DestinationCurrencyGet).setDataCore_schema(
+                new Derived_DataCore_Schema<>(
+                        (Calculator<Currency, BankTransfer>)
                                 container -> container.getCurrency()
-                        , new EndSource_Schema<>(Transfer_Currency)));
+                        , new End_Source_Schema<>(Transfer_Currency)));
         // SourcePeriodGet
         // DestinationPeriodGet ========================================================================================
-        dataObjectSchema.<Period>get(Transfer_DestinationPeriodGet).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Schema<>(
-                        (Derived_DataCore.Calculator<Period, BankTransfer>) container ->
+        dataObjectSchema.<Period>get(Transfer_DestinationPeriodGet).setDataCore_schema(
+                new Derived_DataCore_Schema<>(
+                        (Calculator<Period, BankTransfer>) container ->
                                 container.getPeriod()
-                        , new EndSource_Schema<>(Transfer_Period)));
+                        , new End_Source_Schema<>(Transfer_Period)));
         // ParentPayment ===============================================================================================
         dataObjectSchema.add(new DataField_Schema<>(RecurringBankTransfer_ParentPayment, FixedRecurringPayment.class));
         //==============================================================================================================
@@ -93,8 +94,8 @@ public class RecurringBankTransfer extends BankTransfer {
 
         // Description =================================================================================================
         dataObjectSchema.<String>get(Transfer_Description).setManualCanEdit(false);
-        dataObjectSchema.<String>get(Transfer_Description).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Schema<String, RecurringBankTransfer>
+        dataObjectSchema.<String>get(Transfer_Description).setDataCore_schema(
+                new Derived_DataCore_Schema<String, RecurringBankTransfer>
                         (dataObject -> dataObject.getParentPayment().getName()
                                 , Source_Factory.makeSourceChain(RecurringBankTransfer_ParentPayment, NamedDataObject_Name)));
         //==============================================================================================================

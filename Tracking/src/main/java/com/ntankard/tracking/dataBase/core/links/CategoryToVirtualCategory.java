@@ -2,7 +2,7 @@ package com.ntankard.tracking.dataBase.core.links;
 
 import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
 import com.ntankard.javaObjectDatabase.dataField.validator.Shared_FieldValidator;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject;
@@ -46,8 +46,8 @@ public class CategoryToVirtualCategory extends DataObject {
         dataObjectSchema.<SolidCategory>get(CategoryToVirtualCategory_SolidCategory).addValidator(sharedFilter.getFirstFilter());
         // CategorySet =================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(CategoryToVirtualCategory_CategorySet, CategorySet.class));
-        dataObjectSchema.<CategorySet>get(CategoryToVirtualCategory_CategorySet).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Schema<CategorySet, CategoryToVirtualCategory>
+        dataObjectSchema.<CategorySet>get(CategoryToVirtualCategory_CategorySet).setDataCore_schema(
+                new Derived_DataCore_Schema<CategorySet, CategoryToVirtualCategory>
                         (dataObject -> dataObject.getVirtualCategory().getCategorySet()
                                 , Source_Factory.makeSourceChain(CategoryToVirtualCategory_VirtualCategory, VirtualCategory_CategorySet)));
         //==============================================================================================================

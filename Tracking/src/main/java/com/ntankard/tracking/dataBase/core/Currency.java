@@ -1,7 +1,7 @@
 package com.ntankard.tracking.dataBase.core;
 
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.EndSource_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.End_Source_Schema;
 import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.dataObject.interfaces.HasDefault;
@@ -58,11 +58,11 @@ public class Currency extends NamedDataObject implements HasDefault {
         // NumberFormat ================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Currency_NumberFormat, NumberFormat.class));
         dataObjectSchema.get(Currency_NumberFormat).getProperty(Display_Properties.class).setVerbosityLevel(TRACE_DISPLAY);
-        dataObjectSchema.<NumberFormat>get(Currency_NumberFormat).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Schema<NumberFormat, Currency>
+        dataObjectSchema.<NumberFormat>get(Currency_NumberFormat).setDataCore_schema(
+                new Derived_DataCore_Schema<NumberFormat, Currency>
                         (dataObject -> NumberFormat.getCurrencyInstance(new Locale(dataObject.getLanguage(), dataObject.getCountry()))
-                                , new EndSource_Schema<>(Currency_Country)
-                                , new EndSource_Schema<>(Currency_Language)));
+                                , new End_Source_Schema<>(Currency_Country)
+                                , new End_Source_Schema<>(Currency_Language)));
         //==============================================================================================================
         // Parents
         // Children

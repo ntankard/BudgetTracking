@@ -1,11 +1,12 @@
 package com.ntankard.tracking.dataBase.interfaces.summary.pool;
 
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.EndSource_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.Static_DataCore_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema.Calculator;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.End_Source_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
 import com.ntankard.tracking.dataBase.core.pool.category.Category;
 import com.ntankard.javaObjectDatabase.dataObject.factory.DoubleParentFactory;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.Static_DataCore;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.dataObject.interfaces.Ordered;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
@@ -48,25 +49,25 @@ public class Category_Summary extends PoolSummary<SolidCategory> implements Orde
         // Pool
         // Currency
         // Start =======================================================================================================
-        dataObjectSchema.get(PoolSummary_Start).setDataCore_factory(new Static_DataCore.Static_DataCore_Factory<>(-1.0));
+        dataObjectSchema.get(PoolSummary_Start).setDataCore_schema(new Static_DataCore_Schema<>(-1.0));
         // End =========================================================================================================
-        dataObjectSchema.get(PoolSummary_End).setDataCore_factory(new Static_DataCore.Static_DataCore_Factory<>(-1.0));
+        dataObjectSchema.get(PoolSummary_End).setDataCore_schema(new Static_DataCore_Schema<>(-1.0));
         // =============================================================================================================
         // Net
         // TransferSum =================================================================================================
-        dataObjectSchema.<Double>get(PoolSummary_TransferSum).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Schema<>(
-                        (Derived_DataCore.Calculator<Double, PoolSummary<Category>>) PoolSummary::getTransferSetSum
-                        , new EndSource_Schema<>(PoolSummary_TransferSetSum)));
+        dataObjectSchema.<Double>get(PoolSummary_TransferSum).setDataCore_schema(
+                new Derived_DataCore_Schema<>(
+                        (Calculator<Double, PoolSummary<Category>>) PoolSummary::getTransferSetSum
+                        , new End_Source_Schema<>(PoolSummary_TransferSetSum)));
         // =============================================================================================================
         // Missing
         // Valid =======================================================================================================
-        dataObjectSchema.get(PoolSummary_Valid).setDataCore_factory(new Static_DataCore.Static_DataCore_Factory<>(true));
+        dataObjectSchema.get(PoolSummary_Valid).setDataCore_schema(new Static_DataCore_Schema<>(true));
         // Order =======================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Category_Summary_Order, Integer.class));
-        dataObjectSchema.<Integer>get(Category_Summary_Order).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Schema<>(
-                        (Derived_DataCore.Calculator<Integer, Category_Summary>) container ->
+        dataObjectSchema.<Integer>get(Category_Summary_Order).setDataCore_schema(
+                new Derived_DataCore_Schema<>(
+                        (Calculator<Integer, Category_Summary>) container ->
                                 container.getPeriod().getOrder()
                         , Source_Factory.makeSourceChain(PoolSummary_Pool, SolidCategory_Order)));
         //==============================================================================================================

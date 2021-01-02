@@ -1,6 +1,9 @@
 package com.ntankard.tracking.dataBase.core.transfer.fund.rePay;
 
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.EndSource_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.Static_DataCore_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema.Calculator;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.End_Source_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.period.ExistingPeriod;
@@ -13,15 +16,13 @@ import com.ntankard.tracking.dataBase.core.transfer.HalfTransfer;
 import com.ntankard.javaObjectDatabase.dataObject.factory.DoubleParentFactory;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.dataField.ListDataField_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.Static_DataCore;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.ParameterMap;
 import com.ntankard.javaObjectDatabase.database.Database;
 
 import java.util.List;
 
-import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.DerivedDataCore_Factory.createMultiParentList;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createMultiParentList;
 import static com.ntankard.tracking.dataBase.core.pool.fundEvent.TaxFundEvent.TaxFundEvent_Percentage;
 import static com.ntankard.tracking.dataBase.core.transfer.HalfTransfer.HalfTransfer_Currency;
 import static com.ntankard.tracking.dataBase.core.transfer.HalfTransfer.HalfTransfer_Value;
@@ -62,20 +63,20 @@ public class TaxRePayFundTransfer extends RePayFundTransfer {
         // Source
         // TaxableCategory =============================================================================================
         dataObjectSchema.add(new DataField_Schema<>(TaxRePayFundTransfer_TaxableCategory, Category.class));
-        dataObjectSchema.<SolidCategory>get(TaxRePayFundTransfer_TaxableCategory).setDataCore_factory(
-                new Static_DataCore.Static_DataCore_Factory<>(dataField ->
+        dataObjectSchema.<SolidCategory>get(TaxRePayFundTransfer_TaxableCategory).setDataCore_schema(
+                new Static_DataCore_Schema<>(dataField ->
                         dataField.getContainer().getTrackingDatabase().getSpecialValue(SolidCategory.class, SolidCategory.TAXABLE)));
         // TaxableSet ==================================================================================================
         dataObjectSchema.add(new ListDataField_Schema<>(TaxRePayFundTransfer_TaxableSet, HalfTransfer.HalfTransferList.class));
-        dataObjectSchema.<List<HalfTransfer>>get(TaxRePayFundTransfer_TaxableSet).setDataCore_factory(
+        dataObjectSchema.<List<HalfTransfer>>get(TaxRePayFundTransfer_TaxableSet).setDataCore_schema(
                 createMultiParentList(
                         HalfTransfer.class,
                         TaxRePayFundTransfer_TaxableCategory,
                         Transfer_Period));
         // TaxableAmount ===============================================================================================
         dataObjectSchema.add(new DataField_Schema<>(TaxRePayFundTransfer_TaxableAmount, Double.class));
-        dataObjectSchema.<Double>get(TaxRePayFundTransfer_TaxableAmount).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Schema<Double, TaxRePayFundTransfer>(
+        dataObjectSchema.<Double>get(TaxRePayFundTransfer_TaxableAmount).setDataCore_schema(
+                new Derived_DataCore_Schema<Double, TaxRePayFundTransfer>(
                         container -> {
                             double sum = 0.0;
                             for (HalfTransfer halfTransfer : container.<List<HalfTransfer>>get(TaxRePayFundTransfer_TaxableSet)) {
@@ -89,13 +90,13 @@ public class TaxRePayFundTransfer extends RePayFundTransfer {
                         HalfTransfer_Currency
                 )));
         // Value =======================================================================================================
-        dataObjectSchema.<Double>get(Transfer_Value).setDataCore_factory(
-                new Derived_DataCore.Derived_DataCore_Schema<>(
-                        (Derived_DataCore.Calculator<Double, TaxRePayFundTransfer>) container -> {
+        dataObjectSchema.<Double>get(Transfer_Value).setDataCore_schema(
+                new Derived_DataCore_Schema<>(
+                        (Calculator<Double, TaxRePayFundTransfer>) container -> {
                             TaxFundEvent taxFundEvent = (TaxFundEvent) container.getSource();
                             return -Currency.round(container.getTaxableAmount() * taxFundEvent.getPercentage());
                         }
-                        , new EndSource_Schema<>(TaxRePayFundTransfer_TaxableAmount)
+                        , new End_Source_Schema<>(TaxRePayFundTransfer_TaxableAmount)
                         , Source_Factory.makeSourceChain(Transfer_Source, TaxFundEvent_Percentage)));
         //==============================================================================================================
         // Currency
