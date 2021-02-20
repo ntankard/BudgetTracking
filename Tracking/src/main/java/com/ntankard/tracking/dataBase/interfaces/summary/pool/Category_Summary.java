@@ -68,7 +68,7 @@ public class Category_Summary extends PoolSummary<SolidCategory> implements Orde
         dataObjectSchema.<Integer>get(Category_Summary_Order).setDataCore_schema(
                 new Derived_DataCore_Schema<>(
                         (Calculator<Integer, Category_Summary>) container ->
-                                container.getPeriod().getOrder()
+                                container.getPeriod().getOrder() * 1000 + container.getPool().getOrder()
                         , Source_Factory.makeSourceChain(PoolSummary_Pool, SolidCategory_Order)));
         //==============================================================================================================
         // Parents

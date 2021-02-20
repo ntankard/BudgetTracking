@@ -3,12 +3,16 @@ package com.ntankard.tracking.dataBase.core.transfer.bank;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema.Calculator;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.End_Source_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.tracking.dataBase.core.period.Period;
 import com.ntankard.tracking.dataBase.core.pool.Bank;
 import com.ntankard.tracking.dataBase.core.pool.Pool;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ManualBankTransfer extends BankTransfer {
 
@@ -80,6 +84,28 @@ public class ManualBankTransfer extends BankTransfer {
      */
     public ManualBankTransfer(Database database) {
         super(database);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public <T extends DataObject> List<T> sourceOptions(Class<T> type, String fieldName) {
+        switch (fieldName) {
+            case "Destination":
+            case "Bank": {
+                List<T> toReturn = super.sourceOptions(type, fieldName);
+                toReturn.removeIf(t -> {
+                    if(Bank.class.isAssignableFrom(t.getClass())){
+                        Bank bank = (Bank)t;
+                        return !((Bank)getSource()).getCurrency().equals(bank.getCurrency());
+                    }
+                    return false;
+                });
+                return toReturn;
+            }
+        }
+        return super.sourceOptions(type, fieldName);
     }
 
     //------------------------------------------------------------------------------------------------------------------

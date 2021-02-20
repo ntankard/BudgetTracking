@@ -41,7 +41,7 @@ public class DatabasePanel extends UpdatableJPanel {
      *
      * @param master The parent of this object to be notified if data changes
      */
-    protected DatabasePanel(Database database, Updatable master) {
+    public DatabasePanel(Database database, Updatable master) {
         super(master);
         this.database = database;
         createUIComponents();
@@ -70,11 +70,9 @@ public class DatabasePanel extends UpdatableJPanel {
         if (rootNode.children.size() == 0) {
 
             // Build the bottom of the tree, the actual object
-            if (!PoolSummary.class.isAssignableFrom(rootNode.data) && !Period_Summary.class.isAssignableFrom(rootNode.data)) {
-                DataObject_VerbosityDisplayList<?> list = new DataObject_VerbosityDisplayList<>(database, rootNode.data, this);
-                parent.add(rootNode.data.getSimpleName(), list);
-                updatableList.add(list);
-            }
+            DataObject_VerbosityDisplayList<?> list = new DataObject_VerbosityDisplayList<>(database, rootNode.data, this);
+            parent.add(rootNode.data.getSimpleName(), list);
+            updatableList.add(list);
         } else {
             if (rootNode.data.equals(NamedDataObject.class)) {
 

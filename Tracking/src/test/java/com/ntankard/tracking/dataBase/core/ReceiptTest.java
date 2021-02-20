@@ -1,5 +1,6 @@
 package com.ntankard.tracking.dataBase.core;
 
+import com.ntankard.javaObjectDatabase.exception.nonCorrupting.NonCorruptingException;
 import com.ntankard.testUtil.DataAccessUntil;
 import com.ntankard.testUtil.DataObjectTestUtil;
 import com.ntankard.tracking.dataBase.core.transfer.bank.BankTransfer;
@@ -40,7 +41,7 @@ class ReceiptTest {
         BankTransfer bankCategoryTransfer = getObject(database, BankTransfer.class, 0);
 
         assertDoesNotThrow(() -> new Receipt("", bankCategoryTransfer));
-        assertThrows(IllegalArgumentException.class, () -> new Receipt(null, bankCategoryTransfer));
+        assertThrows(NonCorruptingException.class, () -> new Receipt(null, bankCategoryTransfer));
         assertThrows(NullPointerException.class, () -> new Receipt("", null));
     }
 

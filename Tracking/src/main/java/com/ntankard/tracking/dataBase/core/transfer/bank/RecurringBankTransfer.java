@@ -4,6 +4,7 @@ import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCo
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema.Calculator;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.End_Source_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.period.ExistingPeriod;
 import com.ntankard.javaObjectDatabase.dataObject.factory.DoubleParentFactory;
@@ -14,6 +15,8 @@ import com.ntankard.tracking.dataBase.core.pool.Pool;
 import com.ntankard.tracking.dataBase.core.recurringPayment.FixedRecurringPayment;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
+
+import java.util.List;
 
 import static com.ntankard.tracking.dataBase.core.pool.fundEvent.FixedPeriodFundEvent.NamedDataObject_Name;
 import static com.ntankard.javaObjectDatabase.dataObject.factory.ObjectFactory.GeneratorMode.MULTIPLE_NO_ADD;
@@ -101,6 +104,28 @@ public class RecurringBankTransfer extends BankTransfer {
         //==============================================================================================================
 
         return dataObjectSchema.finaliseContainer(RecurringBankTransfer.class);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override // TODO add filter to match this
+    public <T extends DataObject> List<T> sourceOptions(Class<T> type, String fieldName) {
+        switch (fieldName) {
+            case "Destination":
+            case "Bank": {
+                List<T> toReturn = super.sourceOptions(type, fieldName);
+                toReturn.removeIf(t -> {
+                    if(Bank.class.isAssignableFrom(t.getClass())){
+                        Bank bank = (Bank)t;
+                        return !((Bank)getSource()).getCurrency().equals(bank.getCurrency());
+                    }
+                    return false;
+                });
+                return toReturn;
+            }
+        }
+        return super.sourceOptions(type, fieldName);
     }
 
     /**

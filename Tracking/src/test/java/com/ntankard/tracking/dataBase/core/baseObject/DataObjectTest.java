@@ -1,15 +1,16 @@
 package com.ntankard.tracking.dataBase.core.baseObject;
 
-import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
 import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
-import com.ntankard.tracking.Main;
-import com.ntankard.tracking.dataBase.core.Currency;
-import com.ntankard.javaObjectDatabase.dataObject.DataObject;
+import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.database.Database;
+import com.ntankard.javaObjectDatabase.exception.nonCorrupting.NonCorruptingException;
 import com.ntankard.testUtil.ClassInspectionUtil;
 import com.ntankard.testUtil.DataAccessUntil;
-import com.ntankard.javaObjectDatabase.database.Database;
+import com.ntankard.tracking.Main;
+import com.ntankard.tracking.dataBase.core.Currency;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -57,6 +58,7 @@ class DataObjectTest {
      */
     @SuppressWarnings("unchecked")
     @Test
+    @Execution(ExecutionMode.SAME_THREAD)
     void set() {
         assertNotEquals(0, database.getAll().size());
 
@@ -73,7 +75,7 @@ class DataObjectTest {
 
                     // Find the setters
                     for (DataField_Schema member : members) {
-                        if (member.getCanEdit() && ((Display_Properties)member.<Display_Properties>getProperty(Display_Properties.class)).getDisplaySet() && DataObject.class.isAssignableFrom(member.getType())) {
+                        if (member.getCanEdit() && ((Display_Properties) member.<Display_Properties>getProperty(Display_Properties.class)).getDisplaySet() && DataObject.class.isAssignableFrom(member.getType())) {
                             // Get the data
                             AtomicReference<List<DataObject>> expectedOptions = new AtomicReference<>();
                             assertDoesNotThrow(() -> expectedOptions.set((List) member.getSource().invoke(dataObject, member.getType(), member.getDisplayName())));
@@ -92,7 +94,7 @@ class DataObjectTest {
 
                             // Check null
                             if (!(member).isCanBeNull()) {
-                                assertThrows(IllegalArgumentException.class, () -> dataObject.set(member.getIdentifierName(), null));
+                                assertThrows(NonCorruptingException.class, () -> dataObject.set(member.getIdentifierName(), null));
                             }
                         }
                     }
@@ -106,6 +108,7 @@ class DataObjectTest {
      */
     @SuppressWarnings("unchecked")
     @Test
+    @Execution(ExecutionMode.SAME_THREAD)
     void checkAbstractInheritance() {
         assertNotEquals(0, ClassInspectionUtil.getSolidClasses(Main.databasePath).size());
         for (Class<? extends DataObject> toTest : ClassInspectionUtil.getSolidClasses(Main.databasePath)) {
@@ -126,6 +129,7 @@ class DataObjectTest {
      * Check that primitives are not used (i cant remember why this matters)
      */
     @Test
+    @Execution(ExecutionMode.SAME_THREAD)
     void checkNonPrimitive() {
         for (Class<? extends DataObject> toTest : database.getSchema().getSolidClasses()) {
             List<DataField_Schema<?>> members = getVerbosityDataFields(database.getSchema().getClassSchema(toTest), Integer.MAX_VALUE);
@@ -145,6 +149,7 @@ class DataObjectTest {
      * Test that no ID is null
      */
     @Test
+    @Execution(ExecutionMode.SAME_THREAD)
     void getId() {
         for (DataObject dataObject : database.get(DataObject.class)) {
             assertNotNull(dataObject.getId());
@@ -159,6 +164,7 @@ class DataObjectTest {
      * Confirm the ID of all object. Check they are unique
      */
     @Test
+    @Execution(ExecutionMode.SAME_THREAD)
     void validateId() {
         for (DataObject dataObject : database.getAll()) {
             for (DataObject toTest : database.getAll()) {
@@ -173,6 +179,7 @@ class DataObjectTest {
      * Confirm that all parent objects are present and have been linked
      */
     @Test
+    @Execution(ExecutionMode.SAME_THREAD)
     void validateParent() {
         // TODO things are missing here. If the field type is not set to data object it wont be registerd as a parent and nothing will catch it, you have to go through each indevidual field and check
 
@@ -191,6 +198,7 @@ class DataObjectTest {
      * Confirm that all children that the object knows about are present and connected to the parent
      */
     @Test
+    @Execution(ExecutionMode.SAME_THREAD)
     void validateChild() {
         for (DataObject dataObject : database.getAll()) {
             for (DataObject child : dataObject.getChildren()) {

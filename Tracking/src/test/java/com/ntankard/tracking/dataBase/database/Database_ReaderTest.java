@@ -12,6 +12,8 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import static com.ntankard.javaObjectDatabase.database.io.Database_IO.*;
@@ -31,7 +33,7 @@ class Database_ReaderTest {
      */
     @BeforeEach
     void setUp() {
-        database = DataAccessUntil.getDataBase();
+        database = DataAccessUntil.getDataBase(new ArrayList<>());
     }
 
     @Test
@@ -118,9 +120,22 @@ class Database_ReaderTest {
                 map.add(found);
             }
 
-            for (int j = 2; j < saveLines.size(); j++) {
-                String[] saveLine = saveLines.get(j);
-                String[] testLine = testLines.get(j);
+            List<String[]> dataOnlySave = new ArrayList<>();
+            List<String[]> dataOnlyTest = new ArrayList<>();
+
+            dataOnlySave.addAll(saveLines);
+            dataOnlySave.remove(saveLines.get(0));
+            dataOnlySave.remove(saveLines.get(1));
+            dataOnlyTest.addAll(testLines);
+            dataOnlyTest.remove(testLines.get(0));
+            dataOnlyTest.remove(testLines.get(1));
+
+            Collections.sort(dataOnlySave, Comparator.comparingInt(o -> Integer.parseInt(o[0])));
+            Collections.sort(dataOnlyTest, Comparator.comparingInt(o -> Integer.parseInt(o[0])));
+
+            for (int j = 0; j < dataOnlySave.size(); j++) {
+                String[] saveLine = dataOnlySave.get(j);
+                String[] testLine = dataOnlyTest.get(j);
 
                 assertEquals(saveLine.length, testLine.length);
                 for (int k = 0; k < saveLine.length; k++) {

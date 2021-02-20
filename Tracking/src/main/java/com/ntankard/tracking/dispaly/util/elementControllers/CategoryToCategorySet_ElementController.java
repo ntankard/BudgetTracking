@@ -4,7 +4,10 @@ import com.ntankard.dynamicGUI.gui.util.update.Updatable;
 import com.ntankard.tracking.dataBase.core.CategorySet;
 import com.ntankard.tracking.dataBase.core.links.CategoryToCategorySet;
 import com.ntankard.javaObjectDatabase.database.Database;
+import com.ntankard.tracking.dataBase.core.pool.category.SolidCategory;
 import com.ntankard.tracking.dispaly.util.panels.TrackingDatabase_ElementController;
+
+import java.util.List;
 
 public class CategoryToCategorySet_ElementController extends TrackingDatabase_ElementController<CategoryToCategorySet> {
 
@@ -28,9 +31,16 @@ public class CategoryToCategorySet_ElementController extends TrackingDatabase_El
         if (categorySet == null) {
             throw new RuntimeException("Creating an object without a VirtualCategory being provided");
         }
+
+        List<SolidCategory> options = categorySet.getTrackingDatabase().get(SolidCategory.class);
+        options.removeAll(categorySet.getUsedCategories());
+        if (options.size() == 0) {
+            throw new RuntimeException("Can not create");
+        }
+
         return new CategoryToCategorySet(
                 categorySet,
-                categorySet.getAvailableCategories().get(0),
+                options.get(0),
                 0);
     }
 
@@ -48,6 +58,11 @@ public class CategoryToCategorySet_ElementController extends TrackingDatabase_El
      */
     @Override
     public boolean canCreate() {
-        return categorySet != null && categorySet.getAvailableCategories().size() != 0;
+        if (categorySet == null) {
+            return false;
+        }
+        List<SolidCategory> options = categorySet.getTrackingDatabase().get(SolidCategory.class);
+        options.removeAll(categorySet.getUsedCategories());
+        return options.size() != 0;
     }
 }

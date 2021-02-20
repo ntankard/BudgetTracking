@@ -5,6 +5,8 @@ import com.ntankard.javaObjectDatabase.database.Database_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.Main;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DataAccessUntil {
@@ -29,6 +31,10 @@ public class DataAccessUntil {
      */
     public static Database getDataBase() {
         return Main.createDataBase();
+    }
+
+    public static Database getDataBase(List<Class<? extends DataObject>> solidClasses) {
+        return Main.createDataBase(solidClasses);
     }
 
     /**

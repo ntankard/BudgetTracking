@@ -3,6 +3,7 @@ package com.ntankard.tracking.dataBase.core.transfer.bank;
 import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema.Calculator;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.End_Source_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.period.Period;
@@ -11,6 +12,9 @@ import com.ntankard.tracking.dataBase.core.pool.Pool;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.DataType.CURRENCY;
 
@@ -74,6 +78,40 @@ public class IntraCurrencyBankTransfer extends BankTransfer {
         // Children
 
         return dataObjectSchema.finaliseContainer(IntraCurrencyBankTransfer.class);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    @SuppressWarnings({"SuspiciousMethodCalls", "unchecked"})
+    public <T extends DataObject> List<T> sourceOptions(Class<T> type, String fieldName) {
+        switch (fieldName) {
+            case "FundEvent":
+            case "Category": {
+                return new ArrayList<>();
+            }
+            case "Destination":
+            case "Bank": {
+                List<T> toReturn = super.sourceOptions(type, "Bank");
+                toReturn.remove(getSource());
+                toReturn.removeIf(t -> ((Bank)t).getCurrency().equals(((Bank)getSource()).getCurrency()));
+                return toReturn;
+            }
+            case "Source": {
+                List<T> toReturn = new ArrayList<>();
+                for (Bank bank : super.sourceOptions(Bank.class, fieldName)) {
+                    toReturn.add((T) bank);
+                }
+                return toReturn;
+            }
+            case "Period": {
+                List<T> toReturn = super.sourceOptions(type, fieldName);
+                toReturn.remove(getDestinationPeriod());
+                return toReturn;
+            }
+        }
+        return super.sourceOptions(type, fieldName);
     }
 
     /**

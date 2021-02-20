@@ -1,12 +1,17 @@
 package com.ntankard.tracking.dataBase.core.baseObject;
 
+import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.exception.nonCorrupting.NonCorruptingException;
 import com.ntankard.testUtil.DataAccessUntil;
 import com.ntankard.javaObjectDatabase.database.Database;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+
+import java.util.Collections;
+import java.util.List;
 
 import static com.ntankard.tracking.dataBase.core.baseObject.NamedDataObject.NamedDataObject_Name;
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,7 +29,8 @@ class NamedDataObjectTest {
      */
     @BeforeEach
     void setUp() {
-        database = DataAccessUntil.getDataBase();
+        List<Class<? extends DataObject>> knownTypes = Collections.singletonList(NamedDataObject_Inst.class);
+        database = DataAccessUntil.getDataBase(knownTypes);
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -37,7 +43,7 @@ class NamedDataObjectTest {
     @Test
     void constructor() {
         assertDoesNotThrow(() -> new NamedDataObject_Inst(database, "Test"));
-        assertThrows(IllegalArgumentException.class, () -> new NamedDataObject_Inst(database, null));
+        assertThrows(NonCorruptingException.class, () -> new NamedDataObject_Inst(database, null));
     }
 
     /**
@@ -48,7 +54,7 @@ class NamedDataObjectTest {
         NamedDataObject_Inst namedDataObject_inst = new NamedDataObject_Inst(database, "Test");
         namedDataObject_inst.add();
         assertDoesNotThrow(() -> namedDataObject_inst.set(NamedDataObject_Name, ""));
-        assertThrows(IllegalArgumentException.class, () -> namedDataObject_inst.set(NamedDataObject_Name, null));
+        assertThrows(NonCorruptingException.class, () -> namedDataObject_inst.set(NamedDataObject_Name, null));
     }
 
     //------------------------------------------------------------------------------------------------------------------

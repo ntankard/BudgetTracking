@@ -18,6 +18,9 @@ import static com.ntankard.tracking.dataBase.core.pool.category.VirtualCategory.
 
 public class CategoryToVirtualCategory extends DataObject {
 
+    public interface CategoryToVirtualCategoryList extends List<CategoryToVirtualCategory> {
+    }
+
     //------------------------------------------------------------------------------------------------------------------
     //################################################### Constructor ##################################################
     //------------------------------------------------------------------------------------------------------------------
@@ -34,7 +37,7 @@ public class CategoryToVirtualCategory extends DataObject {
 
         Shared_FieldValidator<SolidCategory, VirtualCategory, CategoryToVirtualCategory> sharedFilter = new Shared_FieldValidator<>(CategoryToVirtualCategory_SolidCategory, CategoryToVirtualCategory_VirtualCategory,
                 (firstNewValue, secondNewValue, container) ->
-                        !secondNewValue.getCategorySet().getUsedCategories().contains(firstNewValue) || firstNewValue.equals(container.getSolidCategory()));
+                        !secondNewValue.getCategorySet().getUsedCategories().contains(firstNewValue) || firstNewValue.equals(container.getSolidCategory()), "CategoryToVirtualCategory");
 
         // ID
         // VirtualCategory =============================================================================================
@@ -79,10 +82,11 @@ public class CategoryToVirtualCategory extends DataObject {
      * @inheritDoc
      */
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "SuspiciousMethodCalls"})
     public <T extends DataObject> List<T> sourceOptions(Class<T> type, String fieldName) {
         if (fieldName.equals("SolidCategory")) {
-            List<T> toReturn = (List<T>) getVirtualCategory().getCategorySet().getAvailableCategories();
+            List<T> toReturn = super.sourceOptions(type, fieldName);
+            toReturn.removeAll(getVirtualCategory().getCategorySet().getUsedCategories());
             toReturn.add((T) getSolidCategory());
             return toReturn;
         }

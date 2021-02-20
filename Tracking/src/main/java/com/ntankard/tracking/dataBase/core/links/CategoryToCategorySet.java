@@ -1,11 +1,11 @@
 package com.ntankard.tracking.dataBase.core.links;
 
+import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
 import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.End_Source_Schema;
-import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.End_Source_Schema;
 import com.ntankard.javaObjectDatabase.dataField.validator.Shared_FieldValidator;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
@@ -21,6 +21,9 @@ import static com.ntankard.tracking.dataBase.core.CategorySet.CategorySet_Order;
 
 public class CategoryToCategorySet extends DataObject implements Ordered {
 
+    public interface CategoryToCategorySetList extends List<CategoryToCategorySet> {
+    }
+
     //------------------------------------------------------------------------------------------------------------------
     //################################################### Constructor ##################################################
     //------------------------------------------------------------------------------------------------------------------
@@ -30,7 +33,6 @@ public class CategoryToCategorySet extends DataObject implements Ordered {
     public static final String CategoryToCategorySet_OrderImpl = "getOrderImpl";
     public static final String CategoryToCategorySet_Order = "getOrder";
 
-
     /**
      * Get all the fields for this object
      */
@@ -39,7 +41,7 @@ public class CategoryToCategorySet extends DataObject implements Ordered {
 
         Shared_FieldValidator<SolidCategory, CategorySet, CategoryToCategorySet> sharedFilter = new Shared_FieldValidator<>(CategoryToCategorySet_SolidCategory, CategoryToCategorySet_CategorySet,
                 (firstNewValue, secondNewValue, container) ->
-                        !secondNewValue.getUsedCategories().contains(firstNewValue) || firstNewValue.equals(container.getSolidCategory()));
+                        !secondNewValue.getUsedCategories().contains(firstNewValue) || firstNewValue.equals(container.getSolidCategory()), "CategoryToCategorySet");
 
         // ID
         // CategorySet ========================================================================================================
@@ -90,10 +92,11 @@ public class CategoryToCategorySet extends DataObject implements Ordered {
      * @inheritDoc
      */
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "SuspiciousMethodCalls"})
     public <T extends DataObject> List<T> sourceOptions(Class<T> type, String fieldName) {
         if (fieldName.equals("SolidCategory")) {
-            List<T> toReturn = (List<T>) getCategorySet().getAvailableCategories();
+            List<T> toReturn = super.sourceOptions(type, fieldName);
+            toReturn.removeAll(getCategorySet().getUsedCategories());
             toReturn.add((T) getSolidCategory());
             return toReturn;
         }

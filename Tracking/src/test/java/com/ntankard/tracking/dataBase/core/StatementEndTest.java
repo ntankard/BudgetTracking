@@ -1,5 +1,6 @@
 package com.ntankard.tracking.dataBase.core;
 
+import com.ntankard.javaObjectDatabase.exception.nonCorrupting.NonCorruptingException;
 import com.ntankard.testUtil.DataAccessUntil;
 import com.ntankard.testUtil.DataObjectTestUtil;
 import com.ntankard.tracking.dataBase.core.period.ExistingPeriod;
@@ -40,8 +41,8 @@ class StatementEndTest {
 
         assertDoesNotThrow(() -> new StatementEnd(period, bank, 0.0));
         assertThrows(NullPointerException.class, () -> new StatementEnd(null, bank, 0.0));
-        assertThrows(IllegalArgumentException.class, () -> new StatementEnd(period, null, 0.0));
-        assertThrows(IllegalArgumentException.class, () -> new StatementEnd(period, bank, null));
+        assertThrows(NonCorruptingException.class, () -> new StatementEnd(period, null, 0.0));
+        assertThrows(NonCorruptingException.class, () -> new StatementEnd(period, bank, null));
     }
 
     @Test
@@ -49,7 +50,7 @@ class StatementEndTest {
         StatementEnd statementEnd = DataAccessUntil.getObject(database, StatementEnd.class, 0);
 
         assertDoesNotThrow(() -> statementEnd.set(StatementEnd_End, 0.0));
-        assertThrows(IllegalArgumentException.class, () -> statementEnd.set(StatementEnd_End, null));
+        assertThrows(NonCorruptingException.class, () -> statementEnd.set(StatementEnd_End, null));
     }
 
     //------------------------------------------------------------------------------------------------------------------

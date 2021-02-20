@@ -1,5 +1,6 @@
 package com.ntankard.tracking.dataBase.core.pool.fundEvent;
 
+import com.ntankard.javaObjectDatabase.exception.nonCorrupting.NonCorruptingException;
 import com.ntankard.testUtil.DataAccessUntil;
 import com.ntankard.testUtil.DataObjectTestUtil;
 import com.ntankard.tracking.dataBase.core.period.ExistingPeriod;
@@ -34,6 +35,7 @@ class FixedPeriodFundEventTest {
     //------------------------------------------------------------------------------------------------------------------
 
     @Test
+    @Execution(ExecutionMode.SAME_THREAD)
     void constructor() {
         assertNotEquals(0, database.get(Period.class).size());
         assertNotEquals(0, database.get(SolidCategory.class).size());
@@ -42,13 +44,14 @@ class FixedPeriodFundEventTest {
         SolidCategory solidCategory = database.get(SolidCategory.class).get(0);
 
         assertThrows(NullPointerException.class, () -> new FixedPeriodFundEvent("", null, period, 1));
-        assertThrows(IllegalArgumentException.class, () -> new FixedPeriodFundEvent("", solidCategory, null, 1));
-        assertThrows(IllegalArgumentException.class, () -> new FixedPeriodFundEvent("", solidCategory, period, 0));
-        assertThrows(IllegalArgumentException.class, () -> new FixedPeriodFundEvent("", solidCategory, period, -1));
+        assertThrows(NonCorruptingException.class, () -> new FixedPeriodFundEvent("", solidCategory, null, 1));
+        assertThrows(NonCorruptingException.class, () -> new FixedPeriodFundEvent("", solidCategory, period, 0));
+        assertThrows(NonCorruptingException.class, () -> new FixedPeriodFundEvent("", solidCategory, period, -1));
         assertDoesNotThrow(() -> new FixedPeriodFundEvent("", solidCategory, period, 1));
     }
 
     @Test
+    @Execution(ExecutionMode.SAME_THREAD)
     void setCategory() {
         assertNotEquals(0, database.get(Period.class).size());
         assertNotEquals(0, database.get(SolidCategory.class).size());
@@ -61,11 +64,12 @@ class FixedPeriodFundEventTest {
         FixedPeriodFundEvent fixedPeriodFundEvent = new FixedPeriodFundEvent("", solidCategory1, (ExistingPeriod) period, 1);
         fixedPeriodFundEvent.add();
 
-        assertThrows(IllegalArgumentException.class, () -> fixedPeriodFundEvent.setCategory(null));
+        assertThrows(NonCorruptingException.class, () -> fixedPeriodFundEvent.setCategory(null));
         assertDoesNotThrow(() -> fixedPeriodFundEvent.setCategory(solidCategory2));
     }
 
     @Test
+    @Execution(ExecutionMode.SAME_THREAD)
     void setStart() {
         assertNotEquals(0, database.get(Period.class).size());
         assertNotEquals(0, database.get(SolidCategory.class).size());
@@ -76,12 +80,13 @@ class FixedPeriodFundEventTest {
         FixedPeriodFundEvent fixedPeriodFundEvent = new FixedPeriodFundEvent("", solidCategory, (ExistingPeriod) period, 1);
         fixedPeriodFundEvent.add();
 
-        assertThrows(IllegalArgumentException.class, () -> fixedPeriodFundEvent.setDuration(-1));
-        assertThrows(IllegalArgumentException.class, () -> fixedPeriodFundEvent.setDuration(0));
+        assertThrows(NonCorruptingException.class, () -> fixedPeriodFundEvent.setDuration(-1));
+        assertThrows(NonCorruptingException.class, () -> fixedPeriodFundEvent.setDuration(0));
         assertDoesNotThrow(() -> fixedPeriodFundEvent.setDuration(1));
     }
 
     @Test
+    @Execution(ExecutionMode.SAME_THREAD)
     void setDuration() {
         assertTrue(database.get(Period.class).size() > 3);
         assertNotEquals(0, database.get(SolidCategory.class).size());
@@ -92,7 +97,7 @@ class FixedPeriodFundEventTest {
         FixedPeriodFundEvent fixedPeriodFundEvent = new FixedPeriodFundEvent("", solidCategory, (ExistingPeriod) period, 1);
         fixedPeriodFundEvent.add();
 
-        assertThrows(IllegalArgumentException.class, () -> fixedPeriodFundEvent.setStart(null));
+        assertThrows(NonCorruptingException.class, () -> fixedPeriodFundEvent.setStart(null));
         assertDoesNotThrow(() -> fixedPeriodFundEvent.setStart((ExistingPeriod) database.get(Period.class).get(1)));
     }
 

@@ -2,9 +2,13 @@ package com.ntankard.tracking.dispaly.util.elementControllers;
 
 import com.ntankard.dynamicGUI.gui.util.update.Updatable;
 import com.ntankard.tracking.dataBase.core.links.CategoryToVirtualCategory;
+import com.ntankard.tracking.dataBase.core.pool.category.SolidCategory;
 import com.ntankard.tracking.dataBase.core.pool.category.VirtualCategory;
 import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dispaly.util.panels.TrackingDatabase_ElementController;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CategoryToVirtualCategory_ElementController extends TrackingDatabase_ElementController<CategoryToVirtualCategory> {
 
@@ -28,9 +32,15 @@ public class CategoryToVirtualCategory_ElementController extends TrackingDatabas
         if (virtualCategory == null) {
             throw new RuntimeException("Creating an object without a VirtualCategory being provided");
         }
+        List<SolidCategory> options = virtualCategory.getTrackingDatabase().get(SolidCategory.class);
+        options.removeAll(virtualCategory.getCategorySet().getUsedCategories());
+        if (options.size() == 0) {
+            throw new RuntimeException("Can not create");
+        }
+
         return new CategoryToVirtualCategory(
                 virtualCategory,
-                virtualCategory.getCategorySet().getAvailableCategories().get(0));
+                options.get(0));
     }
 
     /**
@@ -47,6 +57,11 @@ public class CategoryToVirtualCategory_ElementController extends TrackingDatabas
      */
     @Override
     public boolean canCreate() {
-        return virtualCategory != null && virtualCategory.getCategorySet().getAvailableCategories().size() != 0;
+        if (virtualCategory == null) {
+            return false;
+        }
+        List<SolidCategory> options = virtualCategory.getTrackingDatabase().get(SolidCategory.class);
+        options.removeAll(virtualCategory.getCategorySet().getUsedCategories());
+        return options.size() != 0;
     }
 }

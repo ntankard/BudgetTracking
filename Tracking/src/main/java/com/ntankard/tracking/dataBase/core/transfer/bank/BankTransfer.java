@@ -48,7 +48,7 @@ public abstract class BankTransfer extends Transfer {
                         return !firstNewValue.equals(secondNewValue);
                     }
                     return true;
-                });
+                }, "Period not same if not null");
 
         Shared_FieldValidator<Pool, Pool, BankTransfer> pool_sharedFilter = new Shared_FieldValidator<>(Transfer_Source, Transfer_Destination,
                 (firstNewValue, secondNewValue, container) -> {
@@ -56,7 +56,7 @@ public abstract class BankTransfer extends Transfer {
                         return !firstNewValue.equals(secondNewValue);
                     }
                     return true;
-                });
+                }, "Pool not same if not null");
 
         // ID
         // Description

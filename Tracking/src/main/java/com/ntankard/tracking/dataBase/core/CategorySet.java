@@ -1,26 +1,35 @@
 package com.ntankard.tracking.dataBase.core;
 
 import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
+import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataField.ListDataField_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema.Calculator;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.End_Source_Schema;
-import com.ntankard.tracking.dataBase.core.baseObject.NamedDataObject;
-import com.ntankard.tracking.dataBase.core.links.CategoryToCategorySet;
-import com.ntankard.tracking.dataBase.core.links.CategoryToVirtualCategory;
-import com.ntankard.tracking.dataBase.core.pool.category.SolidCategory;
-import com.ntankard.tracking.dataBase.core.pool.category.VirtualCategory;
-import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.step.Step_Source_Schema;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.dataObject.interfaces.HasDefault;
 import com.ntankard.javaObjectDatabase.dataObject.interfaces.Ordered;
 import com.ntankard.javaObjectDatabase.database.Database;
+import com.ntankard.tracking.dataBase.core.baseObject.NamedDataObject;
+import com.ntankard.tracking.dataBase.core.links.CategoryToCategorySet;
+import com.ntankard.tracking.dataBase.core.links.CategoryToCategorySet.CategoryToCategorySetList;
+import com.ntankard.tracking.dataBase.core.links.CategoryToVirtualCategory;
+import com.ntankard.tracking.dataBase.core.links.CategoryToVirtualCategory.CategoryToVirtualCategoryList;
+import com.ntankard.tracking.dataBase.core.pool.category.SolidCategory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.DEBUG_DISPLAY;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createSelfParentList;
+import static com.ntankard.tracking.dataBase.core.links.CategoryToCategorySet.CategoryToCategorySet_SolidCategory;
+import static com.ntankard.tracking.dataBase.core.links.CategoryToVirtualCategory.CategoryToVirtualCategory_SolidCategory;
 
 public class CategorySet extends NamedDataObject implements HasDefault, Ordered {
+
+    public interface SolidCategoryList extends List<SolidCategory> {
+    }
 
     //------------------------------------------------------------------------------------------------------------------
     //################################################### Constructor ##################################################
@@ -28,7 +37,9 @@ public class CategorySet extends NamedDataObject implements HasDefault, Ordered 
 
     public static final String CategorySet_Default = "isDefault";
     public static final String CategorySet_Order = "getOrder";
-    public static final String CategorySet_AvailableCategories = "getAvailableCategories";
+
+    public static final String CategorySet_CategoryToCategorySetList = "getCategoryToCategorySetList";
+    public static final String CategorySet_CategoryToVirtualCategoryList = "getCategoryToVirtualCategoryList";
     public static final String CategorySet_UsedCategories = "getUsedCategories";
 
     /**
@@ -45,33 +56,33 @@ public class CategorySet extends NamedDataObject implements HasDefault, Ordered 
         // Order =======================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(CategorySet_Order, Integer.class));
         dataObjectSchema.get(CategorySet_Order).setManualCanEdit(true);
+        // CategoryToCategorySetList ===================================================================================
+        dataObjectSchema.add(new ListDataField_Schema<>(CategorySet_CategoryToCategorySetList, CategoryToCategorySetList.class));
+        dataObjectSchema.<List<CategoryToCategorySet>>get(CategorySet_CategoryToCategorySetList).setDataCore_schema(
+                createSelfParentList(CategoryToCategorySet.class,null));
+        // CategoryToVirtualCategoryList ===============================================================================
+        dataObjectSchema.add(new ListDataField_Schema<>(CategorySet_CategoryToVirtualCategoryList, CategoryToVirtualCategoryList.class));
+        dataObjectSchema.<List<CategoryToVirtualCategory>>get(CategorySet_CategoryToVirtualCategoryList).setDataCore_schema(
+                createSelfParentList(CategoryToVirtualCategory.class,null));
         // UsedCategories ==============================================================================================
-        dataObjectSchema.add(new DataField_Schema<>(CategorySet_UsedCategories, List.class)); // TODO this should be a list field
+        // CategorySet_UsedCategories and CategorySet_AvailableCategories are wrong, have seen a case in the set test where the same value is in both
+        dataObjectSchema.add(new ListDataField_Schema<>(CategorySet_UsedCategories, SolidCategoryList.class));
         dataObjectSchema.get(CategorySet_UsedCategories).getProperty(Display_Properties.class).setVerbosityLevel(DEBUG_DISPLAY);
         dataObjectSchema.<List<SolidCategory>>get(CategorySet_UsedCategories).setDataCore_schema(
                 new Derived_DataCore_Schema<>(
                         (Calculator<List<SolidCategory>, CategorySet>) container -> {
                             List<SolidCategory> toReturn = new ArrayList<>();
                             for (CategoryToCategorySet categoryToCategorySet : container.getChildren(CategoryToCategorySet.class)) {
-                                toReturn.add(categoryToCategorySet.getSolidCategory()); // TODO should have this as a set and subscribe to the set
+                                toReturn.add(categoryToCategorySet.getSolidCategory());
                             }
 
                             for (CategoryToVirtualCategory categoryToVirtualCategory : container.getChildren(CategoryToVirtualCategory.class)) {
-                                toReturn.add(categoryToVirtualCategory.getSolidCategory()); // TODO should have this as a set and subscribe to the set
+                                toReturn.add(categoryToVirtualCategory.getSolidCategory());
                             }
                             return toReturn;
                         }
-                        , new End_Source_Schema<>(DataObject_ChildrenField)));
-        // AvailableCategories =========================================================================================
-        dataObjectSchema.add(new DataField_Schema<>(CategorySet_AvailableCategories, List.class));
-        dataObjectSchema.<List<SolidCategory>>get(CategorySet_AvailableCategories).setDataCore_schema(
-                new Derived_DataCore_Schema<>(
-                        (Calculator<List<SolidCategory>, CategorySet>) container -> {
-                            List<SolidCategory> toReturn = container.getTrackingDatabase().get(SolidCategory.class); // TODO this is broken, you need to get alerts about this being updated
-                            toReturn.removeAll(container.getUsedCategories());
-                            return toReturn;
-                        }
-                        , new End_Source_Schema<>(CategorySet_UsedCategories)));
+                        , new Step_Source_Schema<>(CategorySet_CategoryToCategorySetList, new End_Source_Schema<>(CategoryToCategorySet_SolidCategory))
+                        , new Step_Source_Schema<>(CategorySet_CategoryToVirtualCategoryList, new End_Source_Schema<>(CategoryToVirtualCategory_SolidCategory))));
         //==============================================================================================================
         // Parents
         // Children
@@ -107,29 +118,6 @@ public class CategorySet extends NamedDataObject implements HasDefault, Ordered 
     }
 
     //------------------------------------------------------------------------------------------------------------------
-    //################################################# Implementation #################################################
-    //------------------------------------------------------------------------------------------------------------------
-
-    private List<SolidCategory> getAvailableCategoriesImpl() {
-        List<SolidCategory> toReturn = getTrackingDatabase().get(SolidCategory.class);
-        toReturn.removeAll(getUsedCategories());
-        return toReturn;
-    }
-
-    private List<SolidCategory> getUsedCategoriesImpl() {
-        List<SolidCategory> toReturn = new ArrayList<>();
-        for (CategoryToCategorySet categoryToCategorySet : getChildren(CategoryToCategorySet.class)) {
-            toReturn.add(categoryToCategorySet.getSolidCategory());
-        }
-        for (VirtualCategory virtualCategory : getChildren(VirtualCategory.class)) {
-            for (CategoryToVirtualCategory categoryToVirtualCategory : virtualCategory.getChildren(CategoryToVirtualCategory.class)) {
-                toReturn.add(categoryToVirtualCategory.getSolidCategory());
-            }
-        }
-        return toReturn;
-    }
-
-    //------------------------------------------------------------------------------------------------------------------
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
@@ -141,10 +129,6 @@ public class CategorySet extends NamedDataObject implements HasDefault, Ordered 
     @Override
     public Integer getOrder() {
         return get(CategorySet_Order);
-    }
-
-    public List<SolidCategory> getAvailableCategories() {
-        return get(CategorySet_AvailableCategories);
     }
 
     public List<SolidCategory> getUsedCategories() {
