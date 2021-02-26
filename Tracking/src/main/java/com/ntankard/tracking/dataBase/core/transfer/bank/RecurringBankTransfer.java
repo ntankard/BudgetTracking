@@ -37,8 +37,8 @@ public class RecurringBankTransfer extends BankTransfer {
             (generator, secondaryGenerator) -> {
                 double value = 0.0;
                 if (secondaryGenerator.getDuration() != null) {
-                    if (secondaryGenerator.getStart().getOrder() + secondaryGenerator.getDuration() <= generator.getOrder()) {
-                        value = secondaryGenerator.getValue();
+                    if (secondaryGenerator.getStart().getOrder() <= generator.getOrder() && (secondaryGenerator.getStart().getOrder() + secondaryGenerator.getDuration()) >= generator.getOrder() ) {
+                        value = secondaryGenerator.getValue(); // TODO this is not working, seems like its inverted? Fixed it but need to test
                     }
                 }
                 return new RecurringBankTransfer(
