@@ -102,13 +102,14 @@ public class FixedPeriodFundEvent extends FundEvent {
     /**
      * Constructor
      */
-    public FixedPeriodFundEvent(String name, SolidCategory solidCategory, ExistingPeriod start, Integer duration) {
+    public FixedPeriodFundEvent(String name, SolidCategory solidCategory, ExistingPeriod start, Integer duration, Boolean isDone) {
         this(solidCategory.getTrackingDatabase());
         setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
                 , NamedDataObject_Name, name
                 , FundEvent_Category, solidCategory
                 , FixedPeriodFundEvent_Start, start
                 , FixedPeriodFundEvent_Duration, duration
+                , FundEvent_IsDone, isDone
         );
     }
 

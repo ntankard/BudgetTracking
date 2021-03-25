@@ -25,6 +25,7 @@ public class FixedPeriodFundEvent_ElementController extends TrackingDatabase_Ele
                 "",
                 getTrackingDatabase().getDefault(SolidCategory.class),
                 getTrackingDatabase().getDefault(ExistingPeriod.class),
-                1);
+                1,
+                false);
     }
 }

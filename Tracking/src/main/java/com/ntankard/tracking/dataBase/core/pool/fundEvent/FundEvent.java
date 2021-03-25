@@ -14,6 +14,7 @@ public abstract class FundEvent extends Pool {
     //------------------------------------------------------------------------------------------------------------------
 
     public static final String FundEvent_Category = "getCategory";
+    public static final String FundEvent_IsDone = "getIsDone";
 
     /**
      * Get all the fields for this object
@@ -28,6 +29,9 @@ public abstract class FundEvent extends Pool {
         // Name
         // Category ====================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(FundEvent_Category, SolidCategory.class));
+        // IsDone ====================================================================================================
+        dataObjectSchema.add(new DataField_Schema<>(FundEvent_IsDone, Boolean.class));
+        dataObjectSchema.get(FundEvent_IsDone).setManualCanEdit(true);
         //==============================================================================================================
         // Parents
         // Children
@@ -48,5 +52,9 @@ public abstract class FundEvent extends Pool {
 
     public SolidCategory getCategory() {
         return get(FundEvent_Category);
+    }
+
+    public Boolean getIsDone() {
+        return get(FundEvent_IsDone);
     }
 }

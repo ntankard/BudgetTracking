@@ -81,9 +81,9 @@ public class Master_Frame extends JPanel implements Updatable {
         });
 
         ButtonPanel btnPanel = new ButtonPanel();
-        btnPanel.addButton(save_btn);
         btnPanel.addButton(update_btn);
         btnPanel.addButton(addPeriod_btn);
+        btnPanel.addButton(save_btn);
 
         this.add(btnPanel, BorderLayout.NORTH);
 

@@ -1,12 +1,13 @@
 package com.ntankard.tracking.dispaly.frames.mainFrame.summaryGraphs;
 
-import com.ntankard.javaObjectDatabase.util.set.Single_OneParent_Children_Set;
 import com.ntankard.dynamicGUI.gui.util.update.Updatable;
 import com.ntankard.dynamicGUI.gui.util.update.UpdatableJPanel;
-import com.ntankard.tracking.dataBase.core.Currency;
-import com.ntankard.tracking.dataBase.core.period.ExistingPeriod;
 import com.ntankard.javaObjectDatabase.database.Database;
-import com.ntankard.tracking.dataBase.interfaces.summary.Period_Summary;
+import com.ntankard.tracking.dataBase.core.period.ExistingPeriod;
+import com.ntankard.tracking.dataBase.core.pool.category.Category;
+import com.ntankard.tracking.dataBase.core.pool.fundEvent.FundEvent;
+import com.ntankard.tracking.dataBase.core.transfer.fund.rePay.FixedPeriodRePayFundTransfer;
+import com.ntankard.tracking.dataBase.interfaces.set.extended.sum.PeriodPool_SumSet;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -19,8 +20,10 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 
-public class SavingsGraph extends UpdatableJPanel {
+public class HolidayGraph extends UpdatableJPanel {
 
     // Core database
     private final Database database;
@@ -30,7 +33,7 @@ public class SavingsGraph extends UpdatableJPanel {
      *
      * @param master The parent of this object to be notified if data changes
      */
-    public SavingsGraph(Database database, Updatable master) {
+    public HolidayGraph(Database database, Updatable master) {
         super(master);
         this.database = database;
         createUIComponents();
@@ -44,9 +47,9 @@ public class SavingsGraph extends UpdatableJPanel {
         this.setLayout(new BorderLayout());
 
         JFreeChart xyLineChart = ChartFactory.createXYLineChart(
-                "Savings",
+                "Fund",
                 "Period",
-                "YEN",
+                "Fund",
                 createDataset(),
                 PlotOrientation.VERTICAL,
                 true, true, false);
@@ -56,17 +59,14 @@ public class SavingsGraph extends UpdatableJPanel {
         plot.setRangeZeroBaselineVisible(true);
 
         XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
-        renderer.setSeriesPaint(0, Color.BLUE);
-        renderer.setSeriesPaint(1, Color.YELLOW);
-        renderer.setSeriesPaint(2, Color.RED);
         plot.setRenderer(renderer);
 
         String[] axisLabel = new String[database.get(ExistingPeriod.class).size()];
         int i = 0;
         for (ExistingPeriod period : database.get(ExistingPeriod.class)) {
-            axisLabel[i++] = period.toString();
+            axisLabel[i] = period.toString();
+            i++;
         }
-
         SymbolAxis sa = new SymbolAxis("Period", axisLabel);
         plot.setDomainAxis(sa);
 
@@ -79,23 +79,36 @@ public class SavingsGraph extends UpdatableJPanel {
      * @return The generated data
      */
     private XYDataset createDataset() {
-        final XYSeriesCollection dataset = new XYSeriesCollection();
+        Map<Integer, XYSeries> fundGroups = new HashMap<>();
+        Map<Integer, FundEvent> setFundGroups = new HashMap<>();
 
-        for (Currency currency : database.get(Currency.class)) {
-            final XYSeries cur = new XYSeries(currency.getName());
-            int i = 0;
-            for (ExistingPeriod period : database.get(ExistingPeriod.class)) {
-                cur.add(i++, new Single_OneParent_Children_Set<>(Period_Summary.class, period).getItem().getBankEnd(currency));
+        int j = 0;
+        for (FundEvent fundEvent : database.get(FundEvent.class)) {
+            if (fundEvent.getCategory().getName().equals("Holiday")) {
+                setFundGroups.put(j, fundEvent);
+                fundGroups.put(j, new XYSeries(fundEvent.getName()));
+                j++;
             }
-            dataset.addSeries(cur);
+        }
+        fundGroups.put(j, new XYSeries("Sum"));
+
+        int periodIndex = 0;
+        for (ExistingPeriod period : database.get(ExistingPeriod.class)) {
+            double totalSum = 0.0;
+            for (int i = 0; i < setFundGroups.size(); i++) {
+
+                double sum = -new PeriodPool_SumSet(FixedPeriodRePayFundTransfer.class, Category.class, period, setFundGroups.get(i)).getTotal();
+                fundGroups.get(i).add(periodIndex, sum);
+                totalSum += sum;
+            }
+            fundGroups.get(setFundGroups.size()).add(periodIndex, totalSum);
+            periodIndex++;
         }
 
-        final XYSeries total = new XYSeries("Total");
-        int i = 0;
-        for (ExistingPeriod period : database.get(ExistingPeriod.class)) {
-            total.add(i++, new Single_OneParent_Children_Set<>(Period_Summary.class, period).getItem().getBankEnd());
+        final XYSeriesCollection dataset = new XYSeriesCollection();
+        for (Integer category : fundGroups.keySet()) {
+            dataset.addSeries(fundGroups.get(category));
         }
-        dataset.addSeries(total);
 
         return dataset;
     }

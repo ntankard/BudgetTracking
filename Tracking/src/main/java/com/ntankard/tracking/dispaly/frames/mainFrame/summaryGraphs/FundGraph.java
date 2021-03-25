@@ -2,9 +2,12 @@ package com.ntankard.tracking.dispaly.frames.mainFrame.summaryGraphs;
 
 import com.ntankard.dynamicGUI.gui.util.update.Updatable;
 import com.ntankard.dynamicGUI.gui.util.update.UpdatableJPanel;
-import com.ntankard.tracking.dataBase.core.period.ExistingPeriod;
-import com.ntankard.tracking.dataBase.core.pool.category.SolidCategory;
 import com.ntankard.javaObjectDatabase.database.Database;
+import com.ntankard.tracking.dataBase.core.period.ExistingPeriod;
+import com.ntankard.tracking.dataBase.core.pool.Pool;
+import com.ntankard.tracking.dataBase.core.pool.fundEvent.FundEvent;
+import com.ntankard.tracking.dataBase.core.pool.fundEvent.SavingsFundEvent;
+import com.ntankard.tracking.dataBase.core.transfer.fund.rePay.RePayFundTransfer;
 import com.ntankard.tracking.dataBase.interfaces.set.extended.sum.PeriodPool_SumSet;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -20,11 +23,9 @@ import org.jfree.data.xy.XYSeriesCollection;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-
-public class SetCategoryGraph extends UpdatableJPanel {
+public class FundGraph extends UpdatableJPanel {
 
     // Core database
     private final Database database;
@@ -34,7 +35,7 @@ public class SetCategoryGraph extends UpdatableJPanel {
      *
      * @param master The parent of this object to be notified if data changes
      */
-    public SetCategoryGraph(Database database, Updatable master) {
+    public FundGraph(Database database, Updatable master) {
         super(master);
         this.database = database;
         createUIComponents();
@@ -48,9 +49,9 @@ public class SetCategoryGraph extends UpdatableJPanel {
         this.setLayout(new BorderLayout());
 
         JFreeChart xyLineChart = ChartFactory.createXYLineChart(
-                "Category",
+                "Fund",
                 "Period",
-                "YEN",
+                "Fund",
                 createDataset(),
                 PlotOrientation.VERTICAL,
                 true, true, false);
@@ -74,46 +75,52 @@ public class SetCategoryGraph extends UpdatableJPanel {
         this.add(chartPanel, BorderLayout.CENTER);
     }
 
-
     /**
      * Generate the data
      *
      * @return The generated data
      */
     private XYDataset createDataset() {
-        Map<Integer, XYSeries> categories = new HashMap<>();
-        Map<Integer, List<SolidCategory>> setCategories = new HashMap<>();
+        Map<Integer, XYSeries> fundGroups = new HashMap<>();
+        Map<Integer, java.util.List<FundEvent>> setFundGroups = new HashMap<>();
 
-        for (SolidCategory solidCategory : database.get(SolidCategory.class)) {
-            if (!setCategories.containsKey(solidCategory.getSet())) {
-                setCategories.put(solidCategory.getSet(), new ArrayList<>());
-                categories.put(solidCategory.getSet(), new XYSeries(solidCategory.getSetName()));
+        setFundGroups.put(0, new ArrayList<>());
+        setFundGroups.put(1, new ArrayList<>());
+        setFundGroups.put(2, new ArrayList<>());
+        setFundGroups.put(3, new ArrayList<>());
+
+        fundGroups.put(0, new XYSeries("Savings"));
+        fundGroups.put(1, new XYSeries("Tax"));
+        fundGroups.put(2, new XYSeries("Other"));
+        fundGroups.put(3, new XYSeries("Sum"));
+
+        for (FundEvent fundEvent : database.get(FundEvent.class)) {
+            if (fundEvent instanceof SavingsFundEvent) {
+                setFundGroups.get(0).add(fundEvent);
+            } else if (fundEvent.getName().equals("Hex") || fundEvent.getName().equals("19-20 Tax") || fundEvent.getName().equals("18-19 Tax")) {
+                setFundGroups.get(1).add(fundEvent);
+            } else {
+                setFundGroups.get(2).add(fundEvent);
             }
-            setCategories.get(solidCategory.getSet()).add(solidCategory);
         }
-
         int i = 0;
         for (ExistingPeriod period : database.get(ExistingPeriod.class)) {
-            for (Integer set : setCategories.keySet()) {
-                XYSeries series = categories.get(set);
-                List<SolidCategory> toSumCategories = setCategories.get(set);
-
+            double totalSum = 0.0;
+            for (int set = 0; set < 3; set++) {
                 double sum = 0.0;
-                for (SolidCategory solidCategory : toSumCategories) {
-                    sum += new PeriodPool_SumSet(period, solidCategory).getTotal();
+                for (FundEvent fundEvent : setFundGroups.get(set)) {
+                    sum += -new PeriodPool_SumSet(RePayFundTransfer.class, Pool.class, period, fundEvent).getTotal();
                 }
-                if(set == 1) {
-                    series.add(i, -sum);
-                }else{
-                    series.add(i, sum);
-                }
+                totalSum += sum;
+                fundGroups.get(set).add(i, sum);
             }
+            fundGroups.get(3).add(i, totalSum);
             i++;
         }
 
         final XYSeriesCollection dataset = new XYSeriesCollection();
-        for (Integer category : categories.keySet()) {
-            dataset.addSeries(categories.get(category));
+        for (Integer category : fundGroups.keySet()) {
+            dataset.addSeries(fundGroups.get(category));
         }
 
         return dataset;
