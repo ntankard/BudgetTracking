@@ -18,6 +18,8 @@ public class FundTabPanel extends UpdatableJPanel {
 
     // The GUI components
     private JTabbedPane master_tPanel = new JTabbedPane();
+    private JTabbedPane open_tPanel = new JTabbedPane();
+    private JTabbedPane done_tPanel = new JTabbedPane();
     private List<IndividualFundPanel> fundPanels = new ArrayList<>();
 
     // Core database
@@ -40,6 +42,8 @@ public class FundTabPanel extends UpdatableJPanel {
         this.setLayout(new BorderLayout());
 
         master_tPanel = new JTabbedPane();
+        master_tPanel.addTab("Open", open_tPanel);
+        master_tPanel.addTab("Done", done_tPanel);
 
         this.add(master_tPanel, BorderLayout.CENTER);
     }
@@ -83,13 +87,18 @@ public class FundTabPanel extends UpdatableJPanel {
             fundEvents.clear();
             fundPanels.clear();
 
-            master_tPanel.removeAll();
+            done_tPanel.removeAll();
+            open_tPanel.removeAll();
 
             fundEvents.addAll(database.get(FundEvent.class));
             for (FundEvent fundEvent : fundEvents) {
                 IndividualFundPanel panel = new IndividualFundPanel(fundEvent, this);
                 fundPanels.add(panel);
-                master_tPanel.addTab(fundEvent.toString(), panel);
+                if (fundEvent.getIsDone()) {
+                    done_tPanel.addTab(fundEvent.toString(), panel);
+                } else {
+                    open_tPanel.addTab(fundEvent.toString(), panel);
+                }
             }
         }
     }

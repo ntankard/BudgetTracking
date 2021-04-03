@@ -13,6 +13,9 @@ public class SummaryGraphPanel extends UpdatableJPanel {
     private SavingsGraph savingsGraph;
     private CategoryGraph categoryGraph;
     private SetCategoryGraph setCategoryGraph;
+    private FundGraph fundGraph;
+    private SumFundGraph sumFundGraph;
+    private HolidayGraph holidayGraph;
 
     private JTabbedPane master_tPanel;
 
@@ -38,11 +41,17 @@ public class SummaryGraphPanel extends UpdatableJPanel {
         savingsGraph = new SavingsGraph(database, this);
         categoryGraph = new CategoryGraph(database, this);
         setCategoryGraph = new SetCategoryGraph(database, this);
+        fundGraph = new FundGraph(database, this);
+        sumFundGraph = new SumFundGraph(database, this);
+        holidayGraph = new HolidayGraph(database, this);
 
         master_tPanel = new JTabbedPane();
         master_tPanel.addTab("Savings", savingsGraph);
         master_tPanel.addTab("Category", categoryGraph);
         master_tPanel.addTab("SetCategory", setCategoryGraph);
+        master_tPanel.addTab("Fund", fundGraph);
+        master_tPanel.addTab("Fund Sum", sumFundGraph);
+        master_tPanel.addTab("Holiday", holidayGraph);
 
         this.add(master_tPanel);
     }
@@ -55,5 +64,8 @@ public class SummaryGraphPanel extends UpdatableJPanel {
         savingsGraph.update();
         categoryGraph.update();
         setCategoryGraph.update();
+        fundGraph.update();
+        sumFundGraph.update();
+        holidayGraph.update();
     }
 }

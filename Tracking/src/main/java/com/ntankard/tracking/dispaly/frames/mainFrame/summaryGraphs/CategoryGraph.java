@@ -55,6 +55,7 @@ public class CategoryGraph extends UpdatableJPanel {
 
         ChartPanel chartPanel = new ChartPanel(xyLineChart);
         final XYPlot plot = xyLineChart.getXYPlot();
+        plot.setRangeZeroBaselineVisible(true);
 
         XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
         //renderer.setSeriesPaint(0, Color.BLUE);

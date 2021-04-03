@@ -1,10 +1,16 @@
 package com.ntankard.tracking.dataBase.core.transfer.fund.rePay;
 
+import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataField.ListDataField_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.Static_DataCore_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema.Calculator;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.End_Source_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.End_Source_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.factory.DoubleParentFactory;
+import com.ntankard.javaObjectDatabase.database.Database;
+import com.ntankard.javaObjectDatabase.database.ParameterMap;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.period.ExistingPeriod;
 import com.ntankard.tracking.dataBase.core.period.Period;
@@ -13,12 +19,6 @@ import com.ntankard.tracking.dataBase.core.pool.category.SolidCategory;
 import com.ntankard.tracking.dataBase.core.pool.fundEvent.FundEvent;
 import com.ntankard.tracking.dataBase.core.pool.fundEvent.TaxFundEvent;
 import com.ntankard.tracking.dataBase.core.transfer.HalfTransfer;
-import com.ntankard.javaObjectDatabase.dataObject.factory.DoubleParentFactory;
-import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
-import com.ntankard.javaObjectDatabase.dataField.ListDataField_Schema;
-import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
-import com.ntankard.javaObjectDatabase.database.ParameterMap;
-import com.ntankard.javaObjectDatabase.database.Database;
 
 import java.util.List;
 
@@ -94,7 +94,10 @@ public class TaxRePayFundTransfer extends RePayFundTransfer {
                 new Derived_DataCore_Schema<>(
                         (Calculator<Double, TaxRePayFundTransfer>) container -> {
                             TaxFundEvent taxFundEvent = (TaxFundEvent) container.getSource();
-                            return -Currency.round(container.getTaxableAmount() * taxFundEvent.getPercentage());
+                            if (!container.getPeriod().isWithin(taxFundEvent.getStart(), taxFundEvent.getDuration())) {
+                                return -0.0;
+                            }
+                            return Currency.round(container.getTaxableAmount() * taxFundEvent.getPercentage());
                         }
                         , new End_Source_Schema<>(TaxRePayFundTransfer_TaxableAmount)
                         , Source_Factory.makeSourceChain(Transfer_Source, TaxFundEvent_Percentage)));

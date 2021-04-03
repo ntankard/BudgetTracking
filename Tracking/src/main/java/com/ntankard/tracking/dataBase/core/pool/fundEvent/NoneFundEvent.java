@@ -36,11 +36,12 @@ public class NoneFundEvent extends FundEvent {
     /**
      * Constructor
      */
-    public NoneFundEvent(String name, SolidCategory solidCategory) {
+    public NoneFundEvent(String name, SolidCategory solidCategory, Boolean isDone) {
         this(solidCategory.getTrackingDatabase());
         setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
                 , NamedDataObject_Name, name
                 , FundEvent_Category, solidCategory
+                , FundEvent_IsDone, isDone
         );
     }
 

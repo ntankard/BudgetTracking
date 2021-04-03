@@ -37,8 +37,8 @@ class NoneFundEventTest {
 
         SolidCategory solidCategory = database.get(SolidCategory.class).get(0);
 
-        assertThrows(NullPointerException.class, () -> new NoneFundEvent("", null));
-        assertDoesNotThrow(() -> new NoneFundEvent("", solidCategory));
+        assertThrows(NullPointerException.class, () -> new NoneFundEvent("", null, false));
+        assertDoesNotThrow(() -> new NoneFundEvent("", solidCategory, false));
     }
 
     //------------------------------------------------------------------------------------------------------------------

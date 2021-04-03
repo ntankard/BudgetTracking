@@ -43,10 +43,11 @@ public class SavingsFundEvent extends FundEvent {
     /**
      * Constructor
      */
-    public SavingsFundEvent(SolidCategory solidCategory) {
+    public SavingsFundEvent(SolidCategory solidCategory, Boolean isDone) {
         this(solidCategory.getTrackingDatabase());
         setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
                 , FundEvent_Category, solidCategory
+                , FundEvent_IsDone, isDone
         );
     }
 

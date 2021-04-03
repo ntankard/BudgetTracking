@@ -22,6 +22,6 @@ public class NoneFundEvent_ElementController extends TrackingDatabase_ElementCon
     public NoneFundEvent newElement() {
         return new NoneFundEvent(
                 "",
-                getTrackingDatabase().getDefault(SolidCategory.class));
+                getTrackingDatabase().getDefault(SolidCategory.class), false);
     }
 }
