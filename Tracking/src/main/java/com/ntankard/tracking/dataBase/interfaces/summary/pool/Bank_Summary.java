@@ -199,9 +199,13 @@ public class Bank_Summary extends PoolSummary<Bank> implements CurrencyBound, Or
         // SpendSet ====================================================================================================
         dataObjectSchema.add(new ListDataField_Schema<>(Bank_Summary_SpendSet, HalfTransferList.class));
         dataObjectSchema.get(Bank_Summary_SpendSet).getProperty(Display_Properties.class).setVerbosityLevel(TRACE_DISPLAY);
-
         SetFilter<HalfTransfer> setFilter = new TransferType_HalfTransfer_Filter(BankTransfer.class,
-                new TransferDestination_HalfTransfer_Filter(SolidCategory.class));
+                new SetFilter<HalfTransfer>(null) {
+                    @Override
+                    protected boolean shouldAdd_Impl(HalfTransfer dataObject) {
+                        return !Bank.class.isAssignableFrom(dataObject.getTransfer().getDestination().getClass());
+                    }
+                });
         dataObjectSchema.<List<HalfTransfer>>get(Bank_Summary_SpendSet).setDataCore_schema(createMultiParentList(HalfTransfer.class, setFilter, PoolSummary_Period, PoolSummary_Pool));
         // SpendSum ====================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Bank_Summary_SpendSum, Double.class, true));
