@@ -4,9 +4,7 @@ import com.ntankard.statementParser.dataBase.BlankLine;
 import com.ntankard.statementParser.dataBase.StatementInstance;
 import com.ntankard.statementParser.dataBase.StatementInstanceLine;
 import com.ntankard.statementParser.dataBase.TransactionPeriod;
-import com.ntankard.tracking.dataBase.core.period.Period;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;

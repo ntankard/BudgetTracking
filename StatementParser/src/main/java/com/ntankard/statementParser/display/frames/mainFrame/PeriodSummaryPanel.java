@@ -1,5 +1,6 @@
 package com.ntankard.statementParser.display.frames.mainFrame;
 
+import com.ntankard.dynamicGUI.gui.containers.DynamicGUI_SetDisplayList;
 import com.ntankard.dynamicGUI.gui.util.update.Updatable;
 import com.ntankard.dynamicGUI.gui.util.update.UpdatableJPanel;
 import com.ntankard.javaObjectDatabase.database.Database;
@@ -11,7 +12,6 @@ import com.ntankard.statementParser.dataBase.StatementFolder;
 import com.ntankard.statementParser.dataBase.Transaction;
 import com.ntankard.statementParser.dataBase.TransactionPeriod;
 import com.ntankard.statementParser.dataBase.transactionGroup.TransactionGroup;
-import com.ntankard.tracking.dispaly.util.panels.DataObject_DisplayList;
 
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
@@ -24,10 +24,10 @@ public class PeriodSummaryPanel extends UpdatableJPanel {
 
     private ListSelectionListener selectionListener;
 
-    private DataObject_DisplayList<BankAccount> saveInstance_panel;
-    private DataObject_DisplayList<StatementFolder> savedDataObject_panel;
-    private DataObject_DisplayList<TransactionGroup> savedLine_panel;
-    private DataObject_DisplayList<Transaction> savedField_panel;
+    private DynamicGUI_SetDisplayList<BankAccount> saveInstance_panel;
+    private DynamicGUI_SetDisplayList<StatementFolder> savedDataObject_panel;
+    private DynamicGUI_SetDisplayList<TransactionGroup> savedLine_panel;
+    private DynamicGUI_SetDisplayList<Transaction> savedField_panel;
 
     private OneParent_Children_Set<StatementFolder, BankAccount> savedDataObject_set;
     private TwoParent_Children_Set<TransactionGroup, BankAccount, TransactionPeriod> savedLine_set;
@@ -60,20 +60,20 @@ public class PeriodSummaryPanel extends UpdatableJPanel {
 
         selectionListener = e -> update();
 
-        saveInstance_panel = new DataObject_DisplayList<>(database.getSchema(), BankAccount.class, new Full_Set<>(database, BankAccount.class), false, this);
+        saveInstance_panel = new DynamicGUI_SetDisplayList<>(database.getSchema(), BankAccount.class, new Full_Set<>(database, BankAccount.class), false, this);
         saveInstance_panel.getMainPanel().getListSelectionModel().addListSelectionListener(selectionListener);
 
         savedDataObject_set = new OneParent_Children_Set<>(StatementFolder.class, null);
-        savedDataObject_panel = new DataObject_DisplayList<>(database.getSchema(), StatementFolder.class, savedDataObject_set, false, this);
+        savedDataObject_panel = new DynamicGUI_SetDisplayList<>(database.getSchema(), StatementFolder.class, savedDataObject_set, false, this);
         savedDataObject_panel.getMainPanel().getListSelectionModel().addListSelectionListener(selectionListener);
 
 
         savedLine_set = new TwoParent_Children_Set<>(TransactionGroup.class, null, null);
-        savedLine_panel = new DataObject_DisplayList<>(database.getSchema(), TransactionGroup.class, savedLine_set, false, this);
+        savedLine_panel = new DynamicGUI_SetDisplayList<>(database.getSchema(), TransactionGroup.class, savedLine_set, false, this);
         savedLine_panel.getMainPanel().getListSelectionModel().addListSelectionListener(selectionListener);
 
         savedField_set = new OneParent_Children_Set<>(Transaction.class, null);
-        savedField_panel = new DataObject_DisplayList<>(database.getSchema(), Transaction.class, savedField_set, false, this);
+        savedField_panel = new DynamicGUI_SetDisplayList<>(database.getSchema(), Transaction.class, savedField_set, false, this);
 
         GridBagConstraints summaryContainer_C = new GridBagConstraints();
         summaryContainer_C.fill = GridBagConstraints.BOTH;

@@ -1,9 +1,9 @@
 package com.ntankard.statementParser.display.frames.mainFrame;
 
 import com.ntankard.dynamicGUI.gui.util.containers.ButtonPanel;
+import com.ntankard.dynamicGUI.gui.util.panels.LimitedDatabasePanel;
 import com.ntankard.dynamicGUI.gui.util.update.Updatable;
 import com.ntankard.javaObjectDatabase.database.Database;
-import com.ntankard.tracking.dispaly.frames.mainFrame.DatabasePanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,7 +13,7 @@ public class MasterFrame extends JPanel implements Updatable {
     // Core database
     private final Database database;
 
-    private DatabasePanel databasePanel;
+    private LimitedDatabasePanel limitedDatabasePanel;
     private SummaryPanel summaryPanel;
     private PeriodSummaryPanel periodSummaryPanel;
     private SmallPeriodSummaryPanel smallPeriodSummaryPanel;
@@ -77,7 +77,7 @@ public class MasterFrame extends JPanel implements Updatable {
         ButtonPanel btnPanel = new ButtonPanel();
         this.add(btnPanel, BorderLayout.NORTH);
 
-        databasePanel = new DatabasePanel(database, this);
+        limitedDatabasePanel = new LimitedDatabasePanel(database, this);
         summaryPanel = new SummaryPanel(database, this);
         periodSummaryPanel = new PeriodSummaryPanel(database, this);
         smallPeriodSummaryPanel = new SmallPeriodSummaryPanel(database, this);
@@ -87,7 +87,7 @@ public class MasterFrame extends JPanel implements Updatable {
         master_tPanel.addTab("PeriodSummary", periodSummaryPanel);
         master_tPanel.addTab("SmallPeriodSummary", smallPeriodSummaryPanel);
         master_tPanel.addTab("Summary", summaryPanel);
-        master_tPanel.addTab("Database", databasePanel);
+        master_tPanel.addTab("Database", limitedDatabasePanel);
 
         this.add(master_tPanel, BorderLayout.CENTER);
     }
@@ -107,7 +107,7 @@ public class MasterFrame extends JPanel implements Updatable {
     public void update() {
         periodSummaryPanel.update();
         summaryPanel.update();
-        databasePanel.update();
+        limitedDatabasePanel.update();
         smallPeriodSummaryPanel.update();
     }
 }
