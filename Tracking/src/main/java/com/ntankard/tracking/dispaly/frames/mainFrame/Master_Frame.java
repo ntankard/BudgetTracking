@@ -25,8 +25,9 @@ public class Master_Frame extends JPanel implements Updatable {
     private ReceiptPanel receiptPanel;
     private RecurringPaymentPanel recurringPaymentPanel;
     private CategorySetPanel categorySetPanel;
+    private BankSummaryPanel bankSummaryPanel;
 
-    private String savePath;
+    private final String savePath;
 
     // Core database
     private final Database database;
@@ -95,6 +96,7 @@ public class Master_Frame extends JPanel implements Updatable {
         receiptPanel = new ReceiptPanel(database, this);
         recurringPaymentPanel = new RecurringPaymentPanel(database, this);
         categorySetPanel = new CategorySetPanel(database, this);
+        bankSummaryPanel = new BankSummaryPanel(database,this);
 
         JTabbedPane master_tPanel = new JTabbedPane();
         master_tPanel.addTab("Periods", periodPanel);
@@ -105,6 +107,7 @@ public class Master_Frame extends JPanel implements Updatable {
         master_tPanel.addTab("Receipts", receiptPanel);
         master_tPanel.addTab("Recurring Payments", recurringPaymentPanel);
         master_tPanel.addTab("Category Set", categorySetPanel);
+        master_tPanel.addTab("Banks", bankSummaryPanel);
 
         this.add(master_tPanel, BorderLayout.CENTER);
     }
@@ -130,5 +133,6 @@ public class Master_Frame extends JPanel implements Updatable {
         receiptPanel.update();
         recurringPaymentPanel.update();
         categorySetPanel.update();
+        bankSummaryPanel.update();
     }
 }

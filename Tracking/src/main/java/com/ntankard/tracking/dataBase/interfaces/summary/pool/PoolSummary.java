@@ -55,7 +55,6 @@ public abstract class PoolSummary<PoolType extends Pool> extends DataObject impl
         // ID
         // Period ======================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(PoolSummary_Period, Period.class, false));
-        dataObjectSchema.get(PoolSummary_Period).getProperty(Display_Properties.class).setVerbosityLevel(DEBUG_DISPLAY);
         // Pool ========================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(PoolSummary_Pool, Pool.class, false));
         // Start =======================================================================================================

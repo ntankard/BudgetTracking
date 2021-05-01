@@ -76,6 +76,7 @@ public class DeltaPanel extends UpdatableJPanel {
         this.add(saveInstance_panel, summaryContainer_C);
 
         summaryContainer_C.gridx = 1;
+        summaryContainer_C.weightx = 2;
         this.add(savedDataObject_panel, summaryContainer_C);
 
         JTable jTable = new JTable();
@@ -87,7 +88,7 @@ public class DeltaPanel extends UpdatableJPanel {
         JScrollPane panel = new JScrollPane(jTable);
 
         summaryContainer_C.gridx = 2;
-        summaryContainer_C.weightx = 20;
+        summaryContainer_C.weightx = 10;
 
         this.add(panel, summaryContainer_C);
     }

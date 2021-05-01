@@ -1,12 +1,16 @@
 package com.ntankard.databaseViewer.processor;
 
+import com.ntankard.databaseViewer.dataBase.Row;
 import com.ntankard.databaseViewer.dataBase.SaveInstance;
+import com.ntankard.databaseViewer.dataBase.type.Type;
 import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.javaObjectDatabase.database.Database_Schema;
 import com.ntankard.javaObjectDatabase.database.io.Database_IO_Reader;
 
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.ntankard.javaObjectDatabase.database.io.Database_IO_Util.ROOT_DATA_PATH;
 import static com.ntankard.javaObjectDatabase.util.FileUtil.findFoldersInDirectory;
@@ -38,7 +42,11 @@ public class DatabaseLoader {
         
         // Load each from oldest to latest
         SaveInstance pastSaveInstance = null;
+        int i = 0;
         for (String s : folders) {
+            if(i++ < folders.size() - 10){
+                continue;
+            }
             if (!s.equals("0")) {
                 pastSaveInstance = SaveInstanceLoader.loadSaveInstance(database, savePath, ROOT_DATA_PATH + "\\", s, pastSaveInstance, masterMap, fileMap);
             }

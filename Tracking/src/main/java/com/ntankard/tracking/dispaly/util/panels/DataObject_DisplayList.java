@@ -7,6 +7,8 @@ import com.ntankard.javaObjectDatabase.database.Database_Schema;
 import com.ntankard.javaObjectDatabase.util.set.Full_Set;
 import com.ntankard.javaObjectDatabase.util.set.ObjectSet;
 
+import java.awt.*;
+
 public class DataObject_DisplayList<T extends DataObject> extends Object_DisplayList<T> {
 
     /**
@@ -51,5 +53,13 @@ public class DataObject_DisplayList<T extends DataObject> extends Object_Display
      */
     public DataObject_DisplayList(Database_Schema schema, Class<T> tClass, ObjectSet<T> objectSet, boolean filter, Updatable master) {
         super(schema, tClass, objectSet, filter, master);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public Dimension getPreferredSize() {
+        return new Dimension();
     }
 }
