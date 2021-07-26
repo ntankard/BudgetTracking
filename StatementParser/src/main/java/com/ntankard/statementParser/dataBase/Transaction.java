@@ -49,7 +49,9 @@ public class Transaction extends DataObject implements Ordered {
 
         // Transaction_StatementFolder =================================================================================
         dataObjectSchema.get(Transaction_StatementFolder).getProperty(Display_Properties.class).setVerbosityLevel(INFO_DISPLAY);
-        // Transaction_Value ===========================================================================
+        // Transaction_Description =====================================================================================
+        dataObjectSchema.get(Transaction_Description).setManualCanEdit(true);
+        // Transaction_Value ===========================================================================================
         dataObjectSchema.get(Transaction_Value).getProperty(Display_Properties.class).setDataType(CURRENCY_YEN);
         // Transaction_Line ============================================================================================
         dataObjectSchema.get(Transaction_Line).getProperty(Display_Properties.class).setVerbosityLevel(INFO_DISPLAY);
