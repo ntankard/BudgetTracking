@@ -63,7 +63,7 @@ public class TaxRePayFundTransfer extends RePayFundTransfer {
         // Source
         // TaxableCategory =============================================================================================
         dataObjectSchema.add(new DataField_Schema<>(TaxRePayFundTransfer_TaxableCategory, Category.class));
-        dataObjectSchema.<SolidCategory>get(TaxRePayFundTransfer_TaxableCategory).setDataCore_schema(
+        dataObjectSchema.get(TaxRePayFundTransfer_TaxableCategory).setDataCore_schema(
                 new Static_DataCore_Schema<>(dataField ->
                         dataField.getContainer().getTrackingDatabase().getSpecialValue(SolidCategory.class, SolidCategory.TAXABLE)));
         // TaxableSet ==================================================================================================

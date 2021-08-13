@@ -4,7 +4,7 @@ import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
-import com.ntankard.javaObjectDatabase.dataField.validator.Shared_FieldValidator;
+import com.ntankard.javaObjectDatabase.dataField.validator.shared.Multi_FieldValidator;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
@@ -35,18 +35,19 @@ public class CategoryToVirtualCategory extends DataObject {
     public static DataObject_Schema getDataObjectSchema() {
         DataObject_Schema dataObjectSchema = Displayable_DataObject.getDataObjectSchema();
 
-        Shared_FieldValidator<SolidCategory, VirtualCategory, CategoryToVirtualCategory> sharedFilter = new Shared_FieldValidator<>(CategoryToVirtualCategory_SolidCategory, CategoryToVirtualCategory_VirtualCategory,
-                (firstNewValue, secondNewValue, container) ->
-                        !secondNewValue.getCategorySet().getUsedCategories().contains(firstNewValue) || firstNewValue.equals(container.getSolidCategory()), "CategoryToVirtualCategory");
+        Multi_FieldValidator<CategoryToVirtualCategory> sharedFilter = new Multi_FieldValidator<>(
+                (newValues, pastValues, container) ->
+                        !((VirtualCategory) newValues[1]).getCategorySet().getUsedCategories().contains(((SolidCategory) newValues[0])) || newValues[0].equals(container.getSolidCategory()),
+                "CategoryToVirtualCategory", CategoryToVirtualCategory_SolidCategory, CategoryToVirtualCategory_VirtualCategory);
 
         // ID
         // VirtualCategory =============================================================================================
         dataObjectSchema.add(new DataField_Schema<>(CategoryToVirtualCategory_VirtualCategory, VirtualCategory.class));
-        dataObjectSchema.<VirtualCategory>get(CategoryToVirtualCategory_VirtualCategory).addValidator(sharedFilter.getSecondFilter());
+        dataObjectSchema.get(CategoryToVirtualCategory_VirtualCategory).addValidator(sharedFilter.getValidator(CategoryToVirtualCategory_VirtualCategory));
         // SolidCategory ===============================================================================================
         dataObjectSchema.add(new DataField_Schema<>(CategoryToVirtualCategory_SolidCategory, SolidCategory.class));
         dataObjectSchema.get(CategoryToVirtualCategory_SolidCategory).setManualCanEdit(true);
-        dataObjectSchema.<SolidCategory>get(CategoryToVirtualCategory_SolidCategory).addValidator(sharedFilter.getFirstFilter());
+        dataObjectSchema.get(CategoryToVirtualCategory_SolidCategory).addValidator(sharedFilter.getValidator(CategoryToVirtualCategory_SolidCategory));
         // CategorySet =================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(CategoryToVirtualCategory_CategorySet, CategorySet.class));
         dataObjectSchema.<CategorySet>get(CategoryToVirtualCategory_CategorySet).setDataCore_schema(
