@@ -56,7 +56,7 @@ public class FixedPeriodRePayFundTransfer extends RePayFundTransfer {
                             }
                             return fixedPeriodFundEvent.getRepayAmount();
                         }
-                        , new End_Source_Schema<>((Transfer_Period))
+                        , Source_Factory.makeSourceChain((Transfer_Period))
                         , Source_Factory.makeSourceChain((Transfer_Source), FixedPeriodFundEvent_Start)
                         , Source_Factory.makeSourceChain((Transfer_Source), FixedPeriodFundEvent_Duration)
                         , Source_Factory.makeSourceChain((Transfer_Source), FixedPeriodFundEvent_RepayAmount)));

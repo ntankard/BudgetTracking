@@ -3,6 +3,8 @@ package com.ntankard.tracking.dataBase.core.baseObject;
 import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
 import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataField.validator.FieldValidator;
+import com.ntankard.javaObjectDatabase.dataField.validator.shared.Multi_FieldValidator;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
@@ -76,6 +78,18 @@ class DataObjectTest {
                     // Find the setters
                     for (DataField_Schema member : members) {
                         if (member.getCanEdit() && ((Display_Properties) member.<Display_Properties>getProperty(Display_Properties.class)).getDisplaySet() && DataObject.class.isAssignableFrom(member.getType())) {
+                            List<FieldValidator> validators = member.getValidators();
+                            boolean breakOut = false;
+                            for(FieldValidator validator :validators){
+                                if(Multi_FieldValidator.class.isAssignableFrom(validator.getClass())){
+                                    breakOut = true;
+                                    break;
+                                }
+                            }
+                            if(breakOut){
+                                continue;
+                            }
+
                             // Get the data
                             AtomicReference<List<DataObject>> expectedOptions = new AtomicReference<>();
                             assertDoesNotThrow(() -> expectedOptions.set((List) member.getSource().invoke(dataObject, member.getType(), member.getDisplayName())));
