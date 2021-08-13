@@ -1,21 +1,21 @@
 package com.ntankard.tracking.dataBase.core.transfer.bank;
 
+import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.End_Source_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
-import com.ntankard.javaObjectDatabase.dataField.validator.Shared_FieldValidator;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.End_Source_Schema;
+import com.ntankard.javaObjectDatabase.dataField.validator.shared.NonEqual_Shared_FieldValidator;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.tracking.dataBase.core.Currency;
 import com.ntankard.tracking.dataBase.core.period.Period;
 import com.ntankard.tracking.dataBase.core.pool.Bank;
+import com.ntankard.tracking.dataBase.core.pool.Pool;
 import com.ntankard.tracking.dataBase.core.pool.category.Category;
 import com.ntankard.tracking.dataBase.core.pool.category.SolidCategory;
 import com.ntankard.tracking.dataBase.core.pool.fundEvent.FundEvent;
-import com.ntankard.tracking.dataBase.core.pool.Pool;
 import com.ntankard.tracking.dataBase.core.transfer.Transfer;
-import com.ntankard.javaObjectDatabase.dataObject.DataObject;
-import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
-import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,41 +42,28 @@ public abstract class BankTransfer extends Transfer {
     public static DataObject_Schema getDataObjectSchema() {
         DataObject_Schema dataObjectSchema = Transfer.getDataObjectSchema();
 
-        Shared_FieldValidator<Period, Period, BankTransfer> period_sharedFilter = new Shared_FieldValidator<>(Transfer_Period, BankTransfer_DestinationPeriod,
-                (firstNewValue, secondNewValue, container) -> {
-                    if (secondNewValue != null) {
-                        return !firstNewValue.equals(secondNewValue);
-                    }
-                    return true;
-                }, "Period not same if not null");
-
-        Shared_FieldValidator<Pool, Pool, BankTransfer> pool_sharedFilter = new Shared_FieldValidator<>(Transfer_Source, Transfer_Destination,
-                (firstNewValue, secondNewValue, container) -> {
-                    if (secondNewValue != null) {
-                        return !firstNewValue.equals(secondNewValue);
-                    }
-                    return true;
-                }, "Pool not same if not null");
+        NonEqual_Shared_FieldValidator period_sharedFilter = new NonEqual_Shared_FieldValidator(Transfer_Period, BankTransfer_DestinationPeriod);
+        NonEqual_Shared_FieldValidator pool_sharedFilter = new NonEqual_Shared_FieldValidator(Transfer_Source, Transfer_Destination);
 
         // ID
         // Description
         // Period ======================================================================================================
         dataObjectSchema.get(Transfer_Period).setManualCanEdit(true);
-        dataObjectSchema.<Period>get(Transfer_Period).addValidator(period_sharedFilter.getFirstFilter());
+        dataObjectSchema.get(Transfer_Period).addValidator(period_sharedFilter.getValidator(Transfer_Period));
         // Source ======================================================================================================
         dataObjectSchema.add(Transfer_Period, new DataField_Schema<>(Transfer_Source, Bank.class));
-        dataObjectSchema.<Pool>get(Transfer_Source).addValidator(pool_sharedFilter.getFirstFilter());
+        dataObjectSchema.get(Transfer_Source).addValidator(pool_sharedFilter.getValidator(Transfer_Source));
         // Value =======================================================================================================
         dataObjectSchema.get(Transfer_Value).setManualCanEdit(true);
         // Currency ====================================================================================================
         dataObjectSchema.<Currency>get(Transfer_Currency).setDataCore_schema(
                 new Derived_DataCore_Schema<Currency, BankTransfer>
-                        (dataObject -> ((Bank)dataObject.getSource()).getCurrency()
+                        (dataObject -> ((Bank) dataObject.getSource()).getCurrency()
                                 , Source_Factory.makeSourceChain(Transfer_Source, Bank_Currency)));
         // DestinationPeriod ===========================================================================================
         dataObjectSchema.add(Transfer_Currency, new DataField_Schema<>(BankTransfer_DestinationPeriod, Period.class, true));
         dataObjectSchema.get(BankTransfer_DestinationPeriod).setManualCanEdit(true);
-        dataObjectSchema.<Period>get(BankTransfer_DestinationPeriod).addValidator(period_sharedFilter.getSecondFilter());
+        dataObjectSchema.get(BankTransfer_DestinationPeriod).addValidator(period_sharedFilter.getValidator(BankTransfer_DestinationPeriod));
         // Category ====================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(BankTransfer_Category, Category.class, true));
         dataObjectSchema.get(BankTransfer_Category).setTellParent(false);
@@ -118,7 +105,7 @@ public abstract class BankTransfer extends Transfer {
                 }, new End_Source_Schema<>((Transfer_Destination))));
         // Destination =================================================================================================
         dataObjectSchema.get(Transfer_Destination).setManualCanEdit(true);
-        dataObjectSchema.<Pool>get(Transfer_Destination).addValidator(pool_sharedFilter.getSecondFilter());
+        dataObjectSchema.get(Transfer_Destination).addValidator(pool_sharedFilter.getValidator(Transfer_Destination));
         // DestinationValue
         // DestinationCurrency
         // SourceCurrencyGet
