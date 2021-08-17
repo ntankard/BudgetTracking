@@ -17,7 +17,7 @@ public class StatementParser {
 
     public static Database createDataBase() {
         Map<String, String> nameMap = new HashMap<>();
-        return Database_IO.read(Database_Schema.getSchemaFromPackage(databasePath), savePath, nameMap);
+        return Database_IO.read(Database_Schema.getSchemaFromPackage(databasePath), databasePath, savePath, nameMap);
     }
 
     public static void main(String[] args) {

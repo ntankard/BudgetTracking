@@ -5,8 +5,8 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.ntankard</groupId>
-    <artifactId>BudgetTracking</artifactId>
+    <groupId>com.ntankard</groupId>
+    <artifactId>BudgetTracking_Application</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
 
@@ -17,10 +17,9 @@
     </properties>
 
     <modules>
-        <module>Tracking</module>
+        <module>BudgetTracking</module>
         <module>DynamicGUI</module>
 		<module>JavaObjectDatabase</module>
-		<module>DatabaseViewer</module>
 		<module>StatementParser</module>
     </modules>
 

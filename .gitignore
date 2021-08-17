@@ -2,3 +2,6 @@
 *.iml
 Tracking/target/
 Tracking/testFiles/
+BudgetTracking/target/
+BudgetTracking/testFiles/
+StatementParser/target/
