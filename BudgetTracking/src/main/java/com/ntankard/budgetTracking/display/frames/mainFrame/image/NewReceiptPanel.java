@@ -40,7 +40,7 @@ public class NewReceiptPanel extends UpdatableJPanel {
         this.removeAll();
         this.setLayout(new BorderLayout());
 
-        List<String> possibleImages = FileUtil.findFilesInDirectory(database.getImagePath());
+        List<String> possibleImages = FileUtil.findFilesInDirectory(database.getFilesPath() + "\\Receipts");
         for (Receipt receipt : database.get(Receipt.class)) {
             boolean shouldRemove = false;
             for (String name : possibleImages) {

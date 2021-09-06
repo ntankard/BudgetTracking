@@ -66,7 +66,8 @@ public class ImageToTransferPanel extends UpdatableJPanel implements ListSelecti
         this.setLayout(new BorderLayout());
 
         // Load the image
-        ImageIcon baseImage = new ImageIcon(database.getImagePath() + imagePath);
+        // TODO redo this with the database file list
+        ImageIcon baseImage = new ImageIcon(database.getFilesPath() + "\\" + "Receipts" + "\\" + imagePath);
         this.add(new ImageJPanel(baseImage), BorderLayout.CENTER);
 
         // Create Transfer Table

@@ -1,4 +1,4 @@
-package com.ntankard.budgetTracking.dispaly.frames.mainFrame.periods.individualPeriod;
+package com.ntankard.budgetTracking.display.frames.mainFrame.periods.individualPeriod;
 
 import com.ntankard.budgetTracking.dataBase.core.period.ExistingPeriod;
 import com.ntankard.budgetTracking.dataBase.core.transfer.fund.rePay.SavingsRePayFundTransfer;
