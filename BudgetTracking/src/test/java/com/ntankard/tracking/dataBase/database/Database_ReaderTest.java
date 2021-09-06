@@ -73,7 +73,7 @@ class Database_ReaderTest {
         new File(testPath).mkdir();
         new File(testPath + ROOT_DATA_PATH).mkdir();
         new File(testPath + ROOT_FILE_PATH).mkdir();
-        new File(testPath + ROOT_IMAGE_PATH).mkdir();
+        new File(testPath + ROOT_FILES_PATH).mkdir();
         save(database, testPath);
 
         String saveDir = Database_IO_Util.getLatestSaveDirectory(Main.savePath + ROOT_DATA_PATH);

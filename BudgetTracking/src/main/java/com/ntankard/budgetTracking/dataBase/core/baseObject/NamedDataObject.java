@@ -8,9 +8,7 @@ import com.ntankard.javaObjectDatabase.database.Database;
 
 public abstract class NamedDataObject extends DataObject {
 
-    //------------------------------------------------------------------------------------------------------------------
-    //################################################### Constructor ##################################################
-    //------------------------------------------------------------------------------------------------------------------
+    private static final String NamedDataObject_Prefix = "NamedDataObject_";
 
     public static final String NamedDataObject_Name = "getName";
 
@@ -21,12 +19,12 @@ public abstract class NamedDataObject extends DataObject {
         DataObject_Schema dataObjectSchema = Displayable_DataObject.getDataObjectSchema();
 
         // ID
-        // Name ========================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(NamedDataObject_Name, String.class));
+        // Children
+
+        // Name ========================================================================================================
         dataObjectSchema.get(NamedDataObject_Name).setManualCanEdit(true);
         //==============================================================================================================
-        // Parents
-        // Children
 
         return dataObjectSchema.endLayer(NamedDataObject.class);
     }
@@ -47,11 +45,7 @@ public abstract class NamedDataObject extends DataObject {
      */
     @Override
     public String toString() {
-        try {
-            return getName();
-        }catch (Exception e){
-            return "NO NAME";
-        }
+        return getName();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -60,5 +54,13 @@ public abstract class NamedDataObject extends DataObject {
 
     public String getName() {
         return get(NamedDataObject_Name);
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    //#################################################### Setters #####################################################
+    //------------------------------------------------------------------------------------------------------------------
+
+    public void setName(String name) {
+        set(NamedDataObject_Name, name);
     }
 }

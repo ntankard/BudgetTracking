@@ -1,14 +1,14 @@
 package com.ntankard.budgetTracking.dataBase.core;
 
-import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
-import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
-import com.ntankard.javaObjectDatabase.dataObject.DataObject;
-import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
-import com.ntankard.javaObjectDatabase.database.Database;
-import com.ntankard.javaObjectDatabase.database.Database_Schema;
 import com.ntankard.budgetTracking.dataBase.core.transfer.bank.BankTransfer;
+import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
+import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.interfaces.FileInterface;
+import com.ntankard.javaObjectDatabase.database.Database;
 
-public class Receipt extends DataObject {
+public class Receipt extends DataObject implements FileInterface {
 
     //------------------------------------------------------------------------------------------------------------------
     //################################################### Constructor ##################################################
@@ -60,6 +60,18 @@ public class Receipt extends DataObject {
     @Override
     public void remove() {
         super.remove_impl();
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    //################################################# Implementations ################################################
+    //------------------------------------------------------------------------------------------------------------------
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public String getContainerPath() {
+        return "Receipts";
     }
 
     //------------------------------------------------------------------------------------------------------------------
