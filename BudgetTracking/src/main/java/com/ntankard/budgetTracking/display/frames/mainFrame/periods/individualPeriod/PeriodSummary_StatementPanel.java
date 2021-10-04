@@ -9,7 +9,7 @@ import com.ntankard.budgetTracking.dataBase.core.period.Period;
 import com.ntankard.budgetTracking.dataBase.core.pool.Bank;
 import com.ntankard.budgetTracking.dataBase.core.pool.category.SolidCategory;
 import com.ntankard.budgetTracking.dataBase.core.pool.fundEvent.FundEvent;
-import com.ntankard.budgetTracking.dataBase.core.Receipt;
+import com.ntankard.budgetTracking.dataBase.core.fileManagement.receipt.Receipt;
 import com.ntankard.budgetTracking.dataBase.core.transfer.bank.BankTransfer;
 import com.ntankard.budgetTracking.dataBase.core.transfer.bank.RecurringBankTransfer;
 import com.ntankard.budgetTracking.dataBase.core.transfer.fund.FundTransfer;

@@ -1,5 +1,6 @@
 package com.ntankard.budgetTracking.dataBase.core;
 
+import com.ntankard.budgetTracking.dataBase.core.fileManagement.receipt.Receipt;
 import com.ntankard.javaObjectDatabase.exception.nonCorrupting.NonCorruptingException;
 import com.ntankard.testUtil.DataAccessUntil;
 import com.ntankard.testUtil.DataObjectTestUtil;

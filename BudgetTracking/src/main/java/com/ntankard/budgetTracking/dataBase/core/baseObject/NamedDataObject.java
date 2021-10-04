@@ -8,8 +8,6 @@ import com.ntankard.javaObjectDatabase.database.Database;
 
 public abstract class NamedDataObject extends DataObject {
 
-    private static final String NamedDataObject_Prefix = "NamedDataObject_";
-
     public static final String NamedDataObject_Name = "getName";
 
     /**

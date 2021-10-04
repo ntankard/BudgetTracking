@@ -6,7 +6,7 @@ import com.ntankard.budgetTracking.dataBase.core.Currency;
 import com.ntankard.budgetTracking.dataBase.core.period.ExistingPeriod;
 import com.ntankard.budgetTracking.dataBase.core.period.Period;
 import com.ntankard.budgetTracking.dataBase.core.pool.Bank;
-import com.ntankard.budgetTracking.dataBase.core.Receipt;
+import com.ntankard.budgetTracking.dataBase.core.fileManagement.receipt.Receipt;
 import com.ntankard.budgetTracking.dataBase.core.transfer.bank.BankTransfer;
 import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.javaObjectDatabase.util.set.TwoParent_Children_Set;
@@ -205,7 +205,7 @@ public class ExistingReceiptPanel extends UpdatableJPanel {
             // Update the image
             selectedReceipt = receiptDisplayedData.get(receipt_table.getSelectionModel().getMaxSelectionIndex());
             ImageIcon baseImage;
-            baseImage = new ImageIcon(database.getFilesPath() + "\\" + selectedReceipt.getContainerPath() + "\\" + selectedReceipt.getFileName());
+            baseImage = new ImageIcon(selectedReceipt.getFullPath());
             imageJPanel.setBaseImage(baseImage);
 
             // Update the selection panel

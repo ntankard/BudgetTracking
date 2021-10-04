@@ -59,11 +59,11 @@ public class CategorySet extends NamedDataObject implements HasDefault, Ordered 
         // CategoryToCategorySetList ===================================================================================
         dataObjectSchema.add(new ListDataField_Schema<>(CategorySet_CategoryToCategorySetList, CategoryToCategorySetList.class));
         dataObjectSchema.<List<CategoryToCategorySet>>get(CategorySet_CategoryToCategorySetList).setDataCore_schema(
-                createSelfParentList(CategoryToCategorySet.class,null));
+                createSelfParentList(CategoryToCategorySet.class, null));
         // CategoryToVirtualCategoryList ===============================================================================
         dataObjectSchema.add(new ListDataField_Schema<>(CategorySet_CategoryToVirtualCategoryList, CategoryToVirtualCategoryList.class));
         dataObjectSchema.<List<CategoryToVirtualCategory>>get(CategorySet_CategoryToVirtualCategoryList).setDataCore_schema(
-                createSelfParentList(CategoryToVirtualCategory.class,null));
+                createSelfParentList(CategoryToVirtualCategory.class, null));
         // UsedCategories ==============================================================================================
         // CategorySet_UsedCategories and CategorySet_AvailableCategories are wrong, have seen a case in the set test where the same value is in both
         dataObjectSchema.add(new ListDataField_Schema<>(CategorySet_UsedCategories, SolidCategoryList.class));
@@ -83,6 +83,7 @@ public class CategorySet extends NamedDataObject implements HasDefault, Ordered 
                         }
                         , new Step_Source_Schema<>(CategorySet_CategoryToCategorySetList, new End_Source_Schema<>(CategoryToCategorySet_SolidCategory))
                         , new Step_Source_Schema<>(CategorySet_CategoryToVirtualCategoryList, new End_Source_Schema<>(CategoryToVirtualCategory_SolidCategory))));
+        // TODO change to new method
         //==============================================================================================================
         // Parents
         // Children

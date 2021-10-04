@@ -1,0 +1,40 @@
+{
+  "extends": "DataObject",
+  "implements": "FileInterface",
+  "extendsSchema": "Displayable_DataObject",
+  "fields": [
+    {
+      "name": "FileName",
+      "type": "String",
+      "use_get_name": true
+    },
+    {
+      "name": "BankTransfer",
+      "type": "BankTransfer",
+      "database_source": true,
+      "use_get_name": true,
+      "editable": true
+    },
+    {
+      "name": "ContainerPath",
+      "type": "String",
+      "use_get_name": true,
+      "dataCore": {
+        "type": "Static",
+        "value": "Receipts"
+      }
+    },
+    {
+      "name": "FullPath",
+      "type": "String",
+      "dataCore": {
+        "type": "Derived",
+        "codeLine": "container.getTrackingDatabase().getFilesPath() + \"\\\\\" + container.getContainerPath() + \"\\\\\" + container.getFileName()",
+        "sources": [
+          "Receipt_ContainerPath",
+          "Receipt_FileName"
+        ]
+      }
+    }
+  ]
+}
