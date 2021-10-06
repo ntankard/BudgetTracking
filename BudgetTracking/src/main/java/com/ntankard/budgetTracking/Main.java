@@ -2,6 +2,7 @@ package com.ntankard.budgetTracking;
 
 import com.ntankard.budgetTracking.dataBase.core.pool.fundEvent.SavingsFundEvent;
 import com.ntankard.budgetTracking.dataBase.core.recurringPayment.FixedRecurringPayment;
+import com.ntankard.budgetTracking.processing.BudgetTracking;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.budgetTracking.display.frames.mainFrame.Master_Frame;
 import com.ntankard.javaObjectDatabase.database.Database_Schema;
@@ -41,6 +42,8 @@ public class Main {
 
     public static void main(String[] args) {
         ClassLoader.getSystemClassLoader().setDefaultAssertionStatus(true); // TODO remove
-        Master_Frame.open(createDataBase(), savePath);
+        Database database = createDataBase(getForcedDependencies());
+        BudgetTracking.process(database);
+        Master_Frame.open(database, savePath);
     }
 }

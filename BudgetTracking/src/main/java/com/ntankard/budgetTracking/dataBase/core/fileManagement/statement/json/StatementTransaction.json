@@ -1,0 +1,33 @@
+{
+  "extends": "DataObject",
+  "extendsSchema": "Displayable_DataObject",
+  "fields": [
+    {
+      "name": "StatementFolder",
+      "type": "StatementFolder",
+      "database_source": true
+    },
+    {
+      "name": "TransactionLines",
+      "listType": "TransactionLine",
+      "avoid_constructor": true,
+      "fieldType": "ListDataField_Schema",
+      "dataCore": {
+        "type": "SelfParent",
+        "classType": "TransactionLine"
+      }
+    },
+    {
+      "name": "CoreLine",
+      "type": "TransactionLine",
+      "canBeNull": true,
+      "dataCore": {
+        "type": "Derived",
+        "codeLine": "container.getTransactionLines().size() == 0 ? null : container.getTransactionLines().get(0)",
+        "sources": [
+          "StatementTransaction_TransactionLines"
+        ]
+      }
+    }
+  ]
+}

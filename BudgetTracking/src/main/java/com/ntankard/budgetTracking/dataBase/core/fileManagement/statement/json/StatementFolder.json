@@ -1,0 +1,15 @@
+{
+  "extends": "DataObject",
+  "extendsSchema": "Displayable_DataObject",
+  "fields": [
+    {
+      "name": "Period",
+      "type": "ExistingPeriod",
+      "database_source": true
+    },
+    {
+      "name": "Bank",
+      "type": "Bank"
+    }
+  ]
+}

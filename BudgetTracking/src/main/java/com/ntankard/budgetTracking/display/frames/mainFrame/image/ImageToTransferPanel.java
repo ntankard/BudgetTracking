@@ -5,7 +5,7 @@ import com.ntankard.dynamicGUI.gui.util.decoder.DoubleDecoder;
 import com.ntankard.dynamicGUI.gui.util.update.Updatable;
 import com.ntankard.dynamicGUI.gui.util.update.UpdatableJPanel;
 import com.ntankard.budgetTracking.dataBase.core.Currency;
-import com.ntankard.budgetTracking.dataBase.core.fileManagement.receipt.Receipt;
+import com.ntankard.budgetTracking.dataBase.core.fileManagement.Receipt;
 import com.ntankard.budgetTracking.dataBase.core.period.ExistingPeriod;
 import com.ntankard.budgetTracking.dataBase.core.period.Period;
 import com.ntankard.budgetTracking.dataBase.core.pool.Bank;

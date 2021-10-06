@@ -1,4 +1,4 @@
-package com.ntankard.budgetTracking.dataBase.core.fileManagement.receipt;
+package com.ntankard.budgetTracking.dataBase.core.fileManagement;
 
 import com.ntankard.budgetTracking.dataBase.core.transfer.bank.BankTransfer;
 import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
