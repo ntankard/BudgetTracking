@@ -22,6 +22,7 @@ public class TransactionLine extends DataObject {
     public static final String TransactionLine_Value = TransactionLine_Prefix + "Value";
     public static final String TransactionLine_Description = TransactionLine_Prefix + "Description";
     public static final String TransactionLine_StatementTransaction = TransactionLine_Prefix + "StatementTransaction";
+    public static final String TransactionLine_RawLine = TransactionLine_Prefix + "RawLine";
 
     /**
      * Get all the fields for this object
@@ -36,6 +37,7 @@ public class TransactionLine extends DataObject {
         dataObjectSchema.add(new DataField_Schema<>(TransactionLine_Value, Double.class));
         dataObjectSchema.add(new DataField_Schema<>(TransactionLine_Description, String.class));
         dataObjectSchema.add(new DataField_Schema<>(TransactionLine_StatementTransaction, StatementTransaction.class, true));
+        dataObjectSchema.add(new DataField_Schema<>(TransactionLine_RawLine, String.class));
         // Children
 
         // StatementTransaction ========================================================================================
@@ -55,7 +57,7 @@ public class TransactionLine extends DataObject {
     /**
      * Constructor
      */
-    public TransactionLine(StatementDocument statementDocument, Period period, Date date, Double value, String description, StatementTransaction statementTransaction) {
+    public TransactionLine(StatementDocument statementDocument, Period period, Date date, Double value, String description, StatementTransaction statementTransaction, String rawLine) {
         this(statementDocument.getTrackingDatabase());
         setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
                 , TransactionLine_StatementDocument, statementDocument
@@ -64,6 +66,7 @@ public class TransactionLine extends DataObject {
                 , TransactionLine_Value, value
                 , TransactionLine_Description, description
                 , TransactionLine_StatementTransaction, statementTransaction
+                , TransactionLine_RawLine, rawLine
         );
     }
 
@@ -93,6 +96,10 @@ public class TransactionLine extends DataObject {
 
     public StatementTransaction getStatementTransaction() {
         return get(TransactionLine_StatementTransaction);
+    }
+
+    public String getRawLine() {
+        return get(TransactionLine_RawLine);
     }
 
     //------------------------------------------------------------------------------------------------------------------

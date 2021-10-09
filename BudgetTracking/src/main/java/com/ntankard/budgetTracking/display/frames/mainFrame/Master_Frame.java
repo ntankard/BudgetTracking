@@ -1,5 +1,6 @@
 package com.ntankard.budgetTracking.display.frames.mainFrame;
 
+import com.ntankard.budgetTracking.display.frames.mainFrame.statement.StatementPanel;
 import com.ntankard.dynamicGUI.gui.util.containers.ButtonPanel;
 import com.ntankard.dynamicGUI.gui.util.update.Updatable;
 import com.ntankard.budgetTracking.dataBase.core.period.ExistingPeriod;
@@ -26,6 +27,7 @@ public class Master_Frame extends JPanel implements Updatable {
     private RecurringPaymentPanel recurringPaymentPanel;
     private CategorySetPanel categorySetPanel;
     private BankSummaryPanel bankSummaryPanel;
+    private StatementPanel statementPanel;
 
     private final String savePath;
 
@@ -96,7 +98,8 @@ public class Master_Frame extends JPanel implements Updatable {
         receiptPanel = new ReceiptPanel(database, this);
         recurringPaymentPanel = new RecurringPaymentPanel(database, this);
         categorySetPanel = new CategorySetPanel(database, this);
-        bankSummaryPanel = new BankSummaryPanel(database,this);
+        bankSummaryPanel = new BankSummaryPanel(database, this);
+        statementPanel = new StatementPanel(database, this);
 
         JTabbedPane master_tPanel = new JTabbedPane();
         master_tPanel.addTab("Periods", periodPanel);
@@ -108,6 +111,7 @@ public class Master_Frame extends JPanel implements Updatable {
         master_tPanel.addTab("Recurring Payments", recurringPaymentPanel);
         master_tPanel.addTab("Category Set", categorySetPanel);
         master_tPanel.addTab("Banks", bankSummaryPanel);
+        master_tPanel.addTab("Statement", statementPanel);
 
         this.add(master_tPanel, BorderLayout.CENTER);
     }
@@ -134,5 +138,6 @@ public class Master_Frame extends JPanel implements Updatable {
         recurringPaymentPanel.update();
         categorySetPanel.update();
         bankSummaryPanel.update();
+        statementPanel.update();
     }
 }

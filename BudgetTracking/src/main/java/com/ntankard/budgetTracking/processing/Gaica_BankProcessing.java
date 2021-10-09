@@ -10,15 +10,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import static com.ntankard.javaObjectDatabase.util.FileUtil.readLines;
+import static com.ntankard.javaObjectDatabase.util.FileUtil.readRawLines;
 
 public class Gaica_BankProcessing {
 
     public static List<TransactionLine> processGaica(StatementDocument statementDocument, Map<String, ExistingPeriod> periodMap) {
         List<TransactionLine> toReturn = new ArrayList<>();
-        List<String[]> lines = readLines(statementDocument.getFullPath());
-        for (String[] line : lines) {
-
+        String cvsSplitBy = ",";
+        List<String> rawLines = readRawLines(statementDocument.getFullPath());
+        for (String rawLine : rawLines) {
+            String[] line = rawLine.split(cvsSplitBy);
             if (line.length == 4 || line.length == 3) {
                 try {
                     Date date = new SimpleDateFormat("yyyy/MM/dd").parse(line[0]);
@@ -36,7 +37,7 @@ public class Gaica_BankProcessing {
                     valueString = valueString.replace("\"", "");
                     Double value = Double.parseDouble(valueString);
 
-                    toReturn.add(new TransactionLine(statementDocument, period, date, value, description, null).add());
+                    toReturn.add(new TransactionLine(statementDocument, period, date, value, description, null, rawLine).add());
                 } catch (Exception ignored) {
 
                 }

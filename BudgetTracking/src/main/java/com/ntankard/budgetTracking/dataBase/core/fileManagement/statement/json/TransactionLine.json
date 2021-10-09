@@ -29,6 +29,10 @@
       "type": "StatementTransaction",
       "canBeNull": true,
       "editable": true
+    },
+    {
+      "name": "RawLine",
+      "type": "String"
     }
   ]
 }
