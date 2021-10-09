@@ -2,6 +2,7 @@ package com.ntankard.budgetTracking.display.frames.mainFrame.statement;
 
 import com.ntankard.budgetTracking.dataBase.core.fileManagement.statement.StatementDocument;
 import com.ntankard.budgetTracking.dataBase.core.fileManagement.statement.StatementFolder;
+import com.ntankard.budgetTracking.dataBase.core.fileManagement.statement.StatementTransaction;
 import com.ntankard.budgetTracking.dataBase.core.fileManagement.statement.TransactionLine;
 import com.ntankard.budgetTracking.dataBase.core.period.ExistingPeriod;
 import com.ntankard.budgetTracking.dataBase.core.period.Period;
@@ -64,8 +65,9 @@ public class FileCheckPanel extends UpdatableJPanel {
                     }
 
                     // Generate each files comparison table
+                    bankPanes.get(folder.getBank()).addTab("All", new JScrollPane(generateCombinedFile(folder)));
                     for (StatementDocument document : folder.getChildren(StatementDocument.class)) {
-                        bankPanes.get(folder.getBank()).addTab(document.getFileName(), new JScrollPane(generate(document)));
+                        bankPanes.get(folder.getBank()).addTab(document.getFileName(), new JScrollPane(generateIndividualFile(document)));
                     }
                 }
                 master_tPanel.addTab(period.toString(), period_tPanel);
@@ -75,7 +77,65 @@ public class FileCheckPanel extends UpdatableJPanel {
         this.add(master_tPanel, BorderLayout.CENTER);
     }
 
-    private JPanel generate(StatementDocument statementDocument) {
+    private JPanel generateCombinedFile(StatementFolder folder) {
+        JPanel toReturn = new JPanel(new BorderLayout());
+        List<StatementDocument> documents = folder.getChildren(StatementDocument.class);
+        List<StatementTransaction> transactions = folder.getChildren(StatementTransaction.class);
+        String[] columnNames = new String[documents.size()];
+        Object[][] data = new Object[transactions.size()][documents.size()];
+
+        int i = 0;
+        for (StatementDocument document : documents) {
+            columnNames[i++] = document.getFileName();
+        }
+
+        int row = 0;
+        for (StatementTransaction transaction : transactions) {
+            List<TransactionLine> lines = transaction.getChildren(TransactionLine.class);
+            int col = 0;
+            for (StatementDocument document : documents) {
+                TransactionLine match = null;
+
+                // See if this file has this transaction
+                for (TransactionLine line : lines) {
+                    if (line.getStatementDocument().equals(document)) {
+                        match = line;
+                        break;
+                    }
+                }
+
+                if (match != null) {
+                    lines.remove(match);
+                    data[row][col] = match.getRawLine();
+                }
+                col++;
+            }
+            row++;
+        }
+
+        // Highlight missing data
+        JTable table = new JTable(data, columnNames) {
+            @Override
+            public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+                Component comp = super.prepareRenderer(renderer, row, column);
+                if (data[row][column] == null) {
+                    comp.setBackground(Color.red);
+                } else {
+                    comp.setBackground(Color.white);
+                }
+                return comp;
+            }
+        };
+
+        // Resize to match data
+        TableColumnAdjuster tableColumnAdjuster = new TableColumnAdjuster(table);
+        tableColumnAdjuster.adjustColumns();
+
+        toReturn.add(table, BorderLayout.CENTER);
+        return toReturn;
+    }
+
+    private JPanel generateIndividualFile(StatementDocument statementDocument) {
         JPanel toReturn = new JPanel(new BorderLayout());
         List<String> lines = readRawLines(statementDocument.getFullPath());
         String[] columnNames = {"Raw",
