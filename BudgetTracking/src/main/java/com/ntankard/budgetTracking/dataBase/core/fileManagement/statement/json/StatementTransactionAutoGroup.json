@@ -1,0 +1,22 @@
+{
+  "extends": "DataObject",
+  "extendsSchema": "Displayable_DataObject",
+  "fields": [
+    {
+      "name": "Bank",
+      "type": "Bank",
+      "database_source": true,
+      "editable": true
+    },
+    {
+      "name": "Regex",
+      "type": "String",
+      "editable": true
+    },
+    {
+      "name": "Name",
+      "type": "String",
+      "editable": true
+    }
+  ]
+}

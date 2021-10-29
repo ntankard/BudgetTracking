@@ -11,6 +11,7 @@ public class StatementPanel extends UpdatableJPanel {
 
     // The GUI components
     private FileCheckPanel fileCheckPanel;
+    private GroupPanel groupPanel;
 
     // Core database
     private final Database database;
@@ -32,9 +33,11 @@ public class StatementPanel extends UpdatableJPanel {
         this.setLayout(new BorderLayout());
 
         fileCheckPanel = new FileCheckPanel(database, this);
+        groupPanel = new GroupPanel(database, this);
 
         JTabbedPane master_tPanel = new JTabbedPane();
         master_tPanel.addTab("File", fileCheckPanel);
+        master_tPanel.addTab("Group", groupPanel);
 
         this.add(master_tPanel, BorderLayout.CENTER);
     }
@@ -45,5 +48,6 @@ public class StatementPanel extends UpdatableJPanel {
     @Override
     public void update() {
         fileCheckPanel.update();
+        groupPanel.update();
     }
 }
