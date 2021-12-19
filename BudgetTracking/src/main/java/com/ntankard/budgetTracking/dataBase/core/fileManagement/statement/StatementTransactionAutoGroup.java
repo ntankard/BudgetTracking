@@ -1,6 +1,7 @@
 package com.ntankard.budgetTracking.dataBase.core.fileManagement.statement;
 
 import com.ntankard.budgetTracking.dataBase.core.pool.Bank;
+import com.ntankard.budgetTracking.dataBase.core.pool.Pool;
 import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject;
@@ -14,6 +15,7 @@ public class StatementTransactionAutoGroup extends DataObject {
     public static final String StatementTransactionAutoGroup_Bank = StatementTransactionAutoGroup_Prefix + "Bank";
     public static final String StatementTransactionAutoGroup_Regex = StatementTransactionAutoGroup_Prefix + "Regex";
     public static final String StatementTransactionAutoGroup_Name = StatementTransactionAutoGroup_Prefix + "Name";
+    public static final String StatementTransactionAutoGroup_Pool = StatementTransactionAutoGroup_Prefix + "Pool";
 
     /**
      * Get all the fields for this object
@@ -25,6 +27,7 @@ public class StatementTransactionAutoGroup extends DataObject {
         dataObjectSchema.add(new DataField_Schema<>(StatementTransactionAutoGroup_Bank, Bank.class));
         dataObjectSchema.add(new DataField_Schema<>(StatementTransactionAutoGroup_Regex, String.class));
         dataObjectSchema.add(new DataField_Schema<>(StatementTransactionAutoGroup_Name, String.class));
+        dataObjectSchema.add(new DataField_Schema<>(StatementTransactionAutoGroup_Pool, Pool.class));
         // Children
 
         // Bank ========================================================================================================
@@ -33,6 +36,8 @@ public class StatementTransactionAutoGroup extends DataObject {
         dataObjectSchema.get(StatementTransactionAutoGroup_Regex).setManualCanEdit(true);
         // Name ========================================================================================================
         dataObjectSchema.get(StatementTransactionAutoGroup_Name).setManualCanEdit(true);
+        // Pool ========================================================================================================
+        dataObjectSchema.get(StatementTransactionAutoGroup_Pool).setManualCanEdit(true);
         //==============================================================================================================
 
         return dataObjectSchema.finaliseContainer(StatementTransactionAutoGroup.class);
@@ -48,12 +53,13 @@ public class StatementTransactionAutoGroup extends DataObject {
     /**
      * Constructor
      */
-    public StatementTransactionAutoGroup(Bank bank, String regex, String name) {
+    public StatementTransactionAutoGroup(Bank bank, String regex, String name, Pool pool) {
         this(bank.getTrackingDatabase());
         setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
                 , StatementTransactionAutoGroup_Bank, bank
                 , StatementTransactionAutoGroup_Regex, regex
                 , StatementTransactionAutoGroup_Name, name
+                , StatementTransactionAutoGroup_Pool, pool
         );
     }
 
@@ -73,6 +79,10 @@ public class StatementTransactionAutoGroup extends DataObject {
         return get(StatementTransactionAutoGroup_Name);
     }
 
+    public Pool getPool() {
+        return get(StatementTransactionAutoGroup_Pool);
+    }
+
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Setters #####################################################
     //------------------------------------------------------------------------------------------------------------------
@@ -87,5 +97,9 @@ public class StatementTransactionAutoGroup extends DataObject {
 
     public void setName(String name) {
         set(StatementTransactionAutoGroup_Name, name);
+    }
+
+    public void setPool(Pool pool) {
+        set(StatementTransactionAutoGroup_Pool, pool);
     }
 }

@@ -12,9 +12,9 @@ import java.util.Map;
 
 import static com.ntankard.javaObjectDatabase.util.FileUtil.readRawLines;
 
-public class Gaica_BankProcessing {
+public class Rakuten_BankProcessing {
 
-    public static List<TransactionLine> processGaica(StatementDocument statementDocument, Map<String, ExistingPeriod> periodMap) {
+    public static List<TransactionLine> processRakuten(StatementDocument statementDocument, Map<String, ExistingPeriod> periods) {
         List<TransactionLine> toReturn = new ArrayList<>();
         String cvsSplitBy = ",";
 
@@ -25,23 +25,18 @@ public class Gaica_BankProcessing {
             // Separate each line
             String[] line = rawLine.split(cvsSplitBy);
             //noinspection StatementWithEmptyBody
-            if (line.length == 4 || line.length == 3) {
+            if (line.length == 10 || line.length == 11) {
                 try {
                     // Process Date
-                    Date date = new SimpleDateFormat("yyyy/MM/dd").parse(line[0]);
-                    ExistingPeriod period = periodMap.get(new SimpleDateFormat("yy-MM").format(date));
+                    Date date = new SimpleDateFormat("yyyy/MM/dd").parse(line[0].replace("\"", ""));
+                    ExistingPeriod period = periods.get(new SimpleDateFormat("yy-MM").format(date));
 
                     // Process Description
-                    String description = line[1];
+                    String description = line[1].replace("\"", "").replace("ＶＩＳＡ国内利用　VS ", "");
 
                     // Process Value
                     String valueString;
-                    if (line.length == 3) {
-                        valueString = line[2];
-                    } else {
-                        valueString = line[2] + line[3];
-                    }
-                    valueString = valueString.replace("\"", "");
+                    valueString = line[4].replace("\"", "");
                     Double value = Double.parseDouble(valueString);
 
                     // Create line

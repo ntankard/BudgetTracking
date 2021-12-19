@@ -17,6 +17,11 @@
       "name": "Name",
       "type": "String",
       "editable": true
+    },
+    {
+      "name": "Pool",
+      "type": "Pool",
+      "editable": true
     }
   ]
 }

@@ -17,12 +17,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.ntankard.budgetTracking.processing.Gaica_BankProcessing.processGaica;
+import static com.ntankard.budgetTracking.processing.Rakuten_BankProcessing.processRakuten;
+
 public class BudgetTracking {
+
+    /**
+     * Do all preprocessing needed on the database before operations
+     *
+     * @param database The core database to setup
+     */
     public static void process(Database database) {
         loadStatements(database);
     }
 
+    /**
+     * Process all new statements documents that are not know about
+     *
+     * @param database The core database
+     */
     public static void loadStatements(Database database) {
+
         // Map all the periods so we can find it based on folder name
         Map<String, ExistingPeriod> periodMap = new HashMap<>();
         for (ExistingPeriod existingPeriod : database.get(ExistingPeriod.class)) {
@@ -56,12 +71,21 @@ public class BudgetTracking {
             List<String> files = folder.getChildData();
             files.sort(String::compareTo);
             TreeNode<String> file = folder.getChild(files.get(0));
+            String path = statement.data + "\\" + bankFolder.data + "\\" + folder.data;
 
-            // Remove unneeded files
+            // Remove any files in sub directories
             if (file.size() != 0) {
                 TreeNode<String> subFile = file.children.get(0);
-                String path = statement.data + "\\" + bankFolder.data + "\\" + folder.data + "\\" + file.data;
-                new UnusedFile(database, subFile.data, path).add();
+                String subPath = statement.data + "\\" + bankFolder.data + "\\" + folder.data + "\\" + file.data;
+                new UnusedFile(database, subFile.data, subPath).add();
+
+                // Check if any instances are left
+                statement = database.getFileMap().getFolderTree().getChild("Statement");
+                continue;
+            }
+            // Remove any PDF copies
+            if (file.data.endsWith(".pdf")) {
+                new UnusedFile(database, file.data, path).add();
 
                 // Check if any instances are left
                 statement = database.getFileMap().getFolderTree().getChild("Statement");
@@ -76,7 +100,6 @@ public class BudgetTracking {
             } else if (bankFolder.data.equals("Rakuten")) {
                 bank = rakuten;
             }
-            String path = statement.data + "\\" + bankFolder.data + "\\" + folder.data;
             StatementDocument past = null;
 
             // Find the existing folder or make one
@@ -106,52 +129,76 @@ public class BudgetTracking {
         }
     }
 
+    /**
+     * Read all lines of a file and map them to, or create new StatementTransaction
+     *
+     * @param statementDocument The document to parse
+     * @param periodMap         All know periods maps to decode
+     */
     public static void processStatementDocument(StatementDocument statementDocument, Map<String, ExistingPeriod> periodMap) {
+
+        // Read the raw lines
+        List<TransactionLine> lines;
         if (statementDocument.getStatementFolder().getBank().getName().equals("Gaica-Jap")) {
-            List<TransactionLine> created = Gaica_BankProcessing.processGaica(statementDocument, periodMap);
+            lines = processGaica(statementDocument, periodMap);
+        } else if (statementDocument.getStatementFolder().getBank().getName().equals("Rakuten")) {
+            lines = processRakuten(statementDocument, periodMap);
+        } else {
+            return;
+        }
+        if (lines.size() == 0) {
+            return;
+        }
 
-            if (statementDocument.getPastInstance() == null) {  // First document for this period, add all lines
-                for (TransactionLine line : created) {
-                    StatementTransaction group = new StatementTransaction(statementDocument.getStatementFolder()).add();
-                    line.setStatementTransaction(group);
-                }
-            } else { // Map to existing lines
-                List<StatementTransaction> existing = new OneParent_Children_Set<>(StatementTransaction.class, statementDocument.getStatementFolder()).get();
+        // Generate and link the StatementTransactions
+        if (statementDocument.getPastInstance() == null) {  // First document for this period, add all lines
+            for (TransactionLine line : lines) {
+                StatementTransaction group = new StatementTransaction(null, statementDocument.getStatementFolder()).add();
+                line.setStatementTransaction(group);
+            }
+        } else { // Map to existing lines
+            List<StatementTransaction> existing = new OneParent_Children_Set<>(StatementTransaction.class, statementDocument.getStatementFolder()).get();
 
-                int oldKey = 0;
-                int newKey = 0;
+            int oldKey = 0;
+            int newKey = 0;
 
-                while (true) {
-                    if (oldKey == existing.size()) {
-                        TransactionLine line = created.get(newKey);
-                        StatementTransaction newGroup = new StatementTransaction(statementDocument.getStatementFolder()).add();
+            while (true) {
+                if (oldKey == existing.size()) { // New files after the end of the old list
+                    TransactionLine line = lines.get(newKey);
+                    StatementTransaction newGroup = new StatementTransaction(null, statementDocument.getStatementFolder()).add();
+                    line.setStatementTransaction(newGroup);
+                    newKey++;
+                } else {
+                    StatementTransaction group = existing.get(oldKey);
+                    TransactionLine line = lines.get(newKey);
+                    if (matches(group, line)) { // Matched line
+                        oldKey++;
+                        newKey++;
+                        line.setStatementTransaction(group);
+                    } else { // New line
+                        StatementTransaction newGroup = new StatementTransaction(null, statementDocument.getStatementFolder()).add();
                         line.setStatementTransaction(newGroup);
                         newKey++;
-                    } else {
-                        StatementTransaction group = existing.get(oldKey);
-                        TransactionLine line = created.get(newKey);
-                        if (matches(group, line)) {
-                            oldKey++;
-                            newKey++;
-                            line.setStatementTransaction(group);
-                        } else {
-                            StatementTransaction newGroup = new StatementTransaction(statementDocument.getStatementFolder()).add();
-                            line.setStatementTransaction(newGroup);
-                            newKey++;
-                        }
                     }
+                }
 
-                    if (newKey == created.size()) {
-                        if (oldKey < existing.size()) {
-                            throw new NonCorruptingException("A line has been removed in a subsequent statement");
-                        }
-                        break;
+                if (newKey == lines.size()) {
+                    if (oldKey < existing.size()) {
+                        throw new NonCorruptingException("A line has been removed in a subsequent statement");
                     }
+                    break;
                 }
             }
         }
     }
 
+    /**
+     * Check if a line in a file matches an existing transaction
+     *
+     * @param oldLine The transaction to match to
+     * @param newLine The new line to test
+     * @return True of the lines match
+     */
     public static boolean matches(StatementTransaction oldLine, TransactionLine newLine) {
         if (!oldLine.getCoreLine().getDate().equals(newLine.getDate())) {
             return false;

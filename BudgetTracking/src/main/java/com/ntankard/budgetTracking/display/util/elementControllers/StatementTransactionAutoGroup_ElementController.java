@@ -2,6 +2,7 @@ package com.ntankard.budgetTracking.display.util.elementControllers;
 
 import com.ntankard.budgetTracking.dataBase.core.fileManagement.statement.StatementTransactionAutoGroup;
 import com.ntankard.budgetTracking.dataBase.core.pool.Bank;
+import com.ntankard.budgetTracking.dataBase.core.pool.Pool;
 import com.ntankard.dynamicGUI.gui.containers.Database_ElementController;
 import com.ntankard.dynamicGUI.gui.util.update.Updatable;
 import com.ntankard.javaObjectDatabase.database.Database;
@@ -26,7 +27,7 @@ public class StatementTransactionAutoGroup_ElementController extends Database_El
      */
     @Override
     public StatementTransactionAutoGroup newElement() {
-        return new StatementTransactionAutoGroup(bank, "", "");
+        return new StatementTransactionAutoGroup(bank, "", "", bank.getTrackingDatabase().getDefault(Pool.class));
     }
 
     /**

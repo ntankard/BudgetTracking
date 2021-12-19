@@ -17,17 +17,20 @@ import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static com.ntankard.javaObjectDatabase.util.FileUtil.readRawLines;
 
-
 public class FileCheckPanel extends UpdatableJPanel {
 
     // Core database
     private final Database database;
+
+    // The GUI components
+    private final List<TransactionMappingPanel> transactionMappingPanelList = new ArrayList<>();
 
     /**
      * Constructor
@@ -63,11 +66,16 @@ public class FileCheckPanel extends UpdatableJPanel {
                         bankPanes.put(folder.getBank(), new JTabbedPane());
                         period_tPanel.addTab(folder.getBank().toString(), bankPanes.get(folder.getBank()));
                     }
+                    JTabbedPane files = new JTabbedPane();
+                    TransactionMappingPanel transactionMappingPanel = new TransactionMappingPanel(folder, this);
+                    transactionMappingPanelList.add(transactionMappingPanel);
+                    bankPanes.get(folder.getBank()).addTab("TransactionMapping", transactionMappingPanel);
+                    bankPanes.get(folder.getBank()).addTab("Files", files);
 
                     // Generate each files comparison table
-                    bankPanes.get(folder.getBank()).addTab("All", new JScrollPane(generateCombinedFile(folder)));
+                    files.addTab("All", new JScrollPane(generateCombinedFile(folder)));
                     for (StatementDocument document : folder.getChildren(StatementDocument.class)) {
-                        bankPanes.get(folder.getBank()).addTab(document.getFileName(), new JScrollPane(generateIndividualFile(document)));
+                        files.addTab(document.getFileName(), new JScrollPane(generateIndividualFile(document)));
                     }
                 }
                 master_tPanel.addTab(period.toString(), period_tPanel);
@@ -150,11 +158,12 @@ public class FileCheckPanel extends UpdatableJPanel {
         int lineIndex = 0;
 
         for (int i = 0; i < lines.size(); i++) {
-            data[i][0] = lines.get(i);
+            String lineData = lines.get(i).replace(',', ';');
+            data[i][0] = lineData;
 
             if (lineIndex < transactionLines.size()) {
                 TransactionLine transactionLine = transactionLines.get(lineIndex);
-                if (lines.get(i).equals(transactionLine.getRawLine())) {
+                if (lineData.equals(transactionLine.getRawLine())) {
 
                     data[i][1] = new SimpleDateFormat("yyyy/MM/dd").format(transactionLine.getDate());
                     data[i][2] = transactionLine.getDescription();
@@ -196,6 +205,7 @@ public class FileCheckPanel extends UpdatableJPanel {
      */
     @Override
     public void update() {
-
+        // TODO not everything is updated here, you need to regen the custom table as well
+        transactionMappingPanelList.forEach(TransactionMappingPanel::update);
     }
 }

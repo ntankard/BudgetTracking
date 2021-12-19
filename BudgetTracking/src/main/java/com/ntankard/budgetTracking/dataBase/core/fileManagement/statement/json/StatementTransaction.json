@@ -1,12 +1,9 @@
 {
   "extends": "DataObject",
   "extendsSchema": "Displayable_DataObject",
+  "implements": "CurrencyBound",
+  "listDef": true,
   "fields": [
-    {
-      "name": "StatementFolder",
-      "type": "StatementFolder",
-      "database_source": true
-    },
     {
       "name": "TransactionLines",
       "listType": "TransactionLine",
@@ -15,6 +12,11 @@
       "dataCore": {
         "type": "SelfParent",
         "classType": "TransactionLine"
+      },
+      "properties": {
+        "Display_Properties": [
+          "setVerbosityLevel(Display_Properties.INFO_DISPLAY)"
+        ]
       }
     },
     {
@@ -26,6 +28,82 @@
         "codeLine": "container.getTransactionLines().size() == 0 ? null : container.getTransactionLines().get(0)",
         "sources": [
           "StatementTransaction_TransactionLines"
+        ]
+      },
+      "properties": {
+        "Display_Properties": [
+          "setVerbosityLevel(Display_Properties.INFO_DISPLAY)"
+        ]
+      }
+    },
+    {
+      "name": "Value",
+      "type": "Double",
+      "dataCore": {
+        "type": "DirectDerived",
+        "sources": "StatementTransaction_CoreLine, TransactionLine_Value",
+        "default": 0.0
+      },
+      "properties": {
+        "Display_Properties": [
+          "setDataType(CURRENCY)"
+        ]
+      }
+    },
+    {
+      "name": "Description",
+      "type": "String",
+      "dataCore": {
+        "type": "DirectDerived",
+        "sources": "StatementTransaction_CoreLine, TransactionLine_Description",
+        "default": "\"\""
+      }
+    },
+    {
+      "name": "Currency",
+      "type": "Currency",
+      "dataCore": {
+        "type": "DirectDerived",
+        "sources": "StatementTransaction_CoreLine, TransactionLine_StatementDocument, StatementDocument_StatementFolder, StatementFolder_Bank, Bank_Currency",
+        "default": "container -> container.getTrackingDatabase().getDefault(Currency.class)"
+      },
+      "properties": {
+        "Display_Properties": [
+          "setVerbosityLevel(Display_Properties.INFO_DISPLAY)"
+        ]
+      }
+    },
+    {
+      "name": "StatementBankTransfer",
+      "type": "StatementBankTransfer",
+      "canBeNull": true,
+      "editable": true
+    },
+    {
+      "name": "Bank",
+      "type": "Bank",
+      "dataCore": {
+        "type": "DirectDerived",
+        "sources": "StatementTransaction_CoreLine, TransactionLine_StatementDocument, StatementDocument_StatementFolder, StatementFolder_Bank",
+        "default": "container -> container.getTrackingDatabase().getDefault(Bank.class)"
+      }
+    },
+    {
+      "name": "Period",
+      "type": "Period",
+      "dataCore": {
+        "type": "DirectDerived",
+        "sources": "StatementTransaction_CoreLine, TransactionLine_Period",
+        "default": "container -> container.getTrackingDatabase().getDefault(Period.class)"
+      }
+    },
+    {
+      "name": "StatementFolder",
+      "type": "StatementFolder",
+      "database_source": true,
+      "properties": {
+        "Display_Properties": [
+          "setCustomColor((rowObject, value) -> ((StatementTransaction)rowObject).getPeriod() == ((StatementTransaction)rowObject).getStatementFolder().getPeriod() ? null : Color.ORANGE)"
         ]
       }
     }
