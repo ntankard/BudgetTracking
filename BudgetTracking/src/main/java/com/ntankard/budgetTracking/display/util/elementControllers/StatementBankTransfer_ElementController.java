@@ -26,6 +26,6 @@ public class StatementBankTransfer_ElementController extends Database_ElementCon
      */
     @Override
     public StatementBankTransfer newElement() {
-        return new StatementBankTransfer(statementFolder.getPeriod(), statementFolder.getBank(), null, getTrackingDatabase().getDefault(SolidCategory.class), "", null);
+        return new StatementBankTransfer(statementFolder.getPeriod(), statementFolder.getBank(), null, getTrackingDatabase().getDefault(SolidCategory.class), "", null, 1.0);
     }
 }

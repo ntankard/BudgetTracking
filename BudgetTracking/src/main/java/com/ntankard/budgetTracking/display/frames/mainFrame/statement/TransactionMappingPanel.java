@@ -5,6 +5,7 @@ import com.ntankard.budgetTracking.dataBase.core.fileManagement.statement.Statem
 import com.ntankard.budgetTracking.dataBase.core.fileManagement.statement.StatementTransactionAutoGroup;
 import com.ntankard.budgetTracking.dataBase.core.period.Period;
 import com.ntankard.budgetTracking.dataBase.core.pool.Bank;
+import com.ntankard.budgetTracking.dataBase.core.pool.category.SolidCategory;
 import com.ntankard.budgetTracking.dataBase.core.transfer.bank.StatementBankTransfer;
 import com.ntankard.budgetTracking.display.util.elementControllers.StatementBankTransfer_ElementController;
 import com.ntankard.budgetTracking.display.util.panels.DataObject_DisplayList;
@@ -20,8 +21,8 @@ import com.ntankard.javaObjectDatabase.util.set.TwoParent_Children_Set;
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.text.NumberFormat;
+import java.util.*;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -97,6 +98,16 @@ public class TransactionMappingPanel extends UpdatableJPanel {
         JButton auto_btn = new JButton("Auto");
         auto_btn.addActionListener(e -> autoAssign());
         unlinked_statementTransaction_list.addButton(auto_btn);
+        ListControl_Button<?> single_btn = new ListControl_Button<>("Single", unlinked_statementTransaction_list, ListControl_Button.EnableCondition.SINGLE, false);
+        single_btn.addActionListener(e -> single());
+        unlinked_statementTransaction_list.addButton(single_btn);
+        JButton print_btn = new JButton("Print");
+        print_btn.addActionListener(e -> printReport());
+        unlinked_statementTransaction_list.addButton(print_btn);
+        JButton remain_btn = new JButton("Remaining");
+        remain_btn.addActionListener(e -> groupRemaining());
+        unlinked_statementTransaction_list.addButton(remain_btn);
+
 
         // List of StatementTransaction linked to StatementBankTransfer
         linked_statementTransaction_set = new OneParent_Children_Set<>(StatementTransaction.class, null);
@@ -155,7 +166,7 @@ public class TransactionMappingPanel extends UpdatableJPanel {
 
                         List<StatementBankTransfer> existing = new TwoParent_Children_Set<>(StatementBankTransfer.class, group, statementFolder.getPeriod()).get();
                         if (existing.isEmpty()) {
-                            statementBankTransfer = new StatementBankTransfer(statementFolder.getPeriod(), statementFolder.getBank(), null, group.getPool(), "G-" + group.getName(), group).add();
+                            statementBankTransfer = new StatementBankTransfer(statementFolder.getPeriod(), statementFolder.getBank(), null, group.getPool(), "G-" + group.getName(), group, 1.0).add();
                         } else if (existing.size() == 1) {
                             statementBankTransfer = existing.get(0);
                         } else {
@@ -194,6 +205,65 @@ public class TransactionMappingPanel extends UpdatableJPanel {
             }
             update();
         }
+    }
+
+    /**
+     * Call back for the single button. Create a single StatementBankTransfer from a StatementTransaction
+     */
+    private void single() {
+        StatementTransaction toLink = selectedUnlinkedStatementTransaction.get(0);
+        StatementBankTransfer newTransfer = new StatementBankTransfer(statementFolder.getPeriod(), statementFolder.getBank(), null, database.getDefault(SolidCategory.class), "G-" + toLink.getDescription(), null, 1.0).add();
+        toLink.setStatementBankTransfer(newTransfer);
+        update();
+        statementBankTransfer_list.getMainPanel().setSelectedItems(Collections.singletonList(newTransfer));
+        update();
+    }
+
+    /**
+     * Call back for the print button. Prints a report of all the unassigned transactions
+     */
+    private void printReport() {
+        List<StatementTransaction> unlinked = unlinked_statementTransaction_set.get();
+        Double total = 0.0;
+        Map<String, StatementTransaction> names = new HashMap<>();
+        Map<String, Double> totals = new HashMap<>();
+        Map<String, Integer> counts = new HashMap<>();
+        for (StatementTransaction statementTransaction : unlinked) {
+            if (!names.containsKey(statementTransaction.getDescription())) {
+                names.put(statementTransaction.getDescription(), statementTransaction);
+
+            }
+            totals.putIfAbsent(statementTransaction.getDescription(), 0.0);
+            counts.putIfAbsent(statementTransaction.getDescription(), 0);
+
+            totals.put(statementTransaction.getDescription(), totals.get(statementTransaction.getDescription()) + statementTransaction.getValue());
+            counts.put(statementTransaction.getDescription(), counts.get(statementTransaction.getDescription()) + 1);
+            total += statementTransaction.getValue();
+        }
+
+        List<Map.Entry<String, Integer>> list = new ArrayList<>(counts.entrySet());
+        list.sort((o1, o2) -> {
+            int comp = o2.getValue().compareTo(o1.getValue());
+            if (comp == 0) {
+                return totals.get(o2.getKey()).compareTo(totals.get(o1.getKey()));
+            }
+            return comp;
+        });
+
+        list.forEach(stringIntegerEntry -> System.out.println(stringIntegerEntry.getValue() + " " + NumberFormat.getCurrencyInstance(Locale.JAPAN).format(totals.get(stringIntegerEntry.getKey())) + " " + stringIntegerEntry.getKey()));
+        System.out.println();
+        System.out.println(NumberFormat.getCurrencyInstance(Locale.JAPAN).format(total));
+    }
+
+    /**
+     * Call back for the remaining button. Groups all remaining transaction into an accounted one
+     */
+    private void groupRemaining() {
+        StatementBankTransfer newTransfer = new StatementBankTransfer(statementFolder.getPeriod(), statementFolder.getBank(), null, database.getDefault(SolidCategory.class), "G-Other", null, 1.0).add();
+        unlinked_statementTransaction_set.get().forEach(statementTransaction -> statementTransaction.setStatementBankTransfer(newTransfer));
+        update();
+        statementBankTransfer_list.getMainPanel().setSelectedItems(Collections.singletonList(newTransfer));
+        update();
     }
 
     /**

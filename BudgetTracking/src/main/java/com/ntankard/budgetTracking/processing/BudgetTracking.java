@@ -84,7 +84,7 @@ public class BudgetTracking {
                 continue;
             }
             // Remove any PDF copies
-            if (file.data.endsWith(".pdf")) {
+            if (!file.data.endsWith(".csv")) {
                 new UnusedFile(database, file.data, path).add();
 
                 // Check if any instances are left
