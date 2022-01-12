@@ -2,7 +2,7 @@ package com.ntankard.budgetTracking.display.frames.mainFrame.statement;
 
 import com.ntankard.budgetTracking.dataBase.core.fileManagement.statement.StatementFolder;
 import com.ntankard.budgetTracking.dataBase.core.fileManagement.statement.StatementTransaction;
-import com.ntankard.budgetTracking.dataBase.core.fileManagement.statement.StatementTransactionAutoGroup;
+import com.ntankard.budgetTracking.dataBase.core.fileManagement.statement.StatementTransactionTranslationAutoGroup;
 import com.ntankard.budgetTracking.dataBase.core.period.Period;
 import com.ntankard.budgetTracking.dataBase.core.pool.Bank;
 import com.ntankard.budgetTracking.dataBase.core.pool.category.SolidCategory;
@@ -22,9 +22,8 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.text.NumberFormat;
-import java.util.*;
 import java.util.List;
-import java.util.regex.Pattern;
+import java.util.*;
 
 public class TransactionMappingPanel extends UpdatableJPanel {
 
@@ -74,7 +73,7 @@ public class TransactionMappingPanel extends UpdatableJPanel {
         // List of all StatementBankTransfer
         statementBankTransfer_list = new DataObject_DisplayList<>(database.getSchema(),
                 StatementBankTransfer.class,
-                new OneParent_Children_Set<>(StatementBankTransfer.class, statementFolder.getPeriod()),
+                new TwoParent_Children_Set<>(StatementBankTransfer.class, statementFolder.getPeriod(), statementFolder.getBank()),
                 false,
                 this);
         statementBankTransfer_list.addControlButtons(new StatementBankTransfer_ElementController(statementFolder, this));
@@ -147,7 +146,7 @@ public class TransactionMappingPanel extends UpdatableJPanel {
     private void autoAssign() {
         List<StatementTransaction> toMatch = unlinked_statementTransaction_set.get();
 
-        for (StatementTransactionAutoGroup group : statementFolder.getBank().getChildren(StatementTransactionAutoGroup.class)) {
+        for (StatementTransactionTranslationAutoGroup group : statementFolder.getBank().getChildren(StatementTransactionTranslationAutoGroup.class)) {
 
             // Is anything left to match?
             if (toMatch.isEmpty()) {
@@ -157,20 +156,46 @@ public class TransactionMappingPanel extends UpdatableJPanel {
             List<StatementTransaction> toRemove = new ArrayList<>();
             StatementBankTransfer statementBankTransfer = null;
             for (StatementTransaction tryMatch : toMatch) {
+                // TODO this should be done in the object itself
+                if (group.getTranslation().getOriginal().contains(",") && group.getTranslation().getOriginal().contains("~")) {
+                    throw new UnsupportedOperationException();
+                }
 
                 // Does this rule apply to this StatementTransaction
-                if (Pattern.matches(group.getRegex(), tryMatch.getDescription())) {
+                boolean matched = false;
+                if (group.getTranslation().getOriginal().contains("'")) { // OR
+                    String[] toCheck = group.getTranslation().getOriginal().split("'");
+                    for (String check : toCheck) {
+                        if (tryMatch.getDescription().contains(check)) {
+                            matched = true;
+                            break;
+                        }
+                    }
+                } else if (group.getTranslation().getOriginal().contains("~")) { // AND
+                    String[] toCheck = group.getTranslation().getOriginal().split("~");
+                    matched = true;
+                    for (String check : toCheck) {
+                        if (!tryMatch.getDescription().contains(check)) {
+                            matched = false;
+                            break;
+                        }
+                    }
+                } else { // 1 only
+                    matched = tryMatch.getDescription().contains(group.getTranslation().getOriginal());
+                }
+
+                if (matched) {
 
                     // Is there already a StatementBankTransfer or do we have to make one?
                     if (statementBankTransfer == null) {
 
                         List<StatementBankTransfer> existing = new TwoParent_Children_Set<>(StatementBankTransfer.class, group, statementFolder.getPeriod()).get();
                         if (existing.isEmpty()) {
-                            statementBankTransfer = new StatementBankTransfer(statementFolder.getPeriod(), statementFolder.getBank(), null, group.getPool(), "G-" + group.getName(), group, 1.0).add();
+                            statementBankTransfer = new StatementBankTransfer(statementFolder.getPeriod(), statementFolder.getBank(), null, group.getPool(), "G-" + group.getTranslation().getTranslated(), group, group.getMultiply()).add();
                         } else if (existing.size() == 1) {
                             statementBankTransfer = existing.get(0);
                         } else {
-                            throw new CorruptingException(database, "More than 1 StatementBankTransfer points to a StatementTransactionAutoGroup (auto generated into 2 objects");
+                            throw new CorruptingException(database, "More than 1 StatementBankTransfer points to a StatementTransactionTranslationAutoGroup (auto generated into 2 objects");
                         }
                     }
 

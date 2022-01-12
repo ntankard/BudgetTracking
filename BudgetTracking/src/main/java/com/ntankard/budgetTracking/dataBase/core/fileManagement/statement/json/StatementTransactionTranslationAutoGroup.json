@@ -1,0 +1,27 @@
+{
+  "extends": "DataObject",
+  "extendsSchema": "Displayable_DataObject",
+  "fields": [
+    {
+      "name": "Bank",
+      "type": "Bank",
+      "database_source": true,
+      "editable": true
+    },
+    {
+      "name": "Translation",
+      "type": "Translation",
+      "editable": true
+    },
+    {
+      "name": "Pool",
+      "type": "Pool",
+      "editable": true
+    },
+    {
+      "name": "Multiply",
+      "type": "Double",
+      "editable": true
+    }
+  ]
+}

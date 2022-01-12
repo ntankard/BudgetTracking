@@ -3,7 +3,7 @@ package com.ntankard.budgetTracking.dataBase.core.transfer.bank;
 import com.ntankard.budgetTracking.dataBase.core.Currency;
 import com.ntankard.budgetTracking.dataBase.core.fileManagement.statement.StatementTransaction;
 import com.ntankard.budgetTracking.dataBase.core.fileManagement.statement.StatementTransaction.StatementTransactionList;
-import com.ntankard.budgetTracking.dataBase.core.fileManagement.statement.StatementTransactionAutoGroup;
+import com.ntankard.budgetTracking.dataBase.core.fileManagement.statement.StatementTransactionTranslationAutoGroup;
 import com.ntankard.budgetTracking.dataBase.core.period.Period;
 import com.ntankard.budgetTracking.dataBase.core.pool.Bank;
 import com.ntankard.budgetTracking.dataBase.core.pool.Pool;
@@ -72,7 +72,7 @@ public class StatementBankTransfer extends BankTransfer {
         // FundEvent
         // Destination
         // AutoSource ==================================================================================================
-        dataObjectSchema.add(new DataField_Schema<>(StatementBankTransfer_AutoSource, StatementTransactionAutoGroup.class, true));
+        dataObjectSchema.add(new DataField_Schema<>(StatementBankTransfer_AutoSource, StatementTransactionTranslationAutoGroup.class, true));
         dataObjectSchema.get(StatementBankTransfer_AutoSource).setManualCanEdit(true);
         // StatementTransactionSet =====================================================================================
         dataObjectSchema.add(new ListDataField_Schema<>(StatementBankTransfer_StatementTransactionSet, StatementTransactionList.class));
@@ -148,7 +148,7 @@ public class StatementBankTransfer extends BankTransfer {
     /**
      * Constructor
      */
-    public StatementBankTransfer(Period period, Bank source, Period destinationPeriod, Pool destination, String description, StatementTransactionAutoGroup autoSource, Double multiply) {
+    public StatementBankTransfer(Period period, Bank source, Period destinationPeriod, Pool destination, String description, StatementTransactionTranslationAutoGroup autoSource, Double multiply) {
         this(period.getTrackingDatabase());
         setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
                 , Transfer_Period, period
@@ -165,7 +165,7 @@ public class StatementBankTransfer extends BankTransfer {
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    public StatementTransactionAutoGroup getAutoSource() {
+    public StatementTransactionTranslationAutoGroup getAutoSource() {
         return get(StatementBankTransfer_AutoSource);
     }
 }
