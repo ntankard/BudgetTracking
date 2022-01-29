@@ -19,8 +19,8 @@
         "type": "Derived",
         "codeLine": "container.getTrackingDatabase().getFilesPath() + \"\\\\\" + container.getContainerPath() + \"\\\\\" + container.getFileName()",
         "sources": [
-          "UnusedFile_ContainerPath",
-          "UnusedFile_FileName"
+          "makeSourceChain(UnusedFile_ContainerPath)",
+          "makeSourceChain(UnusedFile_FileName)"
         ]
       }
     }

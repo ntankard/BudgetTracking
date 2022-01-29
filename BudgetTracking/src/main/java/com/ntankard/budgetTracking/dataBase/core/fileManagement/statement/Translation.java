@@ -6,12 +6,17 @@ import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
 
+import java.util.List;
+
 public class Translation extends DataObject {
 
+    public interface TranslationList extends List<Translation> {
+    }
     private static final String Translation_Prefix = "Translation_";
 
     public static final String Translation_Original = Translation_Prefix + "Original";
     public static final String Translation_Translated = Translation_Prefix + "Translated";
+    public static final String Translation_TranslationTypes = Translation_Prefix + "TranslationTypes";
 
     /**
      * Get all the fields for this object
@@ -22,12 +27,15 @@ public class Translation extends DataObject {
         // ID
         dataObjectSchema.add(new DataField_Schema<>(Translation_Original, String.class));
         dataObjectSchema.add(new DataField_Schema<>(Translation_Translated, String.class));
+        dataObjectSchema.add(new DataField_Schema<>(Translation_TranslationTypes, TranslationTypes.class));
         // Children
 
         // Original ====================================================================================================
         dataObjectSchema.get(Translation_Original).setManualCanEdit(true);
         // Translated ==================================================================================================
         dataObjectSchema.get(Translation_Translated).setManualCanEdit(true);
+        // TranslationTypes ============================================================================================
+        dataObjectSchema.get(Translation_TranslationTypes).setManualCanEdit(true);
         //==============================================================================================================
 
         return dataObjectSchema.finaliseContainer(Translation.class);
@@ -43,11 +51,12 @@ public class Translation extends DataObject {
     /**
      * Constructor
      */
-    public Translation(Database database, String original, String translated) {
+    public Translation(Database database, String original, String translated, TranslationTypes translationTypes) {
         this(database);
         setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
                 , Translation_Original, original
                 , Translation_Translated, translated
+                , Translation_TranslationTypes, translationTypes
         );
     }
 
@@ -75,6 +84,10 @@ public class Translation extends DataObject {
         return get(Translation_Translated);
     }
 
+    public TranslationTypes getTranslationTypes() {
+        return get(Translation_TranslationTypes);
+    }
+
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Setters #####################################################
     //------------------------------------------------------------------------------------------------------------------
@@ -85,5 +98,9 @@ public class Translation extends DataObject {
 
     public void setTranslated(String translated) {
         set(Translation_Translated, translated);
+    }
+
+    public void setTranslationTypes(TranslationTypes translationTypes) {
+        set(Translation_TranslationTypes, translationTypes);
     }
 }

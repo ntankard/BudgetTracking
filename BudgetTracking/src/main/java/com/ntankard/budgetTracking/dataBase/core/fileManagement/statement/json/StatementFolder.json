@@ -11,6 +11,10 @@
     {
       "name": "Bank",
       "type": "Bank"
+    },
+    {
+      "name": "TranslationTypes",
+      "type": "TranslationTypes"
     }
   ]
 }

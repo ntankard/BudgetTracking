@@ -31,8 +31,8 @@
         "type": "Derived",
         "codeLine": "container.getTrackingDatabase().getFilesPath() + \"\\\\\" + container.getContainerPath() + \"\\\\\" + container.getFileName()",
         "sources": [
-          "Receipt_ContainerPath",
-          "Receipt_FileName"
+          "makeSourceChain(Receipt_ContainerPath)",
+          "makeSourceChain(Receipt_FileName)"
         ]
       }
     }

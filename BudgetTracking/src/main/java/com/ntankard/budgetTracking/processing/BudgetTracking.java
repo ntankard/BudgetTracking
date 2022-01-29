@@ -110,7 +110,7 @@ public class BudgetTracking {
             } else if (statementFolders.size() == 1) {
                 statementFolder = statementFolders.get(0);
             } else {
-                statementFolder = new StatementFolder(existingPeriod, bank).add();
+                statementFolder = new StatementFolder(existingPeriod, bank, database.getDefault(TranslationTypes.class)).add();
             }
 
             // Find the past document

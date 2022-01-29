@@ -14,6 +14,7 @@ public class StatementFolder extends DataObject {
 
     public static final String StatementFolder_Period = StatementFolder_Prefix + "Period";
     public static final String StatementFolder_Bank = StatementFolder_Prefix + "Bank";
+    public static final String StatementFolder_TranslationTypes = StatementFolder_Prefix + "TranslationTypes";
 
     /**
      * Get all the fields for this object
@@ -24,6 +25,7 @@ public class StatementFolder extends DataObject {
         // ID
         dataObjectSchema.add(new DataField_Schema<>(StatementFolder_Period, ExistingPeriod.class));
         dataObjectSchema.add(new DataField_Schema<>(StatementFolder_Bank, Bank.class));
+        dataObjectSchema.add(new DataField_Schema<>(StatementFolder_TranslationTypes, TranslationTypes.class));
         // Children
 
         return dataObjectSchema.finaliseContainer(StatementFolder.class);
@@ -39,11 +41,12 @@ public class StatementFolder extends DataObject {
     /**
      * Constructor
      */
-    public StatementFolder(ExistingPeriod period, Bank bank) {
+    public StatementFolder(ExistingPeriod period, Bank bank, TranslationTypes translationTypes) {
         this(period.getTrackingDatabase());
         setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
                 , StatementFolder_Period, period
                 , StatementFolder_Bank, bank
+                , StatementFolder_TranslationTypes, translationTypes
         );
     }
 
@@ -69,5 +72,9 @@ public class StatementFolder extends DataObject {
 
     public Bank getBank() {
         return get(StatementFolder_Bank);
+    }
+
+    public TranslationTypes getTranslationTypes() {
+        return get(StatementFolder_TranslationTypes);
     }
 }

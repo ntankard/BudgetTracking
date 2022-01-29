@@ -24,8 +24,8 @@
         "type": "Derived",
         "codeLine": "container.getTrackingDatabase().getFilesPath() + \"\\\\\" + container.getContainerPath() + \"\\\\\" + container.getFileName()",
         "sources": [
-          "StatementDocument_ContainerPath",
-          "StatementDocument_FileName"
+          "makeSourceChain(StatementDocument_ContainerPath)",
+          "makeSourceChain(StatementDocument_FileName)"
         ]
       }
     },
