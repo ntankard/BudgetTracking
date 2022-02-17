@@ -135,7 +135,7 @@ public class Bank_Summary extends PoolSummary<Bank> implements CurrencyBound, Or
                             }
                             return previous.getStatementEnd().getEnd();
                         }
-                        , Source_Factory.makeSourceChain((Bank_Summary_PreviousBankSummary), Bank_Summary_StatementEnd)
+                        , Source_Factory.makeSourceChain((Bank_Summary_PreviousBankSummary), Bank_Summary_StatementEnd, StatementEnd_End)
                         , Source_Factory.makeSourceChain((PoolSummary_Pool), Bank_Start)));
         // End =========================================================================================================
         dataObjectSchema.<Double>get(PoolSummary_End).setDataCore_schema(
