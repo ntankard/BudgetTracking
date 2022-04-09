@@ -32,7 +32,13 @@ public class Rakuten_BankProcessing {
                     ExistingPeriod period = periods.get(new SimpleDateFormat("yy-MM").format(date));
 
                     // Process Description
-                    String description = line[1].replace("\"", "").replace("ＶＩＳＡ国内利用　VS ", "");
+                    String description = line[1].replace("\"", "")
+                            .replace("ＶＩＳＡ国内利用　VS ", "")
+                            .replace("ＶＩＳＡ国内利用 ", "")
+                            .replace("ＶＩＳＡ海外利用　", "");
+                    if (description.contains("ＶＩＳＡ")) {
+                        throw new RuntimeException();
+                    }
 
                     // Process Value
                     String valueString;

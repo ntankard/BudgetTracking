@@ -149,6 +149,7 @@ public class BudgetTracking {
         if (lines.size() == 0) {
             return;
         }
+        lines.sort(Comparator.comparing(TransactionLine::getDate));
 
         // Generate and link the StatementTransactions
         if (statementDocument.getPastInstance() == null) {  // First document for this period, add all lines
@@ -158,6 +159,7 @@ public class BudgetTracking {
             }
         } else { // Map to existing lines
             List<StatementTransaction> existing = new OneParent_Children_Set<>(StatementTransaction.class, statementDocument.getStatementFolder()).get();
+            existing.sort(Comparator.comparing(o -> o.getCoreLine().getDate()));
 
             int oldKey = 0;
             int newKey = 0;
@@ -204,10 +206,25 @@ public class BudgetTracking {
             return false;
         }
 
-        if (!oldLine.getCoreLine().getDescription().equals(newLine.getDescription())) {
+        if (!oldLine.getCoreLine().getValue().equals(newLine.getValue())) {
             return false;
         }
 
-        return oldLine.getCoreLine().getValue().equals(newLine.getValue());
+        String oldDes = oldLine.getDescription();
+        String newDes = newLine.getDescription();
+
+        if (!newDes.equals(oldDes)) {
+            if (newDes.startsWith(oldDes) || oldDes.startsWith(newDes)) {
+                System.out.println("WARNING: partial description match used, ");
+                System.out.println(newDes);
+                System.out.println("and");
+                System.out.println(oldDes);
+                System.out.println();
+                return true;
+            }
+            return false;
+        }
+
+        return true;
     }
 }

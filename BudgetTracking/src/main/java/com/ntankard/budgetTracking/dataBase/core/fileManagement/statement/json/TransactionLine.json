@@ -2,6 +2,7 @@
   "extends": "DataObject",
   "extendsSchema": "Displayable_DataObject",
   "listDef": true,
+  "customToString" : "getRawLine()",
   "fields": [
     {
       "name": "StatementDocument",

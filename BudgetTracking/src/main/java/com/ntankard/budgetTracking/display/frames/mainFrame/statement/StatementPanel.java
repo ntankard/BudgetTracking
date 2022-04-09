@@ -12,6 +12,7 @@ import java.awt.*;
 public class StatementPanel extends UpdatableJPanel {
 
     // The GUI components
+    private JTabbedPane master_tPanel;
     private FileCheckPanel fileCheckPanel;
     private GroupPanel groupPanel;
     private TranslationPanel translationPanel;
@@ -36,10 +37,10 @@ public class StatementPanel extends UpdatableJPanel {
         this.setLayout(new BorderLayout());
 
         fileCheckPanel = new FileCheckPanel(database, this);
-        translationPanel = new TranslationPanel(database,this);
+        translationPanel = new TranslationPanel(database, this);
         groupPanel = new GroupPanel(database, this);
 
-        JTabbedPane master_tPanel = new JTabbedPane();
+        master_tPanel = new JTabbedPane();
         master_tPanel.addTab("File", fileCheckPanel);
         master_tPanel.addTab("Translation", translationPanel);
         master_tPanel.addTab("Group", groupPanel);
@@ -55,5 +56,6 @@ public class StatementPanel extends UpdatableJPanel {
         fileCheckPanel.update();
         translationPanel.update();
         groupPanel.update();
+        master_tPanel.setBackgroundAt(0, fileCheckPanel.isHasFault() ? Color.RED : null);
     }
 }

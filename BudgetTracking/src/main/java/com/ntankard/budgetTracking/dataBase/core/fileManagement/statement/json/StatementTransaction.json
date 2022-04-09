@@ -3,6 +3,7 @@
   "extendsSchema": "Displayable_DataObject",
   "implements": "CurrencyBound",
   "listDef": true,
+  "customToString" : "getCoreLine().getRawLine()",
   "fields": [
     {
       "name": "TransactionLines",

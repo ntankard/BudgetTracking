@@ -31,6 +31,7 @@ public class FileCheckPanel extends UpdatableJPanel {
 
     // The GUI components
     private final List<TransactionMappingPanel> transactionMappingPanelList = new ArrayList<>();
+    private JTabbedPane master_tPanel;
 
     /**
      * Constructor
@@ -48,7 +49,7 @@ public class FileCheckPanel extends UpdatableJPanel {
         this.removeAll();
         this.setLayout(new BorderLayout());
 
-        JTabbedPane master_tPanel = new JTabbedPane();
+        master_tPanel = new JTabbedPane();
 
         for (Period period : database.get(ExistingPeriod.class)) {
             List<StatementFolder> statementFolderList = period.getChildren(StatementFolder.class);
@@ -207,5 +208,19 @@ public class FileCheckPanel extends UpdatableJPanel {
     public void update() {
         // TODO not everything is updated here, you need to regen the custom table as well
         transactionMappingPanelList.forEach(TransactionMappingPanel::update);
+
+        for (int i = 0; i < master_tPanel.getTabCount(); i++) {
+            JTabbedPane period = (JTabbedPane) master_tPanel.getComponentAt(i);
+            boolean error = false;
+            for (int j = 0; j < period.getTabCount(); j++) {
+                JTabbedPane test = (JTabbedPane) period.getComponentAt(j);
+                TransactionMappingPanel bank = (TransactionMappingPanel) test.getComponentAt(0);
+
+                test.setBackgroundAt(0, bank.isHasFault() ? Color.RED : null);
+                period.setBackgroundAt(j, bank.isHasFault() ? Color.RED : null);
+                error |= bank.isHasFault();
+            }
+            master_tPanel.setBackgroundAt(i, error ? Color.RED : null);
+        }
     }
 }

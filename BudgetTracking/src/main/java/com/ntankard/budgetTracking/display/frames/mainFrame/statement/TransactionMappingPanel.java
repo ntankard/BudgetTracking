@@ -329,6 +329,8 @@ public class TransactionMappingPanel extends UpdatableJPanel {
         statementBankTransfer_list.getMainPanel().getListSelectionModel().addListSelectionListener(selectionListener);
         unlinked_statementTransaction_list.getMainPanel().getListSelectionModel().addListSelectionListener(selectionListener);
         linked_statementTransaction_list.getMainPanel().getListSelectionModel().addListSelectionListener(selectionListener);
+
+        setHasFault(unlinked_statementTransaction_set.get().size() != 0);
     }
 
     /**

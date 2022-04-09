@@ -21,6 +21,7 @@
         <module>DynamicGUI</module>
 		<module>JavaObjectDatabase</module>
 		<module>StatementParser</module>
+        <module>StatementReverser</module>
     </modules>
 
 </project>

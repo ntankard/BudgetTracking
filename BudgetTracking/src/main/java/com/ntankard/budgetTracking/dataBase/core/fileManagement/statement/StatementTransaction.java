@@ -36,7 +36,6 @@ public class StatementTransaction extends DataObject implements CurrencyBound {
 
     public interface StatementTransactionList extends List<StatementTransaction> {
     }
-
     private static final String StatementTransaction_Prefix = "StatementTransaction_";
 
     public static final String StatementTransaction_TransactionLines = StatementTransaction_Prefix + "TransactionLines";
@@ -145,7 +144,7 @@ public class StatementTransaction extends DataObject implements CurrencyBound {
                 createDefaultDirectDerivedDataCore(container -> container.getTrackingDatabase().getDefault(Period.class),
                         StatementTransaction_CoreLine, TransactionLine_Period));
         // StatementFolder =============================================================================================
-        dataObjectSchema.get(StatementTransaction_StatementFolder).getProperty(Display_Properties.class).setCustomColor((rowObject, value) -> ((StatementTransaction) rowObject).getPeriod() == ((StatementTransaction) rowObject).getStatementFolder().getPeriod() ? null : Color.ORANGE);
+        dataObjectSchema.get(StatementTransaction_StatementFolder).getProperty(Display_Properties.class).setCustomColor((rowObject, value) -> ((StatementTransaction)rowObject).getPeriod() == ((StatementTransaction)rowObject).getStatementFolder().getPeriod() ? null : Color.ORANGE);
         // TranslationTypes ============================================================================================
         dataObjectSchema.get(StatementTransaction_TranslationTypes).getProperty(Display_Properties.class).setVerbosityLevel(Display_Properties.INFO_DISPLAY);
         dataObjectSchema.<TranslationTypes>get(StatementTransaction_TranslationTypes).setDataCore_schema(
@@ -176,6 +175,18 @@ public class StatementTransaction extends DataObject implements CurrencyBound {
                 , StatementTransaction_StatementBankTransfer, statementBankTransfer
                 , StatementTransaction_StatementFolder, statementFolder
         );
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    //#################################################### General #####################################################
+    //------------------------------------------------------------------------------------------------------------------
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public String toString() {
+        return getCoreLine().getRawLine();
     }
 
     //------------------------------------------------------------------------------------------------------------------
