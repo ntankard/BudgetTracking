@@ -36,7 +36,9 @@ public class IntraCurrencyBankTransfer extends BankTransfer {
         // ID
         // Description
         // Period
-        // Source
+        // Source ======================================================================================================
+        dataObjectSchema.get(Transfer_Source).setManualCanEdit(true);
+        //==============================================================================================================
         // Value
         // Currency
         // DestinationPeriod
@@ -95,7 +97,8 @@ public class IntraCurrencyBankTransfer extends BankTransfer {
             case "Bank": {
                 List<T> toReturn = super.sourceOptions(type, "Bank");
                 toReturn.remove(getSource());
-                toReturn.removeIf(t -> ((Bank)t).getCurrency().equals(((Bank)getSource()).getCurrency()));
+                toReturn.removeIf(t -> !Bank.class.isAssignableFrom(t.getClass()));
+                toReturn.removeIf(t -> ((Bank) t).getCurrency().equals(((Bank) getSource()).getCurrency()));
                 return toReturn;
             }
             case "Source": {
