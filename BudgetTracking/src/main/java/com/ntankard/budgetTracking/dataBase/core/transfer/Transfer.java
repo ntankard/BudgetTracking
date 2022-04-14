@@ -19,6 +19,8 @@ import java.util.List;
 
 import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.DataType.CURRENCY;
 import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.INFO_DISPLAY;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createDirectDerivedDataCore;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 
 public abstract class Transfer extends DataObject implements CurrencyBound {
 
@@ -71,17 +73,14 @@ public abstract class Transfer extends DataObject implements CurrencyBound {
         dataObjectSchema.<Currency>get(Transfer_SourceCurrencyGet).setDataCore_schema(
                 new Derived_DataCore_Schema<>
                         (container -> ((Transfer) container).getCurrency()
-                                , new End_Source_Schema<>(Transfer_Currency)));
+                                , makeSourceChain(Transfer_Currency)));
         // DestinationCurrencyGet  =====================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Transfer_DestinationCurrencyGet, Currency.class));
         dataObjectSchema.get(Transfer_DestinationCurrencyGet).setTellParent(false);
         // SourcePeriodGet =================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Transfer_SourcePeriodGet, Period.class));
         dataObjectSchema.get(Transfer_SourcePeriodGet).setTellParent(false);
-        dataObjectSchema.<Period>get(Transfer_SourcePeriodGet).setDataCore_schema(
-                new Derived_DataCore_Schema<>
-                        (container -> ((Transfer) container).getPeriod()
-                                , new End_Source_Schema<>(Transfer_Period)));
+        dataObjectSchema.<Period>get(Transfer_SourcePeriodGet).setDataCore_schema(createDirectDerivedDataCore(Transfer_Period));
         // DestinationPeriodGet =================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Transfer_DestinationPeriodGet, Period.class));
         dataObjectSchema.get(Transfer_DestinationPeriodGet).setTellParent(false);

@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.ALWAYS_DISPLAY;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createDirectDerivedDataCore;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 
 public abstract class FundTransfer extends Transfer {
 
@@ -41,16 +43,10 @@ public abstract class FundTransfer extends Transfer {
         // Destination
         // SourceCurrencyGet
         // DestinationCurrencyGet ======================================================================================
-        dataObjectSchema.<Currency>get(Transfer_DestinationCurrencyGet).setDataCore_schema(
-                new Derived_DataCore_Schema<>
-                        (container -> ((Transfer) container).getCurrency()
-                                , new End_Source_Schema<>(Transfer_Currency)));
+        dataObjectSchema.<Currency>get(Transfer_DestinationCurrencyGet).setDataCore_schema(createDirectDerivedDataCore(Transfer_Currency));
         // SourcePeriodGet
         // DestinationPeriodGet ========================================================================================
-        dataObjectSchema.<Period>get(Transfer_DestinationPeriodGet).setDataCore_schema(
-                new Derived_DataCore_Schema<>
-                        (container -> ((Transfer) container).getPeriod()
-                                , new End_Source_Schema<>(Transfer_Period)));
+        dataObjectSchema.<Period>get(Transfer_DestinationPeriodGet).setDataCore_schema(createDirectDerivedDataCore(Transfer_Period));
         // Parents
         // Children
 

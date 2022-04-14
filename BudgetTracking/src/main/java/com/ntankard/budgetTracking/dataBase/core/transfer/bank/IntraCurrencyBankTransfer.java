@@ -16,7 +16,10 @@ import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCo
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.ntankard.budgetTracking.dataBase.core.pool.Bank.Bank_Currency;
 import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.DataType.CURRENCY;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createDirectDerivedDataCore;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 
 public class IntraCurrencyBankTransfer extends BankTransfer {
 
@@ -57,13 +60,10 @@ public class IntraCurrencyBankTransfer extends BankTransfer {
                     BankTransfer bankTransfer = ((BankTransfer) container);
                     return ((Bank) bankTransfer.getDestination()).getCurrency();
                 }
-                        , new End_Source_Schema<>((Transfer_Destination))));
+                        , makeSourceChain(Transfer_Destination)));
         // SourceCurrencyGet
         // DestinationCurrencyGet ======================================================================================
-        dataObjectSchema.<Currency>get(Transfer_DestinationCurrencyGet).setDataCore_schema(
-                new Derived_DataCore_Schema<>((Calculator<Currency, IntraCurrencyBankTransfer>) container ->
-                        container.getDestinationCurrency()
-                        , new End_Source_Schema<>((BankTransfer_DestinationCurrency))));
+        dataObjectSchema.<Currency>get(Transfer_DestinationCurrencyGet).setDataCore_schema(createDirectDerivedDataCore(BankTransfer_DestinationCurrency));
         // SourcePeriodGet
         // DestinationPeriodGet ========================================================================================
         dataObjectSchema.<Period>get(Transfer_DestinationPeriodGet).setDataCore_schema(
@@ -74,8 +74,8 @@ public class IntraCurrencyBankTransfer extends BankTransfer {
                         return container.getPeriod();
                     }
                 }
-                        , new End_Source_Schema<>((Transfer_Period))
-                        , new End_Source_Schema<>((BankTransfer_DestinationPeriod))));
+                        , makeSourceChain(Transfer_Period)
+                        , makeSourceChain(BankTransfer_DestinationPeriod)));
         // Parents
         // Children
 

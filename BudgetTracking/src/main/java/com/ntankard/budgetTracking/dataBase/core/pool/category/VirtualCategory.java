@@ -12,6 +12,7 @@ import com.ntankard.budgetTracking.dataBase.core.CategorySet;
 
 import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.DEBUG_DISPLAY;
 import static com.ntankard.budgetTracking.dataBase.core.CategorySet.CategorySet_Order;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 
 public class VirtualCategory extends Category implements Ordered {
 
@@ -42,8 +43,8 @@ public class VirtualCategory extends Category implements Ordered {
         dataObjectSchema.get(VirtualCategory_Order).setDataCore_schema(
                 new Derived_DataCore_Schema<>
                         (container -> ((VirtualCategory) container).getCategorySet().getOrder() * 1000 + ((VirtualCategory) container).getOrderImpl()
-                                , new End_Source_Schema<>(VirtualCategory_OrderImpl)
-                                , Source_Factory.makeSourceChain(VirtualCategory_CategorySet, CategorySet_Order)));
+                                , makeSourceChain(VirtualCategory_OrderImpl)
+                                , makeSourceChain(VirtualCategory_CategorySet, CategorySet_Order)));
         //==============================================================================================================
         // Parents
         // Children

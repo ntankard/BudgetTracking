@@ -19,6 +19,8 @@ import com.ntankard.javaObjectDatabase.database.Database;
 import java.util.List;
 
 import static com.ntankard.budgetTracking.dataBase.core.pool.fundEvent.FixedPeriodFundEvent.NamedDataObject_Name;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createDirectDerivedDataCore;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 import static com.ntankard.javaObjectDatabase.dataObject.factory.ObjectFactory.GeneratorMode.MULTIPLE_NO_ADD;
 
 public class RecurringBankTransfer extends BankTransfer {
@@ -37,7 +39,7 @@ public class RecurringBankTransfer extends BankTransfer {
             (generator, secondaryGenerator) -> {
                 double value = 0.0;
                 if (secondaryGenerator.getDuration() != null) {
-                    if (secondaryGenerator.getStart().getOrder() <= generator.getOrder() && (secondaryGenerator.getStart().getOrder() + secondaryGenerator.getDuration()) >= generator.getOrder() ) {
+                    if (secondaryGenerator.getStart().getOrder() <= generator.getOrder() && (secondaryGenerator.getStart().getOrder() + secondaryGenerator.getDuration()) >= generator.getOrder()) {
                         value = secondaryGenerator.getValue(); // TODO this is not working, seems like its inverted? Fixed it but need to test
                     }
                 }
@@ -77,18 +79,10 @@ public class RecurringBankTransfer extends BankTransfer {
         // DestinationValue
         // SourceCurrencyGet
         // DestinationCurrencyGet ======================================================================================
-        dataObjectSchema.<Currency>get(Transfer_DestinationCurrencyGet).setDataCore_schema(
-                new Derived_DataCore_Schema<>(
-                        (Calculator<Currency, BankTransfer>)
-                                container -> container.getCurrency()
-                        , new End_Source_Schema<>(Transfer_Currency)));
+        dataObjectSchema.<Currency>get(Transfer_DestinationCurrencyGet).setDataCore_schema(createDirectDerivedDataCore(Transfer_Currency));
         // SourcePeriodGet
         // DestinationPeriodGet ========================================================================================
-        dataObjectSchema.<Period>get(Transfer_DestinationPeriodGet).setDataCore_schema(
-                new Derived_DataCore_Schema<>(
-                        (Calculator<Period, BankTransfer>) container ->
-                                container.getPeriod()
-                        , new End_Source_Schema<>(Transfer_Period)));
+        dataObjectSchema.<Period>get(Transfer_DestinationPeriodGet).setDataCore_schema(createDirectDerivedDataCore(Transfer_Period));
         // ParentPayment ===============================================================================================
         dataObjectSchema.add(new DataField_Schema<>(RecurringBankTransfer_ParentPayment, FixedRecurringPayment.class));
         //==============================================================================================================
@@ -97,10 +91,7 @@ public class RecurringBankTransfer extends BankTransfer {
 
         // Description =================================================================================================
         dataObjectSchema.<String>get(Transfer_Description).setManualCanEdit(false);
-        dataObjectSchema.<String>get(Transfer_Description).setDataCore_schema(
-                new Derived_DataCore_Schema<String, RecurringBankTransfer>
-                        (dataObject -> dataObject.getParentPayment().getName()
-                                , Source_Factory.makeSourceChain(RecurringBankTransfer_ParentPayment, NamedDataObject_Name)));
+        dataObjectSchema.<String>get(Transfer_Description).setDataCore_schema(createDirectDerivedDataCore(RecurringBankTransfer_ParentPayment, NamedDataObject_Name));
         //==============================================================================================================
 
         return dataObjectSchema.finaliseContainer(RecurringBankTransfer.class);
@@ -116,9 +107,9 @@ public class RecurringBankTransfer extends BankTransfer {
             case "Bank": {
                 List<T> toReturn = super.sourceOptions(type, fieldName);
                 toReturn.removeIf(t -> {
-                    if(Bank.class.isAssignableFrom(t.getClass())){
-                        Bank bank = (Bank)t;
-                        return !((Bank)getSource()).getCurrency().equals(bank.getCurrency());
+                    if (Bank.class.isAssignableFrom(t.getClass())) {
+                        Bank bank = (Bank) t;
+                        return !((Bank) getSource()).getCurrency().equals(bank.getCurrency());
                     }
                     return false;
                 });

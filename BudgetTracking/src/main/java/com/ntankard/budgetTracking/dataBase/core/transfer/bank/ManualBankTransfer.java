@@ -14,6 +14,9 @@ import com.ntankard.budgetTracking.dataBase.core.pool.Pool;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createDirectDerivedDataCore;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
+
 public class ManualBankTransfer extends BankTransfer {
 
     //------------------------------------------------------------------------------------------------------------------
@@ -39,11 +42,7 @@ public class ManualBankTransfer extends BankTransfer {
         // Destination
         // SourceCurrencyGet
         // DestinationCurrencyGet ======================================================================================
-        dataObjectSchema.<Currency>get(Transfer_DestinationCurrencyGet).setDataCore_schema(
-                new Derived_DataCore_Schema<>(
-                        (Calculator<Currency, ManualBankTransfer>) container ->
-                                container.getCurrency()
-                        , new End_Source_Schema<>((Transfer_Currency))));
+        dataObjectSchema.<Currency>get(Transfer_DestinationCurrencyGet).setDataCore_schema(createDirectDerivedDataCore(Transfer_Currency));
         // SourcePeriodGet
         // DestinationPeriodGet ========================================================================================
         dataObjectSchema.<Period>get(Transfer_DestinationPeriodGet).setDataCore_schema(
@@ -54,8 +53,8 @@ public class ManualBankTransfer extends BankTransfer {
                         return container.getPeriod();
                     }
                 }
-                        , new End_Source_Schema<>((Transfer_Period))
-                        , new End_Source_Schema<>((BankTransfer_DestinationPeriod))));
+                        , makeSourceChain(Transfer_Period)
+                        , makeSourceChain(BankTransfer_DestinationPeriod)));
         // Parents
         // Children
 

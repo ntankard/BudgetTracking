@@ -14,6 +14,7 @@ import java.util.Locale;
 
 import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.INFO_DISPLAY;
 import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.TRACE_DISPLAY;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 
 public class Currency extends NamedDataObject implements HasDefault {
 
@@ -61,8 +62,8 @@ public class Currency extends NamedDataObject implements HasDefault {
         dataObjectSchema.<NumberFormat>get(Currency_NumberFormat).setDataCore_schema(
                 new Derived_DataCore_Schema<NumberFormat, Currency>
                         (dataObject -> NumberFormat.getCurrencyInstance(new Locale(dataObject.getLanguage(), dataObject.getCountry()))
-                                , new End_Source_Schema<>(Currency_Country)
-                                , new End_Source_Schema<>(Currency_Language)));
+                                , makeSourceChain(Currency_Country)
+                                , makeSourceChain(Currency_Language)));
         //==============================================================================================================
         // Parents
         // Children

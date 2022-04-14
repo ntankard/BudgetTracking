@@ -15,6 +15,8 @@ import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
 
 import static com.ntankard.budgetTracking.dataBase.core.pool.fundEvent.FixedPeriodFundEvent.*;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSharedStepSourceChain;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 
 @ParameterMap(shouldSave = false)
 public class FixedPeriodRePayFundTransfer extends RePayFundTransfer {
@@ -56,10 +58,8 @@ public class FixedPeriodRePayFundTransfer extends RePayFundTransfer {
                             }
                             return fixedPeriodFundEvent.getRepayAmount();
                         }
-                        , Source_Factory.makeSourceChain((Transfer_Period))
-                        , Source_Factory.makeSourceChain((Transfer_Source), FixedPeriodFundEvent_Start)
-                        , Source_Factory.makeSourceChain((Transfer_Source), FixedPeriodFundEvent_Duration)
-                        , Source_Factory.makeSourceChain((Transfer_Source), FixedPeriodFundEvent_RepayAmount)));
+                        , Source_Factory.append(makeSharedStepSourceChain(Transfer_Source, FixedPeriodFundEvent_Start, FixedPeriodFundEvent_Duration, FixedPeriodFundEvent_RepayAmount)
+                        , makeSourceChain(Transfer_Period))));
         // =============================================================================================================
         // Currency
         // Destination

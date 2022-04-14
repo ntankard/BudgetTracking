@@ -14,6 +14,7 @@ import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
 
 import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.INFO_DISPLAY;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 
 public class ExistingPeriod extends Period {
 
@@ -50,8 +51,8 @@ public class ExistingPeriod extends Period {
         dataObjectSchema.get(ExistingPeriod_Order).setDataCore_schema(
                 new Derived_DataCore_Schema<>
                         (container -> ((ExistingPeriod) container).getYear() * 12 + ((ExistingPeriod) container).getMonth()
-                                , new End_Source_Schema<>(ExistingPeriod_Month)
-                                , new End_Source_Schema<>(ExistingPeriod_Year)));
+                                , makeSourceChain(ExistingPeriod_Month)
+                                , makeSourceChain(ExistingPeriod_Year)));
         //==============================================================================================================
         // Parents
         // Children

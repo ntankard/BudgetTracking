@@ -18,7 +18,9 @@ import com.ntankard.javaObjectDatabase.database.Database;
 import java.util.List;
 
 import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.TRACE_DISPLAY;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createDirectDerivedDataCore;
 import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createMultiParentList;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 
 @ParameterMap(shouldSave = false)
 public class FundEvent_Summary extends PoolSummary<FundEvent> {
@@ -69,33 +71,30 @@ public class FundEvent_Summary extends PoolSummary<FundEvent> {
                             }
                             return null;
                         }
-                        , new End_Source_Schema<>(FundEvent_Summary_FundEventSummarySet)));
+                        , makeSourceChain(FundEvent_Summary_FundEventSummarySet)));
         // Start =======================================================================================================
         dataObjectSchema.<Double>get(PoolSummary_Start).setDataCore_schema(
                 new Derived_DataCore_Schema<>(
                         (Calculator<Double, FundEvent_Summary>) container ->
                                 container.getPreviousFundEventSummary() == null ? 0.0 : container.getPreviousFundEventSummary().getEnd()
-                        , Source_Factory.makeSourceChain(FundEvent_Summary_PreviousFundEventSummary, PoolSummary_End)));
+                        , makeSourceChain(FundEvent_Summary_PreviousFundEventSummary, PoolSummary_End)));
         // End =========================================================================================================
         dataObjectSchema.<Double>get(PoolSummary_End).setDataCore_schema(
                 new Derived_DataCore_Schema<>(
                         (Calculator<Double, FundEvent_Summary>) container -> container.getStart() + container.getTransferSum()
-                        , new End_Source_Schema<>(PoolSummary_Start)
-                        , new End_Source_Schema<>(PoolSummary_TransferSum)));
+                        , makeSourceChain(PoolSummary_Start)
+                        , makeSourceChain(PoolSummary_TransferSum)));
         //==============================================================================================================
         // Net
         // TransferSum =================================================================================================
-        dataObjectSchema.<Double>get(PoolSummary_TransferSum).setDataCore_schema(
-                new Derived_DataCore_Schema<>(
-                        (Calculator<Double, PoolSummary<FundEvent>>) PoolSummary::getTransferSetSum
-                        , new End_Source_Schema<>(PoolSummary_TransferSetSum)));
+        dataObjectSchema.<Double>get(PoolSummary_TransferSum).setDataCore_schema(createDirectDerivedDataCore(PoolSummary_TransferSetSum));
         //==============================================================================================================
         // Missing
         // Valid =======================================================================================================
         dataObjectSchema.<Boolean>get(PoolSummary_Valid).setDataCore_schema(
                 new Derived_DataCore_Schema<>(
                         (Calculator<Boolean, PoolSummary<FundEvent>>) container -> container.getMissing().equals(0.00)
-                        , new End_Source_Schema<>(PoolSummary_Missing)));
+                        , makeSourceChain(PoolSummary_Missing)));
         //==============================================================================================================
         // Parents
         // Children

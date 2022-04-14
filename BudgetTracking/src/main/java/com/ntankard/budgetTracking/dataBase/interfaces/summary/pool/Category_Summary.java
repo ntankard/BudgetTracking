@@ -18,7 +18,11 @@ import com.ntankard.javaObjectDatabase.database.Database;
 
 import java.util.List;
 
+import static com.ntankard.budgetTracking.dataBase.core.pool.Bank.Bank_Currency;
 import static com.ntankard.budgetTracking.dataBase.core.pool.category.SolidCategory.SolidCategory_Order;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createDirectDerivedDataCore;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.*;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 
 @ParameterMap(shouldSave = false)
 public class Category_Summary extends PoolSummary<SolidCategory> implements Ordered {
@@ -55,10 +59,7 @@ public class Category_Summary extends PoolSummary<SolidCategory> implements Orde
         // =============================================================================================================
         // Net
         // TransferSum =================================================================================================
-        dataObjectSchema.<Double>get(PoolSummary_TransferSum).setDataCore_schema(
-                new Derived_DataCore_Schema<>(
-                        (Calculator<Double, PoolSummary<Category>>) PoolSummary::getTransferSetSum
-                        , new End_Source_Schema<>(PoolSummary_TransferSetSum)));
+        dataObjectSchema.<Double>get(PoolSummary_TransferSum).setDataCore_schema(createDirectDerivedDataCore(PoolSummary_TransferSetSum));
         // =============================================================================================================
         // Missing
         // Valid =======================================================================================================
@@ -69,7 +70,7 @@ public class Category_Summary extends PoolSummary<SolidCategory> implements Orde
                 new Derived_DataCore_Schema<>(
                         (Calculator<Integer, Category_Summary>) container ->
                                 container.getPeriod().getOrder() * 1000 + container.getPool().getOrder()
-                        , Source_Factory.makeSourceChain(PoolSummary_Pool, SolidCategory_Order)));
+                        , makeSourceChain(PoolSummary_Pool, SolidCategory_Order)));
         //==============================================================================================================
         // Parents
         // Children

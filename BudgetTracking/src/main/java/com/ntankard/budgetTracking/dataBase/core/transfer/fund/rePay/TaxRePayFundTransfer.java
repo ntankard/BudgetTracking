@@ -26,6 +26,8 @@ import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factor
 import static com.ntankard.budgetTracking.dataBase.core.pool.fundEvent.TaxFundEvent.TaxFundEvent_Percentage;
 import static com.ntankard.budgetTracking.dataBase.core.transfer.HalfTransfer.HalfTransfer_Currency;
 import static com.ntankard.budgetTracking.dataBase.core.transfer.HalfTransfer.HalfTransfer_Value;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSharedStepSourceChain;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 
 @ParameterMap(shouldSave = false)
 public class TaxRePayFundTransfer extends RePayFundTransfer {
@@ -84,7 +86,7 @@ public class TaxRePayFundTransfer extends RePayFundTransfer {
                             }
                             return -Currency.round(sum);
                         }
-                        , Source_Factory.makeSharedStepSourceChain(
+                        , makeSharedStepSourceChain(
                         TaxRePayFundTransfer_TaxableSet,
                         HalfTransfer_Value,
                         HalfTransfer_Currency
@@ -99,8 +101,8 @@ public class TaxRePayFundTransfer extends RePayFundTransfer {
                             }
                             return Currency.round(container.getTaxableAmount() * taxFundEvent.getPercentage());
                         }
-                        , new End_Source_Schema<>(TaxRePayFundTransfer_TaxableAmount)
-                        , Source_Factory.makeSourceChain(Transfer_Source, TaxFundEvent_Percentage)));
+                        , makeSourceChain(TaxRePayFundTransfer_TaxableAmount)
+                        , makeSourceChain(Transfer_Source, TaxFundEvent_Percentage)));
         //==============================================================================================================
         // Currency
         // Destination

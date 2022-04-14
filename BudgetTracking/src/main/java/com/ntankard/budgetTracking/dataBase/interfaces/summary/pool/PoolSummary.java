@@ -28,6 +28,8 @@ import static com.ntankard.budgetTracking.dataBase.core.transfer.HalfTransfer.Ha
 import static com.ntankard.budgetTracking.dataBase.core.transfer.HalfTransfer.HalfTransfer_Value;
 import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.DataContext.ZERO_TARGET;
 import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.DataType.CURRENCY;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSharedStepSourceChain;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 
 public abstract class PoolSummary<PoolType extends Pool> extends DataObject implements CurrencyBound {
 
@@ -70,8 +72,8 @@ public abstract class PoolSummary<PoolType extends Pool> extends DataObject impl
                 new Derived_DataCore_Schema<>(
                         (Calculator<Double, PoolSummary<?>>) container ->
                                 container.getEnd() - container.getStart()
-                        , new End_Source_Schema(PoolSummary_Start)
-                        , new End_Source_Schema(PoolSummary_End)));
+                        , makeSourceChain(PoolSummary_Start)
+                        , makeSourceChain(PoolSummary_End)));
         // NetSet ======================================================================================================
         dataObjectSchema.add(new ListDataField_Schema<>(PoolSummary_TransferSet, HalfTransfer.HalfTransferList.class));
         dataObjectSchema.get(PoolSummary_TransferSet).getProperty(Display_Properties.class).setVerbosityLevel(TRACE_DISPLAY);
@@ -93,7 +95,7 @@ public abstract class PoolSummary<PoolType extends Pool> extends DataObject impl
                             }
                             return Currency.round(sum);
                         }
-                        , Source_Factory.makeSharedStepSourceChain(
+                        , makeSharedStepSourceChain(
                         PoolSummary_TransferSet,
                         HalfTransfer_Value,
                         HalfTransfer_Currency)));
@@ -108,8 +110,8 @@ public abstract class PoolSummary<PoolType extends Pool> extends DataObject impl
                 new Derived_DataCore_Schema<>(
                         (Calculator<Double, PoolSummary<?>>) container ->
                                 Currency.round(container.getTransferSum() - container.getNet())
-                        , new End_Source_Schema<>(PoolSummary_TransferSum)
-                        , new End_Source_Schema<>(PoolSummary_Net)));
+                        , makeSourceChain(PoolSummary_TransferSum)
+                        , makeSourceChain(PoolSummary_Net)));
         // Valid =======================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(PoolSummary_Valid, Boolean.class));
         dataObjectSchema.get(PoolSummary_Valid).getProperty(Display_Properties.class).setVerbosityLevel(INFO_DISPLAY);

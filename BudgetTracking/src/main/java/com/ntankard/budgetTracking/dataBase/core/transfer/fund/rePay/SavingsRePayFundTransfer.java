@@ -22,6 +22,7 @@ import java.util.List;
 import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createMultiParentList;
 import static com.ntankard.budgetTracking.dataBase.core.transfer.HalfTransfer.HalfTransfer_Currency;
 import static com.ntankard.budgetTracking.dataBase.core.transfer.HalfTransfer.HalfTransfer_Value;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSharedStepSourceChain;
 
 @ParameterMap(shouldSave = false)
 public class SavingsRePayFundTransfer extends RePayFundTransfer {
@@ -84,7 +85,7 @@ public class SavingsRePayFundTransfer extends RePayFundTransfer {
                             }
                             return -Currency.round(sum);
                         }
-                        , Source_Factory.makeSharedStepSourceChain(
+                        , makeSharedStepSourceChain(
                         SavingsRePayFundTransfer_NonSavingsSet,
                         HalfTransfer_Value,
                         HalfTransfer_Currency

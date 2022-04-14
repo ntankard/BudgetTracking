@@ -21,6 +21,8 @@ import static com.ntankard.budgetTracking.dataBase.core.transfer.Transfer.*;
 import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.DataType.CURRENCY;
 import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.INFO_DISPLAY;
 import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.TRACE_DISPLAY;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.*;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSharedStepSourceChain;
 
 /**
  * One half of the transaction
@@ -63,8 +65,7 @@ public abstract class HalfTransfer extends DataObject implements CurrencyBound {
                             return container.getTransfer().getDestinationPeriodGet();
 
                         }
-                        , Source_Factory.makeSourceChain(HalfTransfer_Transfer, Transfer_SourcePeriodGet)
-                        , Source_Factory.makeSourceChain(HalfTransfer_Transfer, Transfer_DestinationPeriodGet)));
+                        , makeSharedStepSourceChain(HalfTransfer_Transfer, Transfer_SourcePeriodGet, Transfer_DestinationPeriodGet)));
         dataObjectSchema.<Pool>get(HalfTransfer_Period).getProperty(Display_Properties.class).setDisplaySet(false);
         // Pool ========================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(HalfTransfer_Pool, Pool.class));
@@ -77,8 +78,7 @@ public abstract class HalfTransfer extends DataObject implements CurrencyBound {
                             return container.getTransfer().getDestination();
 
                         }
-                        , Source_Factory.makeSourceChain(HalfTransfer_Transfer, Transfer_Source)
-                        , Source_Factory.makeSourceChain(HalfTransfer_Transfer, Transfer_Destination)));
+                        , makeSharedStepSourceChain(HalfTransfer_Transfer, Transfer_Source, Transfer_Destination)));
         dataObjectSchema.<Pool>get(HalfTransfer_Pool).getProperty(Display_Properties.class).setDisplaySet(false);
         // Value =======================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(HalfTransfer_Value, Double.class));
@@ -92,7 +92,7 @@ public abstract class HalfTransfer extends DataObject implements CurrencyBound {
                                 return container.getTransfer().getValue(false);
                             }
                         }
-                        , Source_Factory.makeSourceChain(HalfTransfer_Transfer, Transfer_Value)));
+                        , makeSourceChain(HalfTransfer_Transfer, Transfer_Value)));
         // Currency ====================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(HalfTransfer_Currency, Currency.class));
         dataObjectSchema.get(HalfTransfer_Currency).getProperty(Display_Properties.class).setVerbosityLevel(INFO_DISPLAY);
@@ -105,8 +105,7 @@ public abstract class HalfTransfer extends DataObject implements CurrencyBound {
                             return container.getTransfer().getDestinationCurrencyGet();
 
                         }
-                        , Source_Factory.makeSourceChain(HalfTransfer_Transfer, Transfer_SourceCurrencyGet)
-                        , Source_Factory.makeSourceChain(HalfTransfer_Transfer, Transfer_DestinationCurrencyGet)));
+                        , makeSharedStepSourceChain(HalfTransfer_Transfer, Transfer_SourceCurrencyGet, Transfer_DestinationCurrencyGet)));
         dataObjectSchema.<Pool>get(HalfTransfer_Currency).getProperty(Display_Properties.class).setDisplaySet(false);
         // Source ======================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(HalfTransfer_Source, Boolean.class));

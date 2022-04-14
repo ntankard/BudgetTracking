@@ -10,6 +10,8 @@ import com.ntankard.budgetTracking.dataBase.core.pool.Pool;
 import com.ntankard.budgetTracking.dataBase.core.pool.fundEvent.FundEvent;
 
 import static com.ntankard.budgetTracking.dataBase.core.pool.fundEvent.FundEvent.FundEvent_Category;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createDirectDerivedDataCore;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 
 public class ManualFundTransfer extends FundTransfer {
 
@@ -33,10 +35,7 @@ public class ManualFundTransfer extends FundTransfer {
         // Currency
         // Destination =================================================================================================
         // TODO this was failing when it was set on the RePay, this might be because they were being recreated or because there is a problem here, test
-        dataObjectSchema.<Pool>get(Transfer_Destination).setDataCore_schema(
-                new Derived_DataCore_Schema<Pool, ManualFundTransfer>
-                        (dataObject -> ((FundEvent)dataObject.getSource()).getCategory()
-                                , Source_Factory.makeSourceChain(Transfer_Source, FundEvent_Category)));
+        dataObjectSchema.<Pool>get(Transfer_Destination).setDataCore_schema(createDirectDerivedDataCore(Transfer_Source, FundEvent_Category));
         // SourceCurrencyGet
         // DestinationCurrencyGet
         // SourcePeriodGet

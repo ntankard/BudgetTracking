@@ -25,6 +25,7 @@ import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.DEBU
 import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createSelfParentList;
 import static com.ntankard.budgetTracking.dataBase.core.links.CategoryToCategorySet.CategoryToCategorySet_SolidCategory;
 import static com.ntankard.budgetTracking.dataBase.core.links.CategoryToVirtualCategory.CategoryToVirtualCategory_SolidCategory;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 
 public class CategorySet extends NamedDataObject implements HasDefault, Ordered {
 
@@ -81,8 +82,8 @@ public class CategorySet extends NamedDataObject implements HasDefault, Ordered 
                             }
                             return toReturn;
                         }
-                        , new Step_Source_Schema<>(CategorySet_CategoryToCategorySetList, new End_Source_Schema<>(CategoryToCategorySet_SolidCategory))
-                        , new Step_Source_Schema<>(CategorySet_CategoryToVirtualCategoryList, new End_Source_Schema<>(CategoryToVirtualCategory_SolidCategory))));
+                        , makeSourceChain(CategorySet_CategoryToCategorySetList, CategoryToCategorySet_SolidCategory)
+                        , makeSourceChain(CategorySet_CategoryToVirtualCategoryList, CategoryToVirtualCategory_SolidCategory)));
         // TODO change to new method
         //==============================================================================================================
         // Parents

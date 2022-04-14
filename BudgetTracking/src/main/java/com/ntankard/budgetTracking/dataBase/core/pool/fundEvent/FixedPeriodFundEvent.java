@@ -22,6 +22,8 @@ import java.util.List;
 import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createSelfParentList;
 import static com.ntankard.budgetTracking.dataBase.core.transfer.HalfTransfer.HalfTransfer_Currency;
 import static com.ntankard.budgetTracking.dataBase.core.transfer.HalfTransfer.HalfTransfer_Value;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSharedStepSourceChain;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 
 public class FixedPeriodFundEvent extends FundEvent {
 
@@ -73,7 +75,7 @@ public class FixedPeriodFundEvent extends FundEvent {
                             }
                             return Currency.round(sum);
                         }
-                        , Source_Factory.makeSharedStepSourceChain(
+                        , makeSharedStepSourceChain(
                         FixedPeriodFundEvent_NonRepaySet,
                         HalfTransfer_Value,
                         HalfTransfer_Currency))); // TODO possible problem here, we have a 3 layer nested dependency. getToPrimary
@@ -83,8 +85,8 @@ public class FixedPeriodFundEvent extends FundEvent {
                 new Derived_DataCore_Schema<>(
                         (Calculator<Double, FixedPeriodFundEvent>)
                                 container -> container.getNonRepaySum() / container.getDuration()
-                        , new End_Source_Schema<>(FixedPeriodFundEvent_NonRepaySum)
-                        , new End_Source_Schema<>(FixedPeriodFundEvent_Duration)));
+                        , makeSourceChain(FixedPeriodFundEvent_NonRepaySum)
+                        , makeSourceChain(FixedPeriodFundEvent_Duration)));
         //==============================================================================================================
         // Parents
         // Children

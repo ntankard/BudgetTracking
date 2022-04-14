@@ -15,6 +15,8 @@ import com.ntankard.budgetTracking.dataBase.core.pool.category.VirtualCategory;
 import java.util.List;
 
 import static com.ntankard.budgetTracking.dataBase.core.pool.category.VirtualCategory.VirtualCategory_CategorySet;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createDirectDerivedDataCore;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 
 public class CategoryToVirtualCategory extends DataObject {
 
@@ -50,10 +52,7 @@ public class CategoryToVirtualCategory extends DataObject {
         dataObjectSchema.get(CategoryToVirtualCategory_SolidCategory).addValidator(sharedFilter.getValidator(CategoryToVirtualCategory_SolidCategory));
         // CategorySet =================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(CategoryToVirtualCategory_CategorySet, CategorySet.class));
-        dataObjectSchema.<CategorySet>get(CategoryToVirtualCategory_CategorySet).setDataCore_schema(
-                new Derived_DataCore_Schema<CategorySet, CategoryToVirtualCategory>
-                        (dataObject -> dataObject.getVirtualCategory().getCategorySet()
-                                , Source_Factory.makeSourceChain(CategoryToVirtualCategory_VirtualCategory, VirtualCategory_CategorySet)));
+        dataObjectSchema.<CategorySet>get(CategoryToVirtualCategory_CategorySet).setDataCore_schema(createDirectDerivedDataCore(CategoryToVirtualCategory_VirtualCategory, VirtualCategory_CategorySet));
         //==============================================================================================================
         // Parents
         // Children

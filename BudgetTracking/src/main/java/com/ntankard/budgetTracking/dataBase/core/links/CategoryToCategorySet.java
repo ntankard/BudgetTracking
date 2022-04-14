@@ -18,6 +18,7 @@ import java.util.List;
 
 import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.DEBUG_DISPLAY;
 import static com.ntankard.budgetTracking.dataBase.core.CategorySet.CategorySet_Order;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 
 public class CategoryToCategorySet extends DataObject implements Ordered {
 
@@ -61,8 +62,8 @@ public class CategoryToCategorySet extends DataObject implements Ordered {
         dataObjectSchema.get(CategoryToCategorySet_Order).setDataCore_schema(
                 new Derived_DataCore_Schema<>
                         (container -> ((CategoryToCategorySet) container).getCategorySet().getOrder() * 1000 + ((CategoryToCategorySet) container).getOrderImpl()
-                                , new End_Source_Schema<>((CategoryToCategorySet_OrderImpl))
-                                , Source_Factory.makeSourceChain((CategoryToCategorySet_CategorySet), CategorySet_Order)));
+                                , makeSourceChain(CategoryToCategorySet_OrderImpl)
+                                , makeSourceChain(CategoryToCategorySet_CategorySet, CategorySet_Order)));
         //==============================================================================================================
         // Parents
         // Children
