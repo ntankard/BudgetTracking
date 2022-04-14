@@ -2,7 +2,7 @@ package com.ntankard.budgetTracking.display.frames.mainFrame.image;
 
 import com.ntankard.dynamicGUI.gui.util.update.Updatable;
 import com.ntankard.dynamicGUI.gui.util.update.UpdatableJPanel;
-import com.ntankard.budgetTracking.dataBase.core.Receipt;
+import com.ntankard.budgetTracking.dataBase.core.fileManagement.Receipt;
 import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.javaObjectDatabase.util.FileUtil;
 

@@ -1,0 +1,39 @@
+{
+  "extends": "DataObject",
+  "extendsSchema": "Displayable_DataObject",
+  "listDef": true,
+  "customToString" : "getRawLine()",
+  "fields": [
+    {
+      "name": "StatementDocument",
+      "type": "StatementDocument",
+      "database_source": true
+    },
+    {
+      "name": "Period",
+      "type": "Period"
+    },
+    {
+      "name": "Date",
+      "type": "Date"
+    },
+    {
+      "name": "Value",
+      "type": "Double"
+    },
+    {
+      "name": "Description",
+      "type": "String"
+    },
+    {
+      "name": "StatementTransaction",
+      "type": "StatementTransaction",
+      "canBeNull": true,
+      "editable": true
+    },
+    {
+      "name": "RawLine",
+      "type": "String"
+    }
+  ]
+}

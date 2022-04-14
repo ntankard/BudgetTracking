@@ -1,21 +1,25 @@
-package com.ntankard.budgetTracking.dataBase.core;
+package com.ntankard.budgetTracking.dataBase.core.fileManagement;
 
 import com.ntankard.budgetTracking.dataBase.core.transfer.bank.BankTransfer;
 import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.Static_DataCore_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.dataObject.interfaces.FileInterface;
 import com.ntankard.javaObjectDatabase.database.Database;
 
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
+
 public class Receipt extends DataObject implements FileInterface {
 
-    //------------------------------------------------------------------------------------------------------------------
-    //################################################### Constructor ##################################################
-    //------------------------------------------------------------------------------------------------------------------
+    private static final String Receipt_Prefix = "Receipt_";
 
     public static final String Receipt_FileName = "getFileName";
     public static final String Receipt_BankTransfer = "getBankTransfer";
+    public static final String Receipt_ContainerPath = "getContainerPath";
+    public static final String Receipt_FullPath = Receipt_Prefix + "FullPath";
 
     /**
      * Get all the fields for this object
@@ -24,14 +28,23 @@ public class Receipt extends DataObject implements FileInterface {
         DataObject_Schema dataObjectSchema = Displayable_DataObject.getDataObjectSchema();
 
         // ID
-        // FileName ======================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Receipt_FileName, String.class));
-        // BankTransfer ========================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Receipt_BankTransfer, BankTransfer.class));
-        dataObjectSchema.get(Receipt_BankTransfer).setManualCanEdit(true);
-        //==============================================================================================================
-        // Parents
+        dataObjectSchema.add(new DataField_Schema<>(Receipt_ContainerPath, String.class));
+        dataObjectSchema.add(new DataField_Schema<>(Receipt_FullPath, String.class));
         // Children
+
+        // BankTransfer ================================================================================================
+        dataObjectSchema.get(Receipt_BankTransfer).setManualCanEdit(true);
+        // ContainerPath ===============================================================================================
+        dataObjectSchema.get(Receipt_ContainerPath).setDataCore_schema(new Static_DataCore_Schema<>("Receipts"));
+        // FullPath ====================================================================================================
+        dataObjectSchema.<String>get(Receipt_FullPath).setDataCore_schema(
+                new Derived_DataCore_Schema<String, Receipt>
+                        (container -> container.getTrackingDatabase().getFilesPath() + "\\" + container.getContainerPath() + "\\" + container.getFileName()
+                                , makeSourceChain(Receipt_ContainerPath)
+                                , makeSourceChain(Receipt_FileName)));
+        //==============================================================================================================
 
         return dataObjectSchema.finaliseContainer(Receipt.class);
     }
@@ -54,24 +67,32 @@ public class Receipt extends DataObject implements FileInterface {
         );
     }
 
+    //------------------------------------------------------------------------------------------------------------------
+    //################################################ Implementations #################################################
+    //------------------------------------------------------------------------------------------------------------------
+
     /**
      * @inheritDoc
      */
     @Override
-    public void remove() {
-        super.remove_impl();
+    public String getFileName() {
+        return get(Receipt_FileName);
     }
-
-    //------------------------------------------------------------------------------------------------------------------
-    //################################################# Implementations ################################################
-    //------------------------------------------------------------------------------------------------------------------
 
     /**
      * @inheritDoc
      */
     @Override
     public String getContainerPath() {
-        return "Receipts";
+        return get(Receipt_ContainerPath);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public String getFullPath() {
+        return get(Receipt_FullPath);
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -80,10 +101,6 @@ public class Receipt extends DataObject implements FileInterface {
 
     public BankTransfer getBankTransfer() {
         return get(Receipt_BankTransfer);
-    }
-
-    public String getFileName() {
-        return get(Receipt_FileName);
     }
 
     //------------------------------------------------------------------------------------------------------------------

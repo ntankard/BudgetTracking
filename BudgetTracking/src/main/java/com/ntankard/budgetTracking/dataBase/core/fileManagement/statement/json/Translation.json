@@ -1,0 +1,23 @@
+{
+  "extends": "DataObject",
+  "extendsSchema": "Displayable_DataObject",
+  "customToString": "getTranslated() + \"  -  \" + getOriginal()",
+  "listDef": true,
+  "fields": [
+    {
+      "name": "Original",
+      "type": "String",
+      "editable": true
+    },
+    {
+      "name": "Translated",
+      "type": "String",
+      "editable": true
+    },
+    {
+      "name": "TranslationTypes",
+      "type": "TranslationTypes",
+      "editable": true
+    }
+  ]
+}

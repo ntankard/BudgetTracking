@@ -1,0 +1,7 @@
+{
+  "extends": "NamedDataObject",
+  "extendsSchema": "NamedDataObject",
+  "fields": [
+
+  ]
+}

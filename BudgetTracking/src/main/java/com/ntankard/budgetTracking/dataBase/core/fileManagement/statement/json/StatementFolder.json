@@ -1,0 +1,20 @@
+{
+  "extends": "DataObject",
+  "extendsSchema": "Displayable_DataObject",
+  "customToString" : "getPeriod() + \"-\" + getBank()",
+  "fields": [
+    {
+      "name": "Period",
+      "type": "ExistingPeriod",
+      "database_source": true
+    },
+    {
+      "name": "Bank",
+      "type": "Bank"
+    },
+    {
+      "name": "TranslationTypes",
+      "type": "TranslationTypes"
+    }
+  ]
+}

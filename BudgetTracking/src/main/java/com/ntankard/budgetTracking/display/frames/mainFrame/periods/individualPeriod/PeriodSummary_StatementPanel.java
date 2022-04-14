@@ -1,7 +1,9 @@
 package com.ntankard.budgetTracking.display.frames.mainFrame.periods.individualPeriod;
 
 import com.ntankard.budgetTracking.dataBase.core.transfer.FundFundTransfer;
+import com.ntankard.budgetTracking.dataBase.core.transfer.bank.IntraCurrencyBankTransfer;
 import com.ntankard.budgetTracking.dataBase.core.transfer.bank.ManualBankTransfer;
+import com.ntankard.budgetTracking.display.util.elementControllers.IntraCurrencyBankTransfer_ElementController;
 import com.ntankard.dynamicGUI.gui.util.update.Updatable;
 import com.ntankard.dynamicGUI.gui.util.update.UpdatableJPanel;
 import com.ntankard.budgetTracking.dataBase.core.period.ExistingPeriod;
@@ -9,7 +11,7 @@ import com.ntankard.budgetTracking.dataBase.core.period.Period;
 import com.ntankard.budgetTracking.dataBase.core.pool.Bank;
 import com.ntankard.budgetTracking.dataBase.core.pool.category.SolidCategory;
 import com.ntankard.budgetTracking.dataBase.core.pool.fundEvent.FundEvent;
-import com.ntankard.budgetTracking.dataBase.core.Receipt;
+import com.ntankard.budgetTracking.dataBase.core.fileManagement.Receipt;
 import com.ntankard.budgetTracking.dataBase.core.transfer.bank.BankTransfer;
 import com.ntankard.budgetTracking.dataBase.core.transfer.bank.RecurringBankTransfer;
 import com.ntankard.budgetTracking.dataBase.core.transfer.fund.FundTransfer;
@@ -59,6 +61,7 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
 
     private DataObject_DisplayList<ManualFundTransfer> periodFundTransfer_panel;
     private DataObject_DisplayList<FundFundTransfer> periodFundFundTransfer_panel;
+    private DataObject_DisplayList<IntraCurrencyBankTransfer> intraCurrencyBankTransferDataObject_panel;
 
     /**
      * Constructor
@@ -201,6 +204,9 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
         periodFundFundTransfer_panel = new DataObject_DisplayList<>(period.getTrackingDatabase().getSchema(), FundFundTransfer.class, new OneParent_Children_Set<>(FundFundTransfer.class, period), false, this);
         periodFundFundTransfer_panel.addControlButtons(new FundFundTransfer_ElementController(period, this));
 
+        intraCurrencyBankTransferDataObject_panel = new DataObject_DisplayList<>(period.getTrackingDatabase().getSchema(), IntraCurrencyBankTransfer.class, new OneParent_Children_Set<>(IntraCurrencyBankTransfer.class, period), false, this);
+        intraCurrencyBankTransferDataObject_panel.addControlButtons(new IntraCurrencyBankTransfer_ElementController(period, this));
+
         // Statement summary -------------------------------------------------------------------------------------------
 
         if (period instanceof ExistingPeriod) {
@@ -280,6 +286,7 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
         transferPanel.addTab("Bank", bankPanel);
         transferPanel.addTab("Fund", fundPanel);
         transferPanel.addTab("FundFund", periodFundFundTransfer_panel);
+        transferPanel.addTab("Intra Currency", intraCurrencyBankTransferDataObject_panel);
 
         masterContainer_C.weighty = 1;
         masterContainer_C.gridwidth = 1;
@@ -294,6 +301,7 @@ public class PeriodSummary_StatementPanel extends UpdatableJPanel {
     public void update() {
         periodFundTransfer_panel.update();
         periodFundFundTransfer_panel.update();
+        intraCurrencyBankTransferDataObject_panel.update();
 
         updateTransactions();
 

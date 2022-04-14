@@ -1,0 +1,162 @@
+{
+  "extends": "DataObject",
+  "extendsSchema": "Displayable_DataObject",
+  "implements": "CurrencyBound",
+  "listDef": true,
+  "customToString" : "getCoreLine().getRawLine()",
+  "fields": [
+    {
+      "name": "TransactionLines",
+      "type": "TransactionLine",
+      "avoid_constructor": true,
+      "is_list": true,
+      "dataCore": {
+        "type": "SelfParent",
+        "classType": "TransactionLine"
+      },
+      "properties": {
+        "Display_Properties": [
+          "setVerbosityLevel(Display_Properties.INFO_DISPLAY)"
+        ]
+      }
+    },
+    {
+      "name": "CoreLine",
+      "type": "TransactionLine",
+      "canBeNull": true,
+      "dataCore": {
+        "type": "Derived",
+        "codeLine": "container.getTransactionLines().size() == 0 ? null : container.getTransactionLines().get(0)",
+        "sources": [
+          "makeSourceChain(StatementTransaction_TransactionLines)"
+        ]
+      },
+      "properties": {
+        "Display_Properties": [
+          "setVerbosityLevel(Display_Properties.INFO_DISPLAY)"
+        ]
+      }
+    },
+    {
+      "name": "Value",
+      "type": "Double",
+      "dataCore": {
+        "type": "DirectDerived",
+        "sources": "StatementTransaction_CoreLine, TransactionLine_Value",
+        "default": 0.0
+      },
+      "properties": {
+        "Display_Properties": [
+          "setDataType(CURRENCY)"
+        ]
+      }
+    },
+    {
+      "name": "Description",
+      "type": "String",
+      "dataCore": {
+        "type": "DirectDerived",
+        "sources": "StatementTransaction_CoreLine, TransactionLine_Description",
+        "default": "\"\""
+      }
+    },
+    {
+      "name": "Translation",
+      "type": "Translation",
+      "canBeNull": true,
+      "dataCore": {
+        "type": "Derived",
+        "codeLine": "{\n                            for (Translation translation : container.getTranslationList()) {\n                                // Does this rule apply to this StatementTransaction\n                                boolean matched = false;\n                                if (translation.getOriginal().contains(\"'\")) { // OR\n                                    String[] toCheck = translation.getOriginal().split(\"'\");\n                                    for (String check : toCheck) {\n                                        if (container.getDescription().contains(check)) {\n                                            matched = true;\n                                            break;\n                                        }\n                                    }\n                                } else if (translation.getOriginal().contains(\"~\")) { // AND\n                                    String[] toCheck = translation.getOriginal().split(\"~\");\n                                    matched = true;\n                                    for (String check : toCheck) {\n                                        if (!container.getDescription().contains(check)) {\n                                            matched = false;\n                                            break;\n                                        }\n                                    }\n                                } else { // 1 only\n                                    matched = container.getDescription().contains(translation.getOriginal());\n                                }\n                                if (matched) {\n                                    return translation;\n                                }\n                            }\n                            return null;\n                        }",
+        "sources": [
+          "Source_Factory.append(Source_Factory.makeSharedStepSourceChain(StatementTransaction_TranslationList, Translation_Original, Translation_Translated)\n                                , makeSourceChain(StatementTransaction_Description))"
+        ]
+      }
+    },
+    {
+      "name": "Currency",
+      "type": "Currency",
+      "dataCore": {
+        "type": "DirectDerived",
+        "sources": "StatementTransaction_CoreLine, TransactionLine_StatementDocument, StatementDocument_StatementFolder, StatementFolder_Bank, Bank_Currency",
+        "default": "container -> container.getTrackingDatabase().getDefault(Currency.class)"
+      },
+      "properties": {
+        "Display_Properties": [
+          "setVerbosityLevel(Display_Properties.INFO_DISPLAY)"
+        ]
+      }
+    },
+    {
+      "name": "StatementBankTransfer",
+      "type": "StatementBankTransfer",
+      "canBeNull": true,
+      "editable": true
+    },
+    {
+      "name": "Bank",
+      "type": "Bank",
+      "dataCore": {
+        "type": "DirectDerived",
+        "sources": "StatementTransaction_CoreLine, TransactionLine_StatementDocument, StatementDocument_StatementFolder, StatementFolder_Bank",
+        "default": "container -> container.getTrackingDatabase().getDefault(Bank.class)"
+      },
+      "properties": {
+        "Display_Properties": [
+          "setVerbosityLevel(Display_Properties.INFO_DISPLAY)"
+        ]
+      }
+    },
+    {
+      "name": "Period",
+      "type": "Period",
+      "dataCore": {
+        "type": "DirectDerived",
+        "sources": "StatementTransaction_CoreLine, TransactionLine_Period",
+        "default": "container -> container.getTrackingDatabase().getDefault(Period.class)"
+      },
+      "properties": {
+        "Display_Properties": [
+          "setVerbosityLevel(Display_Properties.INFO_DISPLAY)"
+        ]
+      }
+    },
+    {
+      "name": "StatementFolder",
+      "type": "StatementFolder",
+      "database_source": true,
+      "properties": {
+        "Display_Properties": [
+          "setCustomColor((rowObject, value) -> ((StatementTransaction)rowObject).getPeriod() == ((StatementTransaction)rowObject).getStatementFolder().getPeriod() ? null : Color.ORANGE)"
+        ]
+      }
+    },
+    {
+      "name": "TranslationTypes",
+      "type": "TranslationTypes",
+      "dataCore": {
+        "type": "DirectDerived",
+        "sources": "StatementTransaction_StatementFolder, StatementFolder_TranslationTypes",
+        "default": "container -> container.getTrackingDatabase().getDefault(TranslationTypes.class)"
+      },
+      "properties": {
+        "Display_Properties": [
+          "setVerbosityLevel(Display_Properties.INFO_DISPLAY)"
+        ]
+      }
+    },
+    {
+      "name": "TranslationList",
+      "type": "Translation",
+      "is_list": true,
+      "dataCore": {
+        "type": "MultiParentList",
+        "parents": "StatementTransaction_TranslationTypes"
+      },
+      "properties": {
+        "Display_Properties": [
+          "setVerbosityLevel(Display_Properties.INFO_DISPLAY)"
+        ]
+      }
+    }
+  ]
+}

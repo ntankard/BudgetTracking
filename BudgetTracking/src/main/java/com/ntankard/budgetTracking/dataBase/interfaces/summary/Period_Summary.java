@@ -390,7 +390,7 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
                                 return true;
                             }
                             double delta = Math.abs(expectRate - rate);
-                            return !(delta > expectRate * 0.1);
+                            return !(delta > expectRate * 0.3);
                         }
                         , new End_Source_Schema<>((Period_Summary_Period))
                         , new End_Source_Schema<>((Period_Summary_ExchangeRate))));
