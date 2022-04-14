@@ -13,7 +13,6 @@ import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.dataField.ListDataField_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Schema;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
@@ -129,26 +128,26 @@ public class StatementTransaction extends DataObject implements CurrencyBound {
         // Currency ====================================================================================================
         dataObjectSchema.get(StatementTransaction_Currency).getProperty(Display_Properties.class).setVerbosityLevel(Display_Properties.INFO_DISPLAY);
         dataObjectSchema.<Currency>get(StatementTransaction_Currency).setDataCore_schema(
-                createDefaultDirectDerivedDataCore(container -> container.getTrackingDatabase().getDefault(Currency.class),
+                createDefaultDirectDerivedDataCoreGetter(container -> container.getTrackingDatabase().getDefault(Currency.class),
                         StatementTransaction_CoreLine, TransactionLine_StatementDocument, StatementDocument_StatementFolder, StatementFolder_Bank, Bank_Currency));
         // StatementBankTransfer =======================================================================================
         dataObjectSchema.get(StatementTransaction_StatementBankTransfer).setManualCanEdit(true);
         // Bank ========================================================================================================
         dataObjectSchema.get(StatementTransaction_Bank).getProperty(Display_Properties.class).setVerbosityLevel(Display_Properties.INFO_DISPLAY);
         dataObjectSchema.<Bank>get(StatementTransaction_Bank).setDataCore_schema(
-                createDefaultDirectDerivedDataCore(container -> container.getTrackingDatabase().getDefault(Bank.class),
+                createDefaultDirectDerivedDataCoreGetter(container -> container.getTrackingDatabase().getDefault(Bank.class),
                         StatementTransaction_CoreLine, TransactionLine_StatementDocument, StatementDocument_StatementFolder, StatementFolder_Bank));
         // Period ======================================================================================================
         dataObjectSchema.get(StatementTransaction_Period).getProperty(Display_Properties.class).setVerbosityLevel(Display_Properties.INFO_DISPLAY);
         dataObjectSchema.<Period>get(StatementTransaction_Period).setDataCore_schema(
-                createDefaultDirectDerivedDataCore(container -> container.getTrackingDatabase().getDefault(Period.class),
+                createDefaultDirectDerivedDataCoreGetter(container -> container.getTrackingDatabase().getDefault(Period.class),
                         StatementTransaction_CoreLine, TransactionLine_Period));
         // StatementFolder =============================================================================================
         dataObjectSchema.get(StatementTransaction_StatementFolder).getProperty(Display_Properties.class).setCustomColor((rowObject, value) -> ((StatementTransaction)rowObject).getPeriod() == ((StatementTransaction)rowObject).getStatementFolder().getPeriod() ? null : Color.ORANGE);
         // TranslationTypes ============================================================================================
         dataObjectSchema.get(StatementTransaction_TranslationTypes).getProperty(Display_Properties.class).setVerbosityLevel(Display_Properties.INFO_DISPLAY);
         dataObjectSchema.<TranslationTypes>get(StatementTransaction_TranslationTypes).setDataCore_schema(
-                createDefaultDirectDerivedDataCore(container -> container.getTrackingDatabase().getDefault(TranslationTypes.class),
+                createDefaultDirectDerivedDataCoreGetter(container -> container.getTrackingDatabase().getDefault(TranslationTypes.class),
                         StatementTransaction_StatementFolder, StatementFolder_TranslationTypes));
         // TranslationList =============================================================================================
         dataObjectSchema.get(StatementTransaction_TranslationList).getProperty(Display_Properties.class).setVerbosityLevel(Display_Properties.INFO_DISPLAY);
