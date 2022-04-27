@@ -95,7 +95,7 @@ public class SumFundGraph extends UpdatableJPanel {
         for (FundEvent fundEvent : database.get(FundEvent.class)) {
             if (fundEvent instanceof SavingsFundEvent) {
                 setFundGroups.get(0).add(fundEvent);
-            } else if (fundEvent.getName().equals("Hex") || fundEvent.getName().equals("Hex2") || fundEvent.getName().equals("19-20 Tax") || fundEvent.getName().equals("18-19 Tax")) {
+            } else if (fundEvent.getCategory().getName().equals("Tax")) {
                 setFundGroups.get(1).add(fundEvent);
             } else {
                 setFundGroups.get(2).add(fundEvent);
