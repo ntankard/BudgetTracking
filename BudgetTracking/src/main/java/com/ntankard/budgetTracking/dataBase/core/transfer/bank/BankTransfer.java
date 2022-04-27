@@ -128,9 +128,8 @@ public abstract class BankTransfer extends Transfer {
     /**
      * @inheritDoc
      */
-    @SuppressWarnings({"rawtypes", "unchecked"})
     @Override
-    protected void remove_impl() {
+    public void remove() {
         super.remove_impl();
     }
 
