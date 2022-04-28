@@ -60,7 +60,7 @@ public class Receipt extends DataObject implements FileInterface {
      * Constructor
      */
     public Receipt(String fileName, BankTransfer bankTransfer) {
-        this(bankTransfer.getTrackingDatabase());
+        super(bankTransfer.getTrackingDatabase());
         setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
                 , Receipt_FileName, fileName
                 , Receipt_BankTransfer, bankTransfer

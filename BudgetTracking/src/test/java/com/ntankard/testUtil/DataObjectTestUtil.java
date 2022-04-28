@@ -47,14 +47,6 @@ public class DataObjectTestUtil {
                     }
                 }, "Could not get the object." + " Class:" + aClass.getSimpleName() + " Object:" + toTest.toString() + " Member:" + getter.getDisplayName());
             }
-
-            // Extract the presented objects
-            List<DataObject> reportedParents = toTest.getParents();
-
-            assertEquals(expectedParents.size(), reportedParents.size(), "Parents do not match the number of getters." + " Class:" + toTest.getClass().getSimpleName() + " Object:" + toTest.toString());
-            for (DataObject dataObject : expectedParents) {
-                assertTrue(reportedParents.contains(dataObject), "An object dose not match what was presented." + " Class:" + aClass.getSimpleName() + " TestObject:" + toTest.toString() + " Object:" + dataObject.toString());
-            }
         }
     }
 
