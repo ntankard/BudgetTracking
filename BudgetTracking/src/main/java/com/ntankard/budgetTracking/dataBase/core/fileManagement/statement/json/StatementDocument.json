@@ -20,12 +20,13 @@
       "name": "FullPath",
       "type": "String",
       "dataCore": {
-        "type": "Derived",
-        "codeLine": "container.getTrackingDatabase().getFilesPath() + \"\\\\\" + container.getContainerPath() + \"\\\\\" + container.getFileName()",
-        "sources": [
-          "makeSourceChain(StatementDocument_ContainerPath)",
-          "makeSourceChain(StatementDocument_FileName)"
-        ]
+        "derived": {
+          "codeLine": "container.getTrackingDatabase().getFilesPath() + \"\\\\\" + container.getContainerPath() + \"\\\\\" + container.getFileName()",
+          "sources": [
+            "makeSourceChain(StatementDocument_ContainerPath)",
+            "makeSourceChain(StatementDocument_FileName)"
+          ]
+        }
       }
     },
     {
