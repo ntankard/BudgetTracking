@@ -1,17 +1,15 @@
 package com.ntankard.budgetTracking.dataBase.core.pool.category;
 
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.End_Source_Schema;
+import com.ntankard.budgetTracking.dataBase.core.CategorySet;
 import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
+import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.dataObject.interfaces.Ordered;
-import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
-import com.ntankard.budgetTracking.dataBase.core.CategorySet;
 
-import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.DEBUG_DISPLAY;
 import static com.ntankard.budgetTracking.dataBase.core.CategorySet.CategorySet_Order;
+import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.DEBUG_DISPLAY;
 import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 
 public class VirtualCategory extends Category implements Ordered {
@@ -55,16 +53,15 @@ public class VirtualCategory extends Category implements Ordered {
     /**
      * Constructor
      */
-    public VirtualCategory(Database database) {
-        super(database);
+    public VirtualCategory(Database database, Object... args) {
+        super(database, args);
     }
 
     /**
      * Constructor
      */
     public VirtualCategory(String name, CategorySet categorySet, Integer orderImpl) {
-        this(categorySet.getTrackingDatabase());
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(categorySet.getTrackingDatabase()
                 , NamedDataObject_Name, name
                 , VirtualCategory_CategorySet, categorySet
                 , VirtualCategory_OrderImpl, orderImpl

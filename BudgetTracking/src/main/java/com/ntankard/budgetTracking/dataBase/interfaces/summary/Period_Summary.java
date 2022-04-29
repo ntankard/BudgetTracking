@@ -1,50 +1,47 @@
 package com.ntankard.budgetTracking.dataBase.interfaces.summary;
 
-import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
-import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema.Calculator;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.*;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.End_Source_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.step.Step_Source_Schema;
-import com.ntankard.budgetTracking.dataBase.core.baseObject.interfaces.CurrencyBound;
 import com.ntankard.budgetTracking.dataBase.core.Currency;
+import com.ntankard.budgetTracking.dataBase.core.baseObject.interfaces.CurrencyBound;
 import com.ntankard.budgetTracking.dataBase.core.period.ExistingPeriod;
 import com.ntankard.budgetTracking.dataBase.core.period.Period;
 import com.ntankard.budgetTracking.dataBase.core.period.VirtualPeriod;
 import com.ntankard.budgetTracking.dataBase.core.pool.Bank;
-import com.ntankard.budgetTracking.dataBase.core.transfer.bank.BankTransfer;
 import com.ntankard.budgetTracking.dataBase.core.transfer.HalfTransfer;
+import com.ntankard.budgetTracking.dataBase.core.transfer.bank.BankTransfer;
 import com.ntankard.budgetTracking.dataBase.interfaces.summary.pool.Bank_Summary;
 import com.ntankard.budgetTracking.dataBase.interfaces.summary.pool.Bank_Summary.Bank_SummaryList;
 import com.ntankard.budgetTracking.dataBase.interfaces.summary.pool.Category_Summary;
 import com.ntankard.budgetTracking.dataBase.interfaces.summary.pool.Category_Summary.Category_SummaryList;
 import com.ntankard.budgetTracking.dataBase.interfaces.summary.pool.FundEvent_Summary;
 import com.ntankard.budgetTracking.dataBase.interfaces.summary.pool.FundEvent_Summary.FundEvent_SummaryList;
-import com.ntankard.javaObjectDatabase.dataObject.DataObject;
-import com.ntankard.javaObjectDatabase.dataObject.factory.SingleParentFactory;
+import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
+import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.dataField.ListDataField_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema.Calculator;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.factory.SingleParentFactory;
 import com.ntankard.javaObjectDatabase.dataObject.interfaces.Ordered;
-import com.ntankard.javaObjectDatabase.database.ParameterMap;
 import com.ntankard.javaObjectDatabase.database.Database;
+import com.ntankard.javaObjectDatabase.database.ParameterMap;
 import com.ntankard.javaObjectDatabase.util.set.OneParent_Children_Set;
 import com.ntankard.javaObjectDatabase.util.set.TwoParent_Children_Set;
 
 import java.util.List;
 
-import static com.ntankard.budgetTracking.dataBase.core.pool.fundEvent.FundEvent.FundEvent_Category;
-import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.DataContext.*;
-import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createDirectDerivedDataCore;
-import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createMultiParentList;
 import static com.ntankard.budgetTracking.dataBase.core.period.ExistingPeriod.ExistingPeriod_Order;
 import static com.ntankard.budgetTracking.dataBase.core.transfer.Transfer.*;
 import static com.ntankard.budgetTracking.dataBase.interfaces.summary.pool.Bank_Summary.Bank_Summary_Currency;
 import static com.ntankard.budgetTracking.dataBase.interfaces.summary.pool.PoolSummary.*;
 import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.DEBUG_DISPLAY;
+import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.DataContext.*;
 import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.DataType.CURRENCY;
 import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.TRACE_DISPLAY;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createDirectDerivedDataCore;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createMultiParentList;
 import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSharedStepSourceChain;
 import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 
@@ -396,19 +393,15 @@ public class Period_Summary extends DataObject implements CurrencyBound, Ordered
     /**
      * Constructor
      */
-    public Period_Summary(Database database) {
-        super(database);
+    public Period_Summary(Database database, Object... args) {
+        super(database, args);
     }
 
     /**
      * Constructor
      */
     public Period_Summary(Period period) {
-        super(period.getTrackingDatabase());
-        if (!period.getChildren(Period_Summary.class).isEmpty()) {
-            throw new IllegalStateException("Making a second period summary");
-        }
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(period.getTrackingDatabase()
                 , Period_Summary_Period, period
         );
     }

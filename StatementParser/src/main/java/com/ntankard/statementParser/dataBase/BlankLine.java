@@ -31,18 +31,11 @@ public class BlankLine extends DataObject {
     /**
      * Constructor
      */
-    public BlankLine(StatementInstance statementInstance, String[] line) {
-        super(statementInstance.getTrackingDatabase());
-
-        StringBuilder concat = new StringBuilder();
-        for (String part : line) {
-            concat.append(",").append(part);
-        }
-
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+    public BlankLine(StatementInstance statementInstance, String[] line, String rawLine) {
+        super(statementInstance.getTrackingDatabase()
                 , BlankLine_StatementInstance, statementInstance
                 , BlankLine_Line, line
-                , BlankLine_RawLine, concat.toString()
+                , BlankLine_RawLine, rawLine
         );
     }
 

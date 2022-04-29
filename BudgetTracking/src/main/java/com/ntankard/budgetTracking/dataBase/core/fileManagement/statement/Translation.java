@@ -12,6 +12,7 @@ public class Translation extends DataObject {
 
     public interface TranslationList extends List<Translation> {
     }
+
     private static final String Translation_Prefix = "Translation_";
 
     public static final String Translation_Original = Translation_Prefix + "Original";
@@ -44,16 +45,15 @@ public class Translation extends DataObject {
     /**
      * Constructor
      */
-    public Translation(Database database) {
-        super(database);
+    public Translation(Database database, Object... args) {
+        super(database, args);
     }
 
     /**
      * Constructor
      */
     public Translation(Database database, String original, String translated, TranslationTypes translationTypes) {
-        this(database);
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(database
                 , Translation_Original, original
                 , Translation_Translated, translated
                 , Translation_TranslationTypes, translationTypes

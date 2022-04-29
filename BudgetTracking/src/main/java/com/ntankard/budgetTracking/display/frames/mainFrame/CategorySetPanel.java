@@ -1,8 +1,5 @@
 package com.ntankard.budgetTracking.display.frames.mainFrame;
 
-import com.ntankard.dynamicGUI.gui.util.update.Updatable;
-import com.ntankard.dynamicGUI.gui.util.update.UpdatableJPanel;
-import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.budgetTracking.dataBase.core.CategorySet;
 import com.ntankard.budgetTracking.dataBase.core.links.CategoryToCategorySet;
 import com.ntankard.budgetTracking.dataBase.core.links.CategoryToVirtualCategory;
@@ -12,6 +9,9 @@ import com.ntankard.budgetTracking.display.util.elementControllers.CategoryToCat
 import com.ntankard.budgetTracking.display.util.elementControllers.CategoryToVirtualCategory_ElementController;
 import com.ntankard.budgetTracking.display.util.elementControllers.VirtualCategory_ElementController;
 import com.ntankard.budgetTracking.display.util.panels.DataObject_DisplayList;
+import com.ntankard.dynamicGUI.gui.util.update.Updatable;
+import com.ntankard.dynamicGUI.gui.util.update.UpdatableJPanel;
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.javaObjectDatabase.util.set.Full_Set;
 import com.ntankard.javaObjectDatabase.util.set.OneParent_Children_Set;
 

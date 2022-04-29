@@ -11,17 +11,12 @@ import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.dataField.ListDataField_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.End_Source_Schema;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import static com.ntankard.budgetTracking.dataBase.core.baseObject.NamedDataObject.NamedDataObject_Name;
 import static com.ntankard.budgetTracking.dataBase.core.fileManagement.statement.StatementTransaction.StatementTransaction_Currency;
 import static com.ntankard.budgetTracking.dataBase.core.fileManagement.statement.StatementTransaction.StatementTransaction_Value;
 import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createDirectDerivedDataCore;
@@ -139,16 +134,15 @@ public class StatementBankTransfer extends BankTransfer {
     /**
      * Constructor
      */
-    public StatementBankTransfer(Database database) {
-        super(database);
+    public StatementBankTransfer(Database database, Object... args) {
+        super(database, args);
     }
 
     /**
      * Constructor
      */
     public StatementBankTransfer(Period period, Bank source, Period destinationPeriod, Pool destination, String description, StatementTransactionTranslationAutoGroup autoSource, Double multiply) {
-        this(period.getTrackingDatabase());
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(period.getTrackingDatabase()
                 , Transfer_Period, period
                 , Transfer_Source, source
                 , BankTransfer_DestinationPeriod, destinationPeriod

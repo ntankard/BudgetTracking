@@ -1,10 +1,10 @@
 package com.ntankard.budgetTracking.display.util.elementControllers;
 
-import com.ntankard.dynamicGUI.gui.util.update.Updatable;
 import com.ntankard.budgetTracking.dataBase.core.CategorySet;
 import com.ntankard.budgetTracking.dataBase.core.pool.category.VirtualCategory;
-import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.dynamicGUI.gui.containers.Database_ElementController;
+import com.ntankard.dynamicGUI.gui.util.update.Updatable;
+import com.ntankard.javaObjectDatabase.database.Database;
 
 public class VirtualCategory_ElementController extends Database_ElementController<VirtualCategory> {
 

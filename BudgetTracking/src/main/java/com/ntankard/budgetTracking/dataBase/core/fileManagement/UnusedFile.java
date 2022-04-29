@@ -44,16 +44,15 @@ public class UnusedFile extends DataObject implements FileInterface {
     /**
      * Constructor
      */
-    public UnusedFile(Database database) {
-        super(database);
+    public UnusedFile(Database database, Object... args) {
+        super(database, args);
     }
 
     /**
      * Constructor
      */
     public UnusedFile(Database database, String fileName, String containerPath) {
-        this(database);
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(database
                 , UnusedFile_FileName, fileName
                 , UnusedFile_ContainerPath, containerPath
         );

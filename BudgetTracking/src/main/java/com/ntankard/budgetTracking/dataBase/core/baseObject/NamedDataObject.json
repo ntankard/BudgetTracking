@@ -7,8 +7,8 @@
       "name": "Name",
       "type": "String",
       "editable": true,
-      "string_source" : true,
-      "use_get_name" : true
+      "string_source": true,
+      "use_get_name": true
     }
   ]
 }

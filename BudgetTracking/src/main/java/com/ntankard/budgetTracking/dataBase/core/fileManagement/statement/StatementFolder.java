@@ -34,16 +34,15 @@ public class StatementFolder extends DataObject {
     /**
      * Constructor
      */
-    public StatementFolder(Database database) {
-        super(database);
+    public StatementFolder(Database database, Object... args) {
+        super(database, args);
     }
 
     /**
      * Constructor
      */
     public StatementFolder(ExistingPeriod period, Bank bank, TranslationTypes translationTypes) {
-        this(period.getTrackingDatabase());
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(period.getTrackingDatabase()
                 , StatementFolder_Period, period
                 , StatementFolder_Bank, bank
                 , StatementFolder_TranslationTypes, translationTypes

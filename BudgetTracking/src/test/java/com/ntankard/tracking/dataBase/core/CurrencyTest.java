@@ -1,14 +1,14 @@
 package com.ntankard.budgetTracking.dataBase.core;
 
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.testUtil.DataAccessUntil;
 import com.ntankard.testUtil.DataObjectTestUtil;
-import com.ntankard.javaObjectDatabase.database.Database;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Execution(ExecutionMode.CONCURRENT)
 class CurrencyTest {

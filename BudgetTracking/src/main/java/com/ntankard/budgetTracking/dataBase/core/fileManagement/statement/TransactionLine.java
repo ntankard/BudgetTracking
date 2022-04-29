@@ -14,6 +14,7 @@ public class TransactionLine extends DataObject {
 
     public interface TransactionLineList extends List<TransactionLine> {
     }
+
     private static final String TransactionLine_Prefix = "TransactionLine_";
 
     public static final String TransactionLine_StatementDocument = TransactionLine_Prefix + "StatementDocument";
@@ -50,16 +51,15 @@ public class TransactionLine extends DataObject {
     /**
      * Constructor
      */
-    public TransactionLine(Database database) {
-        super(database);
+    public TransactionLine(Database database, Object... args) {
+        super(database, args);
     }
 
     /**
      * Constructor
      */
     public TransactionLine(StatementDocument statementDocument, Period period, Date date, Double value, String description, StatementTransaction statementTransaction, String rawLine) {
-        this(statementDocument.getTrackingDatabase());
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(statementDocument.getTrackingDatabase()
                 , TransactionLine_StatementDocument, statementDocument
                 , TransactionLine_Period, period
                 , TransactionLine_Date, date

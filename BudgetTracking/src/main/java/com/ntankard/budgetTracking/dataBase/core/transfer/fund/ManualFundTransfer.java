@@ -1,17 +1,14 @@
 package com.ntankard.budgetTracking.dataBase.core.transfer.fund;
 
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
-import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
-import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.budgetTracking.dataBase.core.Currency;
 import com.ntankard.budgetTracking.dataBase.core.period.Period;
 import com.ntankard.budgetTracking.dataBase.core.pool.Pool;
 import com.ntankard.budgetTracking.dataBase.core.pool.fundEvent.FundEvent;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.database.Database;
 
 import static com.ntankard.budgetTracking.dataBase.core.pool.fundEvent.FundEvent.FundEvent_Category;
 import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createDirectDerivedDataCore;
-import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 
 public class ManualFundTransfer extends FundTransfer {
 
@@ -49,16 +46,15 @@ public class ManualFundTransfer extends FundTransfer {
     /**
      * Constructor
      */
-    public ManualFundTransfer(Database database) {
-        super(database);
+    public ManualFundTransfer(Database database, Object... args) {
+        super(database, args);
     }
 
     /**
      * Constructor
      */
     public ManualFundTransfer(String description, Period period, FundEvent source, Double value, Currency currency) {
-        this(period.getTrackingDatabase());
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(period.getTrackingDatabase()
                 , Transfer_Description, description
                 , Transfer_Period, period
                 , Transfer_Source, source

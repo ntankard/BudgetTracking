@@ -1,12 +1,12 @@
 package com.ntankard.budgetTracking.display.frames.mainFrame;
 
-import com.ntankard.dynamicGUI.gui.util.update.Updatable;
-import com.ntankard.dynamicGUI.gui.util.update.UpdatableJPanel;
-import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.budgetTracking.dataBase.core.recurringPayment.FixedRecurringPayment;
 import com.ntankard.budgetTracking.dataBase.core.transfer.bank.RecurringBankTransfer;
 import com.ntankard.budgetTracking.display.util.elementControllers.FixedRecurringPayment_ElementController;
 import com.ntankard.budgetTracking.display.util.panels.DataObject_DisplayList;
+import com.ntankard.dynamicGUI.gui.util.update.Updatable;
+import com.ntankard.dynamicGUI.gui.util.update.UpdatableJPanel;
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.javaObjectDatabase.util.set.Full_Set;
 import com.ntankard.javaObjectDatabase.util.set.OneParent_Children_Set;
 

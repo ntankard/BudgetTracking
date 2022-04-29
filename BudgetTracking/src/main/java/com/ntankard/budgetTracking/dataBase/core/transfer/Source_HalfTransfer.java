@@ -1,11 +1,10 @@
 package com.ntankard.budgetTracking.dataBase.core.transfer;
 
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.dataObject.factory.ObjectFactory;
 import com.ntankard.javaObjectDatabase.dataObject.factory.SingleParentFactory;
-import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
-import com.ntankard.javaObjectDatabase.database.ParameterMap;
 import com.ntankard.javaObjectDatabase.database.Database;
-import com.ntankard.javaObjectDatabase.database.Database_Schema;
+import com.ntankard.javaObjectDatabase.database.ParameterMap;
 
 @ParameterMap(shouldSave = false)
 public class Source_HalfTransfer extends HalfTransfer {
@@ -30,16 +29,15 @@ public class Source_HalfTransfer extends HalfTransfer {
     /**
      * Constructor
      */
-    public Source_HalfTransfer(Database database) {
-        super(database);
+    public Source_HalfTransfer(Database database, Object... args) {
+        super(database, args);
     }
 
     /**
      * Constructor
      */
     public Source_HalfTransfer(Transfer transfer) {
-        this(transfer.getTrackingDatabase());
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(transfer.getTrackingDatabase()
                 , HalfTransfer_Source, true
                 , HalfTransfer_Transfer, transfer
         );

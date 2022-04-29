@@ -1,13 +1,12 @@
 package com.ntankard.budgetTracking.dataBase.core;
 
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.End_Source_Schema;
+import com.ntankard.budgetTracking.dataBase.core.baseObject.NamedDataObject;
 import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
+import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.dataObject.interfaces.HasDefault;
 import com.ntankard.javaObjectDatabase.database.Database;
-import com.ntankard.budgetTracking.dataBase.core.baseObject.NamedDataObject;
-import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -74,8 +73,8 @@ public class Currency extends NamedDataObject implements HasDefault {
     /**
      * Constructor
      */
-    public Currency(Database database) {
-        super(database);
+    public Currency(Database database, Object... args) {
+        super(database, args);
     }
 
     //------------------------------------------------------------------------------------------------------------------

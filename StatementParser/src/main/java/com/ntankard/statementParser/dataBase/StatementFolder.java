@@ -156,8 +156,7 @@ public class StatementFolder extends DataObject {
      * Constructor
      */
     public StatementFolder(BankAccount bankAccount, TransactionPeriod transactionPeriod, String name, String path, StatementFolder statementFolder) {
-        super(bankAccount.getTrackingDatabase());
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(bankAccount.getTrackingDatabase()
                 , StatementFolder_BankAccount, bankAccount
                 , StatementFolder_TransactionPeriod, transactionPeriod
                 , StatementFolder_Name, name

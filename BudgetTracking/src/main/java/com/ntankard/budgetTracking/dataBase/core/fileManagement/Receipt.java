@@ -52,16 +52,15 @@ public class Receipt extends DataObject implements FileInterface {
     /**
      * Constructor
      */
-    public Receipt(Database database) {
-        super(database);
+    public Receipt(Database database, Object... args) {
+        super(database, args);
     }
 
     /**
      * Constructor
      */
     public Receipt(String fileName, BankTransfer bankTransfer) {
-        super(bankTransfer.getTrackingDatabase());
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(bankTransfer.getTrackingDatabase()
                 , Receipt_FileName, fileName
                 , Receipt_BankTransfer, bankTransfer
         );

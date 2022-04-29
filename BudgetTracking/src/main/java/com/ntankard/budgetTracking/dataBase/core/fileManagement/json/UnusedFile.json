@@ -2,7 +2,7 @@
   "extends": "DataObject",
   "implements": "FileInterface",
   "extendsSchema": "Displayable_DataObject",
-  "customToString" : "getContainerPath() + \"//\" + getFileName()",
+  "customToString": "getContainerPath() + \"//\" + getFileName()",
   "fields": [
     {
       "name": "FileName",

@@ -1,8 +1,8 @@
 package com.ntankard.budgetTracking.dataBase.core.period;
 
 import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
-import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
 
 import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.INFO_DISPLAY;
@@ -38,16 +38,15 @@ public class VirtualPeriod extends Period {
     /**
      * Constructor
      */
-    public VirtualPeriod(Database database) {
-        super(database);
+    public VirtualPeriod(Database database, Object... args) {
+        super(database, args);
     }
 
     /**
      * Constructor
      */
-    public VirtualPeriod(Database database, Integer id, String name, Integer order) {
-        super(database);
-        setAllValues(DataObject_Id, id
+    public VirtualPeriod(Database database, String name, Integer order) {
+        super(database
                 , VirtualPeriod_Name, name
                 , VirtualPeriod_Order, order
         );

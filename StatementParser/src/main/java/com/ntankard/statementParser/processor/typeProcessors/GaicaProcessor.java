@@ -39,14 +39,22 @@ public class GaicaProcessor {
 
                     Double value = Double.parseDouble(valueString);
 
-                    toReturn.add(new StatementInstanceLine(statementInstance, transactionPeriod, date, description, value, line).add());
+                    StringBuilder concat = new StringBuilder();
+                    for (String part : line) {
+                        concat.append(",").append(part);
+                    }
+                    toReturn.add(new StatementInstanceLine(statementInstance, transactionPeriod, date, description, value, concat.toString()).add());
                     continue;
                 } catch (Exception ignored) {
 
                 }
             }
 
-            new BlankLine(statementInstance, line).add();
+            StringBuilder concat = new StringBuilder();
+            for (String part : line) {
+                concat.append(",").append(part);
+            }
+            new BlankLine(statementInstance, line, concat.toString()).add();
         }
         return toReturn;
     }

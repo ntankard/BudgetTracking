@@ -1,26 +1,21 @@
 package com.ntankard.budgetTracking.dataBase.core.transfer.bank;
 
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema.Calculator;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.End_Source_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
-import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.budgetTracking.dataBase.core.Currency;
 import com.ntankard.budgetTracking.dataBase.core.period.ExistingPeriod;
-import com.ntankard.javaObjectDatabase.dataObject.factory.DoubleParentFactory;
-import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.budgetTracking.dataBase.core.period.Period;
 import com.ntankard.budgetTracking.dataBase.core.pool.Bank;
 import com.ntankard.budgetTracking.dataBase.core.pool.Pool;
 import com.ntankard.budgetTracking.dataBase.core.recurringPayment.FixedRecurringPayment;
+import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.factory.DoubleParentFactory;
 import com.ntankard.javaObjectDatabase.database.Database;
 
 import java.util.List;
 
 import static com.ntankard.budgetTracking.dataBase.core.pool.fundEvent.FixedPeriodFundEvent.NamedDataObject_Name;
 import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createDirectDerivedDataCore;
-import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 import static com.ntankard.javaObjectDatabase.dataObject.factory.ObjectFactory.GeneratorMode.MULTIPLE_NO_ADD;
 
 public class RecurringBankTransfer extends BankTransfer {
@@ -122,8 +117,8 @@ public class RecurringBankTransfer extends BankTransfer {
     /**
      * Constructor
      */
-    public RecurringBankTransfer(Database database) {
-        super(database);
+    public RecurringBankTransfer(Database database, Object... args) {
+        super(database, args);
     }
 
     /**
@@ -132,8 +127,7 @@ public class RecurringBankTransfer extends BankTransfer {
     public RecurringBankTransfer(Period period, Bank source, Double value,
                                  Period destinationPeriod, Pool destination,
                                  FixedRecurringPayment parentPayment) {
-        this(period.getTrackingDatabase());
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(period.getTrackingDatabase()
                 , Transfer_Period, period
                 , Transfer_Source, source
                 , Transfer_Value, value

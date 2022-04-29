@@ -1,30 +1,28 @@
 package com.ntankard.budgetTracking.dataBase.core;
 
-import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
-import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
-import com.ntankard.javaObjectDatabase.dataField.ListDataField_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema.Calculator;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.End_Source_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.step.Step_Source_Schema;
-import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
-import com.ntankard.javaObjectDatabase.dataObject.interfaces.HasDefault;
-import com.ntankard.javaObjectDatabase.dataObject.interfaces.Ordered;
-import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.budgetTracking.dataBase.core.baseObject.NamedDataObject;
 import com.ntankard.budgetTracking.dataBase.core.links.CategoryToCategorySet;
 import com.ntankard.budgetTracking.dataBase.core.links.CategoryToCategorySet.CategoryToCategorySetList;
 import com.ntankard.budgetTracking.dataBase.core.links.CategoryToVirtualCategory;
 import com.ntankard.budgetTracking.dataBase.core.links.CategoryToVirtualCategory.CategoryToVirtualCategoryList;
 import com.ntankard.budgetTracking.dataBase.core.pool.category.SolidCategory;
+import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
+import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataField.ListDataField_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema.Calculator;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.interfaces.HasDefault;
+import com.ntankard.javaObjectDatabase.dataObject.interfaces.Ordered;
+import com.ntankard.javaObjectDatabase.database.Database;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.DEBUG_DISPLAY;
-import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createSelfParentList;
 import static com.ntankard.budgetTracking.dataBase.core.links.CategoryToCategorySet.CategoryToCategorySet_SolidCategory;
 import static com.ntankard.budgetTracking.dataBase.core.links.CategoryToVirtualCategory.CategoryToVirtualCategory_SolidCategory;
+import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.DEBUG_DISPLAY;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createSelfParentList;
 import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 
 public class CategorySet extends NamedDataObject implements HasDefault, Ordered {
@@ -95,16 +93,15 @@ public class CategorySet extends NamedDataObject implements HasDefault, Ordered 
     /**
      * Constructor
      */
-    public CategorySet(Database database) {
-        super(database);
+    public CategorySet(Database database, Object... args) {
+        super(database, args);
     }
 
     /**
      * Constructor
      */
     public CategorySet(Database database, String name, Boolean isDefault, Integer order) {
-        this(database);
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(database
                 , NamedDataObject_Name, name
                 , CategorySet_Default, isDefault
                 , CategorySet_Order, order

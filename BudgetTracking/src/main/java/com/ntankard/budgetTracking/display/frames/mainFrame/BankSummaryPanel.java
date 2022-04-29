@@ -1,9 +1,9 @@
 package com.ntankard.budgetTracking.display.frames.mainFrame;
 
+import com.ntankard.budgetTracking.dataBase.core.pool.Bank;
 import com.ntankard.dynamicGUI.gui.util.update.Updatable;
 import com.ntankard.dynamicGUI.gui.util.update.UpdatableJPanel;
 import com.ntankard.javaObjectDatabase.database.Database;
-import com.ntankard.budgetTracking.dataBase.core.pool.Bank;
 
 import javax.swing.*;
 import java.awt.*;
@@ -34,7 +34,7 @@ public class BankSummaryPanel extends UpdatableJPanel {
 
         JTabbedPane master_tPanel = new JTabbedPane();
 
-        for(Bank bank : database.get(Bank.class)){
+        for (Bank bank : database.get(Bank.class)) {
             IndividualBankSummaryPanel individualBankSummaryPanel = new IndividualBankSummaryPanel(database, bank, this);
             bankPanels.add(individualBankSummaryPanel);
             master_tPanel.addTab(bank.getName(), individualBankSummaryPanel);

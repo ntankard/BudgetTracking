@@ -1,13 +1,13 @@
 package com.ntankard.budgetTracking.dataBase.core.pool.category;
 
-import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.budgetTracking.dataBase.interfaces.summary.pool.Category_Summary;
-import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
+import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.dataObject.interfaces.HasDefault;
 import com.ntankard.javaObjectDatabase.dataObject.interfaces.Ordered;
 import com.ntankard.javaObjectDatabase.dataObject.interfaces.SpecialValues;
+import com.ntankard.javaObjectDatabase.database.Database;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,8 +67,8 @@ public class SolidCategory extends Category implements HasDefault, SpecialValues
     /**
      * Constructor
      */
-    public SolidCategory(Database database) {
-        super(database);
+    public SolidCategory(Database database, Object... args) {
+        super(database, args);
     }
 
     //------------------------------------------------------------------------------------------------------------------

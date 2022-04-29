@@ -1,13 +1,11 @@
 package com.ntankard.budgetTracking.dataBase.core.transfer.fund.rePay;
 
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
-import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.budgetTracking.dataBase.core.pool.Pool;
-import com.ntankard.budgetTracking.dataBase.core.pool.fundEvent.FundEvent;
 import com.ntankard.budgetTracking.dataBase.core.transfer.fund.FundTransfer;
-import com.ntankard.javaObjectDatabase.database.ParameterMap;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.database.Database;
+import com.ntankard.javaObjectDatabase.database.ParameterMap;
 
 import static com.ntankard.budgetTracking.dataBase.core.baseObject.NamedDataObject.NamedDataObject_Name;
 import static com.ntankard.budgetTracking.dataBase.core.pool.fundEvent.FundEvent.FundEvent_Category;
@@ -53,7 +51,7 @@ public abstract class RePayFundTransfer extends FundTransfer {
     /**
      * Constructor
      */
-    public RePayFundTransfer(Database database) {
-        super(database);
+    public RePayFundTransfer(Database database, Object... args) {
+        super(database, args);
     }
 }

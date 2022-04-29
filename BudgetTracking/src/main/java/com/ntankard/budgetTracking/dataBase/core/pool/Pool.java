@@ -1,8 +1,8 @@
 package com.ntankard.budgetTracking.dataBase.core.pool;
 
+import com.ntankard.budgetTracking.dataBase.core.baseObject.NamedDataObject;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
-import com.ntankard.budgetTracking.dataBase.core.baseObject.NamedDataObject;
 
 public abstract class Pool extends NamedDataObject {
 
@@ -27,7 +27,7 @@ public abstract class Pool extends NamedDataObject {
     /**
      * Constructor
      */
-    public Pool(Database database) {
-        super(database);
+    public Pool(Database database, Object... args) {
+        super(database, args);
     }
 }

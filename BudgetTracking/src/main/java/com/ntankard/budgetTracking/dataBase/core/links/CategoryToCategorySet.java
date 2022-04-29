@@ -1,23 +1,21 @@
 package com.ntankard.budgetTracking.dataBase.core.links;
 
+import com.ntankard.budgetTracking.dataBase.core.CategorySet;
+import com.ntankard.budgetTracking.dataBase.core.pool.category.SolidCategory;
 import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
 import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.End_Source_Schema;
 import com.ntankard.javaObjectDatabase.dataField.validator.shared.Multi_FieldValidator;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.dataObject.interfaces.Ordered;
 import com.ntankard.javaObjectDatabase.database.Database;
-import com.ntankard.budgetTracking.dataBase.core.CategorySet;
-import com.ntankard.budgetTracking.dataBase.core.pool.category.SolidCategory;
 
 import java.util.List;
 
-import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.DEBUG_DISPLAY;
 import static com.ntankard.budgetTracking.dataBase.core.CategorySet.CategorySet_Order;
+import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.DEBUG_DISPLAY;
 import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 
 public class CategoryToCategorySet extends DataObject implements Ordered {
@@ -74,16 +72,15 @@ public class CategoryToCategorySet extends DataObject implements Ordered {
     /**
      * Constructor
      */
-    public CategoryToCategorySet(Database database) {
-        super(database);
+    public CategoryToCategorySet(Database database, Object... args) {
+        super(database, args);
     }
 
     /**
      * Constructor
      */
     public CategoryToCategorySet(CategorySet categorySet, SolidCategory solidCategory, Integer orderImpl) {
-        this(categorySet.getTrackingDatabase());
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(categorySet.getTrackingDatabase()
                 , CategoryToCategorySet_CategorySet, categorySet
                 , CategoryToCategorySet_SolidCategory, solidCategory
                 , CategoryToCategorySet_OrderImpl, orderImpl

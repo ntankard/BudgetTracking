@@ -1,27 +1,22 @@
 package com.ntankard.budgetTracking.dataBase.interfaces.summary.pool;
 
+import com.ntankard.budgetTracking.dataBase.core.period.Period;
+import com.ntankard.budgetTracking.dataBase.core.pool.Pool;
+import com.ntankard.budgetTracking.dataBase.core.pool.category.SolidCategory;
+import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.Static_DataCore_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema.Calculator;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.End_Source_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
-import com.ntankard.budgetTracking.dataBase.core.pool.category.Category;
-import com.ntankard.javaObjectDatabase.dataObject.factory.DoubleParentFactory;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.factory.DoubleParentFactory;
 import com.ntankard.javaObjectDatabase.dataObject.interfaces.Ordered;
-import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
-import com.ntankard.budgetTracking.dataBase.core.period.Period;
-import com.ntankard.budgetTracking.dataBase.core.pool.category.SolidCategory;
-import com.ntankard.budgetTracking.dataBase.core.pool.Pool;
-import com.ntankard.javaObjectDatabase.database.ParameterMap;
 import com.ntankard.javaObjectDatabase.database.Database;
+import com.ntankard.javaObjectDatabase.database.ParameterMap;
 
 import java.util.List;
 
-import static com.ntankard.budgetTracking.dataBase.core.pool.Bank.Bank_Currency;
 import static com.ntankard.budgetTracking.dataBase.core.pool.category.SolidCategory.SolidCategory_Order;
 import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createDirectDerivedDataCore;
-import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.*;
 import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 
 @ParameterMap(shouldSave = false)
@@ -81,16 +76,15 @@ public class Category_Summary extends PoolSummary<SolidCategory> implements Orde
     /**
      * Constructor
      */
-    public Category_Summary(Database database) {
-        super(database);
+    public Category_Summary(Database database, Object... args) {
+        super(database, args);
     }
 
     /**
      * Constructor
      */
     public Category_Summary(Period period, Pool pool) {
-        this(period.getTrackingDatabase());
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(period.getTrackingDatabase()
                 , PoolSummary_Period, period
                 , PoolSummary_Pool, pool
         );

@@ -46,16 +46,15 @@ public class StatementTransactionTranslationAutoGroup extends DataObject {
     /**
      * Constructor
      */
-    public StatementTransactionTranslationAutoGroup(Database database) {
-        super(database);
+    public StatementTransactionTranslationAutoGroup(Database database, Object... args) {
+        super(database, args);
     }
 
     /**
      * Constructor
      */
     public StatementTransactionTranslationAutoGroup(Bank bank, Translation translation, Pool pool, Double multiply) {
-        this(bank.getTrackingDatabase());
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(bank.getTrackingDatabase()
                 , StatementTransactionTranslationAutoGroup_Bank, bank
                 , StatementTransactionTranslationAutoGroup_Translation, translation
                 , StatementTransactionTranslationAutoGroup_Pool, pool

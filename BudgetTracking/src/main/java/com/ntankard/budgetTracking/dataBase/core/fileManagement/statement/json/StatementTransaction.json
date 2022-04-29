@@ -3,7 +3,7 @@
   "extendsSchema": "Displayable_DataObject",
   "implements": "CurrencyBound",
   "listDef": true,
-  "customToString" : "getCoreLine().getRawLine()",
+  "customToString": "getCoreLine().getRawLine()",
   "fields": [
     {
       "name": "TransactionLines",
@@ -78,7 +78,7 @@
       "dataCore": {
         "type": "DirectDerived",
         "sources": "StatementTransaction_CoreLine, TransactionLine_StatementDocument, StatementDocument_StatementFolder, StatementFolder_Bank, Bank_Currency",
-        "default": "container -> container.getTrackingDatabase().getDefault(Currency.class)"
+        "defaultGetter": "container -> container.getTrackingDatabase().getDefault(Currency.class)"
       },
       "properties": {
         "Display_Properties": [
@@ -98,7 +98,7 @@
       "dataCore": {
         "type": "DirectDerived",
         "sources": "StatementTransaction_CoreLine, TransactionLine_StatementDocument, StatementDocument_StatementFolder, StatementFolder_Bank",
-        "default": "container -> container.getTrackingDatabase().getDefault(Bank.class)"
+        "defaultGetter": "container -> container.getTrackingDatabase().getDefault(Bank.class)"
       },
       "properties": {
         "Display_Properties": [
@@ -112,7 +112,7 @@
       "dataCore": {
         "type": "DirectDerived",
         "sources": "StatementTransaction_CoreLine, TransactionLine_Period",
-        "default": "container -> container.getTrackingDatabase().getDefault(Period.class)"
+        "defaultGetter": "container -> container.getTrackingDatabase().getDefault(Period.class)"
       },
       "properties": {
         "Display_Properties": [
@@ -136,7 +136,7 @@
       "dataCore": {
         "type": "DirectDerived",
         "sources": "StatementTransaction_StatementFolder, StatementFolder_TranslationTypes",
-        "default": "container -> container.getTrackingDatabase().getDefault(TranslationTypes.class)"
+        "defaultGetter": "container -> container.getTrackingDatabase().getDefault(TranslationTypes.class)"
       },
       "properties": {
         "Display_Properties": [

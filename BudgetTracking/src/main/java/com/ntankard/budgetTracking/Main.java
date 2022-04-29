@@ -2,11 +2,11 @@ package com.ntankard.budgetTracking;
 
 import com.ntankard.budgetTracking.dataBase.core.pool.fundEvent.SavingsFundEvent;
 import com.ntankard.budgetTracking.dataBase.core.recurringPayment.FixedRecurringPayment;
+import com.ntankard.budgetTracking.display.frames.mainFrame.Master_Frame;
 import com.ntankard.budgetTracking.processing.BudgetTracking;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject;
-import com.ntankard.budgetTracking.display.frames.mainFrame.Master_Frame;
-import com.ntankard.javaObjectDatabase.database.Database_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
+import com.ntankard.javaObjectDatabase.database.Database_Schema;
 import com.ntankard.javaObjectDatabase.database.io.Database_IO;
 
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ public class Main {
     public static String databasePath = "com.ntankard.budgetTracking.dataBase";
     public static String savePath = "C:\\Users\\Nicholas\\Google Drive\\BudgetTrackingData";
 
-    public static Map<Class<? extends DataObject>, List<Class<? extends DataObject>>> getForcedDependencies(){
+    public static Map<Class<? extends DataObject>, List<Class<? extends DataObject>>> getForcedDependencies() {
         Map<Class<? extends DataObject>, List<Class<? extends DataObject>>> forcedDependencies = new HashMap<>();
         forcedDependencies.put(FixedRecurringPayment.class, new ArrayList<>());
         forcedDependencies.get(FixedRecurringPayment.class).add(SavingsFundEvent.class);

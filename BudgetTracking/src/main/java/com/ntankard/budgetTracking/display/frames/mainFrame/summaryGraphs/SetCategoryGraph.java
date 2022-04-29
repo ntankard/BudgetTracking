@@ -1,11 +1,11 @@
 package com.ntankard.budgetTracking.display.frames.mainFrame.summaryGraphs;
 
-import com.ntankard.dynamicGUI.gui.util.update.Updatable;
-import com.ntankard.dynamicGUI.gui.util.update.UpdatableJPanel;
 import com.ntankard.budgetTracking.dataBase.core.period.ExistingPeriod;
 import com.ntankard.budgetTracking.dataBase.core.pool.category.SolidCategory;
-import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.budgetTracking.dataBase.interfaces.set.extended.sum.PeriodPool_SumSet;
+import com.ntankard.dynamicGUI.gui.util.update.Updatable;
+import com.ntankard.dynamicGUI.gui.util.update.UpdatableJPanel;
+import com.ntankard.javaObjectDatabase.database.Database;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -102,9 +102,9 @@ public class SetCategoryGraph extends UpdatableJPanel {
                 for (SolidCategory solidCategory : toSumCategories) {
                     sum += new PeriodPool_SumSet(period, solidCategory).getTotal();
                 }
-                if(set == 1) {
+                if (set == 1) {
                     series.add(i, -sum);
-                }else{
+                } else {
                     series.add(i, sum);
                 }
             }

@@ -1,10 +1,10 @@
 package com.ntankard.budgetTracking.dataBase.core.pool.fundEvent;
 
-import com.ntankard.javaObjectDatabase.dataField.dataCore.Static_DataCore_Schema;
-import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.budgetTracking.dataBase.core.pool.category.SolidCategory;
 import com.ntankard.budgetTracking.dataBase.core.transfer.fund.rePay.SavingsRePayFundTransfer;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.Static_DataCore_Schema;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.database.Database;
 
 public class SavingsFundEvent extends FundEvent {
 
@@ -36,16 +36,15 @@ public class SavingsFundEvent extends FundEvent {
     /**
      * Constructor
      */
-    public SavingsFundEvent(Database database) {
-        super(database);
+    public SavingsFundEvent(Database database, Object... args) {
+        super(database, args);
     }
 
     /**
      * Constructor
      */
     public SavingsFundEvent(SolidCategory solidCategory, Boolean isDone) {
-        this(solidCategory.getTrackingDatabase());
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(solidCategory.getTrackingDatabase()
                 , FundEvent_Category, solidCategory
                 , FundEvent_IsDone, isDone
         );

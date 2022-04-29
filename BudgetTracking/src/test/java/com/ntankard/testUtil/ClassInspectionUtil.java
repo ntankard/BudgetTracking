@@ -1,10 +1,10 @@
 package com.ntankard.testUtil;
 
-import com.ntankard.javaObjectDatabase.util.SourceCodeInspector;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.dataObject.interfaces.HasDefault;
 import com.ntankard.javaObjectDatabase.dataObject.interfaces.SpecialValues;
 import com.ntankard.javaObjectDatabase.database.subContainers.DataObjectClassTree;
+import com.ntankard.javaObjectDatabase.util.SourceCodeInspector;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;

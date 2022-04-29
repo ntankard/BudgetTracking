@@ -1,7 +1,7 @@
 package com.ntankard.budgetTracking.display.util.panels;
 
-import com.ntankard.dynamicGUI.gui.util.update.UpdatableJPanel;
 import com.ntankard.dynamicGUI.gui.util.update.Updatable;
+import com.ntankard.dynamicGUI.gui.util.update.UpdatableJPanel;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.database.Database;
 

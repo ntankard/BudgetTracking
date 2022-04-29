@@ -2,7 +2,7 @@ package com.ntankard.budgetTracking.dataBase.core.fileManagement.statement;
 
 import com.ntankard.budgetTracking.dataBase.core.Currency;
 import com.ntankard.budgetTracking.dataBase.core.baseObject.interfaces.CurrencyBound;
-import com.ntankard.budgetTracking.dataBase.core.fileManagement.statement.TransactionLine.TransactionLineList;
+import com.ntankard.budgetTracking.dataBase.core.fileManagement.statement.TransactionLine.*;
 import com.ntankard.budgetTracking.dataBase.core.fileManagement.statement.Translation.TranslationList;
 import com.ntankard.budgetTracking.dataBase.core.period.Period;
 import com.ntankard.budgetTracking.dataBase.core.pool.Bank;
@@ -35,6 +35,7 @@ public class StatementTransaction extends DataObject implements CurrencyBound {
 
     public interface StatementTransactionList extends List<StatementTransaction> {
     }
+
     private static final String StatementTransaction_Prefix = "StatementTransaction_";
 
     public static final String StatementTransaction_TransactionLines = StatementTransaction_Prefix + "TransactionLines";
@@ -143,7 +144,7 @@ public class StatementTransaction extends DataObject implements CurrencyBound {
                 createDefaultDirectDerivedDataCoreGetter(container -> container.getTrackingDatabase().getDefault(Period.class),
                         StatementTransaction_CoreLine, TransactionLine_Period));
         // StatementFolder =============================================================================================
-        dataObjectSchema.get(StatementTransaction_StatementFolder).getProperty(Display_Properties.class).setCustomColor((rowObject, value) -> ((StatementTransaction)rowObject).getPeriod() == ((StatementTransaction)rowObject).getStatementFolder().getPeriod() ? null : Color.ORANGE);
+        dataObjectSchema.get(StatementTransaction_StatementFolder).getProperty(Display_Properties.class).setCustomColor((rowObject, value) -> ((StatementTransaction) rowObject).getPeriod() == ((StatementTransaction) rowObject).getStatementFolder().getPeriod() ? null : Color.ORANGE);
         // TranslationTypes ============================================================================================
         dataObjectSchema.get(StatementTransaction_TranslationTypes).getProperty(Display_Properties.class).setVerbosityLevel(Display_Properties.INFO_DISPLAY);
         dataObjectSchema.<TranslationTypes>get(StatementTransaction_TranslationTypes).setDataCore_schema(
@@ -161,16 +162,15 @@ public class StatementTransaction extends DataObject implements CurrencyBound {
     /**
      * Constructor
      */
-    public StatementTransaction(Database database) {
-        super(database);
+    public StatementTransaction(Database database, Object... args) {
+        super(database, args);
     }
 
     /**
      * Constructor
      */
     public StatementTransaction(StatementBankTransfer statementBankTransfer, StatementFolder statementFolder) {
-        this(statementFolder.getTrackingDatabase());
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(statementFolder.getTrackingDatabase()
                 , StatementTransaction_StatementBankTransfer, statementBankTransfer
                 , StatementTransaction_StatementFolder, statementFolder
         );

@@ -1,5 +1,6 @@
 package com.ntankard.budgetTracking.dataBase.core.baseObject;
 
+import com.ntankard.budgetTracking.Main;
 import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
 import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
@@ -11,8 +12,6 @@ import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.javaObjectDatabase.exception.nonCorrupting.NonCorruptingException;
 import com.ntankard.testUtil.ClassInspectionUtil;
 import com.ntankard.testUtil.DataAccessUntil;
-import com.ntankard.budgetTracking.Main;
-import com.ntankard.budgetTracking.dataBase.core.Currency;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -213,8 +212,6 @@ class DataObjectTest {
          */
         public DataObject_Inst(Database database) {
             super(database);
-            setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
-            );
         }
     }
 }

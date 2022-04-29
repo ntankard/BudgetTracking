@@ -48,16 +48,15 @@ public class StatementDocument extends DataObject implements FileInterface {
     /**
      * Constructor
      */
-    public StatementDocument(Database database) {
-        super(database);
+    public StatementDocument(Database database, Object... args) {
+        super(database, args);
     }
 
     /**
      * Constructor
      */
     public StatementDocument(StatementFolder statementFolder, String fileName, String containerPath, StatementDocument pastInstance) {
-        this(statementFolder.getTrackingDatabase());
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(statementFolder.getTrackingDatabase()
                 , StatementDocument_StatementFolder, statementFolder
                 , StatementDocument_FileName, fileName
                 , StatementDocument_ContainerPath, containerPath

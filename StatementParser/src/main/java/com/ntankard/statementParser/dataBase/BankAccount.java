@@ -36,16 +36,15 @@ public class BankAccount extends DataObject {
     /**
      * Constructor
      */
-    public BankAccount(Database database) {
-        super(database);
+    public BankAccount(Database database, Object... args) {
+        super(database, args);
     }
 
     /**
      * Constructor
      */
     public BankAccount(Database database, String name, String path) {
-        super(database);
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(database
                 , BankAccount_Name, name
                 , BankAccount_Path, path
         );

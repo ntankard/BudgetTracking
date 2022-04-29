@@ -1,27 +1,25 @@
 package com.ntankard.budgetTracking.dataBase.core.pool.fundEvent;
 
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema.Calculator;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.End_Source_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
-import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.budgetTracking.dataBase.core.Currency;
 import com.ntankard.budgetTracking.dataBase.core.period.ExistingPeriod;
 import com.ntankard.budgetTracking.dataBase.core.pool.category.SolidCategory;
+import com.ntankard.budgetTracking.dataBase.core.transfer.HalfTransfer;
 import com.ntankard.budgetTracking.dataBase.core.transfer.fund.rePay.FixedPeriodRePayFundTransfer;
 import com.ntankard.budgetTracking.dataBase.core.transfer.fund.rePay.RePayFundTransfer;
-import com.ntankard.budgetTracking.dataBase.core.transfer.HalfTransfer;
 import com.ntankard.budgetTracking.dataBase.interfaces.set.filter.NotTransferType_HalfTransfer_Filter;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
-import com.ntankard.javaObjectDatabase.dataField.validator.NumberRange_FieldValidator;
 import com.ntankard.javaObjectDatabase.dataField.ListDataField_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema.Calculator;
+import com.ntankard.javaObjectDatabase.dataField.validator.NumberRange_FieldValidator;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.database.Database;
 
 import java.util.List;
 
-import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createSelfParentList;
 import static com.ntankard.budgetTracking.dataBase.core.transfer.HalfTransfer.HalfTransfer_Currency;
 import static com.ntankard.budgetTracking.dataBase.core.transfer.HalfTransfer.HalfTransfer_Value;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createSelfParentList;
 import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSharedStepSourceChain;
 import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 
@@ -97,16 +95,15 @@ public class FixedPeriodFundEvent extends FundEvent {
     /**
      * Constructor
      */
-    public FixedPeriodFundEvent(Database database) {
-        super(database);
+    public FixedPeriodFundEvent(Database database, Object... args) {
+        super(database, args);
     }
 
     /**
      * Constructor
      */
     public FixedPeriodFundEvent(String name, SolidCategory solidCategory, ExistingPeriod start, Integer duration, Boolean isDone) {
-        this(solidCategory.getTrackingDatabase());
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(solidCategory.getTrackingDatabase()
                 , NamedDataObject_Name, name
                 , FundEvent_Category, solidCategory
                 , FixedPeriodFundEvent_Start, start
