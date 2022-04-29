@@ -43,7 +43,7 @@
       "dataCore": {
         "directDerived": {
           "sources": "StatementTransaction_CoreLine, TransactionLine_Value",
-          "default": 0.0
+          "defaultValue": 0.0
         }
       },
       "properties": {
@@ -58,7 +58,7 @@
       "dataCore": {
         "directDerived": {
           "sources": "StatementTransaction_CoreLine, TransactionLine_Description",
-          "default": "\"\""
+          "defaultValue": "\"\""
         }
       }
     },
