@@ -6,7 +6,7 @@ import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
 
-public abstract class NamedDataObject extends DataObject {
+public abstract class NamedDataObject extends Displayable_DataObject {
 
     public static final String NamedDataObject_Name = "getName";
 

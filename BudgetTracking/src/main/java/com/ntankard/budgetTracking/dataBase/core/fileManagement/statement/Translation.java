@@ -8,7 +8,7 @@ import com.ntankard.javaObjectDatabase.database.Database;
 
 import java.util.List;
 
-public class Translation extends DataObject {
+public class Translation extends Displayable_DataObject {
 
     public interface TranslationList extends List<Translation> {
     }

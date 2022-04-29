@@ -10,7 +10,7 @@ import com.ntankard.javaObjectDatabase.database.Database;
 
 import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 
-public class StatementDocument extends DataObject implements FileInterface {
+public class StatementDocument extends Displayable_DataObject implements FileInterface {
 
     private static final String StatementDocument_Prefix = "StatementDocument_";
 

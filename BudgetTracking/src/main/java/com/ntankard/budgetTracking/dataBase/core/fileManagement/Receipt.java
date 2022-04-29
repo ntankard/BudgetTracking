@@ -12,7 +12,7 @@ import com.ntankard.javaObjectDatabase.database.Database;
 
 import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 
-public class Receipt extends DataObject implements FileInterface {
+public class Receipt extends Displayable_DataObject implements FileInterface {
 
     private static final String Receipt_Prefix = "Receipt_";
 

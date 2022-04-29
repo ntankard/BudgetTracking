@@ -8,7 +8,7 @@ import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
 
-public class StatementFolder extends DataObject {
+public class StatementFolder extends Displayable_DataObject {
 
     private static final String StatementFolder_Prefix = "StatementFolder_";
 

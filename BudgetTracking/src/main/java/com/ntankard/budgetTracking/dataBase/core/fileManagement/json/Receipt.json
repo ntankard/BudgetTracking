@@ -1,7 +1,6 @@
 {
-  "extends": "DataObject",
+  "extends": "Displayable_DataObject",
   "implements": "FileInterface",
-  "extendsSchema": "Displayable_DataObject",
   "fields": [
     {
       "name": "FileName",

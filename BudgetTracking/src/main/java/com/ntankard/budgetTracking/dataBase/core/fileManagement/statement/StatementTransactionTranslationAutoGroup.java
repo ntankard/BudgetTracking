@@ -8,7 +8,7 @@ import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
 
-public class StatementTransactionTranslationAutoGroup extends DataObject {
+public class StatementTransactionTranslationAutoGroup extends Displayable_DataObject {
 
     private static final String StatementTransactionTranslationAutoGroup_Prefix = "StatementTransactionTranslationAutoGroup_";
 

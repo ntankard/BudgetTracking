@@ -10,7 +10,7 @@ import com.ntankard.javaObjectDatabase.database.Database;
 import java.util.Date;
 import java.util.List;
 
-public class TransactionLine extends DataObject {
+public class TransactionLine extends Displayable_DataObject {
 
     public interface TransactionLineList extends List<TransactionLine> {
     }

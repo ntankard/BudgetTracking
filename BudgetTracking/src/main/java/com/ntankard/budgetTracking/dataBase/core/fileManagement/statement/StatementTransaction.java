@@ -31,7 +31,7 @@ import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.Data
 import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.*;
 import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 
-public class StatementTransaction extends DataObject implements CurrencyBound {
+public class StatementTransaction extends Displayable_DataObject implements CurrencyBound {
 
     public interface StatementTransactionList extends List<StatementTransaction> {
     }
