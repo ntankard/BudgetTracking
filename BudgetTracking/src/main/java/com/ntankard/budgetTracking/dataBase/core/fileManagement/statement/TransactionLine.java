@@ -3,7 +3,6 @@ package com.ntankard.budgetTracking.dataBase.core.fileManagement.statement;
 import com.ntankard.budgetTracking.dataBase.core.period.Period;
 import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
-import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
 

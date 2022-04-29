@@ -89,11 +89,11 @@ public class TransactionPeriod extends DataObject implements Ordered {
         return getYear() * 20 + getMonth();
     }
 
-    public static String getNameString(Integer year, Integer month){
-        return  year + "-" + String.format("%02d" , month);
+    public static String getNameString(Integer year, Integer month) {
+        return year + "-" + String.format("%02d", month);
     }
 
-    public static String getNameString(Date date){
+    public static String getNameString(Date date) {
         return TransactionPeriod.getNameString(date.getYear() - 100, date.getMonth() + 1);
     }
 

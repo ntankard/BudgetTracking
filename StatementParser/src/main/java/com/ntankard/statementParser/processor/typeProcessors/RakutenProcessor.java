@@ -6,7 +6,10 @@ import com.ntankard.statementParser.dataBase.StatementInstanceLine;
 import com.ntankard.statementParser.dataBase.TransactionPeriod;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import static com.ntankard.javaObjectDatabase.util.FileUtil.readLines;
 

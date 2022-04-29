@@ -6,7 +6,10 @@ import com.ntankard.statementParser.dataBase.transactionGroup.Regex_TransactionG
 import com.ntankard.statementParser.dataBase.transactionGroup.Single_TransactionGroup;
 import com.ntankard.statementParser.dataBase.transactionGroup.TransactionGroup;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 public class StatementParser {

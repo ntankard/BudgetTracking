@@ -13,7 +13,6 @@ import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.dataField.ListDataField_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
-import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
 

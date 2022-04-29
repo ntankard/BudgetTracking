@@ -123,7 +123,7 @@ public class StatementFolder extends DataObject {
                         container -> {
                             Double start = 0.0;
                             Double payment = 0.0;
-                            if(container.getPastStatementFolder() != null){
+                            if (container.getPastStatementFolder() != null) {
                                 start = container.getPastStatementFolder().getBalance();
                                 payment = container.getPastStatementFolder().getTransactionGroupSum();
                             }
@@ -221,11 +221,11 @@ public class StatementFolder extends DataObject {
         return get(StatementFolder_TransactionSum);
     }
 
-    public StatementFolder getPastStatementFolder(){
+    public StatementFolder getPastStatementFolder() {
         return get(StatementFolder_PastStatementFolder);
     }
 
-    public Double getBalance(){
+    public Double getBalance() {
         return get(StatementFolder_Balance);
     }
 

@@ -7,7 +7,6 @@
     {
       "name": "TransactionLines",
       "type": "TransactionLine",
-      "avoid_constructor": true,
       "is_list": true,
       "dataCore": {
         "type": "SelfParent",
