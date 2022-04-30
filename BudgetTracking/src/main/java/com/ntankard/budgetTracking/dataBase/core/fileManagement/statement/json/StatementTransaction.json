@@ -13,7 +13,7 @@
           "classType": "TransactionLine"
         }
       },
-      "properties": {
+      "attachedProperties": {
         "Display_Properties": [
           "setVerbosityLevel(Display_Properties.INFO_DISPLAY)"
         ]
@@ -31,7 +31,7 @@
           ]
         }
       },
-      "properties": {
+      "attachedProperties": {
         "Display_Properties": [
           "setVerbosityLevel(Display_Properties.INFO_DISPLAY)"
         ]
@@ -46,7 +46,7 @@
           "defaultValue": 0.0
         }
       },
-      "properties": {
+      "attachedProperties": {
         "Display_Properties": [
           "setDataType(CURRENCY)"
         ]
@@ -84,7 +84,7 @@
           "defaultGetter": "container -> container.getTrackingDatabase().getDefault(Currency.class)"
         }
       },
-      "properties": {
+      "attachedProperties": {
         "Display_Properties": [
           "setVerbosityLevel(Display_Properties.INFO_DISPLAY)"
         ]
@@ -105,7 +105,7 @@
           "defaultGetter": "container -> container.getTrackingDatabase().getDefault(Bank.class)"
         }
       },
-      "properties": {
+      "attachedProperties": {
         "Display_Properties": [
           "setVerbosityLevel(Display_Properties.INFO_DISPLAY)"
         ]
@@ -120,7 +120,7 @@
           "defaultGetter": "container -> container.getTrackingDatabase().getDefault(Period.class)"
         }
       },
-      "properties": {
+      "attachedProperties": {
         "Display_Properties": [
           "setVerbosityLevel(Display_Properties.INFO_DISPLAY)"
         ]
@@ -130,7 +130,7 @@
       "name": "StatementFolder",
       "type": "StatementFolder",
       "database_source": true,
-      "properties": {
+      "attachedProperties": {
         "Display_Properties": [
           "setCustomColor((rowObject, value) -> ((StatementTransaction) rowObject).getPeriod() == ((StatementTransaction) rowObject).getStatementFolder().getPeriod() ? null : Color.ORANGE)"
         ]
@@ -145,7 +145,7 @@
           "defaultGetter": "container -> container.getTrackingDatabase().getDefault(TranslationTypes.class)"
         }
       },
-      "properties": {
+      "attachedProperties": {
         "Display_Properties": [
           "setVerbosityLevel(Display_Properties.INFO_DISPLAY)"
         ]
@@ -160,7 +160,7 @@
           "parents": "StatementTransaction_TranslationTypes"
         }
       },
-      "properties": {
+      "attachedProperties": {
         "Display_Properties": [
           "setVerbosityLevel(Display_Properties.INFO_DISPLAY)"
         ]

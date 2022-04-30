@@ -7,7 +7,9 @@ import com.ntankard.javaObjectDatabase.database.Database;
 
 public abstract class NamedDataObject extends Displayable_DataObject {
 
-    public static final String NamedDataObject_Name = "getName";
+    private static final String NamedDataObject_Prefix = "NamedDataObject_";
+
+    public static final String NamedDataObject_Name = NamedDataObject_Prefix + "Name";
 
     /**
      * Get all the fields for this object

@@ -15,9 +15,9 @@ public class Receipt extends Displayable_DataObject implements FileInterface {
 
     private static final String Receipt_Prefix = "Receipt_";
 
-    public static final String Receipt_FileName = "getFileName";
-    public static final String Receipt_BankTransfer = "getBankTransfer";
-    public static final String Receipt_ContainerPath = "getContainerPath";
+    public static final String Receipt_FileName = Receipt_Prefix + "FileName";
+    public static final String Receipt_BankTransfer = Receipt_Prefix + "BankTransfer";
+    public static final String Receipt_ContainerPath = Receipt_Prefix + "ContainerPath";
     public static final String Receipt_FullPath = Receipt_Prefix + "FullPath";
 
     /**

@@ -4,20 +4,17 @@
   "fields": [
     {
       "name": "FileName",
-      "type": "String",
-      "use_get_name": true
+      "type": "String"
     },
     {
       "name": "BankTransfer",
       "type": "BankTransfer",
       "database_source": true,
-      "use_get_name": true,
       "editable": true
     },
     {
       "name": "ContainerPath",
       "type": "String",
-      "use_get_name": true,
       "dataCore": {
         "static": {
           "value": "Receipts"
