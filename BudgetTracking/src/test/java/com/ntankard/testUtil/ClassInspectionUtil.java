@@ -1,8 +1,6 @@
 package com.ntankard.testUtil;
 
 import com.ntankard.javaObjectDatabase.dataObject.DataObject;
-import com.ntankard.javaObjectDatabase.dataObject.interfaces.HasDefault;
-import com.ntankard.javaObjectDatabase.dataObject.interfaces.SpecialValues;
 import com.ntankard.javaObjectDatabase.database.subContainers.DataObjectClassTree;
 import com.ntankard.javaObjectDatabase.util.SourceCodeInspector;
 
@@ -58,80 +56,6 @@ public class ClassInspectionUtil {
                 if (Modifier.isAbstract(aClass.getModifiers())) {
                     toReturn.add(aClass);
                 }
-            }
-        }
-
-        assertNotEquals(0, toReturn.size());
-        return toReturn;
-    }
-
-    /**
-     * Get all classes in the PATH that extend DataObject
-     *
-     * @return All classes in the PATH that extend DataObject
-     */
-    @SuppressWarnings("rawtypes")
-    public static List<Class<DataObject>> getAllClasses(String path) {
-        // Get all classes
-        final Class[][] classes = {new Class[0]};
-        assertDoesNotThrow(() -> classes[0] = SourceCodeInspector.getClasses(path));
-
-        // Filter to HasDefault
-        List<Class<DataObject>> toReturn = new ArrayList<>();
-        for (Class aClass : classes[0]) {
-            if (DataObject.class.isAssignableFrom(aClass)) {
-                toReturn.add(aClass);
-            }
-        }
-
-        assertNotEquals(0, toReturn.size());
-        return toReturn;
-    }
-
-    /**
-     * Get all classes that implement HasDefault in the PATH that extend DataObject
-     *
-     * @return All abstract  classes in the PATH that extend DataObject
-     */
-    @SuppressWarnings("unchecked")
-    public static List<Class<? extends DataObject>> getHasDefaultClasses(String path) {
-        // Get all classes
-        final Class[][] classes = {new Class[0]};
-        assertDoesNotThrow(() -> classes[0] = SourceCodeInspector.getClasses(path));
-
-        // Filter to HasDefault
-        List<Class<? extends DataObject>> toReturn = new ArrayList<>();
-        for (Class aClass : classes[0]) {
-            if (DataObject.class.isAssignableFrom(aClass)) {
-                if (HasDefault.class.isAssignableFrom(aClass)) {
-                    toReturn.add(aClass);
-                }
-            }
-        }
-
-        assertNotEquals(0, toReturn.size());
-        return toReturn;
-    }
-
-    /**
-     * Get all classes that implement SpecialValues in the PATH that extend DataObject
-     *
-     * @return All abstract  classes in the PATH that extend DataObject
-     */
-    @SuppressWarnings("unchecked")
-    public static List<Class<? extends DataObject>> getSpecialValueClasses(String path) {
-        // Get all classes
-        final Class[][] classes = {new Class[0]};
-        assertDoesNotThrow(() -> classes[0] = SourceCodeInspector.getClasses(path));
-
-        // Filter to SpecialValues
-        List<Class<? extends DataObject>> toReturn = new ArrayList<>();
-        for (Class aClass : classes[0]) {
-            if (DataObject.class.isAssignableFrom(aClass)) {
-                if (SpecialValues.class.isAssignableFrom(aClass)) {
-                    toReturn.add(aClass);
-                }
-
             }
         }
 

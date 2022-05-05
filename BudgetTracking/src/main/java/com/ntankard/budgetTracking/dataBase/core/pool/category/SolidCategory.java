@@ -4,18 +4,10 @@ import com.ntankard.budgetTracking.dataBase.interfaces.summary.pool.Category_Sum
 import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
-import com.ntankard.javaObjectDatabase.dataObject.interfaces.HasDefault;
 import com.ntankard.javaObjectDatabase.dataObject.interfaces.Ordered;
-import com.ntankard.javaObjectDatabase.dataObject.interfaces.SpecialValues;
 import com.ntankard.javaObjectDatabase.database.Database;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class SolidCategory extends Category implements HasDefault, SpecialValues, Ordered {
-
-    public static Integer SAVINGS = 1;
-    public static Integer TAXABLE = 2;
+public class SolidCategory extends Category implements Ordered {
 
     //------------------------------------------------------------------------------------------------------------------
     //################################################### Constructor ##################################################
@@ -42,12 +34,15 @@ public class SolidCategory extends Category implements HasDefault, SpecialValues
         // Default =====================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(SolidCategory_Default, Boolean.class));
         dataObjectSchema.get(SolidCategory_Default).getProperty(Display_Properties.class).setVerbosityLevel(Display_Properties.DEBUG_DISPLAY);
+        dataObjectSchema.get(SolidCategory_Default).setDefaultFlag(true);
         // Savings =====================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(SolidCategory_Savings, Boolean.class));
         dataObjectSchema.get(SolidCategory_Savings).getProperty(Display_Properties.class).setVerbosityLevel(Display_Properties.DEBUG_DISPLAY);
+        dataObjectSchema.get(SolidCategory_Savings).setSpecialFlag(true);
         // Taxable =====================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(SolidCategory_Taxable, Boolean.class));
         dataObjectSchema.get(SolidCategory_Taxable).getProperty(Display_Properties.class).setVerbosityLevel(Display_Properties.DEBUG_DISPLAY);
+        dataObjectSchema.get(SolidCategory_Taxable).setSpecialFlag(true);
         // Set =========================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(SolidCategory_Set, Integer.class));
         dataObjectSchema.get(SolidCategory_Set).getProperty(Display_Properties.class).setVerbosityLevel(Display_Properties.INFO_DISPLAY);
@@ -72,39 +67,9 @@ public class SolidCategory extends Category implements HasDefault, SpecialValues
     }
 
     //------------------------------------------------------------------------------------------------------------------
-    //################################################# Implementations ################################################
-    //------------------------------------------------------------------------------------------------------------------
-
-    /**
-     * @inheritDoc
-     */
-    @Override
-    public Boolean isValue(Integer key) {
-        if (key.equals(SAVINGS)) {
-            return isSavings();
-        }
-        if (key.equals(TAXABLE)) {
-            return isTaxable();
-        }
-        throw new IllegalArgumentException("Unexpected key: " + key);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    @Override
-    public List<Integer> toChangeGetKeys() {
-        List<Integer> keys = new ArrayList<>();
-        keys.add(TAXABLE);
-        keys.add(SAVINGS);
-        return keys;
-    }
-
-    //------------------------------------------------------------------------------------------------------------------
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @Override
     public Boolean isDefault() {
         return get(SolidCategory_Default);
     }

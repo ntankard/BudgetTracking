@@ -17,7 +17,7 @@
       "type": "String",
       "dataCore": {
         "static": {
-          "value": "Receipts"
+          "value": "\"Receipts\""
         }
       }
     },

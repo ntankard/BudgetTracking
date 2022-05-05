@@ -20,6 +20,7 @@ import com.ntankard.javaObjectDatabase.database.ParameterMap;
 
 import java.util.List;
 
+import static com.ntankard.budgetTracking.dataBase.core.pool.category.SolidCategory.SolidCategory_Taxable;
 import static com.ntankard.budgetTracking.dataBase.core.pool.fundEvent.TaxFundEvent.TaxFundEvent_Percentage;
 import static com.ntankard.budgetTracking.dataBase.core.transfer.HalfTransfer.HalfTransfer_Currency;
 import static com.ntankard.budgetTracking.dataBase.core.transfer.HalfTransfer.HalfTransfer_Value;
@@ -65,7 +66,7 @@ public class TaxRePayFundTransfer extends RePayFundTransfer {
         dataObjectSchema.add(new DataField_Schema<>(TaxRePayFundTransfer_TaxableCategory, Category.class));
         dataObjectSchema.get(TaxRePayFundTransfer_TaxableCategory).setDataCore_schema(
                 new Static_DataCore_Schema<>(dataField ->
-                        dataField.getContainer().getTrackingDatabase().getSpecialValue(SolidCategory.class, SolidCategory.TAXABLE)));
+                        dataField.getContainer().getTrackingDatabase().getSpecialValue(SolidCategory.class, SolidCategory_Taxable)));
         // TaxableSet ==================================================================================================
         dataObjectSchema.add(new ListDataField_Schema<>(TaxRePayFundTransfer_TaxableSet, HalfTransfer.HalfTransferList.class));
         dataObjectSchema.<List<HalfTransfer>>get(TaxRePayFundTransfer_TaxableSet).setDataCore_schema(

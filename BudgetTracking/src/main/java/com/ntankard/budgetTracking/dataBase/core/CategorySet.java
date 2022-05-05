@@ -12,7 +12,6 @@ import com.ntankard.javaObjectDatabase.dataField.ListDataField_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema.Calculator;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
-import com.ntankard.javaObjectDatabase.dataObject.interfaces.HasDefault;
 import com.ntankard.javaObjectDatabase.dataObject.interfaces.Ordered;
 import com.ntankard.javaObjectDatabase.database.Database;
 
@@ -25,7 +24,7 @@ import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.DEBU
 import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createSelfParentList;
 import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 
-public class CategorySet extends NamedDataObject implements HasDefault, Ordered {
+public class CategorySet extends NamedDataObject implements Ordered {
 
     public interface SolidCategoryList extends List<SolidCategory> {
     }
@@ -52,6 +51,7 @@ public class CategorySet extends NamedDataObject implements HasDefault, Ordered 
         // Default ======================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(CategorySet_Default, Boolean.class));
         dataObjectSchema.get(CategorySet_Default).getProperty(Display_Properties.class).setVerbosityLevel(DEBUG_DISPLAY);
+        dataObjectSchema.get(CategorySet_Default).setDefaultFlag(true);
         // Order =======================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(CategorySet_Order, Integer.class));
         dataObjectSchema.get(CategorySet_Order).setManualCanEdit(true);
@@ -120,7 +120,6 @@ public class CategorySet extends NamedDataObject implements HasDefault, Ordered 
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @Override
     public Boolean isDefault() {
         return get(CategorySet_Default);
     }
