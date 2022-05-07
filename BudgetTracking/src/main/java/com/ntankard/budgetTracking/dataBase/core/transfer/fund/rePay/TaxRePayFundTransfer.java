@@ -10,7 +10,6 @@ import com.ntankard.budgetTracking.dataBase.core.pool.fundEvent.TaxFundEvent;
 import com.ntankard.budgetTracking.dataBase.core.transfer.HalfTransfer;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.dataField.ListDataField_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.Static_DataCore_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema.Calculator;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
@@ -25,6 +24,7 @@ import static com.ntankard.budgetTracking.dataBase.core.pool.fundEvent.TaxFundEv
 import static com.ntankard.budgetTracking.dataBase.core.transfer.HalfTransfer.HalfTransfer_Currency;
 import static com.ntankard.budgetTracking.dataBase.core.transfer.HalfTransfer.HalfTransfer_Value;
 import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createMultiParentList;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createStaticObjectDataCore;
 import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSharedStepSourceChain;
 import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 
@@ -64,9 +64,8 @@ public class TaxRePayFundTransfer extends RePayFundTransfer {
         // Source
         // TaxableCategory =============================================================================================
         dataObjectSchema.add(new DataField_Schema<>(TaxRePayFundTransfer_TaxableCategory, Category.class));
-        dataObjectSchema.get(TaxRePayFundTransfer_TaxableCategory).setDataCore_schema(
-                new Static_DataCore_Schema<>(dataField ->
-                        dataField.getContainer().getTrackingDatabase().getSpecialValue(SolidCategory.class, SolidCategory_Taxable)));
+        dataObjectSchema.<SolidCategory>get(TaxRePayFundTransfer_TaxableCategory).setDataCore_schema(
+                createStaticObjectDataCore(SolidCategory.class, SolidCategory_Taxable));
         // TaxableSet ==================================================================================================
         dataObjectSchema.add(new ListDataField_Schema<>(TaxRePayFundTransfer_TaxableSet, HalfTransfer.HalfTransferList.class));
         dataObjectSchema.<List<HalfTransfer>>get(TaxRePayFundTransfer_TaxableSet).setDataCore_schema(

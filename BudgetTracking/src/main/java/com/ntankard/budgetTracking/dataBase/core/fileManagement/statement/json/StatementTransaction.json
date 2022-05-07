@@ -43,7 +43,7 @@
       "dataCore": {
         "directDerived": {
           "sources": "StatementTransaction_CoreLine, TransactionLine_Value",
-          "defaultValue": 0.0
+          "defaultGetter": "0.0"
         }
       },
       "attachedProperties": {
@@ -58,7 +58,7 @@
       "dataCore": {
         "directDerived": {
           "sources": "StatementTransaction_CoreLine, TransactionLine_Description",
-          "defaultValue": "\"\""
+          "defaultGetter": "\"\""
         }
       }
     },
@@ -81,7 +81,7 @@
       "dataCore": {
         "directDerived": {
           "sources": "StatementTransaction_CoreLine, TransactionLine_StatementDocument, StatementDocument_StatementFolder, StatementFolder_Bank, Bank_Currency",
-          "defaultGetter": "container -> container.getTrackingDatabase().getDefault(Currency.class)"
+          "defaultGetter": "container.getTrackingDatabase().getDefault(Currency.class)"
         }
       },
       "attachedProperties": {
@@ -102,7 +102,7 @@
       "dataCore": {
         "directDerived": {
           "sources": "StatementTransaction_CoreLine, TransactionLine_StatementDocument, StatementDocument_StatementFolder, StatementFolder_Bank",
-          "defaultGetter": "container -> container.getTrackingDatabase().getDefault(Bank.class)"
+          "defaultGetter": "container.getTrackingDatabase().getDefault(Bank.class)"
         }
       },
       "attachedProperties": {
@@ -117,7 +117,7 @@
       "dataCore": {
         "directDerived": {
           "sources": "StatementTransaction_CoreLine, TransactionLine_Period",
-          "defaultGetter": "container -> container.getTrackingDatabase().getDefault(Period.class)"
+          "defaultGetter": "container.getTrackingDatabase().getDefault(Period.class)"
         }
       },
       "attachedProperties": {
@@ -142,7 +142,7 @@
       "dataCore": {
         "directDerived": {
           "sources": "StatementTransaction_StatementFolder, StatementFolder_TranslationTypes",
-          "defaultGetter": "container -> container.getTrackingDatabase().getDefault(TranslationTypes.class)"
+          "defaultGetter": "container.getTrackingDatabase().getDefault(TranslationTypes.class)"
         }
       },
       "attachedProperties": {

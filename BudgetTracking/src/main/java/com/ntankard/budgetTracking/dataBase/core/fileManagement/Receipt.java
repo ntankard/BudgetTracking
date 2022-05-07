@@ -9,6 +9,7 @@ import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.dataObject.interfaces.FileInterface;
 import com.ntankard.javaObjectDatabase.database.Database;
 
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createStaticDataCore;
 import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 
 public class Receipt extends Displayable_DataObject implements FileInterface {
@@ -36,7 +37,7 @@ public class Receipt extends Displayable_DataObject implements FileInterface {
         // BankTransfer ================================================================================================
         dataObjectSchema.get(Receipt_BankTransfer).setManualCanEdit(true);
         // ContainerPath ===============================================================================================
-        dataObjectSchema.get(Receipt_ContainerPath).setDataCore_schema(new Static_DataCore_Schema<>("Receipts"));
+        dataObjectSchema.get(Receipt_ContainerPath).setDataCore_schema(createStaticDataCore("Receipts"));
         // FullPath ====================================================================================================
         dataObjectSchema.<String>get(Receipt_FullPath).setDataCore_schema(
                 new Derived_DataCore_Schema<String, Receipt>
