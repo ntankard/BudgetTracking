@@ -51,4 +51,13 @@ public class IndividualPeriodPanel extends UpdatableJPanel {
         periodSummary_statementPanel.update();
         summaryPanel.update();
     }
+
+    /**
+     * Get the core period this panel is based on
+     *
+     * @return The core period this panel is based on
+     */
+    public Period getCore() {
+        return core;
+    }
 }
