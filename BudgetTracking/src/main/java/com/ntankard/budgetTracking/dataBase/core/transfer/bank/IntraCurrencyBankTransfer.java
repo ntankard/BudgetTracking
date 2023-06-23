@@ -4,6 +4,7 @@ import com.ntankard.budgetTracking.dataBase.core.Currency;
 import com.ntankard.budgetTracking.dataBase.core.period.Period;
 import com.ntankard.budgetTracking.dataBase.core.pool.Bank;
 import com.ntankard.budgetTracking.dataBase.core.pool.Pool;
+import com.ntankard.budgetTracking.dataBase.core.transfer.Transfer;
 import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
@@ -74,6 +75,23 @@ public class IntraCurrencyBankTransfer extends BankTransfer {
                 }
                         , makeSourceChain(Transfer_Period)
                         , makeSourceChain(BankTransfer_DestinationPeriod)));
+        // SourceValueGet ==============================================================================================
+        dataObjectSchema.<Double>get(Transfer_SourceValueGet).setDataCore_schema(
+                new Derived_DataCore_Schema<>
+                        (container -> -((Transfer) container).getValue()
+                                , makeSourceChain(Transfer_Value)));
+        // DestinationValueGet ========================================================================================
+        dataObjectSchema.<Double>get(Transfer_DestinationValueGet).setDataCore_schema(
+                new Derived_DataCore_Schema<>((Calculator<Double, IntraCurrencyBankTransfer>) container -> {
+                    if (container.getDestinationValue() != null) {
+                        return container.getDestinationValue();
+                    } else {
+                        return container.getValue();
+                    }
+                }
+                        , makeSourceChain(Transfer_Value)
+                        , makeSourceChain(BankTransfer_DestinationValue)));
+        //==============================================================================================================
         // Parents
         // Children
 
@@ -157,22 +175,5 @@ public class IntraCurrencyBankTransfer extends BankTransfer {
 
     public void setDestinationValue(Double destinationValue) {
         set(BankTransfer_DestinationValue, destinationValue);
-    }
-
-    //------------------------------------------------------------------------------------------------------------------
-    //############################################# HalfTransfer Interface #############################################
-    //------------------------------------------------------------------------------------------------------------------
-
-    @Override
-    protected Double getValue(boolean isSource) {
-        if (isSource) {
-            return -getValue();
-        } else {
-            if (getDestinationValue() != null) {
-                return getDestinationValue();
-            } else {
-                return getValue();
-            }
-        }
     }
 }

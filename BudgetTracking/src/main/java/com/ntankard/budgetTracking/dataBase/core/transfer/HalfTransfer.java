@@ -9,6 +9,7 @@ import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema.Calculator;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
@@ -64,7 +65,8 @@ public abstract class HalfTransfer extends DataObject implements CurrencyBound {
                             return container.getTransfer().getDestinationPeriodGet();
 
                         }
-                        , makeSharedStepSourceChain(HalfTransfer_Transfer, Transfer_SourcePeriodGet, Transfer_DestinationPeriodGet)));
+                        , Source_Factory.append(makeSharedStepSourceChain(HalfTransfer_Transfer, Transfer_SourcePeriodGet, Transfer_DestinationPeriodGet)
+                        , Source_Factory.makeSourceChain(HalfTransfer_Source))));
         dataObjectSchema.<Pool>get(HalfTransfer_Period).getProperty(Display_Properties.class).setDisplaySet(false);
         // Pool ========================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(HalfTransfer_Pool, Pool.class));
@@ -75,9 +77,9 @@ public abstract class HalfTransfer extends DataObject implements CurrencyBound {
                                 return container.getTransfer().getSource();
                             }
                             return container.getTransfer().getDestination();
-
                         }
-                        , makeSharedStepSourceChain(HalfTransfer_Transfer, Transfer_Source, Transfer_Destination)));
+                        , Source_Factory.append(makeSharedStepSourceChain(HalfTransfer_Transfer, Transfer_Source, Transfer_Destination)
+                        , Source_Factory.makeSourceChain(HalfTransfer_Source))));
         dataObjectSchema.<Pool>get(HalfTransfer_Pool).getProperty(Display_Properties.class).setDisplaySet(false);
         // Value =======================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(HalfTransfer_Value, Double.class));
@@ -86,12 +88,12 @@ public abstract class HalfTransfer extends DataObject implements CurrencyBound {
                 new Derived_DataCore_Schema<>(
                         (Calculator<Double, HalfTransfer>) container -> {
                             if (container.isSource()) {
-                                return container.getTransfer().getValue(true);
-                            } else {
-                                return container.getTransfer().getValue(false);
+                                return container.getTransfer().getSourceValueGet();
                             }
+                            return container.getTransfer().getDestinationValueGet();
                         }
-                        , makeSourceChain(HalfTransfer_Transfer, Transfer_Value)));
+                        , Source_Factory.append(makeSharedStepSourceChain(HalfTransfer_Transfer, Transfer_SourceValueGet, Transfer_DestinationValueGet)
+                        , Source_Factory.makeSourceChain(HalfTransfer_Source))));
         // Currency ====================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(HalfTransfer_Currency, Currency.class));
         dataObjectSchema.get(HalfTransfer_Currency).getProperty(Display_Properties.class).setVerbosityLevel(INFO_DISPLAY);
@@ -104,7 +106,8 @@ public abstract class HalfTransfer extends DataObject implements CurrencyBound {
                             return container.getTransfer().getDestinationCurrencyGet();
 
                         }
-                        , makeSharedStepSourceChain(HalfTransfer_Transfer, Transfer_SourceCurrencyGet, Transfer_DestinationCurrencyGet)));
+                        , Source_Factory.append(makeSharedStepSourceChain(HalfTransfer_Transfer, Transfer_SourceCurrencyGet, Transfer_DestinationCurrencyGet)
+                        , Source_Factory.makeSourceChain(HalfTransfer_Source))));
         dataObjectSchema.<Pool>get(HalfTransfer_Currency).getProperty(Display_Properties.class).setDisplaySet(false);
         // Source ======================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(HalfTransfer_Source, Boolean.class));

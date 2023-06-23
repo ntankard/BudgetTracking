@@ -40,6 +40,9 @@ public abstract class Transfer extends DataObject implements CurrencyBound {
     public static final String Transfer_SourcePeriodGet = "getSourcePeriodGet";
     public static final String Transfer_DestinationPeriodGet = "getDestinationPeriodGet";
 
+    public static final String Transfer_SourceValueGet = "getSourceValueGet";
+    public static final String Transfer_DestinationValueGet = "getDestinationValueGet";
+
     /**
      * Get all the fields for this object
      */
@@ -76,13 +79,27 @@ public abstract class Transfer extends DataObject implements CurrencyBound {
         // DestinationCurrencyGet  =====================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Transfer_DestinationCurrencyGet, Currency.class));
         dataObjectSchema.get(Transfer_DestinationCurrencyGet).setTellParent(false);
-        // SourcePeriodGet =================================================================================================
+        // SourcePeriodGet =============================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Transfer_SourcePeriodGet, Period.class));
         dataObjectSchema.get(Transfer_SourcePeriodGet).setTellParent(false);
         dataObjectSchema.<Period>get(Transfer_SourcePeriodGet).setDataCore_schema(createDirectDerivedDataCore(Transfer_Period));
-        // DestinationPeriodGet =================================================================================================
+        // DestinationPeriodGet ========================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Transfer_DestinationPeriodGet, Period.class));
         dataObjectSchema.get(Transfer_DestinationPeriodGet).setTellParent(false);
+        // SourceValueGet ==============================================================================================
+        dataObjectSchema.add(new DataField_Schema<>(Transfer_SourceValueGet, Double.class));
+        dataObjectSchema.get(Transfer_SourceValueGet).setTellParent(false);
+        dataObjectSchema.<Double>get(Transfer_SourceValueGet).setDataCore_schema(
+                new Derived_DataCore_Schema<>
+                        (container -> -((Transfer) container).getValue()
+                                , makeSourceChain(Transfer_Value)));
+        // DestinationValueGet ========================================================================================
+        dataObjectSchema.add(new DataField_Schema<>(Transfer_DestinationValueGet, Double.class));
+        dataObjectSchema.get(Transfer_DestinationValueGet).setTellParent(false);
+        dataObjectSchema.<Double>get(Transfer_DestinationValueGet).setDataCore_schema(
+                new Derived_DataCore_Schema<>
+                        (container -> ((Transfer) container).getValue()
+                                , makeSourceChain(Transfer_Value)));
         //==============================================================================================================
         // Parents
         // Children
@@ -165,21 +182,11 @@ public abstract class Transfer extends DataObject implements CurrencyBound {
         return get(Transfer_SourcePeriodGet);
     }
 
-    //------------------------------------------------------------------------------------------------------------------
-    //############################################# HalfTransfer Interface #############################################
-    //------------------------------------------------------------------------------------------------------------------
+    public Double getSourceValueGet() {
+        return get(Transfer_SourceValueGet);
+    }
 
-    /**
-     * Get the value for this half of the transaction
-     *
-     * @param isSource Get the source? Otherwise get the destination
-     * @return The value this side should use
-     */
-    protected Double getValue(boolean isSource) {
-        if (isSource) {
-            return -getValue();
-        } else {
-            return getValue();
-        }
+    public Double getDestinationValueGet() {
+        return get(Transfer_DestinationValueGet);
     }
 }

@@ -41,6 +41,7 @@ public class ManualBankTransfer extends BankTransfer {
         // SourceCurrencyGet
         // DestinationCurrencyGet ======================================================================================
         dataObjectSchema.<Currency>get(Transfer_DestinationCurrencyGet).setDataCore_schema(createDirectDerivedDataCore(Transfer_Currency));
+        //==============================================================================================================
         // SourcePeriodGet
         // DestinationPeriodGet ========================================================================================
         dataObjectSchema.<Period>get(Transfer_DestinationPeriodGet).setDataCore_schema(
@@ -53,6 +54,7 @@ public class ManualBankTransfer extends BankTransfer {
                 }
                         , makeSourceChain(Transfer_Period)
                         , makeSourceChain(BankTransfer_DestinationPeriod)));
+        //==============================================================================================================
         // Parents
         // Children
 
@@ -102,18 +104,5 @@ public class ManualBankTransfer extends BankTransfer {
             }
         }
         return super.sourceOptions(type, fieldName);
-    }
-
-    //------------------------------------------------------------------------------------------------------------------
-    //############################################# HalfTransfer Interface #############################################
-    //------------------------------------------------------------------------------------------------------------------
-
-    @Override
-    protected Double getValue(boolean isSource) {
-        if (isSource) {
-            return -getValue();
-        } else {
-            return getValue();
-        }
     }
 }

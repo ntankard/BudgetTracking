@@ -185,17 +185,4 @@ public abstract class BankTransfer extends Transfer {
     protected void setDestination(Pool destination) {
         set(Transfer_Destination, destination);
     }
-
-    //------------------------------------------------------------------------------------------------------------------
-    //############################################# HalfTransfer Interface #############################################
-    //------------------------------------------------------------------------------------------------------------------
-
-    @Override
-    protected Double getValue(boolean isSource) {
-        if (isSource) {
-            return -getValue();
-        } else {
-            return getValue();
-        }
-    }
 }
