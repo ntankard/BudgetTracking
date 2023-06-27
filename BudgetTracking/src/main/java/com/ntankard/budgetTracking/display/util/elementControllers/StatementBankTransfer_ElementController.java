@@ -2,7 +2,7 @@ package com.ntankard.budgetTracking.display.util.elementControllers;
 
 import com.ntankard.budgetTracking.dataBase.core.fileManagement.statement.StatementFolder;
 import com.ntankard.budgetTracking.dataBase.core.pool.category.SolidCategory;
-import com.ntankard.budgetTracking.dataBase.core.transfer.bank.StatementBankTransfer;
+import com.ntankard.budgetTracking.dataBase.core.transfer.bank.statement.StatementBankTransfer;
 import com.ntankard.dynamicGUI.gui.containers.Database_ElementController;
 import com.ntankard.dynamicGUI.gui.util.update.Updatable;
 
