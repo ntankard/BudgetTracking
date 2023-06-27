@@ -3,17 +3,17 @@ package com.ntankard.budgetTracking.dataBase.core.fileManagement.statement;
 import com.ntankard.budgetTracking.dataBase.core.period.Period;
 import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
-import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
 
 import java.util.Date;
 import java.util.List;
 
-public class TransactionLine extends DataObject {
+public class TransactionLine extends Displayable_DataObject {
 
     public interface TransactionLineList extends List<TransactionLine> {
     }
+
     private static final String TransactionLine_Prefix = "TransactionLine_";
 
     public static final String TransactionLine_StatementDocument = TransactionLine_Prefix + "StatementDocument";
@@ -50,16 +50,15 @@ public class TransactionLine extends DataObject {
     /**
      * Constructor
      */
-    public TransactionLine(Database database) {
-        super(database);
+    public TransactionLine(Database database, Object... args) {
+        super(database, args);
     }
 
     /**
      * Constructor
      */
     public TransactionLine(StatementDocument statementDocument, Period period, Date date, Double value, String description, StatementTransaction statementTransaction, String rawLine) {
-        this(statementDocument.getTrackingDatabase());
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(statementDocument.getTrackingDatabase()
                 , TransactionLine_StatementDocument, statementDocument
                 , TransactionLine_Period, period
                 , TransactionLine_Date, date

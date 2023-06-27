@@ -10,7 +10,8 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Execution(ExecutionMode.CONCURRENT)
 class PeriodTest {
@@ -38,7 +39,7 @@ class PeriodTest {
 
         // Generate test data
         List<Period> periods = new ArrayList<>();
-        ExistingPeriod period = new ExistingPeriod(database, -1, 1, 1);
+        ExistingPeriod period = new ExistingPeriod(database, 1, 1);
         for (int i = 0; i < testSize; i++) {
             period = period.generateNext();
             periods.add(period);

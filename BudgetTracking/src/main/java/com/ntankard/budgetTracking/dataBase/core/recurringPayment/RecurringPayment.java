@@ -1,21 +1,20 @@
 package com.ntankard.budgetTracking.dataBase.core.recurringPayment;
 
-import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
-import com.ntankard.javaObjectDatabase.database.Database;
-import com.ntankard.budgetTracking.dataBase.core.baseObject.interfaces.CurrencyBound;
-import com.ntankard.budgetTracking.dataBase.core.baseObject.NamedDataObject;
 import com.ntankard.budgetTracking.dataBase.core.Currency;
+import com.ntankard.budgetTracking.dataBase.core.baseObject.NamedDataObject;
+import com.ntankard.budgetTracking.dataBase.core.baseObject.interfaces.CurrencyBound;
 import com.ntankard.budgetTracking.dataBase.core.period.ExistingPeriod;
 import com.ntankard.budgetTracking.dataBase.core.pool.Bank;
 import com.ntankard.budgetTracking.dataBase.core.pool.category.SolidCategory;
+import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.database.Database;
 
 import static com.ntankard.budgetTracking.dataBase.core.pool.Bank.Bank_Currency;
 import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.DEBUG_DISPLAY;
 import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.DataType.CURRENCY;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createDirectDerivedDataCore;
 
 public abstract class RecurringPayment extends NamedDataObject implements CurrencyBound {
 
@@ -53,10 +52,7 @@ public abstract class RecurringPayment extends NamedDataObject implements Curren
         dataObjectSchema.get(RecurringPayment_Value).getProperty(Display_Properties.class).setDataType(CURRENCY);
         // Currency ====================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(RecurringPayment_Currency, Currency.class));
-        dataObjectSchema.<Currency>get(RecurringPayment_Currency).setDataCore_schema(
-                new Derived_DataCore_Schema<Currency, RecurringPayment>
-                        (dataObject -> dataObject.getBank().getCurrency()
-                                , Source_Factory.makeSourceChain(RecurringPayment_Bank, Bank_Currency)));
+        dataObjectSchema.<Currency>get(RecurringPayment_Currency).setDataCore_schema(createDirectDerivedDataCore(RecurringPayment_Bank, Bank_Currency));
         dataObjectSchema.get(RecurringPayment_Currency).getProperty(Display_Properties.class).setVerbosityLevel(DEBUG_DISPLAY);
         // Duration =========================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(RecurringPayment_Duration, Integer.class, true));
@@ -71,8 +67,8 @@ public abstract class RecurringPayment extends NamedDataObject implements Curren
     /**
      * Constructor
      */
-    public RecurringPayment(Database database) {
-        super(database);
+    public RecurringPayment(Database database, Object... args) {
+        super(database, args);
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -99,5 +95,7 @@ public abstract class RecurringPayment extends NamedDataObject implements Curren
         return get(RecurringPayment_Currency);
     }
 
-    public Integer getDuration(){ return get(RecurringPayment_Duration);}
+    public Integer getDuration() {
+        return get(RecurringPayment_Duration);
+    }
 }

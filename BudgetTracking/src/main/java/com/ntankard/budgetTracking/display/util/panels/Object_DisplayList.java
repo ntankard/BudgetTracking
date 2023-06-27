@@ -1,16 +1,16 @@
 package com.ntankard.budgetTracking.display.util.panels;
 
-import com.ntankard.dynamicGUI.gui.containers.DynamicGUI_SetDisplayList;
-import com.ntankard.dynamicGUI.gui.util.update.Updatable;
-import com.ntankard.javaObjectDatabase.dataObject.DataObject;
-import com.ntankard.javaObjectDatabase.database.Database_Schema;
-import com.ntankard.javaObjectDatabase.util.set.ObjectSet;
 import com.ntankard.budgetTracking.dataBase.core.baseObject.interfaces.CurrencyBound;
 import com.ntankard.budgetTracking.dataBase.core.transfer.HalfTransfer;
 import com.ntankard.budgetTracking.dataBase.core.transfer.Transfer;
 import com.ntankard.budgetTracking.display.util.localeInspectors.CurrencyBound_LocaleSource;
 import com.ntankard.budgetTracking.display.util.localeInspectors.HalfTransfer_LocaleSource;
 import com.ntankard.budgetTracking.display.util.localeInspectors.SetTransfer_LocaleSource;
+import com.ntankard.dynamicGUI.gui.containers.DynamicGUI_SetDisplayList;
+import com.ntankard.dynamicGUI.gui.util.update.Updatable;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject;
+import com.ntankard.javaObjectDatabase.database.Database_Schema;
+import com.ntankard.javaObjectDatabase.util.set.ObjectSet;
 
 public class Object_DisplayList<T extends DataObject> extends DynamicGUI_SetDisplayList<T> {
 

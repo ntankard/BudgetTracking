@@ -2,7 +2,7 @@ package com.ntankard.budgetTracking.dataBase.core.fileManagement.statement;
 
 import com.ntankard.budgetTracking.dataBase.core.Currency;
 import com.ntankard.budgetTracking.dataBase.core.baseObject.interfaces.CurrencyBound;
-import com.ntankard.budgetTracking.dataBase.core.fileManagement.statement.TransactionLine.TransactionLineList;
+import com.ntankard.budgetTracking.dataBase.core.fileManagement.statement.TransactionLine.*;
 import com.ntankard.budgetTracking.dataBase.core.fileManagement.statement.Translation.TranslationList;
 import com.ntankard.budgetTracking.dataBase.core.period.Period;
 import com.ntankard.budgetTracking.dataBase.core.pool.Bank;
@@ -13,7 +13,6 @@ import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.dataField.ListDataField_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
-import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
 
@@ -31,10 +30,11 @@ import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.Data
 import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.*;
 import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 
-public class StatementTransaction extends DataObject implements CurrencyBound {
+public class StatementTransaction extends Displayable_DataObject implements CurrencyBound {
 
     public interface StatementTransactionList extends List<StatementTransaction> {
     }
+
     private static final String StatementTransaction_Prefix = "StatementTransaction_";
 
     public static final String StatementTransaction_TransactionLines = StatementTransaction_Prefix + "TransactionLines";
@@ -84,11 +84,11 @@ public class StatementTransaction extends DataObject implements CurrencyBound {
         // Value =======================================================================================================
         dataObjectSchema.get(StatementTransaction_Value).getProperty(Display_Properties.class).setDataType(CURRENCY);
         dataObjectSchema.<Double>get(StatementTransaction_Value).setDataCore_schema(
-                createDefaultDirectDerivedDataCore(0.0,
+                createDirectDerivedDataCore(container -> 0.0,
                         StatementTransaction_CoreLine, TransactionLine_Value));
         // Description =================================================================================================
         dataObjectSchema.<String>get(StatementTransaction_Description).setDataCore_schema(
-                createDefaultDirectDerivedDataCore("",
+                createDirectDerivedDataCore(container -> "",
                         StatementTransaction_CoreLine, TransactionLine_Description));
         // Translation =================================================================================================
         dataObjectSchema.<Translation>get(StatementTransaction_Translation).setDataCore_schema(
@@ -128,26 +128,26 @@ public class StatementTransaction extends DataObject implements CurrencyBound {
         // Currency ====================================================================================================
         dataObjectSchema.get(StatementTransaction_Currency).getProperty(Display_Properties.class).setVerbosityLevel(Display_Properties.INFO_DISPLAY);
         dataObjectSchema.<Currency>get(StatementTransaction_Currency).setDataCore_schema(
-                createDefaultDirectDerivedDataCoreGetter(container -> container.getTrackingDatabase().getDefault(Currency.class),
+                createDirectDerivedDataCore(container -> container.getTrackingDatabase().getDefault(Currency.class),
                         StatementTransaction_CoreLine, TransactionLine_StatementDocument, StatementDocument_StatementFolder, StatementFolder_Bank, Bank_Currency));
         // StatementBankTransfer =======================================================================================
         dataObjectSchema.get(StatementTransaction_StatementBankTransfer).setManualCanEdit(true);
         // Bank ========================================================================================================
         dataObjectSchema.get(StatementTransaction_Bank).getProperty(Display_Properties.class).setVerbosityLevel(Display_Properties.INFO_DISPLAY);
         dataObjectSchema.<Bank>get(StatementTransaction_Bank).setDataCore_schema(
-                createDefaultDirectDerivedDataCoreGetter(container -> container.getTrackingDatabase().getDefault(Bank.class),
+                createDirectDerivedDataCore(container -> container.getTrackingDatabase().getDefault(Bank.class),
                         StatementTransaction_CoreLine, TransactionLine_StatementDocument, StatementDocument_StatementFolder, StatementFolder_Bank));
         // Period ======================================================================================================
         dataObjectSchema.get(StatementTransaction_Period).getProperty(Display_Properties.class).setVerbosityLevel(Display_Properties.INFO_DISPLAY);
         dataObjectSchema.<Period>get(StatementTransaction_Period).setDataCore_schema(
-                createDefaultDirectDerivedDataCoreGetter(container -> container.getTrackingDatabase().getDefault(Period.class),
+                createDirectDerivedDataCore(container -> container.getTrackingDatabase().getDefault(Period.class),
                         StatementTransaction_CoreLine, TransactionLine_Period));
         // StatementFolder =============================================================================================
-        dataObjectSchema.get(StatementTransaction_StatementFolder).getProperty(Display_Properties.class).setCustomColor((rowObject, value) -> ((StatementTransaction)rowObject).getPeriod() == ((StatementTransaction)rowObject).getStatementFolder().getPeriod() ? null : Color.ORANGE);
+        dataObjectSchema.get(StatementTransaction_StatementFolder).getProperty(Display_Properties.class).setCustomColor((rowObject, value) -> ((StatementTransaction) rowObject).getPeriod() == ((StatementTransaction) rowObject).getStatementFolder().getPeriod() ? null : Color.ORANGE);
         // TranslationTypes ============================================================================================
         dataObjectSchema.get(StatementTransaction_TranslationTypes).getProperty(Display_Properties.class).setVerbosityLevel(Display_Properties.INFO_DISPLAY);
         dataObjectSchema.<TranslationTypes>get(StatementTransaction_TranslationTypes).setDataCore_schema(
-                createDefaultDirectDerivedDataCoreGetter(container -> container.getTrackingDatabase().getDefault(TranslationTypes.class),
+                createDirectDerivedDataCore(container -> container.getTrackingDatabase().getDefault(TranslationTypes.class),
                         StatementTransaction_StatementFolder, StatementFolder_TranslationTypes));
         // TranslationList =============================================================================================
         dataObjectSchema.get(StatementTransaction_TranslationList).getProperty(Display_Properties.class).setVerbosityLevel(Display_Properties.INFO_DISPLAY);
@@ -161,16 +161,15 @@ public class StatementTransaction extends DataObject implements CurrencyBound {
     /**
      * Constructor
      */
-    public StatementTransaction(Database database) {
-        super(database);
+    public StatementTransaction(Database database, Object... args) {
+        super(database, args);
     }
 
     /**
      * Constructor
      */
     public StatementTransaction(StatementBankTransfer statementBankTransfer, StatementFolder statementFolder) {
-        this(statementFolder.getTrackingDatabase());
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(statementFolder.getTrackingDatabase()
                 , StatementTransaction_StatementBankTransfer, statementBankTransfer
                 , StatementTransaction_StatementFolder, statementFolder
         );

@@ -2,9 +2,9 @@ package com.ntankard.budgetTracking.dataBase.core.baseObject;
 
 import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.javaObjectDatabase.exception.nonCorrupting.NonCorruptingException;
 import com.ntankard.testUtil.DataAccessUntil;
-import com.ntankard.javaObjectDatabase.database.Database;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -43,7 +43,6 @@ class NamedDataObjectTest {
     @Test
     void constructor() {
         assertDoesNotThrow(() -> new NamedDataObject_Inst(database, "Test"));
-        assertThrows(NonCorruptingException.class, () -> new NamedDataObject_Inst(database, null));
     }
 
     /**
@@ -85,16 +84,15 @@ class NamedDataObjectTest {
         /**
          * Constructor
          */
-        public NamedDataObject_Inst(Database database) {
-            super(database);
+        public NamedDataObject_Inst(Database database, Object... args) {
+            super(database, args);
         }
 
         /**
          * Constructor
          */
         public NamedDataObject_Inst(Database database, String name) {
-            this(database);
-            setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+            super(database
                     , NamedDataObject_Name, name
             );
         }

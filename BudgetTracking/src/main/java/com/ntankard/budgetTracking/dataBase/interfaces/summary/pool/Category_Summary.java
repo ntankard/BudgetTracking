@@ -1,24 +1,23 @@
 package com.ntankard.budgetTracking.dataBase.interfaces.summary.pool;
 
+import com.ntankard.budgetTracking.dataBase.core.period.Period;
+import com.ntankard.budgetTracking.dataBase.core.pool.Pool;
+import com.ntankard.budgetTracking.dataBase.core.pool.category.SolidCategory;
+import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.Static_DataCore_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema.Calculator;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.End_Source_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
-import com.ntankard.budgetTracking.dataBase.core.pool.category.Category;
-import com.ntankard.javaObjectDatabase.dataObject.factory.DoubleParentFactory;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.factory.DoubleParentFactory;
 import com.ntankard.javaObjectDatabase.dataObject.interfaces.Ordered;
-import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
-import com.ntankard.budgetTracking.dataBase.core.period.Period;
-import com.ntankard.budgetTracking.dataBase.core.pool.category.SolidCategory;
-import com.ntankard.budgetTracking.dataBase.core.pool.Pool;
-import com.ntankard.javaObjectDatabase.database.ParameterMap;
 import com.ntankard.javaObjectDatabase.database.Database;
+import com.ntankard.javaObjectDatabase.database.ParameterMap;
 
 import java.util.List;
 
 import static com.ntankard.budgetTracking.dataBase.core.pool.category.SolidCategory.SolidCategory_Order;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createDirectDerivedDataCore;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 
 @ParameterMap(shouldSave = false)
 public class Category_Summary extends PoolSummary<SolidCategory> implements Ordered {
@@ -55,10 +54,7 @@ public class Category_Summary extends PoolSummary<SolidCategory> implements Orde
         // =============================================================================================================
         // Net
         // TransferSum =================================================================================================
-        dataObjectSchema.<Double>get(PoolSummary_TransferSum).setDataCore_schema(
-                new Derived_DataCore_Schema<>(
-                        (Calculator<Double, PoolSummary<Category>>) PoolSummary::getTransferSetSum
-                        , new End_Source_Schema<>(PoolSummary_TransferSetSum)));
+        dataObjectSchema.<Double>get(PoolSummary_TransferSum).setDataCore_schema(createDirectDerivedDataCore(PoolSummary_TransferSetSum));
         // =============================================================================================================
         // Missing
         // Valid =======================================================================================================
@@ -69,7 +65,7 @@ public class Category_Summary extends PoolSummary<SolidCategory> implements Orde
                 new Derived_DataCore_Schema<>(
                         (Calculator<Integer, Category_Summary>) container ->
                                 container.getPeriod().getOrder() * 1000 + container.getPool().getOrder()
-                        , Source_Factory.makeSourceChain(PoolSummary_Pool, SolidCategory_Order)));
+                        , makeSourceChain(PoolSummary_Pool, SolidCategory_Order)));
         //==============================================================================================================
         // Parents
         // Children
@@ -80,16 +76,15 @@ public class Category_Summary extends PoolSummary<SolidCategory> implements Orde
     /**
      * Constructor
      */
-    public Category_Summary(Database database) {
-        super(database);
+    public Category_Summary(Database database, Object... args) {
+        super(database, args);
     }
 
     /**
      * Constructor
      */
     public Category_Summary(Period period, Pool pool) {
-        this(period.getTrackingDatabase());
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(period.getTrackingDatabase()
                 , PoolSummary_Period, period
                 , PoolSummary_Pool, pool
         );

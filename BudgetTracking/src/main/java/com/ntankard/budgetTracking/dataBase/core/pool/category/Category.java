@@ -1,8 +1,8 @@
 package com.ntankard.budgetTracking.dataBase.core.pool.category;
 
+import com.ntankard.budgetTracking.dataBase.core.pool.Pool;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
-import com.ntankard.budgetTracking.dataBase.core.pool.Pool;
 
 public abstract class Category extends Pool {
 
@@ -27,7 +27,7 @@ public abstract class Category extends Pool {
     /**
      * Constructor
      */
-    public Category(Database database) {
-        super(database);
+    public Category(Database database, Object... args) {
+        super(database, args);
     }
 }

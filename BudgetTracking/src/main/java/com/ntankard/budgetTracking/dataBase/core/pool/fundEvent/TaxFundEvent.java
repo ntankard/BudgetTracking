@@ -1,11 +1,11 @@
 package com.ntankard.budgetTracking.dataBase.core.pool.fundEvent;
 
-import com.ntankard.javaObjectDatabase.dataField.validator.NumberRange_FieldValidator;
-import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.budgetTracking.dataBase.core.period.ExistingPeriod;
 import com.ntankard.budgetTracking.dataBase.core.transfer.fund.rePay.TaxRePayFundTransfer;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataField.validator.NumberRange_FieldValidator;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.database.Database;
 
 public class TaxFundEvent extends FundEvent {
 
@@ -48,8 +48,8 @@ public class TaxFundEvent extends FundEvent {
     /**
      * Constructor
      */
-    public TaxFundEvent(Database database) {
-        super(database);
+    public TaxFundEvent(Database database, Object... args) {
+        super(database, args);
     }
 
     //------------------------------------------------------------------------------------------------------------------

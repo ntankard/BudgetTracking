@@ -1,9 +1,5 @@
 package com.ntankard.budgetTracking.display.frames.mainFrame.image;
 
-import com.ntankard.dynamicGUI.gui.util.decoder.Decoder;
-import com.ntankard.dynamicGUI.gui.util.decoder.DoubleDecoder;
-import com.ntankard.dynamicGUI.gui.util.update.Updatable;
-import com.ntankard.dynamicGUI.gui.util.update.UpdatableJPanel;
 import com.ntankard.budgetTracking.dataBase.core.Currency;
 import com.ntankard.budgetTracking.dataBase.core.fileManagement.Receipt;
 import com.ntankard.budgetTracking.dataBase.core.period.ExistingPeriod;
@@ -12,9 +8,13 @@ import com.ntankard.budgetTracking.dataBase.core.pool.Bank;
 import com.ntankard.budgetTracking.dataBase.core.pool.category.SolidCategory;
 import com.ntankard.budgetTracking.dataBase.core.transfer.bank.BankTransfer;
 import com.ntankard.budgetTracking.dataBase.core.transfer.bank.ManualBankTransfer;
+import com.ntankard.budgetTracking.util.swing.ImageJPanel;
+import com.ntankard.dynamicGUI.gui.util.decoder.Decoder;
+import com.ntankard.dynamicGUI.gui.util.decoder.DoubleDecoder;
+import com.ntankard.dynamicGUI.gui.util.update.Updatable;
+import com.ntankard.dynamicGUI.gui.util.update.UpdatableJPanel;
 import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.javaObjectDatabase.util.set.TwoParent_Children_Set;
-import com.ntankard.budgetTracking.util.swing.ImageJPanel;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;

@@ -1,20 +1,19 @@
 {
-  "extends": "DataObject",
-  "extendsSchema": "Displayable_DataObject",
+  "extends": "Displayable_DataObject",
   "implements": "CurrencyBound",
   "listDef": true,
-  "customToString" : "getCoreLine().getRawLine()",
+  "customToString": "getCoreLine().getRawLine()",
   "fields": [
     {
       "name": "TransactionLines",
       "type": "TransactionLine",
-      "avoid_constructor": true,
       "is_list": true,
       "dataCore": {
-        "type": "SelfParent",
-        "classType": "TransactionLine"
+        "selfParent": {
+          "classType": "TransactionLine"
+        }
       },
-      "properties": {
+      "attachedProperties": {
         "Display_Properties": [
           "setVerbosityLevel(Display_Properties.INFO_DISPLAY)"
         ]
@@ -25,13 +24,14 @@
       "type": "TransactionLine",
       "canBeNull": true,
       "dataCore": {
-        "type": "Derived",
-        "codeLine": "container.getTransactionLines().size() == 0 ? null : container.getTransactionLines().get(0)",
-        "sources": [
-          "makeSourceChain(StatementTransaction_TransactionLines)"
-        ]
+        "derived": {
+          "codeLine": "container.getTransactionLines().size() == 0 ? null : container.getTransactionLines().get(0)",
+          "sources": [
+            "makeSourceChain(StatementTransaction_TransactionLines)"
+          ]
+        }
       },
-      "properties": {
+      "attachedProperties": {
         "Display_Properties": [
           "setVerbosityLevel(Display_Properties.INFO_DISPLAY)"
         ]
@@ -41,11 +41,12 @@
       "name": "Value",
       "type": "Double",
       "dataCore": {
-        "type": "DirectDerived",
-        "sources": "StatementTransaction_CoreLine, TransactionLine_Value",
-        "default": 0.0
+        "directDerived": {
+          "sources": "StatementTransaction_CoreLine, TransactionLine_Value",
+          "defaultGetter": "0.0"
+        }
       },
-      "properties": {
+      "attachedProperties": {
         "Display_Properties": [
           "setDataType(CURRENCY)"
         ]
@@ -55,9 +56,10 @@
       "name": "Description",
       "type": "String",
       "dataCore": {
-        "type": "DirectDerived",
-        "sources": "StatementTransaction_CoreLine, TransactionLine_Description",
-        "default": "\"\""
+        "directDerived": {
+          "sources": "StatementTransaction_CoreLine, TransactionLine_Description",
+          "defaultGetter": "\"\""
+        }
       }
     },
     {
@@ -65,22 +67,24 @@
       "type": "Translation",
       "canBeNull": true,
       "dataCore": {
-        "type": "Derived",
-        "codeLine": "{\n                            for (Translation translation : container.getTranslationList()) {\n                                // Does this rule apply to this StatementTransaction\n                                boolean matched = false;\n                                if (translation.getOriginal().contains(\"'\")) { // OR\n                                    String[] toCheck = translation.getOriginal().split(\"'\");\n                                    for (String check : toCheck) {\n                                        if (container.getDescription().contains(check)) {\n                                            matched = true;\n                                            break;\n                                        }\n                                    }\n                                } else if (translation.getOriginal().contains(\"~\")) { // AND\n                                    String[] toCheck = translation.getOriginal().split(\"~\");\n                                    matched = true;\n                                    for (String check : toCheck) {\n                                        if (!container.getDescription().contains(check)) {\n                                            matched = false;\n                                            break;\n                                        }\n                                    }\n                                } else { // 1 only\n                                    matched = container.getDescription().contains(translation.getOriginal());\n                                }\n                                if (matched) {\n                                    return translation;\n                                }\n                            }\n                            return null;\n                        }",
-        "sources": [
-          "Source_Factory.append(Source_Factory.makeSharedStepSourceChain(StatementTransaction_TranslationList, Translation_Original, Translation_Translated)\n                                , makeSourceChain(StatementTransaction_Description))"
-        ]
+        "derived": {
+          "codeLine": "{\n                            for (Translation translation : container.getTranslationList()) {\n                                // Does this rule apply to this StatementTransaction\n                                boolean matched = false;\n                                if (translation.getOriginal().contains(\"'\")) { // OR\n                                    String[] toCheck = translation.getOriginal().split(\"'\");\n                                    for (String check : toCheck) {\n                                        if (container.getDescription().contains(check)) {\n                                            matched = true;\n                                            break;\n                                        }\n                                    }\n                                } else if (translation.getOriginal().contains(\"~\")) { // AND\n                                    String[] toCheck = translation.getOriginal().split(\"~\");\n                                    matched = true;\n                                    for (String check : toCheck) {\n                                        if (!container.getDescription().contains(check)) {\n                                            matched = false;\n                                            break;\n                                        }\n                                    }\n                                } else { // 1 only\n                                    matched = container.getDescription().contains(translation.getOriginal());\n                                }\n                                if (matched) {\n                                    return translation;\n                                }\n                            }\n                            return null;\n                        }",
+          "sources": [
+            "Source_Factory.append(Source_Factory.makeSharedStepSourceChain(StatementTransaction_TranslationList, Translation_Original, Translation_Translated)\n                                , makeSourceChain(StatementTransaction_Description))"
+          ]
+        }
       }
     },
     {
       "name": "Currency",
       "type": "Currency",
       "dataCore": {
-        "type": "DirectDerived",
-        "sources": "StatementTransaction_CoreLine, TransactionLine_StatementDocument, StatementDocument_StatementFolder, StatementFolder_Bank, Bank_Currency",
-        "default": "container -> container.getTrackingDatabase().getDefault(Currency.class)"
+        "directDerived": {
+          "sources": "StatementTransaction_CoreLine, TransactionLine_StatementDocument, StatementDocument_StatementFolder, StatementFolder_Bank, Bank_Currency",
+          "defaultGetter": "container.getTrackingDatabase().getDefault(Currency.class)"
+        }
       },
-      "properties": {
+      "attachedProperties": {
         "Display_Properties": [
           "setVerbosityLevel(Display_Properties.INFO_DISPLAY)"
         ]
@@ -96,11 +100,12 @@
       "name": "Bank",
       "type": "Bank",
       "dataCore": {
-        "type": "DirectDerived",
-        "sources": "StatementTransaction_CoreLine, TransactionLine_StatementDocument, StatementDocument_StatementFolder, StatementFolder_Bank",
-        "default": "container -> container.getTrackingDatabase().getDefault(Bank.class)"
+        "directDerived": {
+          "sources": "StatementTransaction_CoreLine, TransactionLine_StatementDocument, StatementDocument_StatementFolder, StatementFolder_Bank",
+          "defaultGetter": "container.getTrackingDatabase().getDefault(Bank.class)"
+        }
       },
-      "properties": {
+      "attachedProperties": {
         "Display_Properties": [
           "setVerbosityLevel(Display_Properties.INFO_DISPLAY)"
         ]
@@ -110,11 +115,12 @@
       "name": "Period",
       "type": "Period",
       "dataCore": {
-        "type": "DirectDerived",
-        "sources": "StatementTransaction_CoreLine, TransactionLine_Period",
-        "default": "container -> container.getTrackingDatabase().getDefault(Period.class)"
+        "directDerived": {
+          "sources": "StatementTransaction_CoreLine, TransactionLine_Period",
+          "defaultGetter": "container.getTrackingDatabase().getDefault(Period.class)"
+        }
       },
-      "properties": {
+      "attachedProperties": {
         "Display_Properties": [
           "setVerbosityLevel(Display_Properties.INFO_DISPLAY)"
         ]
@@ -124,9 +130,9 @@
       "name": "StatementFolder",
       "type": "StatementFolder",
       "database_source": true,
-      "properties": {
+      "attachedProperties": {
         "Display_Properties": [
-          "setCustomColor((rowObject, value) -> ((StatementTransaction)rowObject).getPeriod() == ((StatementTransaction)rowObject).getStatementFolder().getPeriod() ? null : Color.ORANGE)"
+          "setCustomColor((rowObject, value) -> ((StatementTransaction) rowObject).getPeriod() == ((StatementTransaction) rowObject).getStatementFolder().getPeriod() ? null : Color.ORANGE)"
         ]
       }
     },
@@ -134,11 +140,12 @@
       "name": "TranslationTypes",
       "type": "TranslationTypes",
       "dataCore": {
-        "type": "DirectDerived",
-        "sources": "StatementTransaction_StatementFolder, StatementFolder_TranslationTypes",
-        "default": "container -> container.getTrackingDatabase().getDefault(TranslationTypes.class)"
+        "directDerived": {
+          "sources": "StatementTransaction_StatementFolder, StatementFolder_TranslationTypes",
+          "defaultGetter": "container.getTrackingDatabase().getDefault(TranslationTypes.class)"
+        }
       },
-      "properties": {
+      "attachedProperties": {
         "Display_Properties": [
           "setVerbosityLevel(Display_Properties.INFO_DISPLAY)"
         ]
@@ -149,10 +156,11 @@
       "type": "Translation",
       "is_list": true,
       "dataCore": {
-        "type": "MultiParentList",
-        "parents": "StatementTransaction_TranslationTypes"
+        "multiParentList": {
+          "parents": "StatementTransaction_TranslationTypes"
+        }
       },
-      "properties": {
+      "attachedProperties": {
         "Display_Properties": [
           "setVerbosityLevel(Display_Properties.INFO_DISPLAY)"
         ]

@@ -23,16 +23,15 @@ public class TranslationTypes extends NamedDataObject {
     /**
      * Constructor
      */
-    public TranslationTypes(Database database) {
-        super(database);
+    public TranslationTypes(Database database, Object... args) {
+        super(database, args);
     }
 
     /**
      * Constructor
      */
     public TranslationTypes(Database database, String name) {
-        this(database);
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(database
                 , NamedDataObject_Name, name
         );
     }

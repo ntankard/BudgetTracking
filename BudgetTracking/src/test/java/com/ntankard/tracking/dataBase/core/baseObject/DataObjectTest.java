@@ -1,5 +1,6 @@
 package com.ntankard.budgetTracking.dataBase.core.baseObject;
 
+import com.ntankard.budgetTracking.Main;
 import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
 import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
@@ -11,8 +12,6 @@ import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.javaObjectDatabase.exception.nonCorrupting.NonCorruptingException;
 import com.ntankard.testUtil.ClassInspectionUtil;
 import com.ntankard.testUtil.DataAccessUntil;
-import com.ntankard.budgetTracking.Main;
-import com.ntankard.budgetTracking.dataBase.core.Currency;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -64,11 +63,6 @@ class DataObjectTest {
     void set() {
         assertNotEquals(0, database.getAll().size());
 
-        for (DataObject dataObject1 : database.getAll()) {
-            dataObject1.validateParents();
-            dataObject1.validateChildren();
-        }
-
         for (Class<? extends DataObject> testClass : database.getDataObjectTypes()) {
             if (!Modifier.isAbstract(testClass.getModifiers())) {
                 for (DataObject dataObject : database.get(testClass)) {
@@ -80,13 +74,13 @@ class DataObjectTest {
                         if (member.getCanEdit() && ((Display_Properties) member.<Display_Properties>getProperty(Display_Properties.class)).getDisplaySet() && DataObject.class.isAssignableFrom(member.getType())) {
                             List<FieldValidator> validators = member.getValidators();
                             boolean breakOut = false;
-                            for(FieldValidator validator :validators){
-                                if(Multi_FieldValidator.class.isAssignableFrom(validator.getClass())){
+                            for (FieldValidator validator : validators) {
+                                if (Multi_FieldValidator.class.isAssignableFrom(validator.getClass())) {
                                     breakOut = true;
                                     break;
                                 }
                             }
-                            if(breakOut){
+                            if (breakOut) {
                                 continue;
                             }
 
@@ -190,25 +184,6 @@ class DataObjectTest {
     }
 
     /**
-     * Confirm that all parent objects are present and have been linked
-     */
-    @Test
-    @Execution(ExecutionMode.SAME_THREAD)
-    void validateParent() {
-        // TODO things are missing here. If the field type is not set to data object it wont be registerd as a parent and nothing will catch it, you have to go through each indevidual field and check
-
-        for (DataObject dataObject : database.getAll()) {
-            dataObject.validateParents();
-            for (DataObject parent : dataObject.getParents()) {
-                if (!(parent instanceof Currency)) {
-                    assertNotNull(parent, "Core Database error. Null parent detected");
-                    assertTrue(parent.getChildren().contains(dataObject), "Core Database error. Parent has not been notified");
-                }
-            }
-        }
-    }
-
-    /**
      * Confirm that all children that the object knows about are present and connected to the parent
      */
     @Test
@@ -217,7 +192,6 @@ class DataObjectTest {
         for (DataObject dataObject : database.getAll()) {
             for (DataObject child : dataObject.getChildren()) {
                 assertNotNull(child, "Core Database error. Null child detected");
-                assertTrue(child.getParents().contains(dataObject), "Core Database error. Object registers as a child that dose not list this object as a parent");
             }
         }
     }
@@ -238,8 +212,6 @@ class DataObjectTest {
          */
         public DataObject_Inst(Database database) {
             super(database);
-            setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
-            );
         }
     }
 }

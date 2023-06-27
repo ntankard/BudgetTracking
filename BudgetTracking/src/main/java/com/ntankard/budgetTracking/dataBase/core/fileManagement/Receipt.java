@@ -3,22 +3,21 @@ package com.ntankard.budgetTracking.dataBase.core.fileManagement;
 import com.ntankard.budgetTracking.dataBase.core.transfer.bank.BankTransfer;
 import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.Static_DataCore_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
-import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.dataObject.interfaces.FileInterface;
 import com.ntankard.javaObjectDatabase.database.Database;
 
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createStaticDataCore;
 import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 
-public class Receipt extends DataObject implements FileInterface {
+public class Receipt extends Displayable_DataObject implements FileInterface {
 
     private static final String Receipt_Prefix = "Receipt_";
 
-    public static final String Receipt_FileName = "getFileName";
-    public static final String Receipt_BankTransfer = "getBankTransfer";
-    public static final String Receipt_ContainerPath = "getContainerPath";
+    public static final String Receipt_FileName = Receipt_Prefix + "FileName";
+    public static final String Receipt_BankTransfer = Receipt_Prefix + "BankTransfer";
+    public static final String Receipt_ContainerPath = Receipt_Prefix + "ContainerPath";
     public static final String Receipt_FullPath = Receipt_Prefix + "FullPath";
 
     /**
@@ -37,7 +36,7 @@ public class Receipt extends DataObject implements FileInterface {
         // BankTransfer ================================================================================================
         dataObjectSchema.get(Receipt_BankTransfer).setManualCanEdit(true);
         // ContainerPath ===============================================================================================
-        dataObjectSchema.get(Receipt_ContainerPath).setDataCore_schema(new Static_DataCore_Schema<>("Receipts"));
+        dataObjectSchema.get(Receipt_ContainerPath).setDataCore_schema(createStaticDataCore("Receipts"));
         // FullPath ====================================================================================================
         dataObjectSchema.<String>get(Receipt_FullPath).setDataCore_schema(
                 new Derived_DataCore_Schema<String, Receipt>
@@ -52,16 +51,15 @@ public class Receipt extends DataObject implements FileInterface {
     /**
      * Constructor
      */
-    public Receipt(Database database) {
-        super(database);
+    public Receipt(Database database, Object... args) {
+        super(database, args);
     }
 
     /**
      * Constructor
      */
     public Receipt(String fileName, BankTransfer bankTransfer) {
-        this(bankTransfer.getTrackingDatabase());
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(bankTransfer.getTrackingDatabase()
                 , Receipt_FileName, fileName
                 , Receipt_BankTransfer, bankTransfer
         );

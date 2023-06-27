@@ -47,22 +47,15 @@ public class StatementInstanceLine extends DataObject {
     /**
      * Constructor
      */
-    public StatementInstanceLine(StatementInstance statementInstance,TransactionPeriod transactionPeriod, Date date, String description, Double value, String[] line) {
-        super(statementInstance.getTrackingDatabase());
-
-        StringBuilder concat = new StringBuilder();
-        for (String part : line) {
-            concat.append(",").append(part);
-        }
-
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+    public StatementInstanceLine(StatementInstance statementInstance, TransactionPeriod transactionPeriod, Date date, String description, Double value, String line) {
+        super(statementInstance.getTrackingDatabase()
                 , StatementInstanceLine_StatementInstance, statementInstance
                 , StatementInstanceLine_TransactionPeriod, transactionPeriod
                 , StatementInstanceLine_Date, date
                 , StatementInstanceLine_Description, description
                 , StatementInstanceLine_Value, value
                 , StatementInstanceLine_Line, line
-                , StatementInstanceLine_RawLine, concat.toString()
+                , StatementInstanceLine_RawLine, line
                 , StatementInstanceLine_Transaction, null
         );
     }
@@ -75,7 +68,7 @@ public class StatementInstanceLine extends DataObject {
         return get(StatementInstanceLine_StatementInstance);
     }
 
-    public TransactionPeriod getTransactionPeriod(){
+    public TransactionPeriod getTransactionPeriod() {
         return get(StatementInstanceLine_TransactionPeriod);
     }
 
@@ -83,11 +76,11 @@ public class StatementInstanceLine extends DataObject {
         return get(StatementInstanceLine_Date);
     }
 
-    public String getDescription(){
+    public String getDescription() {
         return get(StatementInstanceLine_Description);
     }
 
-    public Double getValue(){
+    public Double getValue() {
         return get(StatementInstanceLine_Value);
     }
 
@@ -99,7 +92,7 @@ public class StatementInstanceLine extends DataObject {
         return get(StatementInstanceLine_RawLine);
     }
 
-    public void setTransaction(Transaction transaction){
+    public void setTransaction(Transaction transaction) {
         set(StatementInstanceLine_Transaction, transaction);
     }
 }

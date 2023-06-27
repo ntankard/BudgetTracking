@@ -1,13 +1,13 @@
 package com.ntankard.budgetTracking.display.frames.mainFrame;
 
+import com.ntankard.budgetTracking.dataBase.core.baseObject.NamedDataObject;
 import com.ntankard.budgetTracking.dataBase.interfaces.summary.Period_Summary;
 import com.ntankard.budgetTracking.dataBase.interfaces.summary.pool.PoolSummary;
+import com.ntankard.budgetTracking.display.util.panels.DataObject_VerbosityDisplayList;
 import com.ntankard.dynamicGUI.gui.util.update.Updatable;
 import com.ntankard.dynamicGUI.gui.util.update.UpdatableJPanel;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject;
-import com.ntankard.budgetTracking.dataBase.core.baseObject.NamedDataObject;
 import com.ntankard.javaObjectDatabase.database.Database;
-import com.ntankard.budgetTracking.display.util.panels.DataObject_VerbosityDisplayList;
 import com.ntankard.javaObjectDatabase.database.subContainers.TreeNode;
 
 import javax.swing.*;

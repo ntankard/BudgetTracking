@@ -1,20 +1,21 @@
 package com.ntankard.budgetTracking.dataBase.core.transfer.fund.rePay;
 
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema.Calculator;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.End_Source_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
 import com.ntankard.budgetTracking.dataBase.core.Currency;
 import com.ntankard.budgetTracking.dataBase.core.period.ExistingPeriod;
 import com.ntankard.budgetTracking.dataBase.core.period.Period;
 import com.ntankard.budgetTracking.dataBase.core.pool.fundEvent.FixedPeriodFundEvent;
 import com.ntankard.budgetTracking.dataBase.core.pool.fundEvent.FundEvent;
-import com.ntankard.javaObjectDatabase.dataObject.factory.DoubleParentFactory;
-import com.ntankard.javaObjectDatabase.database.ParameterMap;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema.Calculator;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.factory.DoubleParentFactory;
 import com.ntankard.javaObjectDatabase.database.Database;
+import com.ntankard.javaObjectDatabase.database.ParameterMap;
 
 import static com.ntankard.budgetTracking.dataBase.core.pool.fundEvent.FixedPeriodFundEvent.*;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSharedStepSourceChain;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 
 @ParameterMap(shouldSave = false)
 public class FixedPeriodRePayFundTransfer extends RePayFundTransfer {
@@ -56,10 +57,8 @@ public class FixedPeriodRePayFundTransfer extends RePayFundTransfer {
                             }
                             return fixedPeriodFundEvent.getRepayAmount();
                         }
-                        , Source_Factory.makeSourceChain((Transfer_Period))
-                        , Source_Factory.makeSourceChain((Transfer_Source), FixedPeriodFundEvent_Start)
-                        , Source_Factory.makeSourceChain((Transfer_Source), FixedPeriodFundEvent_Duration)
-                        , Source_Factory.makeSourceChain((Transfer_Source), FixedPeriodFundEvent_RepayAmount)));
+                        , Source_Factory.append(makeSharedStepSourceChain(Transfer_Source, FixedPeriodFundEvent_Start, FixedPeriodFundEvent_Duration, FixedPeriodFundEvent_RepayAmount)
+                        , makeSourceChain(Transfer_Period))));
         // =============================================================================================================
         // Currency
         // Destination
@@ -76,16 +75,15 @@ public class FixedPeriodRePayFundTransfer extends RePayFundTransfer {
     /**
      * Constructor
      */
-    public FixedPeriodRePayFundTransfer(Database database) {
-        super(database);
+    public FixedPeriodRePayFundTransfer(Database database, Object... args) {
+        super(database, args);
     }
 
     /**
      * Constructor
      */
     public FixedPeriodRePayFundTransfer(Period period, FundEvent source, Currency currency) {
-        this(period.getTrackingDatabase());
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(period.getTrackingDatabase()
                 , Transfer_Period, period
                 , Transfer_Source, source
                 , Transfer_Currency, currency

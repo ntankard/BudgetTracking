@@ -1,14 +1,14 @@
 package com.ntankard.budgetTracking.display.frames.mainFrame.summaryGraphs;
 
-import com.ntankard.dynamicGUI.gui.util.update.Updatable;
-import com.ntankard.dynamicGUI.gui.util.update.UpdatableJPanel;
-import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.budgetTracking.dataBase.core.period.ExistingPeriod;
 import com.ntankard.budgetTracking.dataBase.core.pool.Pool;
 import com.ntankard.budgetTracking.dataBase.core.pool.fundEvent.FundEvent;
 import com.ntankard.budgetTracking.dataBase.core.pool.fundEvent.SavingsFundEvent;
 import com.ntankard.budgetTracking.dataBase.core.transfer.fund.rePay.RePayFundTransfer;
 import com.ntankard.budgetTracking.dataBase.interfaces.set.extended.sum.PeriodPool_SumSet;
+import com.ntankard.dynamicGUI.gui.util.update.Updatable;
+import com.ntankard.dynamicGUI.gui.util.update.UpdatableJPanel;
+import com.ntankard.javaObjectDatabase.database.Database;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -97,7 +97,7 @@ public class FundGraph extends UpdatableJPanel {
         for (FundEvent fundEvent : database.get(FundEvent.class)) {
             if (fundEvent instanceof SavingsFundEvent) {
                 setFundGroups.get(0).add(fundEvent);
-            } else if (fundEvent.getName().equals("Hex") || fundEvent.getName().equals("Hex 2") || fundEvent.getName().equals("19-20 Tax") || fundEvent.getName().equals("18-19 Tax")) {
+            } else if (fundEvent.getCategory().getName().equals("Tax")) {
                 setFundGroups.get(1).add(fundEvent);
             } else {
                 setFundGroups.get(2).add(fundEvent);

@@ -32,8 +32,7 @@ public class StatementInstance extends DataObject {
      * Constructor
      */
     public StatementInstance(StatementFolder statementFolder, String name, String path) {
-        super(statementFolder.getTrackingDatabase());
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(statementFolder.getTrackingDatabase()
                 , StatementInstance_StatementFolder, statementFolder
                 , StatementInstance_Name, name
                 , StatementInstance_Path, path

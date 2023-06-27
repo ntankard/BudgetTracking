@@ -11,19 +11,18 @@ import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.dataField.ListDataField_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.End_Source_Schema;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.ntankard.budgetTracking.dataBase.core.fileManagement.statement.StatementTransaction.StatementTransaction_Currency;
 import static com.ntankard.budgetTracking.dataBase.core.fileManagement.statement.StatementTransaction.StatementTransaction_Value;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createDirectDerivedDataCore;
 import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createSelfParentList;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSharedStepSourceChain;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 
 public class StatementBankTransfer extends BankTransfer {
 
@@ -49,10 +48,7 @@ public class StatementBankTransfer extends BankTransfer {
         //==============================================================================================================
         // Source
         // Value =======================================================================================================
-        // TODO fix this source issue, this is terrible....
         dataObjectSchema.get(Transfer_Value).setManualCanEdit(false);
-        List<Source_Schema<?>> list = new ArrayList<>(Arrays.asList(Source_Factory.makeSharedStepSourceChain(StatementBankTransfer_StatementTransactionSet, StatementTransaction_Value, StatementTransaction_Currency)));
-        list.add(Source_Factory.makeSourceChain(StatementBankTransfer_Multiply));
         dataObjectSchema.<Double>get(Transfer_Value).setDataCore_schema(
                 new Derived_DataCore_Schema<Double, StatementBankTransfer>(
                         container -> {
@@ -60,9 +56,10 @@ public class StatementBankTransfer extends BankTransfer {
                             for (StatementTransaction statementTransaction : container.<List<StatementTransaction>>get(StatementBankTransfer_StatementTransactionSet)) {
                                 sum += statementTransaction.getValue();
                             }
-                            return Currency.round(sum * (Double)container.get(StatementBankTransfer_Multiply));
-                        },
-                        list.toArray(new Source_Schema<?>[0])
+                            return Currency.round(sum * (Double) container.get(StatementBankTransfer_Multiply));
+                        }
+                        , Source_Factory.append(makeSharedStepSourceChain(StatementBankTransfer_StatementTransactionSet, StatementTransaction_Value, StatementTransaction_Currency)
+                        , makeSourceChain(StatementBankTransfer_Multiply))
                 ));
         //==============================================================================================================
         // Currency
@@ -85,11 +82,7 @@ public class StatementBankTransfer extends BankTransfer {
         // DestinationValue
         // SourceCurrencyGet
         // DestinationCurrencyGet ======================================================================================
-        dataObjectSchema.<Currency>get(Transfer_DestinationCurrencyGet).setDataCore_schema(
-                new Derived_DataCore_Schema<>(
-                        (Derived_DataCore_Schema.Calculator<Currency, StatementBankTransfer>) container ->
-                                container.getCurrency()
-                        , new End_Source_Schema<>((Transfer_Currency))));
+        dataObjectSchema.<Currency>get(Transfer_DestinationCurrencyGet).setDataCore_schema(createDirectDerivedDataCore(Transfer_Currency));
         // SourcePeriodGet
         // DestinationPeriodGet ========================================================================================
         dataObjectSchema.<Period>get(Transfer_DestinationPeriodGet).setDataCore_schema(
@@ -100,8 +93,8 @@ public class StatementBankTransfer extends BankTransfer {
                         return container.getPeriod();
                     }
                 }
-                        , new End_Source_Schema<>((Transfer_Period))
-                        , new End_Source_Schema<>((BankTransfer_DestinationPeriod))));
+                        , makeSourceChain(Transfer_Period)
+                        , makeSourceChain(BankTransfer_DestinationPeriod)));
         // Parents
         // Children
 
@@ -141,16 +134,15 @@ public class StatementBankTransfer extends BankTransfer {
     /**
      * Constructor
      */
-    public StatementBankTransfer(Database database) {
-        super(database);
+    public StatementBankTransfer(Database database, Object... args) {
+        super(database, args);
     }
 
     /**
      * Constructor
      */
     public StatementBankTransfer(Period period, Bank source, Period destinationPeriod, Pool destination, String description, StatementTransactionTranslationAutoGroup autoSource, Double multiply) {
-        this(period.getTrackingDatabase());
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(period.getTrackingDatabase()
                 , Transfer_Period, period
                 , Transfer_Source, source
                 , BankTransfer_DestinationPeriod, destinationPeriod

@@ -1,16 +1,5 @@
 package com.ntankard.budgetTracking.dataBase.core.transfer.fund.rePay;
 
-import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
-import com.ntankard.javaObjectDatabase.dataField.ListDataField_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.Static_DataCore_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema.Calculator;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.End_Source_Schema;
-import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
-import com.ntankard.javaObjectDatabase.dataObject.factory.DoubleParentFactory;
-import com.ntankard.javaObjectDatabase.database.Database;
-import com.ntankard.javaObjectDatabase.database.ParameterMap;
 import com.ntankard.budgetTracking.dataBase.core.Currency;
 import com.ntankard.budgetTracking.dataBase.core.period.ExistingPeriod;
 import com.ntankard.budgetTracking.dataBase.core.period.Period;
@@ -19,13 +8,25 @@ import com.ntankard.budgetTracking.dataBase.core.pool.category.SolidCategory;
 import com.ntankard.budgetTracking.dataBase.core.pool.fundEvent.FundEvent;
 import com.ntankard.budgetTracking.dataBase.core.pool.fundEvent.TaxFundEvent;
 import com.ntankard.budgetTracking.dataBase.core.transfer.HalfTransfer;
+import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataField.ListDataField_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema.Calculator;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.factory.DoubleParentFactory;
+import com.ntankard.javaObjectDatabase.database.Database;
+import com.ntankard.javaObjectDatabase.database.ParameterMap;
 
 import java.util.List;
 
-import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createMultiParentList;
+import static com.ntankard.budgetTracking.dataBase.core.pool.category.SolidCategory.SolidCategory_Taxable;
 import static com.ntankard.budgetTracking.dataBase.core.pool.fundEvent.TaxFundEvent.TaxFundEvent_Percentage;
 import static com.ntankard.budgetTracking.dataBase.core.transfer.HalfTransfer.HalfTransfer_Currency;
 import static com.ntankard.budgetTracking.dataBase.core.transfer.HalfTransfer.HalfTransfer_Value;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createMultiParentList;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createStaticObjectDataCore;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSharedStepSourceChain;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 
 @ParameterMap(shouldSave = false)
 public class TaxRePayFundTransfer extends RePayFundTransfer {
@@ -63,9 +64,8 @@ public class TaxRePayFundTransfer extends RePayFundTransfer {
         // Source
         // TaxableCategory =============================================================================================
         dataObjectSchema.add(new DataField_Schema<>(TaxRePayFundTransfer_TaxableCategory, Category.class));
-        dataObjectSchema.get(TaxRePayFundTransfer_TaxableCategory).setDataCore_schema(
-                new Static_DataCore_Schema<>(dataField ->
-                        dataField.getContainer().getTrackingDatabase().getSpecialValue(SolidCategory.class, SolidCategory.TAXABLE)));
+        dataObjectSchema.<SolidCategory>get(TaxRePayFundTransfer_TaxableCategory).setDataCore_schema(
+                createStaticObjectDataCore(SolidCategory.class, SolidCategory_Taxable));
         // TaxableSet ==================================================================================================
         dataObjectSchema.add(new ListDataField_Schema<>(TaxRePayFundTransfer_TaxableSet, HalfTransfer.HalfTransferList.class));
         dataObjectSchema.<List<HalfTransfer>>get(TaxRePayFundTransfer_TaxableSet).setDataCore_schema(
@@ -84,7 +84,7 @@ public class TaxRePayFundTransfer extends RePayFundTransfer {
                             }
                             return -Currency.round(sum);
                         }
-                        , Source_Factory.makeSharedStepSourceChain(
+                        , makeSharedStepSourceChain(
                         TaxRePayFundTransfer_TaxableSet,
                         HalfTransfer_Value,
                         HalfTransfer_Currency
@@ -99,8 +99,8 @@ public class TaxRePayFundTransfer extends RePayFundTransfer {
                             }
                             return Currency.round(container.getTaxableAmount() * taxFundEvent.getPercentage());
                         }
-                        , new End_Source_Schema<>(TaxRePayFundTransfer_TaxableAmount)
-                        , Source_Factory.makeSourceChain(Transfer_Source, TaxFundEvent_Percentage)));
+                        , makeSourceChain(TaxRePayFundTransfer_TaxableAmount)
+                        , makeSourceChain(Transfer_Source, TaxFundEvent_Percentage)));
         //==============================================================================================================
         // Currency
         // Destination
@@ -117,16 +117,15 @@ public class TaxRePayFundTransfer extends RePayFundTransfer {
     /**
      * Constructor
      */
-    public TaxRePayFundTransfer(Database database) {
-        super(database);
+    public TaxRePayFundTransfer(Database database, Object... args) {
+        super(database, args);
     }
 
     /**
      * Constructor
      */
     public TaxRePayFundTransfer(Period period, FundEvent source, Currency currency) {
-        this(period.getTrackingDatabase());
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(period.getTrackingDatabase()
                 , Transfer_Period, period
                 , Transfer_Source, source
                 , Transfer_Currency, currency

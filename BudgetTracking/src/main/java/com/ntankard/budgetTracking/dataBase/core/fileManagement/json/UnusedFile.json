@@ -1,8 +1,7 @@
 {
-  "extends": "DataObject",
+  "extends": "Displayable_DataObject",
   "implements": "FileInterface",
-  "extendsSchema": "Displayable_DataObject",
-  "customToString" : "getContainerPath() + \"//\" + getFileName()",
+  "customToString": "getContainerPath() + \"//\" + getFileName()",
   "fields": [
     {
       "name": "FileName",
@@ -16,12 +15,13 @@
       "name": "FullPath",
       "type": "String",
       "dataCore": {
-        "type": "Derived",
-        "codeLine": "container.getTrackingDatabase().getFilesPath() + \"\\\\\" + container.getContainerPath() + \"\\\\\" + container.getFileName()",
-        "sources": [
-          "makeSourceChain(UnusedFile_ContainerPath)",
-          "makeSourceChain(UnusedFile_FileName)"
-        ]
+        "derived": {
+          "codeLine": "container.getTrackingDatabase().getFilesPath() + \"\\\\\" + container.getContainerPath() + \"\\\\\" + container.getFileName()",
+          "sources": [
+            "makeSourceChain(UnusedFile_ContainerPath)",
+            "makeSourceChain(UnusedFile_FileName)"
+          ]
+        }
       }
     }
   ]

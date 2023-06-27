@@ -1,14 +1,15 @@
 package com.ntankard.budgetTracking.dataBase.core.baseObject;
 
 import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
-import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
 
-public abstract class NamedDataObject extends DataObject {
+public abstract class NamedDataObject extends Displayable_DataObject {
 
-    public static final String NamedDataObject_Name = "getName";
+    private static final String NamedDataObject_Prefix = "NamedDataObject_";
+
+    public static final String NamedDataObject_Name = NamedDataObject_Prefix + "Name";
 
     /**
      * Get all the fields for this object
@@ -30,8 +31,8 @@ public abstract class NamedDataObject extends DataObject {
     /**
      * Constructor
      */
-    public NamedDataObject(Database database) {
-        super(database);
+    public NamedDataObject(Database database, Object... args) {
+        super(database, args);
     }
 
     //------------------------------------------------------------------------------------------------------------------

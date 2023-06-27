@@ -5,11 +5,11 @@ import com.ntankard.budgetTracking.dataBase.core.period.Period;
 import com.ntankard.budgetTracking.dataBase.core.pool.Pool;
 import com.ntankard.budgetTracking.dataBase.core.transfer.HalfTransfer;
 import com.ntankard.budgetTracking.dataBase.core.transfer.Transfer;
-import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.budgetTracking.dataBase.interfaces.set.extended.sum.PeriodPool_SumSet;
 import com.ntankard.budgetTracking.dataBase.interfaces.set.filter.TransferDestination_HalfTransfer_Filter;
 import com.ntankard.budgetTracking.dataBase.interfaces.set.filter.TransferType_HalfTransfer_Filter;
 import com.ntankard.budgetTracking.display.dataObjectPanels.periodSummary.modelData.ModelData_Columns;
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.javaObjectDatabase.util.set.TwoParent_Children_Set;
 
 public abstract class DataRows<P extends Pool> {

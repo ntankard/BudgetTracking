@@ -1,24 +1,25 @@
 package com.ntankard.budgetTracking.dataBase.core.transfer;
 
-import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
-import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.End_Source_Schema;
-import com.ntankard.javaObjectDatabase.database.Database;
-import com.ntankard.budgetTracking.dataBase.core.baseObject.interfaces.CurrencyBound;
 import com.ntankard.budgetTracking.dataBase.core.Currency;
+import com.ntankard.budgetTracking.dataBase.core.baseObject.interfaces.CurrencyBound;
 import com.ntankard.budgetTracking.dataBase.core.period.Period;
 import com.ntankard.budgetTracking.dataBase.core.pool.Bank;
 import com.ntankard.budgetTracking.dataBase.core.pool.Pool;
-import com.ntankard.javaObjectDatabase.dataObject.DataObject;
+import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
+import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.javaObjectDatabase.util.set.Single_OneParent_Children_Set;
 
 import java.util.List;
 
 import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.DataType.CURRENCY;
 import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.INFO_DISPLAY;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createDirectDerivedDataCore;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 
 public abstract class Transfer extends DataObject implements CurrencyBound {
 
@@ -38,6 +39,9 @@ public abstract class Transfer extends DataObject implements CurrencyBound {
 
     public static final String Transfer_SourcePeriodGet = "getSourcePeriodGet";
     public static final String Transfer_DestinationPeriodGet = "getDestinationPeriodGet";
+
+    public static final String Transfer_SourceValueGet = "getSourceValueGet";
+    public static final String Transfer_DestinationValueGet = "getDestinationValueGet";
 
     /**
      * Get all the fields for this object
@@ -71,20 +75,31 @@ public abstract class Transfer extends DataObject implements CurrencyBound {
         dataObjectSchema.<Currency>get(Transfer_SourceCurrencyGet).setDataCore_schema(
                 new Derived_DataCore_Schema<>
                         (container -> ((Transfer) container).getCurrency()
-                                , new End_Source_Schema<>(Transfer_Currency)));
+                                , makeSourceChain(Transfer_Currency)));
         // DestinationCurrencyGet  =====================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Transfer_DestinationCurrencyGet, Currency.class));
         dataObjectSchema.get(Transfer_DestinationCurrencyGet).setTellParent(false);
-        // SourcePeriodGet =================================================================================================
+        // SourcePeriodGet =============================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Transfer_SourcePeriodGet, Period.class));
         dataObjectSchema.get(Transfer_SourcePeriodGet).setTellParent(false);
-        dataObjectSchema.<Period>get(Transfer_SourcePeriodGet).setDataCore_schema(
-                new Derived_DataCore_Schema<>
-                        (container -> ((Transfer) container).getPeriod()
-                                , new End_Source_Schema<>(Transfer_Period)));
-        // DestinationPeriodGet =================================================================================================
+        dataObjectSchema.<Period>get(Transfer_SourcePeriodGet).setDataCore_schema(createDirectDerivedDataCore(Transfer_Period));
+        // DestinationPeriodGet ========================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Transfer_DestinationPeriodGet, Period.class));
         dataObjectSchema.get(Transfer_DestinationPeriodGet).setTellParent(false);
+        // SourceValueGet ==============================================================================================
+        dataObjectSchema.add(new DataField_Schema<>(Transfer_SourceValueGet, Double.class));
+        dataObjectSchema.get(Transfer_SourceValueGet).setTellParent(false);
+        dataObjectSchema.<Double>get(Transfer_SourceValueGet).setDataCore_schema(
+                new Derived_DataCore_Schema<>
+                        (container -> -((Transfer) container).getValue()
+                                , makeSourceChain(Transfer_Value)));
+        // DestinationValueGet ========================================================================================
+        dataObjectSchema.add(new DataField_Schema<>(Transfer_DestinationValueGet, Double.class));
+        dataObjectSchema.get(Transfer_DestinationValueGet).setTellParent(false);
+        dataObjectSchema.<Double>get(Transfer_DestinationValueGet).setDataCore_schema(
+                new Derived_DataCore_Schema<>
+                        (container -> ((Transfer) container).getValue()
+                                , makeSourceChain(Transfer_Value)));
         //==============================================================================================================
         // Parents
         // Children
@@ -95,8 +110,8 @@ public abstract class Transfer extends DataObject implements CurrencyBound {
     /**
      * Constructor
      */
-    public Transfer(Database database) {
-        super(database);
+    public Transfer(Database database, Object... args) {
+        super(database, args);
     }
 
     /**
@@ -167,21 +182,11 @@ public abstract class Transfer extends DataObject implements CurrencyBound {
         return get(Transfer_SourcePeriodGet);
     }
 
-    //------------------------------------------------------------------------------------------------------------------
-    //############################################# HalfTransfer Interface #############################################
-    //------------------------------------------------------------------------------------------------------------------
+    public Double getSourceValueGet() {
+        return get(Transfer_SourceValueGet);
+    }
 
-    /**
-     * Get the value for this half of the transaction
-     *
-     * @param isSource Get the source? Otherwise get the destination
-     * @return The value this side should use
-     */
-    protected Double getValue(boolean isSource) {
-        if (isSource) {
-            return -getValue();
-        } else {
-            return getValue();
-        }
+    public Double getDestinationValueGet() {
+        return get(Transfer_DestinationValueGet);
     }
 }

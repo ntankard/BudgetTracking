@@ -45,17 +45,15 @@ public class TransactionPeriod extends DataObject implements Ordered {
     /**
      * Constructor
      */
-    public TransactionPeriod(Database database) {
-        super(database);
+    public TransactionPeriod(Database database, Object... args) {
+        super(database, args);
     }
 
     /**
      * Constructor
      */
     public TransactionPeriod(Database database, Integer year, Integer month) {
-        super(database);
-
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(database
                 , TransactionPeriod_Year, year
                 , TransactionPeriod_Month, month
         );
@@ -65,9 +63,7 @@ public class TransactionPeriod extends DataObject implements Ordered {
      * Constructor
      */
     public TransactionPeriod(Database database, Date date) {
-        super(database);
-
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(database
                 , TransactionPeriod_Year, date.getYear() - 100
                 , TransactionPeriod_Month, date.getMonth() + 1
         );
@@ -93,11 +89,11 @@ public class TransactionPeriod extends DataObject implements Ordered {
         return getYear() * 20 + getMonth();
     }
 
-    public static String getNameString(Integer year, Integer month){
-        return  year + "-" + String.format("%02d" , month);
+    public static String getNameString(Integer year, Integer month) {
+        return year + "-" + String.format("%02d", month);
     }
 
-    public static String getNameString(Date date){
+    public static String getNameString(Date date) {
         return TransactionPeriod.getNameString(date.getYear() - 100, date.getMonth() + 1);
     }
 

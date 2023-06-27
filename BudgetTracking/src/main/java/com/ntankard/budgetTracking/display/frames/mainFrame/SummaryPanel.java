@@ -1,15 +1,15 @@
 package com.ntankard.budgetTracking.display.frames.mainFrame;
 
-import com.ntankard.dynamicGUI.gui.util.update.Updatable;
-import com.ntankard.dynamicGUI.gui.util.update.UpdatableJPanel;
 import com.ntankard.budgetTracking.dataBase.core.period.ExistingPeriod;
 import com.ntankard.budgetTracking.dataBase.core.period.Period;
-import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.budgetTracking.dataBase.interfaces.summary.Period_Summary;
 import com.ntankard.budgetTracking.dataBase.interfaces.summary.pool.Bank_Summary;
 import com.ntankard.budgetTracking.dataBase.interfaces.summary.pool.Category_Summary;
 import com.ntankard.budgetTracking.dataBase.interfaces.summary.pool.FundEvent_Summary;
 import com.ntankard.budgetTracking.display.util.panels.DataObject_VerbosityDisplayList;
+import com.ntankard.dynamicGUI.gui.util.update.Updatable;
+import com.ntankard.dynamicGUI.gui.util.update.UpdatableJPanel;
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.javaObjectDatabase.util.set.Full_Set;
 import com.ntankard.javaObjectDatabase.util.set.OneParent_Children_Set;
 

@@ -32,17 +32,15 @@ public class GroupRegex extends DataObject {
     /**
      * Constructor
      */
-    public GroupRegex(Database database) {
-        super(database);
+    public GroupRegex(Database database, Object... args) {
+        super(database, args);
     }
 
     /**
      * Constructor
      */
     public GroupRegex(BankAccount bankAccount, String regex, String name) {
-        super(bankAccount.getTrackingDatabase());
-
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(bankAccount.getTrackingDatabase()
                 , GroupRegex_BankAccount, bankAccount
                 , GroupRegex_Regex, regex
                 , GroupRegex_Name, name

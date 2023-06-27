@@ -1,12 +1,11 @@
 package com.ntankard.budgetTracking.dataBase.core.recurringPayment;
 
-import com.ntankard.javaObjectDatabase.database.Database;
-import com.ntankard.javaObjectDatabase.database.Database_Schema;
 import com.ntankard.budgetTracking.dataBase.core.period.ExistingPeriod;
 import com.ntankard.budgetTracking.dataBase.core.pool.Bank;
 import com.ntankard.budgetTracking.dataBase.core.pool.category.SolidCategory;
 import com.ntankard.budgetTracking.dataBase.core.transfer.bank.RecurringBankTransfer;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.database.Database;
 
 public class FixedRecurringPayment extends RecurringPayment {
 
@@ -40,16 +39,15 @@ public class FixedRecurringPayment extends RecurringPayment {
     /**
      * Constructor
      */
-    public FixedRecurringPayment(Database database) {
-        super(database);
+    public FixedRecurringPayment(Database database, Object... args) {
+        super(database, args);
     }
 
     /**
      * Constructor
      */
     public FixedRecurringPayment(String name, Double value, ExistingPeriod start, Bank bank, SolidCategory solidCategory, Integer duration) {
-        this(solidCategory.getTrackingDatabase());
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(solidCategory.getTrackingDatabase()
                 , NamedDataObject_Name, name
                 , RecurringPayment_Value, value
                 , RecurringPayment_Start, start

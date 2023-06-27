@@ -1,7 +1,6 @@
 {
-  "extends": "DataObject",
-  "extendsSchema": "Displayable_DataObject",
-  "customToString" : "getPeriod() + \"-\" + getBank()",
+  "extends": "Displayable_DataObject",
+  "customToString": "getPeriod() + \"-\" + getBank()",
   "fields": [
     {
       "name": "Period",

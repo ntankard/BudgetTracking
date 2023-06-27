@@ -1,19 +1,18 @@
 package com.ntankard.budgetTracking.dataBase.core.pool;
 
-import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
-import com.ntankard.javaObjectDatabase.database.Database;
-import com.ntankard.budgetTracking.dataBase.core.baseObject.interfaces.CurrencyBound;
 import com.ntankard.budgetTracking.dataBase.core.Currency;
 import com.ntankard.budgetTracking.dataBase.core.StatementEnd;
+import com.ntankard.budgetTracking.dataBase.core.baseObject.interfaces.CurrencyBound;
 import com.ntankard.budgetTracking.dataBase.interfaces.summary.pool.Bank_Summary;
+import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
-import com.ntankard.javaObjectDatabase.dataObject.interfaces.HasDefault;
 import com.ntankard.javaObjectDatabase.dataObject.interfaces.Ordered;
+import com.ntankard.javaObjectDatabase.database.Database;
 
 import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.INFO_DISPLAY;
 
-public class Bank extends Pool implements CurrencyBound, Ordered, HasDefault {
+public class Bank extends Pool implements CurrencyBound, Ordered {
 
     //------------------------------------------------------------------------------------------------------------------
     //################################################### Constructor ##################################################
@@ -44,6 +43,7 @@ public class Bank extends Pool implements CurrencyBound, Ordered, HasDefault {
         // Default ========================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Bank_Default, Boolean.class));
         dataObjectSchema.get(Bank_Default).getProperty(Display_Properties.class).setVerbosityLevel(INFO_DISPLAY);
+        dataObjectSchema.get(Bank_Default).setDefaultFlag(true);
         // Order ========================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Bank_Order, Integer.class));
         dataObjectSchema.get(Bank_Order).getProperty(Display_Properties.class).setVerbosityLevel(INFO_DISPLAY);
@@ -57,8 +57,8 @@ public class Bank extends Pool implements CurrencyBound, Ordered, HasDefault {
     /**
      * Constructor
      */
-    public Bank(Database database) {
-        super(database);
+    public Bank(Database database, Object... args) {
+        super(database, args);
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -74,7 +74,6 @@ public class Bank extends Pool implements CurrencyBound, Ordered, HasDefault {
         return get(Bank_Start);
     }
 
-    @Override
     public Boolean isDefault() {
         return get(Bank_Default);
     }

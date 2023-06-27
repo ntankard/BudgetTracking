@@ -30,8 +30,7 @@ public class Regex_TransactionGroup extends TransactionGroup {
      * Constructor
      */
     public Regex_TransactionGroup(GroupRegex groupRegex, StatementFolder statementFolder, TransactionPeriod transactionPeriod) {
-        super(statementFolder.getTrackingDatabase());
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(statementFolder.getTrackingDatabase()
                 , TransactionGroup_Grouping, groupRegex
                 , TransactionGroup_StatementFolder, statementFolder
                 , TransactionGroup_TransactionPeriod, transactionPeriod

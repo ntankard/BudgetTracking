@@ -66,22 +66,15 @@ public class Transaction extends DataObject implements Ordered {
     /**
      * Constructor
      */
-    public Transaction(StatementFolder statementFolder, TransactionPeriod transactionPeriod, Date date, String description, Double value, String[] line) {
-        super(statementFolder.getTrackingDatabase());
-
-        StringBuilder concat = new StringBuilder();
-        for (String part : line) {
-            concat.append(",").append(part);
-        }
-
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+    public Transaction(StatementFolder statementFolder, TransactionPeriod transactionPeriod, Date date, String description, Double value, String line) {
+        super(statementFolder.getTrackingDatabase()
                 , Transaction_StatementFolder, statementFolder
                 , Transaction_TransactionPeriod, transactionPeriod
                 , Transaction_Date, date
                 , Transaction_Description, description
                 , Transaction_Value, value
                 , Transaction_Line, line
-                , Transaction_RawLine, concat.toString()
+                , Transaction_RawLine, line
                 , Transaction_TransactionGroup, null
         );
     }

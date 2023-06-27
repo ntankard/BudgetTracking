@@ -4,11 +4,10 @@ import com.ntankard.budgetTracking.dataBase.core.period.ExistingPeriod;
 import com.ntankard.budgetTracking.dataBase.core.pool.Bank;
 import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
-import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
 
-public class StatementFolder extends DataObject {
+public class StatementFolder extends Displayable_DataObject {
 
     private static final String StatementFolder_Prefix = "StatementFolder_";
 
@@ -34,16 +33,15 @@ public class StatementFolder extends DataObject {
     /**
      * Constructor
      */
-    public StatementFolder(Database database) {
-        super(database);
+    public StatementFolder(Database database, Object... args) {
+        super(database, args);
     }
 
     /**
      * Constructor
      */
     public StatementFolder(ExistingPeriod period, Bank bank, TranslationTypes translationTypes) {
-        this(period.getTrackingDatabase());
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(period.getTrackingDatabase()
                 , StatementFolder_Period, period
                 , StatementFolder_Bank, bank
                 , StatementFolder_TranslationTypes, translationTypes

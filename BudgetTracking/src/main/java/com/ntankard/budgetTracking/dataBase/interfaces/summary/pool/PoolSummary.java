@@ -1,33 +1,34 @@
 package com.ntankard.budgetTracking.dataBase.interfaces.summary.pool;
 
-import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
-import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema.Calculator;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.End_Source_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
-import com.ntankard.javaObjectDatabase.database.Database;
-import com.ntankard.budgetTracking.dataBase.core.baseObject.interfaces.CurrencyBound;
 import com.ntankard.budgetTracking.dataBase.core.Currency;
+import com.ntankard.budgetTracking.dataBase.core.baseObject.interfaces.CurrencyBound;
 import com.ntankard.budgetTracking.dataBase.core.period.Period;
 import com.ntankard.budgetTracking.dataBase.core.pool.Pool;
 import com.ntankard.budgetTracking.dataBase.core.transfer.HalfTransfer;
 import com.ntankard.budgetTracking.dataBase.core.transfer.Transfer;
 import com.ntankard.budgetTracking.dataBase.interfaces.set.filter.TransferDestination_HalfTransfer_Filter;
 import com.ntankard.budgetTracking.dataBase.interfaces.set.filter.TransferType_HalfTransfer_Filter;
-import com.ntankard.javaObjectDatabase.dataObject.DataObject;
+import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
+import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.dataField.ListDataField_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema.Calculator;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.database.Database;
 
 import java.util.List;
 
-import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.*;
-import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createMultiParentList;
 import static com.ntankard.budgetTracking.dataBase.core.transfer.HalfTransfer.HalfTransfer_Currency;
 import static com.ntankard.budgetTracking.dataBase.core.transfer.HalfTransfer.HalfTransfer_Value;
 import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.DataContext.ZERO_TARGET;
 import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.DataType.CURRENCY;
+import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.INFO_DISPLAY;
+import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.TRACE_DISPLAY;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createMultiParentList;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSharedStepSourceChain;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 
 public abstract class PoolSummary<PoolType extends Pool> extends DataObject implements CurrencyBound {
 
@@ -70,8 +71,8 @@ public abstract class PoolSummary<PoolType extends Pool> extends DataObject impl
                 new Derived_DataCore_Schema<>(
                         (Calculator<Double, PoolSummary<?>>) container ->
                                 container.getEnd() - container.getStart()
-                        , new End_Source_Schema(PoolSummary_Start)
-                        , new End_Source_Schema(PoolSummary_End)));
+                        , makeSourceChain(PoolSummary_Start)
+                        , makeSourceChain(PoolSummary_End)));
         // NetSet ======================================================================================================
         dataObjectSchema.add(new ListDataField_Schema<>(PoolSummary_TransferSet, HalfTransfer.HalfTransferList.class));
         dataObjectSchema.get(PoolSummary_TransferSet).getProperty(Display_Properties.class).setVerbosityLevel(TRACE_DISPLAY);
@@ -93,7 +94,7 @@ public abstract class PoolSummary<PoolType extends Pool> extends DataObject impl
                             }
                             return Currency.round(sum);
                         }
-                        , Source_Factory.makeSharedStepSourceChain(
+                        , makeSharedStepSourceChain(
                         PoolSummary_TransferSet,
                         HalfTransfer_Value,
                         HalfTransfer_Currency)));
@@ -108,8 +109,8 @@ public abstract class PoolSummary<PoolType extends Pool> extends DataObject impl
                 new Derived_DataCore_Schema<>(
                         (Calculator<Double, PoolSummary<?>>) container ->
                                 Currency.round(container.getTransferSum() - container.getNet())
-                        , new End_Source_Schema<>(PoolSummary_TransferSum)
-                        , new End_Source_Schema<>(PoolSummary_Net)));
+                        , makeSourceChain(PoolSummary_TransferSum)
+                        , makeSourceChain(PoolSummary_Net)));
         // Valid =======================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(PoolSummary_Valid, Boolean.class));
         dataObjectSchema.get(PoolSummary_Valid).getProperty(Display_Properties.class).setVerbosityLevel(INFO_DISPLAY);
@@ -122,8 +123,8 @@ public abstract class PoolSummary<PoolType extends Pool> extends DataObject impl
     /**
      * Constructor
      */
-    public PoolSummary(Database database) {
-        super(database);
+    public PoolSummary(Database database, Object... args) {
+        super(database, args);
     }
 
     //------------------------------------------------------------------------------------------------------------------

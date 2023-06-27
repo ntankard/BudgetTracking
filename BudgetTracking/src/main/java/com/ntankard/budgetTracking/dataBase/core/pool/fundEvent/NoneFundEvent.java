@@ -1,9 +1,8 @@
 package com.ntankard.budgetTracking.dataBase.core.pool.fundEvent;
 
-import com.ntankard.javaObjectDatabase.database.Database;
-import com.ntankard.javaObjectDatabase.database.Database_Schema;
 import com.ntankard.budgetTracking.dataBase.core.pool.category.SolidCategory;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.database.Database;
 
 public class NoneFundEvent extends FundEvent {
 
@@ -29,16 +28,15 @@ public class NoneFundEvent extends FundEvent {
     /**
      * Constructor
      */
-    public NoneFundEvent(Database database) {
-        super(database);
+    public NoneFundEvent(Database database, Object... args) {
+        super(database, args);
     }
 
     /**
      * Constructor
      */
     public NoneFundEvent(String name, SolidCategory solidCategory, Boolean isDone) {
-        this(solidCategory.getTrackingDatabase());
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(solidCategory.getTrackingDatabase()
                 , NamedDataObject_Name, name
                 , FundEvent_Category, solidCategory
                 , FundEvent_IsDone, isDone

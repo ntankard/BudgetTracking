@@ -1,13 +1,13 @@
 package com.ntankard.budgetTracking.display.frames.mainFrame.funds;
 
-import com.ntankard.dynamicGUI.gui.util.update.Updatable;
-import com.ntankard.dynamicGUI.gui.util.update.UpdatableJPanel;
-import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.budgetTracking.dataBase.core.pool.fundEvent.FixedPeriodFundEvent;
 import com.ntankard.budgetTracking.dataBase.core.pool.fundEvent.NoneFundEvent;
 import com.ntankard.budgetTracking.display.util.elementControllers.FixedPeriodFundEvent_ElementController;
 import com.ntankard.budgetTracking.display.util.elementControllers.NoneFundEvent_ElementController;
 import com.ntankard.budgetTracking.display.util.panels.DataObject_DisplayList;
+import com.ntankard.dynamicGUI.gui.util.update.Updatable;
+import com.ntankard.dynamicGUI.gui.util.update.UpdatableJPanel;
+import com.ntankard.javaObjectDatabase.database.Database;
 
 import javax.swing.*;
 import java.awt.*;

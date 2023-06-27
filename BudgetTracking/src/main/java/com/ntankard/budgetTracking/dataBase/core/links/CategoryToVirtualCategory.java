@@ -1,20 +1,19 @@
 package com.ntankard.budgetTracking.dataBase.core.links;
 
+import com.ntankard.budgetTracking.dataBase.core.CategorySet;
+import com.ntankard.budgetTracking.dataBase.core.pool.category.SolidCategory;
+import com.ntankard.budgetTracking.dataBase.core.pool.category.VirtualCategory;
 import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
 import com.ntankard.javaObjectDatabase.dataField.validator.shared.Multi_FieldValidator;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
-import com.ntankard.budgetTracking.dataBase.core.CategorySet;
-import com.ntankard.budgetTracking.dataBase.core.pool.category.SolidCategory;
-import com.ntankard.budgetTracking.dataBase.core.pool.category.VirtualCategory;
 
 import java.util.List;
 
 import static com.ntankard.budgetTracking.dataBase.core.pool.category.VirtualCategory.VirtualCategory_CategorySet;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createDirectDerivedDataCore;
 
 public class CategoryToVirtualCategory extends DataObject {
 
@@ -50,10 +49,7 @@ public class CategoryToVirtualCategory extends DataObject {
         dataObjectSchema.get(CategoryToVirtualCategory_SolidCategory).addValidator(sharedFilter.getValidator(CategoryToVirtualCategory_SolidCategory));
         // CategorySet =================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(CategoryToVirtualCategory_CategorySet, CategorySet.class));
-        dataObjectSchema.<CategorySet>get(CategoryToVirtualCategory_CategorySet).setDataCore_schema(
-                new Derived_DataCore_Schema<CategorySet, CategoryToVirtualCategory>
-                        (dataObject -> dataObject.getVirtualCategory().getCategorySet()
-                                , Source_Factory.makeSourceChain(CategoryToVirtualCategory_VirtualCategory, VirtualCategory_CategorySet)));
+        dataObjectSchema.<CategorySet>get(CategoryToVirtualCategory_CategorySet).setDataCore_schema(createDirectDerivedDataCore(CategoryToVirtualCategory_VirtualCategory, VirtualCategory_CategorySet));
         //==============================================================================================================
         // Parents
         // Children
@@ -64,16 +60,15 @@ public class CategoryToVirtualCategory extends DataObject {
     /**
      * Constructor
      */
-    public CategoryToVirtualCategory(Database database) {
-        super(database);
+    public CategoryToVirtualCategory(Database database, Object... args) {
+        super(database, args);
     }
 
     /**
      * Constructor
      */
     public CategoryToVirtualCategory(VirtualCategory virtualCategory, SolidCategory solidCategory) {
-        this(virtualCategory.getTrackingDatabase());
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(virtualCategory.getTrackingDatabase()
                 , CategoryToVirtualCategory_VirtualCategory, virtualCategory
                 , CategoryToVirtualCategory_SolidCategory, solidCategory
         );

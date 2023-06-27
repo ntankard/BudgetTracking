@@ -1,8 +1,8 @@
 package com.ntankard.dynamicGUI.coreObject;
 
 import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
-import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.javaObjectDatabase.database.Database_Schema;
@@ -15,7 +15,6 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import java.lang.reflect.Modifier;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Execution(ExecutionMode.CONCURRENT)
 class DataObjectSchemaTest {
@@ -243,8 +242,8 @@ class DataObjectSchemaTest {
         /**
          * Constructor
          */
-        public Valid_Abstract_DataObjectA(Database database) {
-            super(database);
+        public Valid_Abstract_DataObjectA(Database database, Object... args) {
+            super(database, args);
         }
     }
 

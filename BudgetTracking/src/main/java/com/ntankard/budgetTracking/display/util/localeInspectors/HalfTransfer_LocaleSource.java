@@ -1,7 +1,7 @@
 package com.ntankard.budgetTracking.display.util.localeInspectors;
 
-import com.ntankard.dynamicGUI.gui.util.decoder.CurrencyDecoder_NumberFormatSource;
 import com.ntankard.budgetTracking.dataBase.core.transfer.HalfTransfer;
+import com.ntankard.dynamicGUI.gui.util.decoder.CurrencyDecoder_NumberFormatSource;
 
 import java.text.NumberFormat;
 

@@ -1,21 +1,20 @@
 package com.ntankard.budgetTracking.dataBase.core;
 
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.End_Source_Schema;
-import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
-import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
-import com.ntankard.javaObjectDatabase.dataObject.interfaces.HasDefault;
-import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.budgetTracking.dataBase.core.baseObject.NamedDataObject;
+import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.database.Database;
 
 import java.text.NumberFormat;
 import java.util.Locale;
 
 import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.INFO_DISPLAY;
 import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.TRACE_DISPLAY;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 
-public class Currency extends NamedDataObject implements HasDefault {
+public class Currency extends NamedDataObject {
 
     /**
      * Round a number to a sensible value for a currency value
@@ -47,6 +46,7 @@ public class Currency extends NamedDataObject implements HasDefault {
         // Name
         // Default =====================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Currency_Default, Boolean.class));
+        dataObjectSchema.get(Currency_Default).setDefaultFlag(true);
         // ToPrimary ===================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(Currency_ToPrimary, Double.class));
         // Language ====================================================================================================
@@ -61,8 +61,8 @@ public class Currency extends NamedDataObject implements HasDefault {
         dataObjectSchema.<NumberFormat>get(Currency_NumberFormat).setDataCore_schema(
                 new Derived_DataCore_Schema<NumberFormat, Currency>
                         (dataObject -> NumberFormat.getCurrencyInstance(new Locale(dataObject.getLanguage(), dataObject.getCountry()))
-                                , new End_Source_Schema<>(Currency_Country)
-                                , new End_Source_Schema<>(Currency_Language)));
+                                , makeSourceChain(Currency_Country)
+                                , makeSourceChain(Currency_Language)));
         //==============================================================================================================
         // Parents
         // Children
@@ -73,15 +73,14 @@ public class Currency extends NamedDataObject implements HasDefault {
     /**
      * Constructor
      */
-    public Currency(Database database) {
-        super(database);
+    public Currency(Database database, Object... args) {
+        super(database, args);
     }
 
     //------------------------------------------------------------------------------------------------------------------
     //#################################################### Getters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    @Override
     public Boolean isDefault() {
         return get(Currency_Default);
     }

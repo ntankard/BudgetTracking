@@ -19,8 +19,7 @@ public class Single_TransactionGroup extends TransactionGroup {
      * Constructor
      */
     public Single_TransactionGroup(StatementFolder statementFolder, String name, TransactionPeriod transactionPeriod) {
-        super(statementFolder.getTrackingDatabase());
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(statementFolder.getTrackingDatabase()
                 , TransactionGroup_StatementFolder, statementFolder
                 , TransactionGroup_Name, name
                 , TransactionGroup_TransactionPeriod, transactionPeriod

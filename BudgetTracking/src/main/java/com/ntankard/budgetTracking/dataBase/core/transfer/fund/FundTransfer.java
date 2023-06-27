@@ -1,21 +1,20 @@
 package com.ntankard.budgetTracking.dataBase.core.transfer.fund;
 
-import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.End_Source_Schema;
-import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.budgetTracking.dataBase.core.Currency;
 import com.ntankard.budgetTracking.dataBase.core.period.Period;
-import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
-import com.ntankard.javaObjectDatabase.dataObject.DataObject;
-import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.budgetTracking.dataBase.core.pool.fundEvent.FundEvent;
 import com.ntankard.budgetTracking.dataBase.core.transfer.Transfer;
+import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
+import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.database.Database;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.ALWAYS_DISPLAY;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createDirectDerivedDataCore;
 
 public abstract class FundTransfer extends Transfer {
 
@@ -41,16 +40,10 @@ public abstract class FundTransfer extends Transfer {
         // Destination
         // SourceCurrencyGet
         // DestinationCurrencyGet ======================================================================================
-        dataObjectSchema.<Currency>get(Transfer_DestinationCurrencyGet).setDataCore_schema(
-                new Derived_DataCore_Schema<>
-                        (container -> ((Transfer) container).getCurrency()
-                                , new End_Source_Schema<>(Transfer_Currency)));
+        dataObjectSchema.<Currency>get(Transfer_DestinationCurrencyGet).setDataCore_schema(createDirectDerivedDataCore(Transfer_Currency));
         // SourcePeriodGet
         // DestinationPeriodGet ========================================================================================
-        dataObjectSchema.<Period>get(Transfer_DestinationPeriodGet).setDataCore_schema(
-                new Derived_DataCore_Schema<>
-                        (container -> ((Transfer) container).getPeriod()
-                                , new End_Source_Schema<>(Transfer_Period)));
+        dataObjectSchema.<Period>get(Transfer_DestinationPeriodGet).setDataCore_schema(createDirectDerivedDataCore(Transfer_Period));
         // Parents
         // Children
 
@@ -60,8 +53,8 @@ public abstract class FundTransfer extends Transfer {
     /**
      * Constructor
      */
-    public FundTransfer(Database database) {
-        super(database);
+    public FundTransfer(Database database, Object... args) {
+        super(database, args);
     }
 
     /**

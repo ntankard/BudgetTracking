@@ -1,14 +1,12 @@
 {
-  "extends": "DataObject",
-  "extendsSchema": "Displayable_DataObject",
+  "extends": "Displayable_DataObject",
   "abstract": true,
   "fields": [
     {
       "name": "Name",
       "type": "String",
       "editable": true,
-      "string_source" : true,
-      "use_get_name" : true
+      "string_source": true
     }
   ]
 }

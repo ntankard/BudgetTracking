@@ -1,7 +1,5 @@
 package com.ntankard.budgetTracking.dataBase.core.transfer.fund.rePay;
 
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
 import com.ntankard.budgetTracking.dataBase.core.Currency;
 import com.ntankard.budgetTracking.dataBase.core.period.ExistingPeriod;
 import com.ntankard.budgetTracking.dataBase.core.period.Period;
@@ -10,18 +8,20 @@ import com.ntankard.budgetTracking.dataBase.core.pool.fundEvent.FundEvent;
 import com.ntankard.budgetTracking.dataBase.core.pool.fundEvent.SavingsFundEvent;
 import com.ntankard.budgetTracking.dataBase.core.transfer.HalfTransfer;
 import com.ntankard.budgetTracking.dataBase.core.transfer.HalfTransfer.HalfTransferList;
-import com.ntankard.javaObjectDatabase.dataObject.factory.DoubleParentFactory;
 import com.ntankard.javaObjectDatabase.dataField.ListDataField_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
-import com.ntankard.javaObjectDatabase.database.ParameterMap;
+import com.ntankard.javaObjectDatabase.dataObject.factory.DoubleParentFactory;
 import com.ntankard.javaObjectDatabase.database.Database;
+import com.ntankard.javaObjectDatabase.database.ParameterMap;
 import com.ntankard.javaObjectDatabase.util.set.SetFilter;
 
 import java.util.List;
 
-import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createMultiParentList;
 import static com.ntankard.budgetTracking.dataBase.core.transfer.HalfTransfer.HalfTransfer_Currency;
 import static com.ntankard.budgetTracking.dataBase.core.transfer.HalfTransfer.HalfTransfer_Value;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createMultiParentList;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSharedStepSourceChain;
 
 @ParameterMap(shouldSave = false)
 public class SavingsRePayFundTransfer extends RePayFundTransfer {
@@ -84,7 +84,7 @@ public class SavingsRePayFundTransfer extends RePayFundTransfer {
                             }
                             return -Currency.round(sum);
                         }
-                        , Source_Factory.makeSharedStepSourceChain(
+                        , makeSharedStepSourceChain(
                         SavingsRePayFundTransfer_NonSavingsSet,
                         HalfTransfer_Value,
                         HalfTransfer_Currency
@@ -105,16 +105,15 @@ public class SavingsRePayFundTransfer extends RePayFundTransfer {
     /**
      * Constructor
      */
-    public SavingsRePayFundTransfer(Database database) {
-        super(database);
+    public SavingsRePayFundTransfer(Database database, Object... args) {
+        super(database, args);
     }
 
     /**
      * Constructor
      */
     public SavingsRePayFundTransfer(Period period, FundEvent source, Currency currency) {
-        this(period.getTrackingDatabase());
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(period.getTrackingDatabase()
                 , Transfer_Period, period
                 , Transfer_Source, source
                 , Transfer_Currency, currency

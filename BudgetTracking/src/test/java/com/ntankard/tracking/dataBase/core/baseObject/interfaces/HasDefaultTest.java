@@ -1,16 +1,15 @@
-package com.ntankard.budgetTracking.dataBase.core.baseObject.interfaces;
+package com.ntankard.tracking.dataBase.core.baseObject.interfaces;
 
-import com.ntankard.testUtil.DataAccessUntil;
-import com.ntankard.javaObjectDatabase.dataObject.interfaces.HasDefault;
+import com.ntankard.javaObjectDatabase.dataField.DataField;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.database.Database;
+import com.ntankard.testUtil.DataAccessUntil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Execution(ExecutionMode.CONCURRENT)
 class HasDefaultTest {
@@ -37,10 +36,21 @@ class HasDefaultTest {
      */
     @Test
     void validateDefault() {
-        for (Class<? extends DataObject> aClass : database.getDataObjectTypes()) {
-            if (HasDefault.class.isAssignableFrom(aClass)) {
-                assertNotNull(database.getDefault(aClass), "Core Database error. An object with a default value has no default set");
-                assertTrue(((HasDefault) database.getDefault(aClass)).isDefault(), "Core Database error. A non default object has been set as the default");
+        for (DataObject dataObject : database.get(DataObject.class)) {
+            boolean found = false;
+            for (DataField<?> field : dataObject.getFields()) {
+                if (field.getDataFieldSchema().isDefaultFlag()) {
+                    found = true;
+                    assertEquals(field.getDataFieldSchema().getIdentifierName(), dataObject.getSourceSchema().getDefaultFieldKey());
+                    if (dataObject.<Boolean>get(field.getDataFieldSchema().getIdentifierName())) {
+                        assertEquals(dataObject, dataObject.getTrackingDatabase().getDefault(dataObject.getClass()));
+                    } else {
+                        assertNotEquals(dataObject, dataObject.getTrackingDatabase().getDefault(dataObject.getClass()));
+                    }
+                }
+            }
+            if (!found) {
+                assertNull(dataObject.getSourceSchema().getDefaultFieldKey());
             }
         }
     }

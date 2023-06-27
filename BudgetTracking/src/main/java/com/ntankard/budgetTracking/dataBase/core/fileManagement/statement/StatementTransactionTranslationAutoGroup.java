@@ -4,11 +4,10 @@ import com.ntankard.budgetTracking.dataBase.core.pool.Bank;
 import com.ntankard.budgetTracking.dataBase.core.pool.Pool;
 import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
-import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.database.Database;
 
-public class StatementTransactionTranslationAutoGroup extends DataObject {
+public class StatementTransactionTranslationAutoGroup extends Displayable_DataObject {
 
     private static final String StatementTransactionTranslationAutoGroup_Prefix = "StatementTransactionTranslationAutoGroup_";
 
@@ -46,16 +45,15 @@ public class StatementTransactionTranslationAutoGroup extends DataObject {
     /**
      * Constructor
      */
-    public StatementTransactionTranslationAutoGroup(Database database) {
-        super(database);
+    public StatementTransactionTranslationAutoGroup(Database database, Object... args) {
+        super(database, args);
     }
 
     /**
      * Constructor
      */
     public StatementTransactionTranslationAutoGroup(Bank bank, Translation translation, Pool pool, Double multiply) {
-        this(bank.getTrackingDatabase());
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(bank.getTrackingDatabase()
                 , StatementTransactionTranslationAutoGroup_Bank, bank
                 , StatementTransactionTranslationAutoGroup_Translation, translation
                 , StatementTransactionTranslationAutoGroup_Pool, pool

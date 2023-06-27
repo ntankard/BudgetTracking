@@ -1,6 +1,5 @@
 {
-  "extends": "DataObject",
-  "extendsSchema": "Displayable_DataObject",
+  "extends": "Displayable_DataObject",
   "fields": [
     {
       "name": "Bank",

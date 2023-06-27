@@ -6,7 +6,10 @@ import com.ntankard.statementParser.dataBase.StatementInstanceLine;
 import com.ntankard.statementParser.dataBase.TransactionPeriod;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import static com.ntankard.javaObjectDatabase.util.FileUtil.readLines;
 
@@ -31,7 +34,11 @@ public class RakutenProcessor {
 
                     Double value = Double.parseDouble(valueString);
 
-                    toReturn.add(new StatementInstanceLine(statementInstance, transactionPeriod, date, description, value, line).add());
+                    StringBuilder concat = new StringBuilder();
+                    for (String part : line) {
+                        concat.append(",").append(part);
+                    }
+                    toReturn.add(new StatementInstanceLine(statementInstance, transactionPeriod, date, description, value, concat.toString()).add());
                     continue;
                 } catch (Exception ignored) {
                     if (!line[0].equals("\"\"")) {
@@ -42,7 +49,11 @@ public class RakutenProcessor {
                 System.out.println();
             }
 
-            new BlankLine(statementInstance, line).add();
+            StringBuilder concat = new StringBuilder();
+            for (String part : line) {
+                concat.append(",").append(part);
+            }
+            new BlankLine(statementInstance, line, concat.toString()).add();
         }
         return toReturn;
     }

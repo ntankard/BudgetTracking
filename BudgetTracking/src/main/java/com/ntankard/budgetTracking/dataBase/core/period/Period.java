@@ -1,13 +1,13 @@
 package com.ntankard.budgetTracking.dataBase.core.period;
 
-import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
-import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.budgetTracking.dataBase.interfaces.summary.Period_Summary;
 import com.ntankard.budgetTracking.dataBase.interfaces.summary.pool.Category_Summary;
 import com.ntankard.budgetTracking.dataBase.interfaces.summary.pool.FundEvent_Summary;
+import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.dataObject.interfaces.Ordered;
+import com.ntankard.javaObjectDatabase.database.Database;
 
 public abstract class Period extends DataObject implements Ordered {
 
@@ -36,8 +36,8 @@ public abstract class Period extends DataObject implements Ordered {
     /**
      * Constructor
      */
-    public Period(Database database) {
-        super(database);
+    public Period(Database database, Object... args) {
+        super(database, args);
     }
 
     //------------------------------------------------------------------------------------------------------------------

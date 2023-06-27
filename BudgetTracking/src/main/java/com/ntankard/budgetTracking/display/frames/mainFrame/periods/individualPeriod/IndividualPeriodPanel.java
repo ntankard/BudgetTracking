@@ -1,8 +1,8 @@
 package com.ntankard.budgetTracking.display.frames.mainFrame.periods.individualPeriod;
 
+import com.ntankard.budgetTracking.dataBase.core.period.Period;
 import com.ntankard.dynamicGUI.gui.util.update.Updatable;
 import com.ntankard.dynamicGUI.gui.util.update.UpdatableJPanel;
-import com.ntankard.budgetTracking.dataBase.core.period.Period;
 
 import javax.swing.*;
 import java.awt.*;
@@ -50,5 +50,14 @@ public class IndividualPeriodPanel extends UpdatableJPanel {
     public void update() {
         periodSummary_statementPanel.update();
         summaryPanel.update();
+    }
+
+    /**
+     * Get the core period this panel is based on
+     *
+     * @return The core period this panel is based on
+     */
+    public Period getCore() {
+        return core;
     }
 }

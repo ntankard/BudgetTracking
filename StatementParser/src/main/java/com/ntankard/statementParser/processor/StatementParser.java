@@ -6,7 +6,10 @@ import com.ntankard.statementParser.dataBase.transactionGroup.Regex_TransactionG
 import com.ntankard.statementParser.dataBase.transactionGroup.Single_TransactionGroup;
 import com.ntankard.statementParser.dataBase.transactionGroup.TransactionGroup;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 public class StatementParser {
@@ -98,7 +101,13 @@ public class StatementParser {
 
             for (StatementInstanceLine statementInstanceLine : instances) {
                 // if (!knowTransactions.containsKey(statementInstanceLine.getRawLine())) {
-                Transaction transaction = new Transaction(statementInstanceLine.getStatementInstance().getBankAccount(), statementInstanceLine.getTransactionPeriod(), statementInstanceLine.getDate(), statementInstanceLine.getDescription(), statementInstanceLine.getValue(), statementInstanceLine.getLine()).add();
+
+                StringBuilder concat = new StringBuilder();
+                for (String part : statementInstanceLine.getLine()) {
+                    concat.append(",").append(part);
+                }
+
+                Transaction transaction = new Transaction(statementInstanceLine.getStatementInstance().getBankAccount(), statementInstanceLine.getTransactionPeriod(), statementInstanceLine.getDate(), statementInstanceLine.getDescription(), statementInstanceLine.getValue(), concat.toString()).add();
                 //knowTransactions.put(transaction.getRawLine(), transaction);
                 transactions.add(transaction);
                 // }

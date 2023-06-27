@@ -1,13 +1,5 @@
 package com.ntankard.budgetTracking.dataBase.core.transfer.bank;
 
-import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.End_Source_Schema;
-import com.ntankard.javaObjectDatabase.dataField.validator.shared.NonEqual_Shared_FieldValidator;
-import com.ntankard.javaObjectDatabase.dataObject.DataObject;
-import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
-import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.budgetTracking.dataBase.core.Currency;
 import com.ntankard.budgetTracking.dataBase.core.period.Period;
 import com.ntankard.budgetTracking.dataBase.core.pool.Bank;
@@ -16,11 +8,19 @@ import com.ntankard.budgetTracking.dataBase.core.pool.category.Category;
 import com.ntankard.budgetTracking.dataBase.core.pool.category.SolidCategory;
 import com.ntankard.budgetTracking.dataBase.core.pool.fundEvent.FundEvent;
 import com.ntankard.budgetTracking.dataBase.core.transfer.Transfer;
+import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
+import com.ntankard.javaObjectDatabase.dataField.validator.shared.NonEqual_Shared_FieldValidator;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.database.Database;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.ntankard.budgetTracking.dataBase.core.pool.Bank.Bank_Currency;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createDirectDerivedDataCore;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 
 public abstract class BankTransfer extends Transfer {
 
@@ -56,10 +56,7 @@ public abstract class BankTransfer extends Transfer {
         // Value =======================================================================================================
         dataObjectSchema.get(Transfer_Value).setManualCanEdit(true);
         // Currency ====================================================================================================
-        dataObjectSchema.<Currency>get(Transfer_Currency).setDataCore_schema(
-                new Derived_DataCore_Schema<Currency, BankTransfer>
-                        (dataObject -> ((Bank) dataObject.getSource()).getCurrency()
-                                , Source_Factory.makeSourceChain(Transfer_Source, Bank_Currency)));
+        dataObjectSchema.<Currency>get(Transfer_Currency).setDataCore_schema(createDirectDerivedDataCore(Transfer_Source, Bank_Currency));
         // DestinationPeriod ===========================================================================================
         dataObjectSchema.add(Transfer_Currency, new DataField_Schema<>(BankTransfer_DestinationPeriod, Period.class, true));
         dataObjectSchema.get(BankTransfer_DestinationPeriod).setManualCanEdit(true);
@@ -76,7 +73,7 @@ public abstract class BankTransfer extends Transfer {
                         return (SolidCategory) container.getDestination();
                     }
                     return null;
-                }, new End_Source_Schema<>(Transfer_Destination)));
+                }, makeSourceChain(Transfer_Destination)));
         // Bank ========================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(BankTransfer_Bank, Bank.class, true));
         dataObjectSchema.get(BankTransfer_Bank).setTellParent(false);
@@ -89,7 +86,7 @@ public abstract class BankTransfer extends Transfer {
                         return (Bank) container.getDestination();
                     }
                     return null;
-                }, new End_Source_Schema<>((Transfer_Destination))));
+                }, makeSourceChain(Transfer_Destination)));
         // FundEvent ===================================================================================================
         dataObjectSchema.add(new DataField_Schema<>(BankTransfer_FundEvent, FundEvent.class, true));
         dataObjectSchema.get(BankTransfer_FundEvent).setTellParent(false);
@@ -102,7 +99,7 @@ public abstract class BankTransfer extends Transfer {
                         return (FundEvent) container.getDestination();
                     }
                     return null;
-                }, new End_Source_Schema<>((Transfer_Destination))));
+                }, makeSourceChain(Transfer_Destination)));
         // Destination =================================================================================================
         dataObjectSchema.get(Transfer_Destination).setManualCanEdit(true);
         dataObjectSchema.get(Transfer_Destination).addValidator(pool_sharedFilter.getValidator(Transfer_Destination));
@@ -122,16 +119,15 @@ public abstract class BankTransfer extends Transfer {
     /**
      * Constructor
      */
-    public BankTransfer(Database database) {
-        super(database);
+    public BankTransfer(Database database, Object... args) {
+        super(database, args);
     }
 
     /**
      * @inheritDoc
      */
-    @SuppressWarnings({"rawtypes", "unchecked"})
     @Override
-    protected void remove_impl() {
+    public void remove() {
         super.remove_impl();
     }
 
@@ -188,18 +184,5 @@ public abstract class BankTransfer extends Transfer {
 
     protected void setDestination(Pool destination) {
         set(Transfer_Destination, destination);
-    }
-
-    //------------------------------------------------------------------------------------------------------------------
-    //############################################# HalfTransfer Interface #############################################
-    //------------------------------------------------------------------------------------------------------------------
-
-    @Override
-    protected Double getValue(boolean isSource) {
-        if (isSource) {
-            return -getValue();
-        } else {
-            return getValue();
-        }
     }
 }

@@ -1,9 +1,9 @@
 package com.ntankard.budgetTracking.dataBase.core.baseObject.interfaces;
 
-import com.ntankard.testUtil.DataAccessUntil;
-import com.ntankard.javaObjectDatabase.dataObject.interfaces.Ordered;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject;
+import com.ntankard.javaObjectDatabase.dataObject.interfaces.Ordered;
 import com.ntankard.javaObjectDatabase.database.Database;
+import com.ntankard.testUtil.DataAccessUntil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -12,7 +12,8 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @Execution(ExecutionMode.CONCURRENT)
 public class OrderedTest {

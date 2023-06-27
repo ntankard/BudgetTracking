@@ -1,22 +1,24 @@
 package com.ntankard.budgetTracking.dataBase.core.transfer.bank;
 
-import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema.Calculator;
-import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.end.End_Source_Schema;
-import com.ntankard.javaObjectDatabase.dataObject.DataObject;
-import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.budgetTracking.dataBase.core.Currency;
 import com.ntankard.budgetTracking.dataBase.core.period.Period;
 import com.ntankard.budgetTracking.dataBase.core.pool.Bank;
 import com.ntankard.budgetTracking.dataBase.core.pool.Pool;
-import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.budgetTracking.dataBase.core.transfer.Transfer;
+import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
+import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema.Calculator;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject;
+import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
+import com.ntankard.javaObjectDatabase.database.Database;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties.DataType.CURRENCY;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factory.createDirectDerivedDataCore;
+import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 
 public class IntraCurrencyBankTransfer extends BankTransfer {
 
@@ -57,13 +59,10 @@ public class IntraCurrencyBankTransfer extends BankTransfer {
                     BankTransfer bankTransfer = ((BankTransfer) container);
                     return ((Bank) bankTransfer.getDestination()).getCurrency();
                 }
-                        , new End_Source_Schema<>((Transfer_Destination))));
+                        , makeSourceChain(Transfer_Destination)));
         // SourceCurrencyGet
         // DestinationCurrencyGet ======================================================================================
-        dataObjectSchema.<Currency>get(Transfer_DestinationCurrencyGet).setDataCore_schema(
-                new Derived_DataCore_Schema<>((Calculator<Currency, IntraCurrencyBankTransfer>) container ->
-                        container.getDestinationCurrency()
-                        , new End_Source_Schema<>((BankTransfer_DestinationCurrency))));
+        dataObjectSchema.<Currency>get(Transfer_DestinationCurrencyGet).setDataCore_schema(createDirectDerivedDataCore(BankTransfer_DestinationCurrency));
         // SourcePeriodGet
         // DestinationPeriodGet ========================================================================================
         dataObjectSchema.<Period>get(Transfer_DestinationPeriodGet).setDataCore_schema(
@@ -74,8 +73,25 @@ public class IntraCurrencyBankTransfer extends BankTransfer {
                         return container.getPeriod();
                     }
                 }
-                        , new End_Source_Schema<>((Transfer_Period))
-                        , new End_Source_Schema<>((BankTransfer_DestinationPeriod))));
+                        , makeSourceChain(Transfer_Period)
+                        , makeSourceChain(BankTransfer_DestinationPeriod)));
+        // SourceValueGet ==============================================================================================
+        dataObjectSchema.<Double>get(Transfer_SourceValueGet).setDataCore_schema(
+                new Derived_DataCore_Schema<>
+                        (container -> -((Transfer) container).getValue()
+                                , makeSourceChain(Transfer_Value)));
+        // DestinationValueGet ========================================================================================
+        dataObjectSchema.<Double>get(Transfer_DestinationValueGet).setDataCore_schema(
+                new Derived_DataCore_Schema<>((Calculator<Double, IntraCurrencyBankTransfer>) container -> {
+                    if (container.getDestinationValue() != null) {
+                        return container.getDestinationValue();
+                    } else {
+                        return container.getValue();
+                    }
+                }
+                        , makeSourceChain(Transfer_Value)
+                        , makeSourceChain(BankTransfer_DestinationValue)));
+        //==============================================================================================================
         // Parents
         // Children
 
@@ -120,8 +136,8 @@ public class IntraCurrencyBankTransfer extends BankTransfer {
     /**
      * Constructor
      */
-    public IntraCurrencyBankTransfer(Database database) {
-        super(database);
+    public IntraCurrencyBankTransfer(Database database, Object... args) {
+        super(database, args);
     }
 
     /**
@@ -130,8 +146,7 @@ public class IntraCurrencyBankTransfer extends BankTransfer {
     public IntraCurrencyBankTransfer(String description,
                                      Period period, Bank source, Double value,
                                      Period destinationPeriod, Pool destination, Double destinationValue) {
-        this(period.getTrackingDatabase());
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(period.getTrackingDatabase()
                 , Transfer_Description, description
                 , Transfer_Period, period
                 , Transfer_Source, source
@@ -160,22 +175,5 @@ public class IntraCurrencyBankTransfer extends BankTransfer {
 
     public void setDestinationValue(Double destinationValue) {
         set(BankTransfer_DestinationValue, destinationValue);
-    }
-
-    //------------------------------------------------------------------------------------------------------------------
-    //############################################# HalfTransfer Interface #############################################
-    //------------------------------------------------------------------------------------------------------------------
-
-    @Override
-    protected Double getValue(boolean isSource) {
-        if (isSource) {
-            return -getValue();
-        } else {
-            if (getDestinationValue() != null) {
-                return getDestinationValue();
-            } else {
-                return getValue();
-            }
-        }
     }
 }

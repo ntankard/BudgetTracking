@@ -88,8 +88,8 @@ public abstract class TransactionGroup extends DataObject implements Ordered {
     /**
      * Constructor
      */
-    public TransactionGroup(Database database) {
-        super(database);
+    public TransactionGroup(Database database, Object... args) {
+        super(database, args);
     }
 
     //------------------------------------------------------------------------------------------------------------------

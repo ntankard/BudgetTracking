@@ -1,10 +1,10 @@
 package com.ntankard.budgetTracking.display.dataObjectPanels.periodSummary;
 
+import com.ntankard.budgetTracking.dataBase.core.period.Period;
+import com.ntankard.budgetTracking.dataBase.core.pool.Pool;
 import com.ntankard.dynamicGUI.gui.util.table.TableColumnAdjuster;
 import com.ntankard.dynamicGUI.gui.util.update.Updatable;
 import com.ntankard.dynamicGUI.gui.util.update.UpdatableJPanel;
-import com.ntankard.budgetTracking.dataBase.core.period.Period;
-import com.ntankard.budgetTracking.dataBase.core.pool.Pool;
 
 import javax.swing.*;
 import java.awt.*;

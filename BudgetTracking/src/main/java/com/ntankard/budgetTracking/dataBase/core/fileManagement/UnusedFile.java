@@ -3,14 +3,13 @@ package com.ntankard.budgetTracking.dataBase.core.fileManagement;
 import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
-import com.ntankard.javaObjectDatabase.dataObject.DataObject;
 import com.ntankard.javaObjectDatabase.dataObject.DataObject_Schema;
 import com.ntankard.javaObjectDatabase.dataObject.interfaces.FileInterface;
 import com.ntankard.javaObjectDatabase.database.Database;
 
 import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 
-public class UnusedFile extends DataObject implements FileInterface {
+public class UnusedFile extends Displayable_DataObject implements FileInterface {
 
     private static final String UnusedFile_Prefix = "UnusedFile_";
 
@@ -44,16 +43,15 @@ public class UnusedFile extends DataObject implements FileInterface {
     /**
      * Constructor
      */
-    public UnusedFile(Database database) {
-        super(database);
+    public UnusedFile(Database database, Object... args) {
+        super(database, args);
     }
 
     /**
      * Constructor
      */
     public UnusedFile(Database database, String fileName, String containerPath) {
-        this(database);
-        setAllValues(DataObject_Id, getTrackingDatabase().getNextId()
+        super(database
                 , UnusedFile_FileName, fileName
                 , UnusedFile_ContainerPath, containerPath
         );

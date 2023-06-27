@@ -1,12 +1,12 @@
 package com.ntankard.budgetTracking.dataBase.interfaces.set.extended.sum;
 
-import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.budgetTracking.dataBase.core.period.Period;
 import com.ntankard.budgetTracking.dataBase.core.pool.Pool;
 import com.ntankard.budgetTracking.dataBase.core.transfer.HalfTransfer;
 import com.ntankard.budgetTracking.dataBase.core.transfer.Transfer;
 import com.ntankard.budgetTracking.dataBase.interfaces.set.filter.TransferDestination_HalfTransfer_Filter;
 import com.ntankard.budgetTracking.dataBase.interfaces.set.filter.TransferType_HalfTransfer_Filter;
+import com.ntankard.javaObjectDatabase.database.Database;
 import com.ntankard.javaObjectDatabase.util.set.TwoParent_Children_Set;
 
 public class PeriodPool_SumSet extends Transfer_SumSet<TwoParent_Children_Set<HalfTransfer, Period, Pool>> {
