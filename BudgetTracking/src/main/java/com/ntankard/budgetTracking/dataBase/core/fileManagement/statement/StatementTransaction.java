@@ -2,11 +2,10 @@ package com.ntankard.budgetTracking.dataBase.core.fileManagement.statement;
 
 import com.ntankard.budgetTracking.dataBase.core.Currency;
 import com.ntankard.budgetTracking.dataBase.core.baseObject.interfaces.CurrencyBound;
-import com.ntankard.budgetTracking.dataBase.core.fileManagement.statement.TransactionLine.*;
 import com.ntankard.budgetTracking.dataBase.core.fileManagement.statement.Translation.TranslationList;
 import com.ntankard.budgetTracking.dataBase.core.period.Period;
 import com.ntankard.budgetTracking.dataBase.core.pool.Bank;
-import com.ntankard.budgetTracking.dataBase.core.transfer.bank.StatementBankTransfer;
+import com.ntankard.budgetTracking.dataBase.core.transfer.bank.statement.StatementBasedBankTransfer;
 import com.ntankard.dynamicGUI.javaObjectDatabase.Display_Properties;
 import com.ntankard.dynamicGUI.javaObjectDatabase.Displayable_DataObject;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
@@ -39,6 +38,7 @@ public class StatementTransaction extends Displayable_DataObject implements Curr
 
     public static final String StatementTransaction_TransactionLines = StatementTransaction_Prefix + "TransactionLines";
     public static final String StatementTransaction_CoreLine = StatementTransaction_Prefix + "CoreLine";
+    public static final String StatementTransaction_Day = StatementTransaction_Prefix + "Day";
     public static final String StatementTransaction_Value = StatementTransaction_Prefix + "Value";
     public static final String StatementTransaction_Description = StatementTransaction_Prefix + "Description";
     public static final String StatementTransaction_Translation = StatementTransaction_Prefix + "Translation";
@@ -59,11 +59,12 @@ public class StatementTransaction extends Displayable_DataObject implements Curr
         // ID
         dataObjectSchema.add(new ListDataField_Schema<>(StatementTransaction_TransactionLines, TransactionLineList.class));
         dataObjectSchema.add(new DataField_Schema<>(StatementTransaction_CoreLine, TransactionLine.class, true));
+        dataObjectSchema.add(new DataField_Schema<>(StatementTransaction_Day, Integer.class, true));
         dataObjectSchema.add(new DataField_Schema<>(StatementTransaction_Value, Double.class));
         dataObjectSchema.add(new DataField_Schema<>(StatementTransaction_Description, String.class));
         dataObjectSchema.add(new DataField_Schema<>(StatementTransaction_Translation, Translation.class, true));
         dataObjectSchema.add(new DataField_Schema<>(StatementTransaction_Currency, Currency.class));
-        dataObjectSchema.add(new DataField_Schema<>(StatementTransaction_StatementBankTransfer, StatementBankTransfer.class, true));
+        dataObjectSchema.add(new DataField_Schema<>(StatementTransaction_StatementBankTransfer, StatementBasedBankTransfer.class, true));
         dataObjectSchema.add(new DataField_Schema<>(StatementTransaction_Bank, Bank.class));
         dataObjectSchema.add(new DataField_Schema<>(StatementTransaction_Period, Period.class));
         dataObjectSchema.add(new DataField_Schema<>(StatementTransaction_StatementFolder, StatementFolder.class));
@@ -81,6 +82,11 @@ public class StatementTransaction extends Displayable_DataObject implements Curr
                 new Derived_DataCore_Schema<TransactionLine, StatementTransaction>
                         (container -> container.getTransactionLines().size() == 0 ? null : container.getTransactionLines().get(0)
                                 , makeSourceChain(StatementTransaction_TransactionLines)));
+        // Day =========================================================================================================
+        dataObjectSchema.<Integer>get(StatementTransaction_Day).setDataCore_schema(
+                new Derived_DataCore_Schema<Integer, StatementTransaction>
+                        (container -> container.getCoreLine() == null ? null : container.getCoreLine().getDate().getDate()
+                                , makeSourceChain(StatementTransaction_CoreLine, TransactionLine_Date)));
         // Value =======================================================================================================
         dataObjectSchema.get(StatementTransaction_Value).getProperty(Display_Properties.class).setDataType(CURRENCY);
         dataObjectSchema.<Double>get(StatementTransaction_Value).setDataCore_schema(
@@ -168,7 +174,7 @@ public class StatementTransaction extends Displayable_DataObject implements Curr
     /**
      * Constructor
      */
-    public StatementTransaction(StatementBankTransfer statementBankTransfer, StatementFolder statementFolder) {
+    public StatementTransaction(StatementBasedBankTransfer statementBankTransfer, StatementFolder statementFolder) {
         super(statementFolder.getTrackingDatabase()
                 , StatementTransaction_StatementBankTransfer, statementBankTransfer
                 , StatementTransaction_StatementFolder, statementFolder
@@ -215,7 +221,7 @@ public class StatementTransaction extends Displayable_DataObject implements Curr
         return get(StatementTransaction_Currency);
     }
 
-    public StatementBankTransfer getStatementBankTransfer() {
+    public StatementBasedBankTransfer getStatementBankTransfer() {
         return get(StatementTransaction_StatementBankTransfer);
     }
 
@@ -243,7 +249,7 @@ public class StatementTransaction extends Displayable_DataObject implements Curr
     //#################################################### Setters #####################################################
     //------------------------------------------------------------------------------------------------------------------
 
-    public void setStatementBankTransfer(StatementBankTransfer statementBankTransfer) {
+    public void setStatementBankTransfer(StatementBasedBankTransfer statementBankTransfer) {
         set(StatementTransaction_StatementBankTransfer, statementBankTransfer);
     }
 }

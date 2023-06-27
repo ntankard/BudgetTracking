@@ -1,12 +1,12 @@
-package com.ntankard.budgetTracking.dataBase.core.transfer.bank;
+package com.ntankard.budgetTracking.dataBase.core.transfer.bank.statement;
 
 import com.ntankard.budgetTracking.dataBase.core.Currency;
 import com.ntankard.budgetTracking.dataBase.core.fileManagement.statement.StatementTransaction;
-import com.ntankard.budgetTracking.dataBase.core.fileManagement.statement.StatementTransaction.StatementTransactionList;
 import com.ntankard.budgetTracking.dataBase.core.fileManagement.statement.StatementTransactionTranslationAutoGroup;
 import com.ntankard.budgetTracking.dataBase.core.period.Period;
 import com.ntankard.budgetTracking.dataBase.core.pool.Bank;
 import com.ntankard.budgetTracking.dataBase.core.pool.Pool;
+import com.ntankard.budgetTracking.dataBase.core.transfer.bank.BankTransfer;
 import com.ntankard.javaObjectDatabase.dataField.DataField_Schema;
 import com.ntankard.javaObjectDatabase.dataField.ListDataField_Schema;
 import com.ntankard.javaObjectDatabase.dataField.dataCore.derived.Derived_DataCore_Schema;
@@ -24,8 +24,7 @@ import static com.ntankard.javaObjectDatabase.dataField.dataCore.DataCore_Factor
 import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSharedStepSourceChain;
 import static com.ntankard.javaObjectDatabase.dataField.dataCore.derived.source.Source_Factory.makeSourceChain;
 
-public class StatementBankTransfer extends BankTransfer {
-
+public abstract class StatementBasedBankTransfer extends BankTransfer {
     //------------------------------------------------------------------------------------------------------------------
     //################################################### Constructor ##################################################
     //------------------------------------------------------------------------------------------------------------------
@@ -50,7 +49,7 @@ public class StatementBankTransfer extends BankTransfer {
         // Value =======================================================================================================
         dataObjectSchema.get(Transfer_Value).setManualCanEdit(false);
         dataObjectSchema.<Double>get(Transfer_Value).setDataCore_schema(
-                new Derived_DataCore_Schema<Double, StatementBankTransfer>(
+                new Derived_DataCore_Schema<Double, StatementBasedBankTransfer>(
                         container -> {
                             double sum = 0.0;
                             for (StatementTransaction statementTransaction : container.<List<StatementTransaction>>get(StatementBankTransfer_StatementTransactionSet)) {
@@ -72,7 +71,7 @@ public class StatementBankTransfer extends BankTransfer {
         dataObjectSchema.add(new DataField_Schema<>(StatementBankTransfer_AutoSource, StatementTransactionTranslationAutoGroup.class, true));
         dataObjectSchema.get(StatementBankTransfer_AutoSource).setManualCanEdit(true);
         // StatementTransactionSet =====================================================================================
-        dataObjectSchema.add(new ListDataField_Schema<>(StatementBankTransfer_StatementTransactionSet, StatementTransactionList.class));
+        dataObjectSchema.add(new ListDataField_Schema<>(StatementBankTransfer_StatementTransactionSet, StatementTransaction.StatementTransactionList.class));
         dataObjectSchema.<List<StatementTransaction>>get(StatementBankTransfer_StatementTransactionSet).setDataCore_schema(
                 createSelfParentList(StatementTransaction.class, null));
         // Multiply ==================================================================================================
@@ -81,24 +80,13 @@ public class StatementBankTransfer extends BankTransfer {
         //==============================================================================================================
         // DestinationValue
         // SourceCurrencyGet
-        // DestinationCurrencyGet ======================================================================================
-        dataObjectSchema.<Currency>get(Transfer_DestinationCurrencyGet).setDataCore_schema(createDirectDerivedDataCore(Transfer_Currency));
+        // DestinationCurrencyGet
         // SourcePeriodGet
-        // DestinationPeriodGet ========================================================================================
-        dataObjectSchema.<Period>get(Transfer_DestinationPeriodGet).setDataCore_schema(
-                new Derived_DataCore_Schema<>((Derived_DataCore_Schema.Calculator<Period, BankTransfer>) container -> {
-                    if (container.getDestinationPeriod() != null) {
-                        return container.getDestinationPeriod();
-                    } else {
-                        return container.getPeriod();
-                    }
-                }
-                        , makeSourceChain(Transfer_Period)
-                        , makeSourceChain(BankTransfer_DestinationPeriod)));
+        // DestinationPeriodGet
         // Parents
         // Children
 
-        return dataObjectSchema.finaliseContainer(StatementBankTransfer.class);
+        return dataObjectSchema.endLayer(StatementBasedBankTransfer.class);
     }
 
     /**
@@ -110,38 +98,16 @@ public class StatementBankTransfer extends BankTransfer {
     }
 
     /**
-     * @inheritDoc
-     */
-    @Override
-    public <T extends DataObject> List<T> sourceOptions(Class<T> type, String fieldName) {
-        switch (fieldName) {
-            case "Destination":
-            case "Bank": {
-                List<T> toReturn = super.sourceOptions(type, fieldName);
-                toReturn.removeIf(t -> {
-                    if (Bank.class.isAssignableFrom(t.getClass())) {
-                        Bank bank = (Bank) t;
-                        return !((Bank) getSource()).getCurrency().equals(bank.getCurrency());
-                    }
-                    return false;
-                });
-                return toReturn;
-            }
-        }
-        return super.sourceOptions(type, fieldName);
-    }
-
-    /**
      * Constructor
      */
-    public StatementBankTransfer(Database database, Object... args) {
+    public StatementBasedBankTransfer(Database database, Object... args) {
         super(database, args);
     }
 
     /**
      * Constructor
      */
-    public StatementBankTransfer(Period period, Bank source, Period destinationPeriod, Pool destination, String description, StatementTransactionTranslationAutoGroup autoSource, Double multiply) {
+    public StatementBasedBankTransfer(Period period, Bank source, Period destinationPeriod, Pool destination, String description, StatementTransactionTranslationAutoGroup autoSource, Double multiply) {
         super(period.getTrackingDatabase()
                 , Transfer_Period, period
                 , Transfer_Source, source

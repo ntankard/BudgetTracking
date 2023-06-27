@@ -6,7 +6,10 @@ import com.ntankard.budgetTracking.dataBase.core.fileManagement.statement.Statem
 import com.ntankard.budgetTracking.dataBase.core.period.Period;
 import com.ntankard.budgetTracking.dataBase.core.pool.Bank;
 import com.ntankard.budgetTracking.dataBase.core.pool.category.SolidCategory;
-import com.ntankard.budgetTracking.dataBase.core.transfer.bank.StatementBankTransfer;
+import com.ntankard.budgetTracking.dataBase.core.transfer.bank.statement.IntraCurrencyStatementBankTransfer;
+import com.ntankard.budgetTracking.dataBase.core.transfer.bank.statement.StatementBankTransfer;
+import com.ntankard.budgetTracking.dataBase.core.transfer.bank.statement.StatementBasedBankTransfer;
+import com.ntankard.budgetTracking.display.util.elementControllers.IntraCurrencyStatementBankTransfer_ElementController;
 import com.ntankard.budgetTracking.display.util.elementControllers.StatementBankTransfer_ElementController;
 import com.ntankard.budgetTracking.display.util.panels.DataObject_DisplayList;
 import com.ntankard.dynamicGUI.gui.containers.DynamicGUI_DisplayList.ListControl_Button;
@@ -19,6 +22,7 @@ import com.ntankard.javaObjectDatabase.util.set.SetFilter;
 import com.ntankard.javaObjectDatabase.util.set.TwoParent_Children_Set;
 
 import javax.swing.*;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.text.NumberFormat;
@@ -35,17 +39,20 @@ public class TransactionMappingPanel extends UpdatableJPanel {
 
     // The GUI components
     private ListSelectionListener selectionListener;
+    private ChangeListener changeListener;
+    private JTabbedPane statementBankTransfer_tPanel;
     private DataObject_DisplayList<StatementBankTransfer> statementBankTransfer_list;
+    private DataObject_DisplayList<IntraCurrencyStatementBankTransfer> icStatementBankTransfer_list;
     private DataObject_DisplayList<StatementTransaction> unlinked_statementTransaction_list;
     private DataObject_DisplayList<StatementTransaction> linked_statementTransaction_list;
     private ListControl_Button<?> link_btn;
 
     // Source of data to display and process
-    private OneParent_Children_Set<StatementTransaction, StatementBankTransfer> linked_statementTransaction_set;
+    private OneParent_Children_Set<StatementTransaction, StatementBasedBankTransfer> linked_statementTransaction_set;
     private TwoParent_Children_Set<StatementTransaction, Period, Bank> unlinked_statementTransaction_set;
 
     // Buffered selection data for fast access for buttons
-    private StatementBankTransfer selectedStatementBankTransfer = null;
+    private StatementBasedBankTransfer selectedStatementBankTransfer = null;
     private List<StatementTransaction> selectedUnlinkedStatementTransaction = new ArrayList<>();
     private List<StatementTransaction> selectedLinkedStatementTransaction = new ArrayList<>();
 
@@ -69,6 +76,7 @@ public class TransactionMappingPanel extends UpdatableJPanel {
         this.setLayout(new GridBagLayout());
 
         selectionListener = e -> update();
+        changeListener = e -> update();
 
         // List of all StatementBankTransfer
         statementBankTransfer_list = new DataObject_DisplayList<>(database.getSchema(),
@@ -78,6 +86,14 @@ public class TransactionMappingPanel extends UpdatableJPanel {
                 this);
         statementBankTransfer_list.addControlButtons(new StatementBankTransfer_ElementController(statementFolder, this));
         statementBankTransfer_list.getMainPanel().getListSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        icStatementBankTransfer_list = new DataObject_DisplayList<>(database.getSchema(),
+                IntraCurrencyStatementBankTransfer.class,
+                new TwoParent_Children_Set<>(IntraCurrencyStatementBankTransfer.class, statementFolder.getPeriod(), statementFolder.getBank()),
+                false,
+                this);
+        icStatementBankTransfer_list.addControlButtons(new IntraCurrencyStatementBankTransfer_ElementController(statementFolder, this));
+        icStatementBankTransfer_list.getMainPanel().getListSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         // List of unlinked StatementTransaction
         unlinked_statementTransaction_set = new TwoParent_Children_Set<>(StatementTransaction.class, statementFolder.getPeriod(), statementFolder.getBank(), new SetFilter<StatementTransaction>() {
@@ -126,7 +142,11 @@ public class TransactionMappingPanel extends UpdatableJPanel {
         gridBagConstraints.weighty = 1;
 
         gridBagConstraints.gridx = 0;
-        this.add(statementBankTransfer_list, gridBagConstraints);
+        statementBankTransfer_tPanel = new JTabbedPane();
+        statementBankTransfer_tPanel.addTab("Normal", statementBankTransfer_list);
+        statementBankTransfer_tPanel.addTab("IC", icStatementBankTransfer_list);
+
+        this.add(statementBankTransfer_tPanel, gridBagConstraints);
 
         gridBagConstraints.gridx = 1;
         this.add(unlinked_statementTransaction_list, gridBagConstraints);
@@ -135,6 +155,8 @@ public class TransactionMappingPanel extends UpdatableJPanel {
         this.add(linked_statementTransaction_list, gridBagConstraints);
 
         // Enable
+        statementBankTransfer_tPanel.addChangeListener(changeListener);
+        icStatementBankTransfer_list.getMainPanel().getListSelectionModel().addListSelectionListener(selectionListener);
         statementBankTransfer_list.getMainPanel().getListSelectionModel().addListSelectionListener(selectionListener);
         unlinked_statementTransaction_list.getMainPanel().getListSelectionModel().addListSelectionListener(selectionListener);
         linked_statementTransaction_list.getMainPanel().getListSelectionModel().addListSelectionListener(selectionListener);
@@ -237,9 +259,16 @@ public class TransactionMappingPanel extends UpdatableJPanel {
      */
     private void single() {
         StatementTransaction toLink = selectedUnlinkedStatementTransaction.get(0);
-        StatementBankTransfer newTransfer = new StatementBankTransfer(statementFolder.getPeriod(), statementFolder.getBank(), null, database.getDefault(SolidCategory.class), "G-" + toLink.getDescription(), null, 1.0).add();
+        String name;
+        if (toLink.getTranslation() != null) {
+            name = "G-" + toLink.getTranslation().getTranslated();
+        } else {
+            name = "G-" + toLink.getDescription();
+        }
+        StatementBankTransfer newTransfer = new StatementBankTransfer(statementFolder.getPeriod(), statementFolder.getBank(), null, database.getDefault(SolidCategory.class), name, null, 1.0).add();
         toLink.setStatementBankTransfer(newTransfer);
         update();
+        statementBankTransfer_tPanel.setSelectedComponent(statementBankTransfer_list);
         statementBankTransfer_list.getMainPanel().setSelectedItems(Collections.singletonList(newTransfer));
         update();
     }
@@ -287,6 +316,7 @@ public class TransactionMappingPanel extends UpdatableJPanel {
         StatementBankTransfer newTransfer = new StatementBankTransfer(statementFolder.getPeriod(), statementFolder.getBank(), null, database.getDefault(SolidCategory.class), "G-Other", null, 1.0).add();
         unlinked_statementTransaction_set.get().forEach(statementTransaction -> statementTransaction.setStatementBankTransfer(newTransfer));
         update();
+        statementBankTransfer_tPanel.setSelectedComponent(statementBankTransfer_list);
         statementBankTransfer_list.getMainPanel().setSelectedItems(Collections.singletonList(newTransfer));
         update();
     }
@@ -297,7 +327,9 @@ public class TransactionMappingPanel extends UpdatableJPanel {
     @Override
     public void update() {
         // Disable new selections
+        statementBankTransfer_tPanel.removeChangeListener(changeListener);
         statementBankTransfer_list.getMainPanel().getListSelectionModel().removeListSelectionListener(selectionListener);
+        icStatementBankTransfer_list.getMainPanel().getListSelectionModel().removeListSelectionListener(selectionListener);
         unlinked_statementTransaction_list.getMainPanel().getListSelectionModel().removeListSelectionListener(selectionListener);
         linked_statementTransaction_list.getMainPanel().getListSelectionModel().removeListSelectionListener(selectionListener);
 
@@ -314,11 +346,22 @@ public class TransactionMappingPanel extends UpdatableJPanel {
 
         // re-render
         statementBankTransfer_list.update();
+        icStatementBankTransfer_list.update();
         unlinked_statementTransaction_list.update();
         linked_statementTransaction_list.update();
 
         // Reselect the items again
-        statementBankTransfer_list.getMainPanel().setSelectedItems(Collections.singletonList(selectedStatementBankTransfer));
+        if(selectedStatementBankTransfer instanceof StatementBankTransfer) {
+            statementBankTransfer_list.getMainPanel().setSelectedItems(Collections.singletonList((StatementBankTransfer)selectedStatementBankTransfer));
+            statementBankTransfer_tPanel.setSelectedComponent(statementBankTransfer_list);
+        }else if(selectedStatementBankTransfer instanceof IntraCurrencyStatementBankTransfer){
+            icStatementBankTransfer_list.getMainPanel().setSelectedItems(Collections.singletonList((IntraCurrencyStatementBankTransfer) selectedStatementBankTransfer));
+            statementBankTransfer_tPanel.setSelectedComponent(icStatementBankTransfer_list);
+        }else{
+            statementBankTransfer_list.getMainPanel().setSelectedItems(Collections.singletonList(null));
+            icStatementBankTransfer_list.getMainPanel().setSelectedItems(Collections.singletonList(null));
+        }
+
         unlinked_statementTransaction_list.getMainPanel().setSelectedItems(selectedUnlinkedStatementTransaction);
         linked_statementTransaction_list.getMainPanel().setSelectedItems(selectedLinkedStatementTransaction);
 
@@ -326,7 +369,9 @@ public class TransactionMappingPanel extends UpdatableJPanel {
         getSelections();
 
         // Re enable new selections
+        statementBankTransfer_tPanel.addChangeListener(changeListener);
         statementBankTransfer_list.getMainPanel().getListSelectionModel().addListSelectionListener(selectionListener);
+        icStatementBankTransfer_list.getMainPanel().getListSelectionModel().addListSelectionListener(selectionListener);
         unlinked_statementTransaction_list.getMainPanel().getListSelectionModel().addListSelectionListener(selectionListener);
         linked_statementTransaction_list.getMainPanel().getListSelectionModel().addListSelectionListener(selectionListener);
 
@@ -337,10 +382,11 @@ public class TransactionMappingPanel extends UpdatableJPanel {
      * Read the current selected items from all lists
      */
     private void getSelections() {
-        if (statementBankTransfer_list.getMainPanel().getSelectedItems().isEmpty()) {
+        DataObject_DisplayList<?> list = (DataObject_DisplayList<?>)statementBankTransfer_tPanel.getSelectedComponent();
+        if (list.getMainPanel().getSelectedItems().isEmpty()) {
             selectedStatementBankTransfer = null;
         } else {
-            selectedStatementBankTransfer = statementBankTransfer_list.getMainPanel().getSelectedItems().get(0);
+            selectedStatementBankTransfer = (StatementBasedBankTransfer) list.getMainPanel().getSelectedItems().get(0);
         }
         selectedUnlinkedStatementTransaction = unlinked_statementTransaction_list.getMainPanel().getSelectedItems();
         selectedLinkedStatementTransaction = linked_statementTransaction_list.getMainPanel().getSelectedItems();
